@@ -37,7 +37,8 @@ rather than lurching. The technical name for that blending is *shrinkage toward
 a prior*, and the published poker research does exactly this (see
 [Sources](#sources)).
 
-The second is that there are three or more players, not two. With one opponent,
+The second is that most of the tables have three or more players, not two — the
+bot has to handle any size from two players up to nine. With one opponent,
 bluffing works if that one person folds enough. With four opponents, *all four*
 have to fold, and the odds of that collapse fast — the arithmetic is in
 [Table B](#table-b-the-multiway-problem). This is why the plan leans on getting
@@ -78,7 +79,15 @@ points at that table and this design obeys it.
 ## 1. Goal and non-goals
 
 **Goal.** Beat the specific humans at the table, measured in big blinds won per
-100 hands, at a table of three or more players.
+100 hands, at **every table size from 2 to 9 players** — a firm operator
+requirement, not a preference, and the scope every part of this document is
+sized against ([§4.5](#45-tiers-what-to-build-in-what-order) states what it costs
+to cover all eight seat counts, and what changes at 2).
+
+Three or more players is where the hard part sits, and most of what follows is
+aimed there, for the reason in the next paragraph: it is the region with no
+usable equilibrium guarantee. Two players is in scope all the same, and is the
+one size where that guarantee does exist.
 
 **Why not chase game-theory-optimal play.** In two-player zero-sum poker, a Nash
 equilibrium strategy is unbeatable in expectation regardless of what the
@@ -127,10 +136,11 @@ against the authority by inspection rather than trusted:
   gate a bluff, for one.
 
 **Live field versus observed population.** That last reserved item turns on a
-distinction `CLAUDE.md` states in the two bullets directly beneath its table, and
-this design leans on it everywhere, so it is worth restating in full. Combining
-rates across the **live field** — the opponents in the current hand — into
-anything that adjusts the bot's own action is reserved to the engine. Combining
+distinction `CLAUDE.md` draws between that row and the observed-population bullet
+directly beneath its table, and this design leans on it everywhere, so it is
+worth restating in full. Combining rates across the **live field** — the
+opponents in the current hand — into anything that adjusts the bot's own action
+is reserved to the engine. Combining
 rates across the **observed population** — the whole database, seated players'
 stored rows included, with being seated never the criterion for inclusion — into
 a baseline, a classification split, or an archetype handed to the engine is
@@ -152,12 +162,11 @@ was — is on the allowed side, and each one says which side it is on at its own
 point of use.** Combinations *across* opponents, all of them population-level and
 computed from the stored database rather than from the players in the current
 hand: the pooled `BASELINE`
-([§4.3](#43-after-each-hand-the-update)); the population-median split thresholds
-([§4.4](#44-bucketing-an-opponent)); the pooled archetype fed to the solver
-([§4.5](#45-tiers-what-to-build-in-what-order)); the pooled opportunity rates
-that replace the placeholders in
-[Table C](#table-c-how-many-hands-each-stat-needs); and the pooled rate V3 scores
-the model against ([§6](#6-validation-before-it-touches-a-real-table)).
+([§4.3](#43-after-each-hand-the-update)) and the population-median split
+thresholds ([§4.4](#44-bucketing-an-opponent)), both read while a hand is in
+progress; and the pooled archetype fed to the solver
+([§4.5](#45-tiers-what-to-build-in-what-order)), which is computed offline but
+reaches the table inside a strategy that gets loaded into play.
 Combinations *within* one opponent: `AF` ([§4.2](#42-the-stat-table)) and
 `vpip_pfr_gap` ([§2.3](#23-the-stat-set)), both of which combine that one
 opponent's own counts and are reported as diagnostics without ever being an input
@@ -169,9 +178,14 @@ strategy handle — the "Selecting *which* engine strategy to load" row above.
 
 **Away from the decision path this design also combines rates offline, over
 logged hands, and those combinations are not enumerated above because none of
-them is computed at the table.** They are: V4's mean fold-rate-versus-VPIP gap
-and its two disagreement rates, both taken across the whole logged population
-([§6](#6-validation-before-it-touches-a-real-table)); the upgrade path's
+them is computed at the table.** They are: the pooled rate V3 scores the model
+against and V4's mean fold-rate-versus-VPIP gap with its two disagreement rates,
+all taken across the whole logged population
+([§6](#6-validation-before-it-touches-a-real-table), where V3 and V4 both run
+offline on held-out and logged hands); the pooled opportunity rates that replace
+the placeholders in [Table C](#table-c-how-many-hands-each-stat-needs), which set
+expectations and config values between sessions and are never read during a hand;
+the upgrade path's
 expectation-maximisation clustering over the stored population's profile vectors
 ([§4.4](#44-bucketing-an-opponent)); and the realised win rate pooled per bucket
 and per flag, together with the per-opponent profit tracking, in
@@ -497,8 +511,10 @@ the useful ones for this project are:
 
 Their results: the naive **1-Step** function (any confidence after a single
 observation) **overfits the model**, while 10-Step, 0-10 Linear and 1-Curve do
-not; and the 0-10 Linear counter-strategies "are effective with any quantity of
-training data", tested down to 100 observed games (ibid., §6 and Figure 2). That
+not — "1-Curve" is the source's own name, kept verbatim here, and reads as the
+s-Curve above with the constant `s` = 1, matching how it names 1-Step and
+10-Step; and the 0-10 Linear counter-strategies "are effective with any quantity
+of training data", tested down to 100 observed games (ibid., §6 and Figure 2). That
 last point is the licence for this project to exploit on small samples at all —
 but only with the shrinkage in place.
 
@@ -537,7 +553,7 @@ Named explicitly so a later task does not try.
 
 | Not doing | Why |
 | --- | --- |
-| Training a bespoke blueprint per opponent bucket from scratch at Pluribus scale | 12,400 CPU core-hours *per strategy* ([Brown 2020](#s-brown2020), §6.6). A four-bucket design would be four of those. |
+| Training a bespoke blueprint per opponent bucket from scratch at Pluribus scale | 12,400 CPU core-hours *per strategy* ([Brown 2020](#s-brown2020), §6.6). Four strategies at each of the eight seat counts from 2 to 9 players is 32 of those ([§4.5](#45-tiers-what-to-build-in-what-order)). |
 | Full DBBR with per-information-set best-response computation in real time | Ganzfried and Sandholm could not run it against their own competition-grade abstraction: "GS5 was too large to use as the approximate-equilibrium strategy in our real-time opponent modeling updates", forcing a separate, much coarser abstraction (branching factors 8/12/4/4 instead of 15/40/6/6) purely to make it fast enough. Reproducing that trade-off is a project in itself. |
 | RNR/DBR counter-strategies computed by solving a modified game | Requires modifying the solver's game definition. Possible in principle; gated entirely on what the engine exposes. See [Engine requirements](#engine-requirements). |
 | A neural opponent-action predictor | No training data until the bot has played. The classic chicken-and-egg. Revisit after the bot has its own hand database. |
@@ -924,7 +940,7 @@ and the magnitude threshold are met.
 | `OVERFOLDS_TO_3BET` | shrunk `fold_to_three_bet` exceeds `BASELINE[fold_to_three_bet]` by ≥ 0.15 | `confidence ≥ 0.6` |
 | `NEVER_FOLDS_TO_3BET` | shrunk `fold_to_three_bet` below `BASELINE[fold_to_three_bet]` by ≥ 0.15 | `confidence ≥ 0.6` |
 | `OVERFOLDS_TO_CBET` | shrunk `fold_to_cbet[flop]` exceeds `BASELINE[fold_to_cbet[flop]]` by ≥ 0.15 | `confidence ≥ 0.6` |
-| `NEVER_FOLDS_POSTFLOP` | shrunk `wtsd` exceeds `BASELINE[wtsd]` by ≥ 0.10 | `confidence ≥ 0.6` |
+| `NEVER_FOLDS_POSTFLOP` | shrunk `wtsd` exceeds `BASELINE[wtsd]` by ≥ 0.15 | `confidence ≥ 0.6` |
 | `OVERFOLDS_BLINDS` | shrunk `fold_to_steal` exceeds `BASELINE[fold_to_steal]` by ≥ 0.15 | `confidence ≥ 0.6` |
 | `NEVER_RAISES` | shrunk `three_bet` below `BASELINE[three_bet]` **and** shrunk `check_raise` below `BASELINE[check_raise]`, both by ≥ 0.05 | `confidence ≥ 0.7` |
 | `LIMPS` | shrunk `limp` exceeds `BASELINE[limp]` by ≥ 0.15 | `confidence ≥ 0.6` |
@@ -938,13 +954,61 @@ live-field combination of [§1](#the-forefront-rule-and-this-design); not an
 average over the handful of opponents a flag happens to be evaluated against; and
 not a constant written into this table.
 
-The 0.15 and 0.10 margins are deliberately larger than the confidence intervals
-in [Table C](#table-c-how-many-hands-each-stat-needs) at the gate's
-corresponding sample size. Those two margins, the tighter 0.05 margin on
-`NEVER_RAISES`, and the `0.6` and `0.7` confidence gates in the table above are
-all **unmeasured starting values**, to be tuned by the validation in
-[§6](#6-validation-before-it-touches-a-real-table), and should be recorded in a
-config file rather than in code.
+**Why a margin is wide enough not to fire on noise, with the arithmetic shown.**
+A flag must fire only when the opponent's rate sits further from `BASELINE` than
+sampling error alone could have put it. Two steps check that, both from numbers
+already in this document, and a reader should be able to reproduce every figure
+below from [Table C](#table-c-how-many-hands-each-stat-needs) and the two lines
+in [§4.3](#43-after-each-hand-the-update).
+
+*Step 1 — what a shrunk margin asks of the raw data.* Rearranging the shrinkage
+line with `c = n/(n+s)` gives
+`(BASELINE·s + k)/(s + n) = BASELINE·(1−c) + (k/n)·c`: the shrunk rate is the
+baseline and the raw rate blended by the confidence. So the shrunk rate is `m`
+away from `BASELINE` only when the **raw** rate is `m / c` away from it. At the
+`0.6` gate a 0.15 shrunk margin means a 0.250 raw margin; at the `0.7` gate a
+0.05 shrunk margin means a 0.071 raw margin.
+
+*Step 2 — how wide the interval is at the gate.* `confidence = n/(n+s)` inverts
+to `n = s·c/(1−c)`, the fewest opportunities the gate admits. Table C's formula
+inverts to a half-width `w = 1.96·√(p̂(1−p̂)/n)` at that `n`, read at the same
+illustrative anchor `p̂` Table C uses for the stat. The margin is sound only if
+the raw margin from step 1 exceeds `w`. Computed 2026-09-15 by the same script
+as Tables A–E.
+
+| Flag | Stat, `s`, gate | Fewest opportunities at the gate | Half-width `w` there, at Table C's anchor | Margin | Raw margin it implies | Exceeds `w`? |
+| --- | --- | --- | --- | --- | --- | --- |
+| `OVERFOLDS_TO_3BET`, `NEVER_FOLDS_TO_3BET` | `fold_to_three_bet`, 25, 0.6 | 37.5 | 0.157 (`p̂` 0.60) | 0.15 | 0.250 | yes |
+| `OVERFOLDS_TO_CBET` | `fold_to_cbet`, 25, 0.6 | 37.5 | 0.160 (`p̂` 0.50) | 0.15 | 0.250 | yes |
+| `NEVER_FOLDS_POSTFLOP` | `wtsd`, 15, 0.6 | 22.5 | 0.179 (`p̂` 0.25) | 0.15 | 0.250 | yes |
+| `NEVER_RAISES`, `three_bet` leg | `three_bet`, 25, 0.7 | 58.3 | 0.065 (`p̂` 0.07) | 0.05 | 0.071 | yes, barely |
+
+**`NEVER_FOLDS_POSTFLOP` carries the same 0.15 margin as the rest because of
+that check, and must not be given a narrower one.** A 0.10 margin there implies a
+raw margin of 0.167, *inside* the 0.179 interval, so the flag could fire on
+sampling error alone — the one thing these margins exist to prevent. `wtsd` is
+the slowest stat in the set and its `s` = 15 gate admits
+fewer opportunities than any other flag's, so it needs the widest margin, not
+the narrowest.
+
+**Three flags cannot be checked this way yet.** Table C anchors no `p̂` for
+`fold_to_steal`, `limp` or `check_raise`. Taking the least favourable
+`p̂ = 0.5`: `fold_to_steal`'s half-width at its gate is 0.160 and `limp`'s is
+0.113, both below the 0.250 raw margin their 0.15 margins imply, so
+`OVERFOLDS_BLINDS` and `LIMPS` clear at any anchor. `NEVER_RAISES`'s
+`check_raise` leg does not: its 0.071 raw margin clears only while that stat's
+baseline is below about 0.084, and fails at `p̂ = 0.5`. `NEVER_RAISES` needs
+*both* legs, so it is no sounder than its `check_raise` leg until that baseline
+is measured.
+
+**A coding task must recompute the whole table above from measured `p̂` values
+once Tier 0 has logged hands, and raise any margin that stops clearing its
+interval.** The margins and gates — 0.15, the tighter 0.05 on `NEVER_RAISES`,
+and the `0.6` and `0.7` confidence gates — remain **unmeasured starting values**,
+to be tuned by the validation in
+[§6](#6-validation-before-it-touches-a-real-table) and recorded in a config file
+rather than in code. Tuning may raise a margin freely; it must never lower one
+below the interval its gate implies.
 
 **The upgrade path, when there is data for it.** The four-box grid is a
 deliberate simplification. [Teofilo & Reis 2011](#s-teofilo2011) ran
@@ -1005,7 +1069,34 @@ seat and an archetype in each of the other five. That is not a detail —
 on it, because the multiway discount on bluffing is only in the solver's output
 if the solve faced the same number of opponents the bot will. Solve one table per
 seat count the bot plays; a strategy solved for a different seat count must not
-be loaded at a table of another size. The archetypes are defined as
+be loaded at a table of another size.
+
+**The multiplier that follows, stated rather than left to be discovered.** The
+bot must work at every table size from 2 to 9 players
+([§1](#1-goal-and-non-goals)), which is **eight seat counts**, and each seat
+count needs **four strategies** — `S_BASE` plus the three counter-strategies in
+the table below, `TAG` having none. **Four strategies × eight seat counts = 32
+offline solver runs**, done once. [E5](#engine-requirements) asks the cost of
+*one* run; what Tier 1's feasibility actually turns on is that cost times 32. If
+32 is unaffordable, the two honest responses are to narrow the seat counts Tier 1
+covers — falling back to `S_BASE` at the rest — or to cut buckets; never to load
+a strategy at a table size it was not solved for.
+
+**At two players the design still applies, with two changes.** Heads-up is the
+one case where the equilibrium argument in [§1](#1-goal-and-non-goals) does hold,
+so `S_BASE` at that seat count carries the strongest guarantee anything in this
+project has, and deviating from it is the plainest downside risk here — the
+Libratus position in [§3.1](#31-pluribus-did-not-do-opponent-modelling-at-all)
+applies with full force. First change: the multiway discount on bluffing is
+simply absent, [Table B](#table-b-the-multiway-problem)'s one-opponent column
+being the raw fold rate, so heads-up is the one seat count where a bluffing
+exploit is not discounted away. Second: "predominantly" degenerates, because with
+`n = 1` live opponent `⌈2n/3⌉ = 1` — the bot loads that opponent's
+counter-strategy once they are classified, and `S_BASE` while they are `UNKNOWN`.
+Everything else is unchanged: every stat, bucket and flag is keyed on one
+opponent already.
+
+The archetypes are defined as
 *action-frequency perturbations of the blueprint*, in exactly DBBR's sense: take
 the blueprint
 strategy and shift its action probabilities to match the bucket's measured
@@ -1171,11 +1262,34 @@ has knowledge it does not have.
 | Mitigation | Grounding |
 | --- | --- |
 | **Confidence gate on every flag.** No exploit fires below its threshold | DBR: 1-Step confidence (act after one observation) overfits; 10-Step and 0-10 Linear do not ([Johanson & Bowling 2009](#s-johanson2009), §6) |
-| **Warm-up period.** Play `S_BASE` for the first `WARMUP_HANDS = 200` hands at any table | DBBR used `T = 1000` ([Ganzfried & Sandholm 2011](#s-ganzfried2011), §5). 200 is lower because Table C shows Tier A stats converge by then; it is a tuning parameter |
+| **Warm-up period.** Play `S_BASE` against an opponent until `WARMUP_HANDS = 200` hands have been recorded of *that opponent* — per opponent and lifetime; see below the table | DBBR used `T = 1000` ([Ganzfried & Sandholm 2011](#s-ganzfried2011), §5), also per opponent. 200 is a deliberately shorter warm-up, not a point at which Table C says anything has converged; the arithmetic is below the table. A tuning parameter |
 | **Deviation cap.** A global `Pmax`-equivalent limiting how far any counter-strategy may sit from `S_BASE` | DBR's `Pmax` "allows us to set a tradeoff between" exploitation and exploitability |
 | **Exploit only where observed.** Where a stat has no observations, the bot must fall back to `S_BASE` for that decision, not to the prior-filled model | Directly from the DBBR river failure above |
 | **Win-rate switch.** Track realised bb/100 with exploitation on versus off, per bucket and per flag. Disable any exploit whose measured contribution is not positive over a meaningful sample | "only attempting to exploit the opponent if a win rate above some threshold is attained" (ibid., §5) |
 | **Default to the blueprint.** Unknown opponent, mixed table, or any uncertainty: `S_BASE` | Pluribus beat elite humans with no opponent model at all ([Brown 2020](#s-brown2020), §6.6) |
+
+**What `WARMUP_HANDS` counts, and what 200 buys.** The count is the opponent's
+stored `hands_dealt` from [§4.2](#42-the-stat-table): **per opponent, and
+lifetime** — accumulated across every table and session that opponent has been
+seen at, never reset when a session ends. Per opponent because that is what
+every other gate in this design counts (`MIN_CLASSIFY_HANDS`, and the
+`confidence` gates, which are all counts of evidence about one person) and what
+DBBR's `T` counted; lifetime because resetting would throw away evidence the
+database already holds, and [§4.3](#43-after-each-hand-the-update)'s decay is
+already the mechanism for making old evidence count less. Per *table* it is not:
+`opponent_id` is the player name, not the seat or the table
+([§7](#7-questions-for-the-operator), Q2).
+At a table this reads as `S_BASE` until every live opponent has passed its own
+warm-up, because [§4.5](#45-tiers-what-to-build-in-what-order) already refuses a
+counter-strategy while any live opponent is `UNKNOWN`.
+
+200 is **not** a convergence point from
+[Table C](#table-c-how-many-hands-each-stat-needs). Table C's ±5pp rows need 323
+hands for `vpip` and 246 for `pfr`. At
+200 hands the same formula, `w = 1.96·√(p̂(1−p̂)/n)`, gives ±6.4pp on `vpip` at
+its 0.30 anchor and ±5.5pp on `pfr` at 0.20 — Tier A is inside roughly ±6pp and
+no tighter. That is the width 200 actually buys; it is chosen as a deliberately
+shorter warm-up than DBBR's 1000 hands, and remains a tuning parameter.
 
 ### 5.3 The one risk the literature does not cover
 
@@ -1272,7 +1386,7 @@ yes or no.
 | E2 | Can the solver be run against a **fixed** opponent strategy instead of self-play copies? | Tier 1 |
 | E3 | Can more than one trained strategy be held in memory and switched between hands? | Tier 1 |
 | E4 | Is there a stable identifier for a decision point (an information set or public history) that the model can key observations on? | Tier 2 |
-| E5 | What is the cost of one solver run against fixed opponents — minutes, hours, or days? | Tier 1 feasibility |
+| E5 | What is the cost of one solver run against fixed opponents — minutes, hours, or days? Tier 1 needs **32 of them**: four strategies × eight seat counts, 2 to 9 players ([§4.5](#45-tiers-what-to-build-in-what-order)). Answer for one run and for 32 | Tier 1 feasibility |
 | E6 | Does the engine expose the table state the `HandRecorder` needs — seats, stacks, full action sequence with amounts? | Tier 0 |
 
 **E6 is the only requirement Tier 0 has.** If E6 is satisfiable from the capture
@@ -1360,7 +1474,11 @@ Michael Bowling, "Data Biased Robust Counter Strategies", *AISTATS 2009*.
 `https://poker.cs.ualberta.ca/publications/AISTATS09.pdf`
 The confidence-function family, `Pmax`, the overfitting result for single-
 observation confidence, and the finding that 0-10 Linear counter-strategies work
-across data quantities from 100 to 1,000,000 observed games.
+across data quantities from 100 to 1,000,000 observed games. The name `1-Curve`
+is the paper's, for one of the functions it tested; reading it as the s-Curve at
+`s` = 1 is this document's inference from that naming pattern, not a statement
+the paper makes, and a coding task that depends on the distinction should check
+the primary text.
 
 <a id="s-johanson2007"></a>**[Johanson et al. 2007]** Michael Johanson, Martin
 Zinkevich and Michael Bowling, "Computing Robust Counter-Strategies",
@@ -1423,7 +1541,7 @@ Per the global evidence rules, so that no figure here has to be taken on trust.
 
 | Number | Where it comes from |
 | --- | --- |
-| Tables A, B, C, D, E, and the inline `0.5^(1/3) ≈ 0.794` reading of them | Computed by script on 2026-09-15. Formulas are stated inline beside each table; all are elementary arithmetic (binomial standard error, independent-event products, Beta posterior means) |
+| Tables A, B, C, D, E, the flag margin-versus-interval table in [§4.4](#44-bucketing-an-opponent), and the inline `0.5^(1/3) ≈ 0.794` reading of them | Computed by script on 2026-09-15. Formulas are stated inline beside each table; all are elementary arithmetic (binomial standard error, independent-event products, Beta posterior means) |
 | Table C's anchor `p̂` column (0.30, 0.20, 0.07, 0.60, 0.50, 0.25) | **Illustrative anchors, not measured or cited.** Labelled as such beside the table; the interval width barely moves across `p̂` in 0.2–0.8 |
 | Table C's opportunities-per-hand column (`fold_to_three_bet` 0.08, `fold_to_cbet` 0.15, `wtsd` 0.30) | **Illustrative estimates, not measured or cited.** No source exists for them; labelled as such beside the table. Each is to be replaced by `denominator / hands_dealt` from the bot's own logged hands. The "Hands needed" column scales inversely with them |
 | Hysteresis dead-band `0.02` and the `10` consecutive-hand hold ([§4.4](#44-bucketing-an-opponent)) | **Starting values chosen for this design, not measured.** Tuned by V2, which measures reclassification frequency directly |
@@ -1439,5 +1557,5 @@ Per the global evidence rules, so that no figure here has to be taken on trust.
 | Abstraction branching factors 15/40/6/6 and 8/12/4/4 | [Ganzfried & Sandholm 2011](#s-ganzfried2011), §5, read directly |
 | The 1006th-hand river failure | [Ganzfried & Sandholm 2011](#s-ganzfried2011), §5.4, read directly |
 | s-Curve `Pmax · n/(s+n)`; 0-10 Linear; the 100-to-1m observation range | [Johanson & Bowling 2009](#s-johanson2009), §5.2 and §6, read directly |
-| `HALF_LIFE = 2000`, `PRIOR_STRENGTH` values (50/25/15, which are also the s-Curve `s`), `WARMUP_HANDS = 200`, `MIN_CLASSIFY_HANDS = 50`, all flag margins (0.15/0.10/0.05) and flag confidence gates (0.6/0.7), the `confidence < 0.5` `UNKNOWN` gate, `MIN_STACK_BB = 5`, the 70/30 V3 holdout split, and `VPIP_SPLIT` and `AFQ_SPLIT` until the bootstrap in [§4.4](#44-bucketing-an-opponent) replaces them with measured population medians | **Starting values chosen for this design, not measured.** Every one is labelled as such at its point of use as well as here, belongs in a config file, and is to be tuned by the validation in [§6](#6-validation-before-it-touches-a-real-table). `VPIP_SPLIT = 0.28` is the one part-exception: it is the *approximate* complement of the literature's 72% fold threshold — approximate because the two rates do not sum to 1 (see [§2.2](#22-the-two-axes-that-have-literature-behind-them)) — and it stands only until V4 corrects it or the bot's own population replaces it |
+| `HALF_LIFE = 2000`, `PRIOR_STRENGTH` values (50/25/15, which are also the s-Curve `s`), `WARMUP_HANDS = 200`, `MIN_CLASSIFY_HANDS = 50`, all flag margins (0.15/0.05) and flag confidence gates (0.6/0.7), the `confidence < 0.5` `UNKNOWN` gate, `MIN_STACK_BB = 5`, the 70/30 V3 holdout split, and `VPIP_SPLIT` and `AFQ_SPLIT` until the bootstrap in [§4.4](#44-bucketing-an-opponent) replaces them with measured population medians | **Starting values chosen for this design, not measured.** Every one is labelled as such at its point of use as well as here, belongs in a config file, and is to be tuned by the validation in [§6](#6-validation-before-it-touches-a-real-table). `VPIP_SPLIT = 0.28` is the one part-exception: it is the *approximate* complement of the literature's 72% fold threshold — approximate because the two rates do not sum to 1 (see [§2.2](#22-the-two-axes-that-have-literature-behind-them)) — and it stands only until V4 corrects it or the bot's own population replaces it |
 | The example `pokerbot profile` output in [Tier 0](#45-tiers-what-to-build-in-what-order) (412 hands, 0.41 vpip, and the rest) | **Invented, and only illustrates the report's format.** Not data, not a claim about any player |
