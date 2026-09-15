@@ -415,9 +415,10 @@ forms, as set out under "The blocker" above.
 
 ## Question 2: does it support 3+ players (multiway), or only heads-up?
 
-**Yes, it genuinely supports multiway play, up to six players, in both the game
-engine and the solver.** This is the strongest thing the vendored engine has
-going for it relative to our goal.
+**Yes, it genuinely supports multiway play, in both the game engine and the
+solver - but on its 20-card deck it stops at seven players, measured here.**
+Multiway support is the strongest thing the vendored engine has going for it
+relative to our goal; the seven-seat ceiling is the sharpest limit on it.
 
 Evidence:
 
@@ -439,17 +440,46 @@ Evidence:
 - Upstream's own tests parametrise over `n_players` of 2, 3, 4, 5 and 6 and
   pass (`test/functional/test_short_deck.py:157-159`, `test_pre_flop_pot`).
 
-Checked directly here rather than taken on trust. 50 complete hands were dealt
-and played to a terminal state at each of 2, 3, 4, 5 and 6 players, choosing
-each move at random from the engine's own `legal_actions` list, asserting after
-every hand that chips are conserved (payouts sum to zero). All 250 hands
-passed at every seat count.
+Checked directly here rather than taken on trust, with `research/seat_sweep.py`
+in this repository. At each seat count it deals 50 complete hands and plays
+each to a terminal state, choosing every move at random from the engine's own
+`legal_actions` list, and asserts after each hand that chips are conserved
+(payouts sum to zero). Commands run from the top of the repository in the
+project's `.venv`:
 
-The one limit found: **nine players fails**, with
+```
+.venv/bin/python research/seat_sweep.py 2 3 4 5 6
+-> 2 players: OK - 50 hands, chips conserved
+   3 players: OK - 50 hands, chips conserved
+   4 players: OK - 50 hands, chips conserved
+   5 players: OK - 50 hands, chips conserved
+   6 players: OK - 50 hands, chips conserved
+
+.venv/bin/python research/seat_sweep.py 7 8 9
+-> 7 players: OK - 50 hands, chips conserved
+   8 players: FAILS - ValueError: Deck is empty - please use Deck.reset()
+   9 players: FAILS - ValueError: Deck is empty - please use Deck.reset()
+```
+
+**The ceiling on the short deck is seven seats.** Both failures are
 `ValueError: Deck is empty - please use Deck.reset()` from
-`poker_ai/poker/deck.py:56`. This is arithmetic, not a bug - nine players need
-eighteen hole cards plus five board cards, which is 23, and the short deck only
-has 20. That ceiling disappears on its own once the deck is 52 cards.
+`poker_ai/poker/deck.py:56`, and both are arithmetic, not bugs. The short deck
+holds 20 cards; a hand needs two hole cards per player plus five board cards:
+
+- Seven players: 7 x 2 + 5 = 19 cards, which fits in 20. Passes.
+- Eight players: 8 x 2 + 5 = 21 cards, which does not fit in 20. Fails - the
+  hole cards and flop and turn are dealt, then the river finds an empty deck.
+- Nine players: 9 x 2 + 5 = 23 cards. Fails the same way, earlier.
+
+An earlier sweep tested only 2, 3, 4, 5, 6 and 9, so it reported nine as the
+only failure; eight fails too. That ceiling disappears on its own once the deck
+is 52 cards (9 x 2 + 5 = 23, well inside 52).
+
+What this means against the operator's priorities - mostly 6-handed, then 8-
+and 9-handed treated as one band: the 8/9 band is **impossible on the short
+deck**, not merely nine-handed. Six-handed, the first priority, works today.
+The whole second priority therefore waits on the 52-card move, which is the
+work Question 1 above costs out.
 
 ### The one place multiway is *not* supported
 
@@ -617,19 +647,51 @@ RuntimeError: An attempt has been made to start a new process before the
 current process has finished its bootstrapping phase.
 ```
 
-Traceback bottoms out at `vendor/poker_ai/poker_ai/ai/agent.py:8`, in
-`manager = mp.Manager()`. Retried through a launcher script carrying
-`if __name__ == "__main__": multiprocessing.freeze_support()` - identical
-failure, exit 1.
+**The cause is importing the package at all, not the `--multi_process` flag.**
+`vendor/poker_ai/poker_ai/ai/agent.py:8` runs `manager = mp.Manager()` at
+module scope, and `poker_ai/__init__.py` pulls that module in, so starting a
+worker process happens the moment anything imports `poker_ai`. On macOS, new
+processes are started by re-running the program from scratch rather than
+copying the running one (Python calls this the "spawn" start method), so the
+child re-imports the importing script, hits `mp.Manager()` again, and dies with
+the `RuntimeError` above.
 
-### 6. Multiway engine check, written for this task - PASSES
+Two consequences follow, and they are different things:
 
-50 hands dealt and played to a terminal state at each of 2, 3, 4, 5 and 6
-players, every action drawn at random from the engine's own `legal_actions`,
-asserting chips are conserved (`sum(state.payout.values()) == 0`) after each
-hand. All 250 hands passed at every seat count. At 9 players it fails with
-`ValueError: Deck is empty` from `poker_ai/poker/deck.py:56`, which is just the
-20-card deck running out (9x2 + 5 = 23 cards needed).
+- **Any unguarded script that imports `poker_ai` dies**, even one that never
+  trains and never asks for multiple processes. Seen here: `import poker_ai`
+  at the top of a plain script fails with the same `RuntimeError` and an
+  `EOFError` out of `multiprocessing/managers.py`.
+- **A `if __name__ == "__main__":` guard fixes the import, and only the
+  import.** Putting the `poker_ai` imports inside a function called from under
+  the guard keeps the re-imported child clean, so the manager starts and the
+  script runs - that is what `research/seat_sweep.py` does. It does **not**
+  make `--multi_process` training work: a guarded launcher around training was
+  tried and failed identically, exit 1. Fixing training needs `mp.Manager()`
+  moved out of module scope in `agent.py` itself.
+
+pytest is unaffected: the program the child re-runs is pytest's own entry
+point, whose work already sits under such a guard, so the vendored suite passes
+regardless.
+
+### 6. Multiway engine check, written for this task - PASSES to seven seats
+
+`research/seat_sweep.py` deals 50 hands to a terminal state at each seat count,
+every action drawn at random from the engine's own `legal_actions`, asserting
+chips are conserved (`sum(state.payout.values()) == 0`) after each hand.
+
+```
+.venv/bin/python research/seat_sweep.py 2 3 4 5 6
+-> all OK, 50 hands each, chips conserved
+.venv/bin/python research/seat_sweep.py 7 8 9
+-> 7 players: OK - 50 hands, chips conserved
+   8 players: FAILS - ValueError: Deck is empty - please use Deck.reset()
+   9 players: FAILS - ValueError: Deck is empty - please use Deck.reset()
+```
+
+Seven seats is the ceiling. Both failures are `poker_ai/poker/deck.py:56` and
+both are the 20-card deck running out: 7x2 + 5 = 19 fits, 8x2 + 5 = 21 does
+not, 9x2 + 5 = 23 does not. The full reading is under Question 2 above.
 
 ### 7. Not run
 

@@ -14,6 +14,11 @@ called a virtual environment, and this project has exactly one of them, in a
 folder named `.venv`. Everything - our own tests and the borrowed engine - runs
 out of it.
 
+Python 3.13 is the minimum this project runs on. Check with `python3 --version`
+before starting: the exact set of outside code it installs is the set verified
+against 3.13, as the opening comment of `requirements-vendor.txt` records, and
+nothing older is supported here.
+
 Run these four lines once, from the top of the repository, in order:
 
     python3 -m venv .venv

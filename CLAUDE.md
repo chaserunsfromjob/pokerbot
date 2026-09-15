@@ -30,7 +30,9 @@ beat by hand-rolling it in a few weeks.
 
 ## Licence
 
-- Operator's position: pokerbot is private and never distributed - not published, not given to classmates, not sold. Treat the vendored engine's GPL-3.0 terms as imposing nothing while that holds, since they attach on distribution; reopen this decision before handing the code to anyone.
+- Keep pokerbot private: never publish it, give it to a classmate, or sell it.
+- Treat the vendored engine's GPL-3.0 terms as imposing nothing while pokerbot stays private, since they attach only on distribution.
+- Reopen this licence decision with the operator before handing the code to anyone.
 
 Rules in `~/.claude/CLAUDE.md` (deployed machine-wide from the `heater` fleet
 repository) apply on top of this file.
