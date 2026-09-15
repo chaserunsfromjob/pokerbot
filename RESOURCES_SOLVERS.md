@@ -78,12 +78,14 @@ Four findings drive the recommendation:
    for multiway**: GTOpen (Rust, active this week, no licence file). It
    compiled on this Mac in 1 min 53 s to 3 min 20 s across two builds, and its
    HTTP server answered on `127.0.0.1:3737` with a CPU-only solver, so
-   "Windows/Linux only" in its README is just missing documentation. Both
-   Rust projects in this file need a toolchain installed first; this machine
-   ships with none. Its author's own experiments report
-   40 to 80 big blinds per 100 hands gained by exploiting a correctly
-   identified player type, and 194 to 287 bb/100 lost by misidentifying one.
-   That is both the promise and the warning.
+   "Windows/Linux only" in its README is just missing documentation. Its
+   author's own experiments report 40 to 80 big blinds per 100 hands gained by
+   exploiting a correctly identified player type, and 194 to 287 bb/100 lost
+   by misidentifying one. That is both the promise and the warning. Read the
+   build times with one caveat that applies to both Rust projects in this
+   file: **this Mac has no Rust toolchain installed**, so every Rust number
+   here required installing one first (Appendix B says exactly how, and where
+   it was put).
 
 What this survey can settle on its own is which of these tools work, on this
 machine, at what speed. What it cannot settle on its own is the architecture,
