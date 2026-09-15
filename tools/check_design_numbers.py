@@ -911,6 +911,16 @@ class Checker:
         self.prose("section 4.3 pool hands", f"`MIN_POOL_HANDS = {MIN_POOL_HANDS}` hands")
         self.prose("section 4.3 pool opponents", f"`MIN_POOL_OPPONENTS = {MIN_POOL_OPPONENTS}` qualifying")
         self.prose("section 4.7 minimum stack", f"`MIN_STACK_BB = {MIN_STACK_BB}`")
+        # The edge-case row states the floor twice: in its label and in the
+        # rule's restatement. Both must be the constant, not a stale copy.
+        self.prose(
+            "section 4.7 short-stack edge-case label",
+            f"Opponent started the hand with fewer than `MIN_STACK_BB = {MIN_STACK_BB}` big blinds",
+        )
+        self.prose(
+            "section 4.7 short-stack floor restated",
+            f"The floor of {MIN_STACK_BB} big blinds is an unmeasured starting value",
+        )
         self.prose(
             "section 4.4 dead-band",
             f"dead-band of `{fmt(HYSTERESIS_BAND, 2)}` before",

@@ -1452,7 +1452,7 @@ test.
 | Seat change | `opponent_id` is the alias, never the seat. Seat is a per-hand field |
 | Bot folds preflop | **Still record the hand.** Free observation |
 | Hand history truncated or unparseable | Reject the whole hand. Never partially apply increments |
-| Opponent has fewer than 1 big blind | Their fold/call frequencies are structurally distorted. Exclude hands where the opponent started with under `MIN_STACK_BB = 5` (an unmeasured starting value) from all counters |
+| Opponent started the hand with fewer than `MIN_STACK_BB = 5` big blinds | Their fold/call frequencies are structurally distorted: a stack that short is all-in or folding, never choosing. Exclude the hand from all counters. The floor of 5 big blinds is an unmeasured starting value |
 
 ---
 
