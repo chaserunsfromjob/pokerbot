@@ -1,0 +1,11 @@
+# Dependencies for the ground-truth hand-ranking fixture only.
+#
+# Deliberately separate from whatever the vendored poker_ai engine needs, so
+# this fixture can be installed and run on its own.
+#
+# treys: pure-Python poker hand evaluator, a real external MIT-licensed library
+# whose last release was 2022-06-21. It descends from Will Drevo's `deuces`
+# through an intermediate fork (Drevo's `deuces` -> msaindon's `deuces` ->
+# `treys`). Source: https://github.com/ihendley/treys
+treys==0.1.8
+pytest>=8.0
