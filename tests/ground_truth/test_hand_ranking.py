@@ -8,15 +8,22 @@ answers here come from two places, and neither of them is a model:
 1. The hands themselves are textbook cases whose correct ranking is fixed by
    the published rules of poker (a royal flush beats a full house, a straight
    beats two pair, the higher kicker wins an otherwise identical two pair).
-2. The ranking under test is produced by `treys`, a real, separately maintained,
-   MIT-licensed hand evaluator (https://github.com/ihendley/treys, the
-   maintained fork of Will Drevo's `deuces`). No hand-strength logic is written
-   here; this module only feeds cards in and compares the numbers that come out.
+2. The ranking under test is produced by `treys`, a real external MIT-licensed
+   hand evaluator (https://github.com/ihendley/treys), whose last release was
+   2022-06-21. It descends from Will Drevo's `deuces` through an intermediate
+   fork (Drevo's `deuces` -> msaindon's `deuces` -> `treys`). No hand-strength
+   logic is written here; this module only feeds cards in and compares the
+   numbers that come out.
 
-This is a durable sanity check. When the bot gets its own evaluation path --
-the vendored poker_ai engine or anything that replaces it -- point
-`evaluate_five_card_rank` at that path instead and these same cases become a
-conformance suite for it.
+What this fixture does and does not cover
+-----------------------------------------
+These cases pin `treys`' own rank scale (1 = best, 7462 = worst) and its own
+category names, on a standard 52-card deck. They are not engine-neutral. Aiming
+them at another evaluation path -- the vendored `poker_ai` engine or anything
+that replaces it -- needs an adapter that maps that engine's rank scale and
+category names onto the ones asserted here, and only makes sense once that
+engine is actually dealing a full 52-card deck rather than its current default
+20-card short deck (see CLAUDE.md).
 
 Running it
 ----------
