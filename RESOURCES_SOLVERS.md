@@ -19,15 +19,38 @@ much simpler tool that only answers "how often does this hand win against
 those hands" and does it millions of times a second. A **hand evaluator** is
 simpler still: it ranks a finished 7-card hand.
 
+Four more words are used throughout and are worth fixing here, before they
+appear:
+
+- How far a strategy still is from unbeatable, measured in chips an opponent
+  who knew it perfectly could win from it. Smaller is better, and solvers stop
+  when it is small enough. The word for it is **exploitability**.
+- Pinning one player's play at a chosen point in the hand ("here, this player
+  always calls") and re-solving everything else against that assumption. It is
+  how a read on a person becomes a strategy aimed at that person. The word is
+  **node locking** (written "nodelocking" by some vendors).
+- Working out a number by playing the situation out at random thousands of
+  times and averaging, instead of counting every possibility exactly. The name
+  is **Monte-Carlo**.
+- A sharing licence that lets anyone use and change the code but requires
+  those changes to be published if the program is offered to others over a
+  network. It costs a private bot that is never distributed nothing. The name
+  is **AGPL**, the Affero General Public Licence.
+
 Four findings drive the recommendation:
 
-1. **Nobody sells a fast, scriptable, true multiway (3 to 9 player) postflop
-   solver that runs on a Mac.** The only products that solve 3-way postflop
-   are GTO Wizard (browser, $229 to $359 a month, 3-way only, no API) and
-   Simple 3-way (Windows only, no scripting). Everything that goes to 9
-   players is either preflop-only (MonkerSolver, Simple Preflop Holdem, HRC,
-   GTOpen's Preflop Lab, GTO Wizard's multiway preflop) or a brand-new
-   free beta with no scripting interface (Holdem Solver).
+1. **Multiway postflop solvers for a Mac exist; none is scriptable or fast
+   enough for decision time.** Two products solve any street with any number
+   of players on macOS: **MonkerSolver** (EUR 499 one-time, native macOS,
+   "any street with any number of players" per its own vendor page) and
+   **Holdem Solver** (free beta, macOS Apple Silicon, 2 to 9 players). Both
+   are driven by hand, take RAM and hours on multiway postflop trees, and
+   neither documents an API or a scripting interface; MonkerSolver's own
+   community drives it with keyboard macros, which is the clearest possible
+   sign there is no programmatic route in. The rest are narrower: 3-way
+   postflop in the browser (GTO Wizard, price UNVERIFIED, no API) or on
+   Windows (Simple 3-way), and preflop-only multiway (Simple Preflop Holdem,
+   HRC, GTOpen's Preflop Lab, GTO Wizard's multiway preflop).
 2. **Heads-up postflop solving in under a second on this laptop is solved
    and free.** TexasSolver (C++, ships a macOS binary, text-command driven)
    solved a turn-and-river spot with full 6-max ranges to 0.74%
@@ -38,11 +61,16 @@ Four findings drive the recommendation:
    street is a different animal: TexasSolver had not finished one
    iteration of it after 35 minutes, so decision-time use means small trees
    (one size per street, or turn/river only), not full flop solves.
-3. **Equity and hand ranking are a non-problem.** OMPEval computed 3-way
-   equity at 312 million hands per second on this Mac; phevaluator ranks 2.5
-   million 7-card hands per second from plain Python. Any bot logic that needs
-   "how good is my hand against what they probably hold" can have that answer
-   in under a millisecond.
+3. **Equity and hand ranking are a non-problem, in C++.** OMPEval computed
+   3-way equity at 160 to 312 million hands per second on this Mac (the low
+   end measured by a second run while the machine was busy), and it is
+   **hard-capped at 6 players** (`omp/Constants.h:6`). phevaluator ranks 0.9
+   to 2.6 million 7-card hands per second from Python, same caveat about
+   load. A bot asking "how good is my hand against what they probably hold"
+   gets a usable Monte-Carlo answer in a millisecond **through OMPEval**; the
+   same loop written in plain Python on phevaluator needs of the order of ten
+   thousand play-outs and is therefore a tens-of-milliseconds job, not a
+   sub-millisecond one.
 4. **Only one open-source project explicitly does what the operator wants,
    opponent-specific exploitation across 2 to 9 seats, and it is preflop-only
    for multiway**: GTOpen (Rust, active this week, no licence file). It
@@ -53,12 +81,27 @@ Four findings drive the recommendation:
    identified player type, and 194 to 287 bb/100 lost by misidentifying one.
    That is both the promise and the warning.
 
-So the realistic architecture is: precomputed preflop strategy for 2 to 9
-players (free charts or a one-time purchase), a fast heads-up postflop solver
-called at decision time when the pot is heads-up (most pots are by the turn),
-and an equity-driven rule set biased by the opponent model for the multiway
-postflop cases no affordable solver handles. Details and the ranked list are
-below.
+What this survey can settle on its own is which of these tools work, on this
+machine, at what speed. What it cannot settle on its own is the architecture,
+for two reasons stated plainly here and again in the recommendation:
+
+- The obvious way to cover multiway postflop with the tools listed here is
+  **an equity-driven rule set biased by the opponent model**. No engine in
+  this survey contains such rules; they would be code we write, and code that
+  picks the action. `CLAUDE.md:13-15` forbids exactly that without a recorded
+  carve-out in the project rules. So it is a rule decision, not a tooling
+  decision, and this file does not take it.
+- `ENGINE_ALTERNATIVES.md` (under review, not accepted) proposes a different
+  answer to the same multiway hole: keep no solver at all for those spots and
+  **compute the decision during the hand** by playing the rest of the hand out
+  at random inside OpenSpiel's `universal_poker`, measured there at a
+  6-player 52-card no-limit decision inside a 250 ms budget. That option needs
+  the same carve-out, and it competes with everything recommended below.
+
+Both belong to the reconciliation of the four research sweeps
+(`ENGINE_ALTERNATIVES.md`, `RESOURCES_BOTS.md`, `RESOURCES_EXPLOITATION.md`
+and this file) against `CLAUDE.md`, which is where the architecture and the
+carve-out get decided together. Details and the ranked list are below.
 
 ## Rating key
 
@@ -225,7 +268,87 @@ second above.
 - Ratings: (a) 0 — (b) 3 — (c) 0 — (d) 1 (download the blueprint, do not
   retrain) — (e) 3.
 
-### 6. Small or early-stage open solvers (for completeness)
+### 6. amaster97/poker_solver
+
+- URL: https://github.com/amaster97/poker_solver
+- What: a heads-up no-limit hold'em solver in two tiers — a readable Python
+  reference implementation that acts as the specification, and a Rust core
+  (`crates/cfr_core`, exposed to Python as `poker_solver._rust` through PyO3
+  and maturin) that does the solving. Tabular Discounted CFR with the
+  published Brown-Sandholm 2019 constants, checked tier against tier by
+  differential tests. Ships a local browser GUI (NiceGUI), a CLI, a
+  Pio-style range parser, exact and Monte-Carlo equity, a precomputed
+  preflop blueprint, and a node-lock editor in the tree browser.
+- Last activity: created 20 May 2026, pushed 18 Jun 2026; 4 stars, one author.
+- Licence: MIT. Price: free.
+- macOS / Python: README names macOS Apple Silicon as the primary platform,
+  Python 3.9+, `pip install -e .`, and a stable Rust toolchain to build the
+  extension. **Not built or run here** — UNVERIFIED on this machine.
+- Produces a decision for an arbitrary spot? **Heads-up only.** Bet sizes are
+  per-street pot-fraction menus with an always-available all-in and a
+  per-street raise cap.
+- Speed: none published as a number. Its own README states the honest limit:
+  river and turn subgames and shallow-to-medium flop spots are practical
+  interactively, while "deep-stack (e.g. 100BB) full-range flop solves are
+  compute-intensive — expect minutes, not instant results". That matches what
+  was measured here for TexasSolver and GTOpen.
+- Ratings: (a) 0 — (b) 3 — (c) 2 (node-lock editor documented; not exercised
+  here) — (d) 2 (Python-callable by design, but a Rust build and no timings of
+  its own) — (e) 3.
+
+### 7. ArtemIyX/TexasSolverLib
+
+- URL: https://github.com/ArtemIyX/TexasSolverLib
+- What: despite the name, **not** a port of bupticybee's TexasSolver (entry 1).
+  Its README says it is a C++17 port of the Rust implementation in
+  `amaster97/poker_solver` above, repackaged as an installable CMake library
+  (target `TexasSolver::texas`). Contains Kuhn and Leduc solvers, hold'em game
+  state, heads-up preflop and postflop solving, exploitability and game-value
+  evaluation, abstraction, suit-isomorphism and SIMD helpers, and vendors
+  `pokerHandEvaluator` (entry 11's C++ core) as a submodule.
+- Last activity: created 26 Jun 2026, pushed 1 Sep 2026; 1 star, one author.
+- Licence: MIT. Price: free.
+- macOS / Python: CMake 3.20+ and any C++17 compiler; the README names Visual
+  Studio on Windows and "a normal CMake generator" elsewhere, with no macOS
+  instructions and no Python binding. **Not built here** — UNVERIFIED on this
+  machine.
+- Produces a decision for an arbitrary spot? **Heads-up only**, inheriting the
+  capability of the project it ports.
+- Speed: none published; not measured here.
+- Ratings: (a) 0 — (b) 3 (per-street sizing menus, inherited) — (c) 1 (nothing
+  about node locking in the library's own documentation) — (d) 1 (a C++
+  library with no macOS notes, no binding and no timings: an integration job
+  of unmeasured size) — (e) 3.
+
+### 8. masterai-top/cfr-poker-ai-masterai
+
+- URL: https://github.com/masterai-top/cfr-poker-ai-masterai
+- What: a heads-up no-limit research system, not a solver you call: C++ CFR
+  and game-tree code under `csrc/`, counterfactual-value modules, self-play
+  and supervised-strategy training in Python, opponent bots, and service
+  plumbing (Protobuf, Redis, inter-process communication). Documentation is
+  Chinese with English and traditional-Chinese translations.
+- Last activity: created 22 Sep 2021, pushed 14 Sep 2026; 49 stars.
+- Licence: **ambiguous, and that is a real defect.** GitHub reports "Other";
+  the repository's `LICENSE` file is two bytes long, effectively empty, while
+  a second file `License.md` holds MIT text. Its own README tells the reader
+  to "confirm the applicable license terms with the maintainer".
+- macOS / Python: building it needs a C++ toolchain, CMake, PyTorch and Redis;
+  the README's own recommended sequence starts by creating an isolated
+  **Linux** test environment. **Not built here** — UNVERIFIED on this machine.
+- Produces a decision for an arbitrary spot? No: it is a training system for
+  heads-up play, and no trained weights ship with it beyond two small regret
+  files at the repository root.
+- Speed and strength: the README carries a win-rate table (85% against a
+  random bot, 72% against a rule-based AI, 58% against a CFR baseline) and
+  then disowns it in the same section as project-reported figures that were
+  not independently reproduced and that lack hand counts, stakes, hardware and
+  confidence intervals. Treat as UNVERIFIED and unusable as evidence.
+- Ratings: (a) 0 — (b) 1 (abstraction-based; sizing scheme not stated) —
+  (c) 0 — (d) 0 (a multi-day training system on Linux, no weights) — (e) 1
+  (licence ambiguous).
+
+### 9. Small or early-stage open solvers (for completeness)
 
 - **frla18cz/poker-solver** (https://github.com/frla18cz/poker-solver): pure
   Python, MIT, pushed 24 Aug 2026, 0 stars. Monte-Carlo equity vs weighted
@@ -244,11 +367,18 @@ second above.
 
 ## Part 2. Hand evaluators and equity calculators
 
-### 7. OMPEval (zekyll)
+### 10. OMPEval (zekyll)
 
 - URL: https://github.com/zekyll/OMPEval
 - What: C++ 7-card evaluator plus a range-vs-range equity calculator (Monte
-  Carlo or exact enumeration) for **up to 6 players**.
+  Carlo or exact enumeration) for **up to 6 players, and 6 is a hard cap in
+  the source**: `omp/Constants.h:6` reads `static const unsigned MAX_PLAYERS
+  = 6`, and `omp/EquityCalculator.cpp:17` rejects any call with more ranges
+  than that. It is not a build flag — the number sizes fixed arrays and a
+  `1 << MAX_PLAYERS` win-mask table throughout, so raising it means editing
+  and re-testing the library. A 7, 8 or 9-handed pot therefore cannot be
+  evaluated in one call; it has to be reduced to at most six live ranges
+  first, and who gets dropped is a judgment the bot would be making.
 - Last activity: 21 Aug 2016 (finished, not abandoned; it still builds).
 - Licence: ISC. Free.
 - macOS: **verified**. Needs one two-line patch (`min()`/`max()` in
@@ -262,37 +392,45 @@ second above.
 - Speed, **measured on this Mac**:
   - 7-card evaluation: **61.5 million hands/s** single-thread (including
     building the hand from seven card indices).
-  - 3-way Monte-Carlo equity on a flop, 10 threads: **312 million
-    hands/s** (623 million samples in 2 s).
+  - 3-way Monte-Carlo equity on a flop, 10 threads: **160 to 312 million
+    hands/s**. The high figure is the first run (623 million samples in 2 s);
+    an independent re-run on the same machine while it was doing other work
+    got 160 to 177 million. Read the range, not either end: wall-clock speed
+    on a laptop moves by a factor of two with what else is running, and the
+    conclusion (equity is free at this scale) survives either number.
   - Heads-up exact enumeration of two real ranges on a flop: **2.8 ms**
     (2.97 million matchups).
-- Ratings: (a) 3 (to 6 players) — (b) n/a — (c) n/a (an input to your own
-  logic) — (d) 3 — (e) 3.
+- Ratings: (a) 2 (3 to 6 players, never 7 to 9) — (b) n/a — (c) n/a (an input
+  to your own logic) — (d) 3 — (e) 3.
 
-### 8. PokerHandEvaluator / phevaluator (HenryRLee)
+### 11. PokerHandEvaluator / phevaluator (HenryRLee)
 
 - URL: https://github.com/HenryRLee/PokerHandEvaluator
 - What: perfect-hash 5/6/7-card (and Omaha) evaluator in C/C++ with an
   official Python package `phevaluator`.
 - Last activity: pushed 14 Sep 2026; 516 stars. Apache-2.0. Free.
-- macOS / Python: **verified**; `pip install phevaluator` (0.6.0, arm64
-  wheel; on this machine pip needed the wheel downloaded and installed
-  explicitly because of a resolver hiccup).
-- Speed, **measured**: **2.55 million 7-card hands/s** from Python when cards
-  are ints, 0.80 million/s when cards are strings like "Ah". **Quoted** C:
-  56 M/s.
+- macOS / Python: **verified**; plain `pip install phevaluator` works and
+  installs the 0.6.0 arm64 wheel on Python 3.13 with no flags and no manual
+  download. (An earlier draft of this file said pip needed the wheel fetched
+  by hand because of a resolver hiccup. Re-tested in a clean virtual
+  environment: it does not. The claim was wrong and is withdrawn.)
+- Speed, **measured**: **0.9 to 2.6 million 7-card hands/s** from Python when
+  cards are ints — 2.55 M/s on an idle machine, 0.89 to 1.44 M/s on an
+  independent re-run under load — and 0.80 M/s when cards are strings like
+  "Ah". Quote the range, not the peak, when sizing a Monte-Carlo loop.
+  **Quoted** C: 56 M/s.
 - No equity calculator; pair it with your own Monte Carlo loop or OMPEval.
 - Ratings: (a) n/a — (b) n/a — (c) n/a — (d) 3 — (e) 3.
 
-### 9. treys (already the project's ground-truth evaluator)
+### 12. treys (already the project's ground-truth evaluator)
 
 - URL: https://github.com/ihendley/treys — MIT, pure Python, last push
   15 Jul 2023, 179 stars.
-- Speed, **measured**: **165,000 7-card hands/s**. Fifteen times slower than
-  phevaluator and 370 times slower than OMPEval; fine for tests, too slow for
-  Monte-Carlo equity at decision time.
+- Speed, **measured**: **165,000 7-card hands/s**. Five to fifteen times
+  slower than phevaluator and 370 times slower than OMPEval; fine for tests,
+  too slow for Monte-Carlo equity at decision time.
 
-### 10. pokerstove (andrewprock)
+### 13. pokerstove (andrewprock)
 
 - URL: https://github.com/andrewprock/pokerstove
 - What: the open-sourced core of the classic PokerStove equity tool: C++
@@ -303,7 +441,7 @@ second above.
   well below OMPEval.
 - Ratings: (d) 2 (build effort) — (e) 3.
 
-### 11. poker-eval / pypoker-eval (PokerSource)
+### 14. poker-eval / pypoker-eval (PokerSource)
 
 - URL: https://pokersource.sourceforge.net/ , https://github.com/ChazDazzle/pypoker-eval
 - What: the old GPL C evaluator with Python bindings; many variants.
@@ -311,7 +449,7 @@ second above.
 - Verdict: superseded by OMPEval and phevaluator; listed only so nobody
   re-discovers it.
 
-### 12. eval7 (julianandrews/pyeval7)
+### 15. eval7 (julianandrews/pyeval7)
 
 - URL: https://github.com/julianandrews/pyeval7 — Cython evaluator with
   PokerStove-style range parsing and hand-vs-range equity.
@@ -322,31 +460,46 @@ second above.
 
 ## Part 3. Commercial multiway-capable solvers
 
-### 13. MonkerSolver (MonkerWare)
+### 16. MonkerSolver (MonkerWare)
 
 - URL: https://monkerware.com/solver.html
 - What: the original multiway solver: "Solve Omaha and Hold'em from any
   street with any number of players", with abstraction to keep trees small.
 - Price: **EUR 499 one-time**; free version limited to turn and river.
+  Price, platform and the multiway claim were re-read off the vendor page
+  itself today: "€499", "Solve Omaha and Hold'em from any street with any
+  number of players", "Windows 64-bit or Mac OS X with atleast 8 GB RAM".
 - Platform: native Windows 64-bit or macOS, 8 GB RAM minimum. No scripting
   or API documented; the community drives it with AutoHotkey macros, which
   is a sign there is no programmatic interface. Solutions export as .mkr and
   .txt range files.
-- Multiway: yes, preflop and postflop, but multiway postflop trees need a
-  lot of RAM and hours; it is a study tool, not a decision-time engine.
-- Ratings: (a) 3 — (b) 3 — (c) 1 (no nodelocking documented) — (d) 1 —
-  (e) 3.
+- Multiway: yes, preflop **and postflop, on any street**, which is what the
+  vendor page claims in as many words. It is emphatically **not** a
+  preflop-only tool, and an earlier draft of this file said so in its summary;
+  that was wrong and is corrected above. The real limits are different ones:
+  multiway postflop trees need a lot of RAM and hours of solving, so it is a
+  study tool, not a decision-time engine, and there is no way to drive it from
+  a program.
+- Ratings: (a) 3 (any street, any number of players) — (b) 3 — (c) 1 (no node
+  locking documented) — (d) 1 (macOS yes, but by hand and in hours) — (e) 3.
 
-### 14. GTO Wizard (includes the former Ruse AI as "GTO Wizard AI")
+### 17. GTO Wizard (includes the former Ruse AI as "GTO Wizard AI")
 
-- URL: https://gtowizard.com/ ; pricing per PokerNews, 31 Mar 2026.
+- URL: https://gtowizard.com/
 - What: a browser library of pre-solved spots plus an on-demand AI solver.
   **Multiway preflop up to 9 players** (launched 3 Feb 2026, custom antes,
   straddles, rake, "in seconds"); **3-way postflop** custom solves and, since
   Aug 2026, 3-way ICM postflop; 4-way and beyond "in development".
-- Price: Starter $49/mo, Premium $99/mo, Elite $169/mo, **Ultra $279/mo
-  ($229/mo annual; $359/$289 after early-bird)** for multiway and custom
-  trees.
+- Price: **UNVERIFIED — quoted from the press, not from the vendor.** The
+  figures previously carried here (Starter $49/mo, Premium $99/mo, Elite
+  $169/mo, Ultra $279/mo, $229/mo annual, $359/$289 after early-bird) come
+  from a PokerNews article dated 31 March 2026, not from GTO Wizard. The
+  vendor's own pricing page was fetched again today and returns a 518-byte
+  page that builds its prices in the browser, so no price could be read from
+  the source. Treat every number in this line as a press report that may be
+  stale, and confirm on the site before any money is spent. What is safe to
+  say without the numbers: the multiway and custom-solve features sit in the
+  top tier and this is a monthly subscription, not a purchase.
 - Opponent modelling: **Profiles** (action incentives such as "+4% pot to
   call") and **Nodelocking 2.0**; both produce an exploitative counter
   strategy. That is the most polished opponent-biasing available anywhere.
@@ -359,7 +512,7 @@ second above.
   only, cannot be called from a script) — (e) 1 (expensive, and not
   automatable).
 
-### 15. Simple Postflop / Simple 3-way / Simple Preflop Holdem (Simple Poker)
+### 18. Simple Postflop / Simple 3-way / Simple Preflop Holdem (Simple Poker)
 
 - URLs: https://simplepoker.com/en/Solutions/Simple_3-way ,
   https://shop.gipsyteam.com/simple-preflop-holdem
@@ -371,7 +524,7 @@ second above.
 - Platform: **Windows only**, 16 GB RAM. No API or scripting documented.
 - Ratings: (a) 2 — (b) 3 — (c) 1 — (d) 0 on a Mac — (e) 2.
 
-### 16. PioSOLVER, GTO+, Jesolver (heads-up scriptable solvers, Windows)
+### 19. PioSOLVER, GTO+, Jesolver (heads-up scriptable solvers, Windows)
 
 - PioSOLVER (https://piosolver.com/): Pro $249, Edge $475 one-time; Windows
   only (Mac users run Parallels). **UPI** text protocol lets a script drive
@@ -386,7 +539,7 @@ second above.
   same capability free and natively on macOS, so none of these are worth
   buying for this project.
 
-### 17. Holdem Solver (holdemsolver.com) — new, free beta
+### 20. Holdem Solver (holdemsolver.com) — new, free beta
 
 - URL: https://holdemsolver.com/
 - What: a desktop solver for **2 to 9 players on any street**, chip-EV or
@@ -401,7 +554,7 @@ second above.
 - Ratings: (a) 3 — (b) 3 — (c) 0 (nothing documented) — (d) 2 (runs on this
   Mac, but only by hand) — (e) 2 (free now, terms unknown).
 
-### 18. HoldemResources Calculator (HRC)
+### 21. HoldemResources Calculator (HRC)
 
 - URL: https://www.holdemresources.net/ (pricing at /hrc/pricing)
 - What: the standard tournament preflop/ICM solver, Java, Windows/macOS/Linux
@@ -412,7 +565,7 @@ second above.
 - Multiway: yes for preflop (Monte Carlo engine for 3+ active players).
 - Ratings: (a) 3 (preflop) — (b) 2 — (c) 0 — (d) 2 — (e) 2.
 
-### 19. Deepsolver (cloud, has a real HTTP API)
+### 22. Deepsolver (cloud, has a real HTTP API)
 
 - URL: https://deepsolver.com/api
 - What: GPU cloud solver with `POST /task/treebuilder`,
@@ -424,7 +577,7 @@ second above.
 - Multiway: **not supported** ("multi-way is not supported").
 - Ratings: (a) 0 — (b) 3 — (c) 1 — (d) 3 — (e) 0 (price).
 
-### 20. Pokerai API (pokerai.bet)
+### 23. Pokerai API (pokerai.bet)
 
 - URLs: https://pokerai.bet/ , https://pokerai.bet/reference , /terms
 - What: the only self-serve "what should I do here" HTTP API found.
@@ -443,21 +596,21 @@ second above.
 - Ratings: (a) 1 (6-max preflop, HU postflop) — (b) 2 (their tree) —
   (c) 0 — (d) 3 — (e) 1 (terms).
 
-### 21. Spinwize
+### 24. Spinwize
 
 - URL: https://www.spinwize.net/ — 3-handed Spin&Go database (all 1,755
   flops up to 36bb) with a "Solver API" to fetch from its 60 TB of solutions.
   EUR 53 to 89/month. 3-player only, short stacks only; API details behind the
   paywall (UNVERIFIED). Ratings: (a) 1 — (b) 2 — (c) 0 — (d) 3 — (e) 2.
 
-### 22. Odin Poker, now "GTO Strategy"
+### 25. Odin Poker, now "GTO Strategy"
 
 - URL: https://gtostrategy.com/ — browser library built on the Odin solver:
   pre-solved cash and MTT spots for 4-max to 9-max, **multiway postflop
   solutions** in the Elite tier ($79/mo), live turn/river solving. No API or
   export. Ratings: (a) 3 — (b) 2 — (c) 0 — (d) 1 — (e) 2.
 
-### 23. GTOBase
+### 26. GTOBase
 
 - URL: https://gtobase.com/ — browser viewer; 6-max cash 40 to 200bb, 8/9-max
   MTT 15 to 100bb, HU cash free. $75 to $150/month. No API, no export.
@@ -478,7 +631,7 @@ and cheap. Sources checked today:
 | MonkerGuy https://www.monkerguy.com/ | 6-max and 9-max NLHE 20 to 200bb, 8-max MTT packs; MonkerSolver output | .mkr, MonkerViewer, **.txt ranges (Pio/PPT compatible)** | $69 (6-max 100bb) to $499 |
 | GTO Sims https://gtosims.com/ | Spin&Go, 6-max, MTT from Simple Preflop Holdem | Simple Preflop files, Pio charts, PNG | per solution, price not shown |
 | TexasSolver release bundle | 6-max 100bb ranges (BTN/CO/MP/SB/UTG opens, 3-bet, call trees) as plain text | text, already on this Mac | free |
-| GTO Wizard | 9-max multiway preflop, custom antes/straddles | copy as UPI text by hand | Ultra $229+/mo |
+| GTO Wizard | 9-max multiway preflop, custom antes/straddles | copy as UPI text by hand | top tier, monthly; price UNVERIFIED (see entry 17) |
 
 A gumroad pack of 576 tournament ranges in .txt (mkosmis) came up in search
 but the page returned 404: UNVERIFIED.
@@ -523,25 +676,66 @@ Not recommended: Deepsolver API (heads-up only, $1,875/month), PioSOLVER,
 GTO+, Jesolver, Simple Poker (Windows, heads-up or no scripting),
 slumbot2019 and DecisionHoldem (multi-day blueprints, heads-up).
 
-## Recommendation: what to adopt first
+## Recommendation: input to the reconciliation, not a decision
 
-Adopt **TexasSolver as the postflop decision engine for heads-up pots and
-OMPEval-plus-phevaluator as the equity layer for everything else**, and buy or
-transcribe **precomputed preflop ranges** rather than solving preflop at all.
-Concretely: at decision time, if only two players remain, build a small
-TexasSolver command file from the live spot (board, pot, stacks, the
-opponent's *estimated* range from the opponent model, one or two bet sizes)
-and read the strategy from its JSON; the 0.7-second full-range turn solve
-measured here says a pruned tree fits within a live decision window, and the
-range you feed it is where the opponent model biases the answer. If three or more players
-remain, use OMPEval equity against each opponent's modelled range (sub
-millisecond) inside rules the engine already has, because no affordable,
-scriptable multiway postflop solver exists on a Mac today. Preflop comes from
-a range table for 2 to 9 seats, adjusted per opponent by the model. This
-reaches a playable bot in hours, costs nothing but an optional $69 range
-pack, uses only AGPL/ISC/Apache code that private use permits, and leaves a
-clear upgrade path: GTOpen for player-type exploitation once it has a licence
-and a Mac build, and Holdem Solver for offline multiway study.
+This is a tool survey. It can say which tools work and how fast; it cannot
+choose the bot's architecture, because two of the three pieces below turn on a
+rule question and on a competing proposal in another document. So what follows
+is written as **input to the reconciliation of the four research sweeps
+against `CLAUDE.md`**, with the settled parts marked as settled and the open
+parts left open.
+
+**Settled by measurement, and safe to adopt now.**
+
+- **Heads-up postflop: TexasSolver**, called at decision time. Build a small
+  command file from the live spot (board, pot, stacks, the opponent's
+  estimated range, one or two bet sizes) and read the strategy back from its
+  JSON. The measured 0.7 s full-range turn solve is what says a pruned tree
+  fits inside a live decision; the measured flop solve (Appendix A) is what
+  says the tree must be pruned. Nothing here is our own poker judgment: the
+  strategy comes out of a borrowed solver.
+- **Hand ranking and equity: phevaluator now, OMPEval when the loop is hot.**
+  phevaluator replaces `treys` on any runtime path (`treys` stays the test
+  oracle, as `CLAUDE.md` requires). OMPEval is the one to call for Monte-Carlo
+  equity, with its 6-player cap recorded: at 7, 8 or 9 seats it cannot be
+  handed every live range at once.
+- **Preflop: buy or transcribe ranges** for 2 to 9 seats rather than solving
+  preflop at all. This is the cheapest well-covered part of the problem.
+
+**Open, and for the reconciliation to decide — not for this file.**
+
+- **What plays multiway postflop.** The obvious fit with the tools above is an
+  equity-driven rule set biased by the opponent model. Say plainly what that
+  is: **code we would write that picks the action**, with the opponent model
+  as its input. `CLAUDE.md:13-15` forbids hand-rolled decision logic in place
+  of engine code, so it cannot be adopted on a survey's say-so; it needs a
+  recorded carve-out in the project rules, and the reconciliation is where
+  that is written or refused.
+- **Whether a multiway decision-time option already exists.** An earlier draft
+  of this file asserted that none does. That was true only of the solver
+  market surveyed here, and it is the wrong place to look.
+  `ENGINE_ALTERNATIVES.md` (under review, not accepted) reports a measured
+  alternative: OpenSpiel's `universal_poker` playing the rest of the hand out
+  at random during the hand, producing a 6-player 52-card no-limit decision
+  inside a 250 ms budget on this same machine, with no solver and no training.
+  Its own document is candid that the quality of that decision depends on the
+  betting abstraction — about 13,000 play-outs per decision against a
+  four-move menu, but only about 242 with full bet sizing, which it calls
+  mostly noise — and that it needs the same rule carve-out as the rule set
+  above, because the code that compares the play-outs is also code that picks
+  the action. So the honest statement is: **a multiway decision-time option
+  exists and is measured; what does not exist is an affordable, scriptable
+  multiway postflop *solver* on a Mac.** Which of the two covers multiway is
+  exactly what the reconciliation has to settle, and they are not alternatives
+  within this document's authority.
+- **GTOpen's player types.** Its promise (+40 to +80 bb/100 when the read is
+  right) and its warning (-194 to -287 bb/100 when it is wrong) are the
+  author's own numbers, not ours. Its definitions are worth borrowing for
+  `OPPONENT_MODEL_DESIGN.md`; adopting its exploit solves is a licence
+  question (it has no licence file) as well as a rule question.
+
+The settled part costs nothing but an optional $69 range pack and uses only
+AGPL, ISC and Apache code that private use permits.
 
 ---
 
