@@ -13,6 +13,7 @@ beat by hand-rolling it in a few weeks.
 - Never let an AI model decide a poker action, evaluate a hand, or read a board; call real engine code for that.
 - Only use AI-written code for integration, tooling, and table-state capture (screen to structured data), never for poker judgment itself.
 - Reject a change that adds hand-rolled hand-strength or decision logic in place of the vendored engine; adapt the engine instead.
+- Ground-truth hand ranking against a named external evaluator (currently `treys`), the reference for standard 52-card ranking, and keep it out of the bot's decision path; it validates tests only, never runtime play.
 - Keep opponent-modelling code to the left column of this boundary, and leave every right-column job to the engine.
 
 | Allowed to AI-written opponent-model code | Reserved to the engine |
