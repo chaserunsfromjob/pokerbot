@@ -823,7 +823,9 @@ arena report  bot A=<sha> B=<sha>  engine=<sha>  seed=<n>  2026-XX-XX
 tier: nightly acceptance   cells: 20   budget: 10h   elapsed: 4h51m
 seats: 6 8 9 2 fixed + 3 rotating (cycle 3>4>5>7; night 1 of 4)
 weights: n6=0.50  n8=0.15 n9=0.15  n2=0.10 n3=0.10   (config, operator 2026-09-15)
-window: seats passed in the last four nightly runs: 2,3,6,8,9 (+4,5,7 pending) -> RELEASE BLOCKED
+window: all 8 seat counts must have passed within the last 4 nightly runs; 5 have
+        (2,3,6,8,9); 4,5,7 last passed too long ago -> NOT GATED, RELEASE BLOCKED
+        (the per-seat window table, with last-pass date and bot sha, prints in full)
 primary  (weighted pool, paired, baseline-adjusted)  +34.2 mbb/hand  [ +11.8, +56.9 ]  ACCEPT
   powered to detect: 28.1 mbb/hand pooled, 100 mbb/hand per cell
   by table size, unweighted (Benjamini-Hochberg, q=0.05, family size 20)
@@ -1352,6 +1354,33 @@ not have to rediscover them.
   breakdown in the report. Mitigation: the report prints "powered to detect"
   beside every per-cell interval, and a cell is never described as passing — only
   as not tripping the screen.
+- **A seat count that did not run tonight reads as a clean seat count.** Only
+  five of the eight seat counts play on any one night
+  ([§3.6](#36-the-run-budget-turning-hands-into-hours)), so three are absent from
+  every nightly report — and an absent row is the easiest thing in the world to
+  read as "no problem there". It is not: it is no evidence at all, and the
+  evidence it stands on may be three nights old and describe a different bot.
+  Mitigation, and it is a requirement on the report, not advice: **the report
+  prints all eight seat counts every night, never only the five that ran**, and
+  gives each one the date and bot SHA of the run it last *passed* on. A seat
+  count whose last pass is older than four nightly runs, or is against a
+  different bot SHA than the one under test, prints as **NOT GATED** and
+  **blocks the release** exactly as a failure would. The four-night window of
+  [§3.5](#35-the-decision-rule-is-this-change-an-improvement) point 2 is a claim
+  about the last four runs, so a report that cannot show those four runs cannot
+  support it:
+
+  ```
+  seat-count window (release needs all eight passed within the last 4 nightly runs)
+    n=2  ran tonight   PASS
+    n=3  ran tonight   PASS
+    n=4  last passed 2026-XX-XX (1 run ago, bot=<sha>)   PASS
+    n=5  last passed 2026-XX-XX (2 runs ago, bot=<sha>)  PASS
+    n=6  ran tonight   PASS
+    n=7  last passed 2026-XX-XX (5 runs ago, bot=<sha>)  NOT GATED  <- blocks
+    n=8  ran tonight   PASS
+    n=9  ran tonight   PASS
+  ```
 - **The budget's own inputs are placeholders.** Seconds per bot decision and
   decisions per hand are assumed, not measured ([X7](#engine-requirements)), and
   σ = 1,500 is borrowed from a post-AIVAT six-player experiment this harness
