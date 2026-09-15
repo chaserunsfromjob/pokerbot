@@ -42,8 +42,10 @@ thousand hands, see it win, and conclude the change was an improvement, you
 have learned essentially nothing — you have measured luck. Published work makes
 this concrete: a poker AI that beat five elite professionals by a margin the
 authors call "very high" needed ten thousand hands *plus* a variance-reduction
-technique to reach a p-value of 0.028, and two of the individual humans it beat
-were not individually distinguishable from break-even
+technique to reach a p-value of 0.028. And of the two individual professionals
+whose results that work reports separately, only one clears the same bar — a
+one-tailed t-test at 95% — at 40 ± 22 mbb/game, p = 0.033; the other, at
+25 ± 20 mbb/game, p = 0.107, is not distinguishable from break-even
 ([Brown 2020](#s-brown2020), §6.6).
 
 So the plan has three parts.
@@ -55,7 +57,12 @@ and what each method costs.
 rule-based fake opponents that imitate specific human mistakes, a way of
 dealing the same cards to two versions of the bot so their scores can be
 compared fairly, and a stated arithmetic rule for deciding whether a change
-helped — replacing "the win rate looks higher now".
+helped — replacing "the win rate looks higher now". It also does the sum that
+turns all of that into hours on the laptop, because the version of this harness
+that tests everything against everything would take about ten days per change,
+and the version that fits in a night is a deliberately smaller one. **Roughly
+113,000 hands, about four hours, is the shape of a run that decides whether a
+change is kept.**
 
 **Part 3** covers the operator's firm requirement that the bot work at every
 table size from two to nine players and with real no-limit bet sizes, and what
@@ -96,7 +103,8 @@ Two terms used throughout, explained once:
    - [3.3 The forefront rule and the personas](#33-the-forefront-rule-and-the-personas)
    - [3.4 The deal controller](#34-the-deal-controller)
    - [3.5 The decision rule: is this change an improvement?](#35-the-decision-rule-is-this-change-an-improvement)
-   - [3.6 Tiers: what to build, in what order](#36-tiers-what-to-build-in-what-order)
+   - [3.6 The run budget: turning hands into hours](#36-the-run-budget-turning-hands-into-hours)
+   - [3.7 Tiers: what to build, in what order](#37-tiers-what-to-build-in-what-order)
 4. [Part 3 — Table sizes 2-9 and true no-limit sizing](#4-part-3--table-sizes-2-9-and-true-no-limit-sizing)
    - [4.1 Table size is an axis, not a setting](#41-table-size-is-an-axis-not-a-setting)
    - [4.2 Why duplicate dies past three seats](#42-why-duplicate-dies-past-three-seats)
@@ -106,7 +114,7 @@ Two terms used throughout, explained once:
 5. [How this fits the opponent model](#5-how-this-fits-the-opponent-model)
 6. [How this harness lies to you](#6-how-this-harness-lies-to-you)
 - [Engine requirements](#engine-requirements)
-- [Questions for the operator](#questions-for-the-operator)
+- [Decisions that were open, and where they now live](#decisions-that-were-open-and-where-they-now-live)
 - [Sources](#sources)
 - [Provenance of every number in this document](#provenance-of-every-number-in-this-document)
 
@@ -239,7 +247,7 @@ the algorithm as published is two-player: it tracks one opponent range and one
 opponent, which is not something the paper does or evaluates.
 
 **Verdict for this project: Tier 3, heads-up only, as a red-flag detector.** See
-[§3.6](#36-tiers-what-to-build-in-what-order).
+[§3.7](#37-tiers-what-to-build-in-what-order).
 
 ### 2.4 Variance reduction: duplicate, baseline, MIVAT, AIVAT
 
@@ -355,22 +363,31 @@ published standard deviations rather than asserted.
 | Setting | Per-hand standard deviation |
 | --- | --- |
 | Heads-up no-limit, raw chip count | ≈ 12,981 mbb |
-| Heads-up no-limit, after AIVAT | ≈ 4,048 mbb |
+| Heads-up no-limit, after AIVAT | ≈ 4,047.5 mbb |
 | Six-player no-limit, after AIVAT (5 humans + 1 AI) | ≈ 2,500 mbb |
 | Six-player no-limit, after AIVAT (1 human + 5 AI) | ≈ 1,500 mbb |
 
 Compare that with the 48 mbb/hand edge Pluribus had over elite professionals.
-**The noise in a single hand is roughly 250 times the signal you are trying to
-measure.**
+**Compare it against the right row.** That 48 is a six-player no-limit,
+post-AIVAT number, so the like-for-like row is the third one: **2,500 against 48,
+a ratio of about 52**. That is the honest statement of the problem — even in the
+best-measured setting published, with the best variance reduction published, one
+hand of noise is fifty times the whole edge. The raw heads-up row is 12,981,
+which is 270 times that same 48, but it is a *different* setting and the two
+numbers should not be divided as though they described one experiment; read it
+only as the order of magnitude that applies before any variance reduction, which
+is where this project starts.
 
 **Step 2: how many hands does that imply?** For a two-arm comparison at the
 conventional two-sided 5% significance and 80% power, the required hands per arm
-is `n = 2σ²(z₀.₉₇₅ + z₀.₈₀)² / Δ²`, with `(z₀.₉₇₅ + z₀.₈₀)² = 7.8489`. Computed:
+is `n = 2σ²(z₀.₉₇₅ + z₀.₈₀)² / Δ²`, with `(z₀.₉₇₅ + z₀.₈₀)² = 7.8489` — every
+table below is computed at full precision (7.848879734…), which is what the
+cells reproduce from. Computed:
 
 | σ (mbb/hand) | Δ=10 | Δ=25 | Δ=50 | Δ=100 | Δ=200 |
 | --- | --- | --- | --- | --- | --- |
 | 12,981 (HUNL raw) | 26,451,723 | 4,232,276 | 1,058,069 | 264,517 | 66,129 |
-| 4,048 (HUNL, AIVAT) | 2,571,647 | 411,464 | 102,866 | 25,716 | 6,429 |
+| 4,047.5 (HUNL, AIVAT) | 2,571,647 | 411,464 | 102,866 | 25,716 | 6,429 |
 | 2,500 (6-max, AIVAT) | 981,110 | 156,978 | 39,244 | 9,811 | 2,453 |
 | 1,500 (6-max, AIVAT) | 353,200 | 56,512 | 14,128 | 3,532 | 883 |
 
@@ -403,16 +420,19 @@ error multiplies the hands needed by (1−r)²:
 
 | r | Hands needed × |
 | --- | --- |
-| 22% (LBR's duplicate + imaginary observations) | 0.608 |
+| 20% (LBR's duplicate + imaginary observations) | 0.640 |
 | 35% (mid-range of baseline at 3 players) | 0.423 |
 | 50% (top of baseline's range at 3 players) | 0.250 |
 | 68% (AIVAT, CFR value functions) | 0.102 |
 | 85% (AIVAT, DeepStack value functions) | 0.023 |
 
-The 22% row is real: LBR's own experiments used duplicate matches plus imaginary
-observations and reported that the two together "reduce the size of the
-confidence intervals by roughly 20% with the same number of matches"
-([Lisý & Bowling 2017](#s-lbr), §"Variance reduction").
+The 20% row is real, and it is quoted at the figure the paper gives: LBR's own
+experiments used duplicate matches plus imaginary observations and reported that
+the two together "reduce the size of the confidence intervals by roughly 20% with
+the same number of matches" ([Lisý & Bowling 2017](#s-lbr),
+§"Variance reduction"). The other four rows are the published reductions cited in
+[§2.4](#24-variance-reduction-duplicate-baseline-mivat-aivat), squared the same
+way; none is rounded up beyond what its source says.
 
 **Step 5: the consolation.** All of the above is for detecting a *small* edge
 between two good strategies. Detecting that the bot beats a deliberately bad
@@ -484,13 +504,15 @@ requires judgement to read.
 ### 3.1 Architecture and module boundaries
 
 ```
-arena/
+tests/arena/    # test-only tree; nothing in the bot's import graph imports it
   deal.py       # seeded deal generation; replay; seat permutation
   seats.py      # table construction for n in 2..9; blinds, button rotation
   personas/     # rule-based opponents, one module each; NO import from bot/
     __init__.py # registry: name -> constructor(params, rng)
     base.py     # Persona protocol: act(observation) -> Action
     params.py   # every persona's parameter vector, in one file, as config
+    preflop.py  # static 169-class starting-hand ranking; test-only; see §3.3
+    draws.py    # draw detection heuristic; test-only; see §3.3
   runner.py     # plays N hands of a configured table; emits HandRecord rows
   estimators.py # raw mean, duplicate, baseline control variate
   stats.py      # bootstrap CIs, paired tests, BH correction, power/sample size
@@ -559,6 +581,11 @@ recovered **seven** player types by clustering 51,377,820 real-money games from
 | `tilter` | Plays worse after losing a big pot | A two-state machine: normal parameters, but after losing a pot larger than `TILT_TRIGGER_BB`, switches to `maniac` parameters for `TILT_DURATION` hands, then reverts |
 | `sizing_tell` | Bet size leaks hand strength | Bets a large fraction with strong hands and a small fraction with weak ones — see [§4.3](#43-true-no-limit-sizing-and-the-biggest-measured-weakness-in-published-bots) |
 
+Three of those rules ask for a judgement no hand evaluator makes — `nit` and
+`tag` need a *preflop* ranking of two cards, and `calling_station` needs *draw*
+detection on an incomplete hand. [§3.3](#33-the-forefront-rule-and-the-personas)
+names what answers each, and why neither the engine's evaluator nor `treys` can.
+
 **Every capitalised parameter above is a design choice, not a measured or cited
 value.** All of them live in `personas/params.py`, all are logged into the
 result file, and none are asserted to describe any real population. What *is*
@@ -590,15 +617,51 @@ Personas are decision logic. This needs saying out loud rather than being left
 ambiguous:
 
 - **Personas are test-only code, in the same category as
-  `tests/ground_truth/`.** They are never imported by the bot, never consulted at
-  runtime, and a test asserts the import graph enforces this.
-- **Personas must not contain a hand evaluator.** Every hand-strength judgement a
-  persona makes goes through a named evaluator — the engine's, or `treys` in the
-  same test-only role `CLAUDE.md` already assigns it. *Recommendation: use the
-  engine's evaluator*, so the harness has one fewer dependency and so that a
-  disagreement between engine and `treys` shows up in
-  `tests/ground_truth/` rather than being silently absorbed by the harness. This
-  is flagged as [Q1](#questions-for-the-operator).
+  `tests/ground_truth/`.** The whole `arena` tree lives under `tests/`. **The
+  import-graph boundary is the rule, and it runs in one direction only:** `tests/`
+  may import the bot and the engine; nothing reachable from the bot's entry point
+  may import anything under `tests/`. A test walks the bot's import graph and
+  fails if any module under `tests/` appears in it. A persona that shares code
+  with the bot cannot detect a bug in that shared code, and a bot that can reach
+  persona code has smuggled hand-rolled poker judgement into itself.
+- **The forefront rule governs the bot under test, not its sparring partners.**
+  `CLAUDE.md` forbids hand-rolled hand-strength or decision logic *in place of the
+  vendored engine*, in the bot's decision path, and it already licenses an outside
+  evaluator (`treys`) in the test role. A persona is a fixture. The rule that
+  applies to a fixture is the one that applies to `tests/ground_truth/`: it is
+  named, it is test-only, and it never plays.
+- **Three different judgements, three different answers. Do not collapse them
+  into "the personas use an evaluator".** A persona asks three questions and only
+  the first is what a hand evaluator answers:
+  1. **How strong is this made hand?** → **the engine's own evaluator**, the same
+     call the bot makes. No second implementation, and a disagreement between the
+     engine and `treys` then surfaces in `tests/ground_truth/` rather than being
+     silently absorbed by the harness.
+  2. **Is this hole-card pair in the top `TIGHT_FRACTION` before the flop?**
+     (`nit`, `tag`) → **not hand evaluation at all.** It is a ranking of the 169
+     strategically distinct starting hands, and *neither the engine's evaluator
+     nor `treys` provides one*: both score a complete five-card hand, and two hole
+     cards are not one. Personas use a **static 169-class ranking table
+     transcribed from a named published source**, and the source is **the Chen
+     formula** ([Chen & Ankenman 2006](#s-chen)), because it assigns every one of
+     the 169 classes a score and so gives the total order that "top X%" requires.
+     The alternative considered and rejected, [Sklansky &
+     Malmuth 1999](#s-sklansky), is the better-known ranking but groups only the
+     playable top and leaves the rest unordered, which a "top X%" rule cannot use.
+     The table is a constant, checked into `tests/arena/personas/preflop.py`, with
+     its source named in the file. **Neither book was retrieved in this survey**
+     (see [Sources](#sources)); the transcription must be checked against the
+     named edition before the table is used, and a test must assert the table has
+     exactly 169 entries and is a strict ranking.
+  3. **Am I drawing?** (`calling_station`'s "any made hand or draw") → **also not
+     something either evaluator does.** Detecting four to a flush or an
+     open-ended straight is a property of an incomplete hand. This is a small,
+     explicit, **test-only heuristic** — count suits, count rank gaps across hole
+     cards and board — living in `tests/arena/personas/draws.py`, labelled
+     test-only in the file, and unit-tested against enumerated examples. It is
+     allowed to be crude and it is allowed to be wrong at the margins: a persona
+     is a caricature, and a caricature that misreads a gutshot is still a valid
+     fixture. It must never be imported by anything but personas.
 - **A persona is deliberately bad poker.** That is its function. It is not a
   claim about correct play and must never be promoted into one.
 
@@ -630,14 +693,34 @@ because a later coding task should implement it literally.
 **Before the run — pre-register.** Write into the config, before playing a hand:
 
 1. **The primary endpoint.** One number: mbb/hand for version B minus version A,
-   pooled across the persona pool at the declared table-size mix, on paired
-   deals.
-2. **The table-size mix.** Which of n = 2..9 to run and in what proportion.
-   Defaulting to a uniform mix over 2..9 is a choice, not a fact; the mix the
-   bot will actually meet is [Q2](#questions-for-the-operator).
+   **weighted** across table sizes by the weights below, pooled across the
+   persona pool, on paired deals. It is a *weighted* pool, and the weights are
+   written into the config and reprinted in the report; an unlabelled average is
+   not a result.
+2. **The table-size weights.** These are settled, from the operator's own
+   statement of what they play (2026-09-15): *"i will be playing mostly 6 player
+   tables, followed by 8 or 9 player tables which can honestly be treated the
+   same, they are so close."* So:
+
+   | Band | Seat counts | Headline weight |
+   | --- | --- | --- |
+   | Primary | 6 | 0.50 |
+   | Secondary | 8 and 9, treated as one band | 0.30 (0.15 each) |
+   | Everything else | 2, 3, 4, 5, 7 | 0.20 (0.04 each) |
+
+   **Every seat count is still evaluated and every seat count still gates a
+   release** — the non-inferiority and per-table-size rules below apply
+   unweighted, so a collapse at three-handed blocks the change even though
+   three-handed carries 4% of the headline. The weights decide only what the
+   single summary number means. The *numbers* 0.50 / 0.30 / 0.20 are a design
+   choice implementing the operator's stated ordering, not a quantity the
+   operator gave; they live in config and are revisable without touching this
+   document.
 3. **The sample size**, from the formula in
    [§2.5](#25-win-rate-with-honest-statistics), using a σ and ρ **measured by a
-   pilot run**, not guessed.
+   pilot run**, not guessed — and then checked against the wall-clock budget in
+   [§3.6](#36-the-run-budget-turning-hands-into-hours), which is what decides how
+   many cells the run can actually afford.
 4. **The decision thresholds** (below).
 
 **During the run.**
@@ -668,21 +751,31 @@ because a later coding task should implement it literally.
   ([Politis & Romano 1994](#s-politis)). Any future persona with state falls
   under the same rule.
 - **Accept the change if** the bootstrap interval for the primary endpoint lies
-  entirely above zero.
+  entirely above zero, **and** no per-persona interval trips the blocker below.
 - **Secondary, per table size.** The same interval computed separately for each
-  n in the mix. Eight table sizes means eight tests, and testing eight things at
+  n in the run, **unweighted** — the weights of point 2 apply to the headline
+  only. Eight table sizes means eight tests, and testing eight things at
   5% each produces a false alarm about a third of the time. Control the false
   discovery rate across the family with the
-  Benjamini–Hochberg procedure ([Benjamini & Hochberg 1995](#s-bh)).
+  Benjamini–Hochberg procedure ([Benjamini & Hochberg 1995](#s-bh)). The number
+  of tests in the family is the number of cells the budget in
+  [§3.6](#36-the-run-budget-turning-hands-into-hours) actually bought, and the
+  report states it; correcting for eight when sixteen were run is cheating.
 - **Non-inferiority, per persona.** Report the interval against each persona
   separately. **A change that wins overall by beating one persona harder while
   losing to another is a red flag, not a pass** — it is the signature of
   over-adapting to one opponent, which is the documented failure mode in
-  [Johanson & Bowling 2009](#s-johanson2009), §4. The margin below which a
-  per-persona regression is tolerated is **not set in this document**; it is
-  [Q3](#questions-for-the-operator), and until it is answered the rule is the
-  strict one: any persona whose interval lies entirely below zero blocks the
-  change and requires a written reason to override.
+  [Johanson & Bowling 2009](#s-johanson2009), §4.
+
+  **The rule, decided and not open:** any persona whose interval lies entirely
+  below zero **blocks the change**. The only way past it is a **written override
+  in the run config** that names the persona, quotes the size of the regression,
+  and states why it is acceptable; the override text is copied into the result
+  file, so a change that was let through on a judgement call can be found later.
+  **No numeric tolerance is set**, because setting one now would be inventing a
+  number: there is no data yet on how often a genuine improvement trips this.
+  Loosening the rule waits on that data — revisit once the harness has run enough
+  comparisons to say what the false-alarm rate actually is.
 
 **Upgrade, not first version: sequential testing.** If the fixed sample size
 turns out to cost more wall-clock than the project can spend, replace the
@@ -701,23 +794,159 @@ Do not implement it until the simple version is working and measured.
 
 ```
 arena report  bot A=<sha> B=<sha>  engine=<sha>  seed=<n>  2026-XX-XX
-primary  (pooled, paired, baseline-adjusted)   +34.2 mbb/hand  [ +11.8, +56.9 ]  ACCEPT
-  by table size (Benjamini-Hochberg, q=0.05)
+tier: nightly acceptance   cells: 16   budget: 10h   elapsed: 3h51m
+weights: n6=0.50  n8=0.15 n9=0.15  n2,3,4,5,7=0.04 each   (config, operator 2026-09-15)
+primary  (weighted pool, paired, baseline-adjusted)  +34.2 mbb/hand  [ +11.8, +56.9 ]  ACCEPT
+  powered to detect: 30 mbb/hand pooled, 100 mbb/hand per cell
+  by table size, unweighted (Benjamini-Hochberg, q=0.05, family size 16)
     n=2   +51.1 [ +12.0, +90.6 ]  *
     n=3   +40.7 [  +4.2, +77.1 ]  *
     ...
     n=9    -2.4 [ -39.8, +35.0 ]
-  by persona (non-inferiority)
+  by persona (non-inferiority; interval wholly below zero = BLOCK)
     calling_station  +102.6 [ +71.1, +134.8 ]
     never_bluffs      -18.9 [ -44.2,   +6.3 ]   <- watch
+  overrides in force: none
   measured: sigma=<..> mbb/hand   rho=<..>   SE reduction from baseline=<..>%
-  hands: <..> per arm    wall clock: <..>
+  hands: <..> per arm    sec/decision: <..>   decisions/hand: <..>
 ```
 
 Everything in it is a measurement or a decision. Nothing in it is an
 impression.
 
-### 3.6 Tiers: what to build, in what order
+### 3.6 The run budget: turning hands into hours
+
+Everything above this point is sized for **one** comparison. The harness that
+[§3.5](#35-the-decision-rule-is-this-change-an-improvement) and
+[§4.1](#41-table-size-is-an-axis-not-a-setting) actually ask for is a **grid** of
+them, and the grid is where the arithmetic stops being affordable. This section
+does the multiplication, converts it to hours, and cuts the grid down to what
+fits. **No sample size in this document may be quoted without going through
+here first.**
+
+**The hard constraint, from the operator (recorded 2026-09-15).** No multi-day
+computing; hours on one laptop. Concretely:
+
+| Run | Must finish within |
+| --- | --- |
+| Full acceptance run, before a change is accepted | **one night — at most 10 hours** |
+| Routine check, during the day | **one hour** |
+| Anything multi-day | **never** |
+
+**What the grid costs as specified.** Take §3.5 and §4.1 literally: every seat
+count, a homogeneous table per behavioural persona plus one mixed table, at
+several stack depths ([§4.4](#44-stack-depth)).
+
+| Axis | Count | From |
+| --- | --- | --- |
+| Seat counts, n = 2…9 | 8 | [§4.1](#41-table-size-is-an-axis-not-a-setting) |
+| Compositions per seat count: 9 homogeneous + 1 mixed | 10 | [§4.1](#41-table-size-is-an-axis-not-a-setting), [§3.2](#32-the-persona-set) |
+| Stack depths: short, 100 bb, deep | 3 | [§4.4](#44-stack-depth) |
+| **Cells** | **240** | |
+
+Each cell is its own two-arm comparison, so each needs the per-arm sample size
+from [§2.5](#25-win-rate-with-honest-statistics). Using the **most favourable row
+in that whole table** — σ = 1,500 mbb/hand — and Δ = 50 mbb/hand, a cell costs
+14,128 hands per arm, 28,256 hands in total:
+
+**240 cells × 28,256 hands = 6,781,440 hands.**
+
+**Hands are not hours, and the conversion is the whole problem.** Two figures,
+both pending, and what they imply for the same grid differs by four orders of
+magnitude:
+
+- **Engine throughput.** `ENGINE_ALTERNATIVES.md` (on a branch under review, not
+  on main at the time of writing) measures OpenSpiel `universal_poker` at
+  **56,414 complete six-player hands per second on one core**. At that rate the
+  full grid takes **120 seconds**.
+- **The bot's own thinking time.** The same document's recommended architecture
+  is decision-time computing with a **250 ms budget per decision**. That, not the
+  engine, is the binding term: the engine is idle while the bot thinks.
+
+**So the budget must be written in seconds per decision, never in engine hands
+per second.** The working assumption, and it is a **placeholder to be measured**,
+not a result:
+
+| Quantity | Value used here | Status |
+| --- | --- | --- |
+| Seconds per bot decision | 0.25 | Architecture budget from `ENGINE_ALTERNATIVES.md`, **under review**; not a measurement of this bot |
+| Bot decisions per hand | 4 | **Placeholder. Measure it.** Nothing sources this |
+| ⇒ bot-seconds per hand | **1.0** | Product of the two |
+| Parallel workers on the laptop | 8 | **Placeholder.** Measure usable cores and memory |
+| ⇒ hands per hour | **28,800** | 3,600 × 8 ÷ 1.0 |
+
+These are [X7](#engine-requirements) and [X8](#engine-requirements), restated as
+the numbers that actually decide the wall clock. **Until they are measured, every
+hour in this section is provisional**, and the report prints the measured
+seconds-per-decision and decisions-per-hand beside the elapsed time so that the
+first real run replaces these placeholders with facts.
+
+**The full grid against the cap.** 6,781,440 hands ÷ 28,800 per hour =
+**235 hours ≈ 9.8 days on one laptop.** That is **23.5 times** the 10-hour cap,
+and it is multi-day, which the operator has ruled out. It also *understates* the
+cost, because σ = 1,500 is a post-AIVAT six-player figure and this harness has no
+AIVAT before Tier 4. **The full grid is not buildable and must not be quietly
+assumed.** It becomes affordable only if a bot decision drops from 250 ms to
+about **11 ms**, or if AIVAT-grade variance reduction lands. It is kept below as
+the aspirational tier so that nobody re-derives it from scratch.
+
+**The reduced cell set, which is what actually runs.**
+
+- **Seat counts: 2, 3, 6, 9** — four, not eight. 6 and 9 carry the headline
+  weight ([§3.5](#35-the-decision-rule-is-this-change-an-improvement) point 2);
+  2 and 3 are where duplicate variance reduction is available and cheap
+  ([§4.2](#42-why-duplicate-dies-past-three-seats)). 4, 5, 7 and 8 rotate in
+  across nights, one swapped in per run, so the full range is covered weekly and
+  no seat count goes permanently unmeasured.
+- **Compositions: 4** — one mixed table plus three homogeneous personas drawn
+  from the *evaluation* half of the set ([§3.2](#32-the-persona-set)), rotating
+  across runs so every persona is seen over a handful of nights.
+- **Stack depth: 100 bb only.** It is the depth every cited evaluation used
+  ([§4.4](#44-stack-depth)). The short and deep depths move to the aspirational
+  tier and to their own dedicated run, not to every run.
+
+**4 × 4 × 1 = 16 cells.**
+
+| Run | Cells | Hands/cell | Total hands | Wall clock | Detects per cell | Detects pooled |
+| --- | --- | --- | --- | --- | --- | --- |
+| **Routine check** | 16 | 1,766 | 28,256 | **0.98 h** | 200 mbb/hand | — |
+| **Nightly acceptance** | 16 | 7,064 | 113,024 | **3.9 h** | 100 mbb/hand | **30 mbb/hand** |
+| Full grid (aspirational) | 240 | 28,256 | 6,781,440 | 235 h | 50 mbb/hand | — |
+
+Both affordable rows fit inside their caps, the nightly one with more than six
+hours of headroom for the pilot that measures σ and ρ, for a re-run, and for the
+measurements above turning out worse than the placeholders.
+
+**Where the pooled 30 comes from, because it is the number the headline rests
+on.** The nightly run's 113,024 hands are 56,512 per arm. Split *equally* across
+the four seat counts, each gets 14,128 per arm; the weighted headline
+(0.50/0.30/0.20 over the bands present) then has an effective sample size of
+14,128 ÷ Σwᵢ² = 14,128 ÷ 0.36 = 39,244 per arm, which at σ = 1,500 is a
+detectable Δ of **30.0 mbb/hand**. *(Allocating hands in proportion to the weights
+instead of equally would raise the effective size back to the full 56,512 and the
+headline to Δ = 25, at the cost of the light seat counts' per-cell power. That is
+a config switch; the default is equal, because a per-cell regression screen that
+is blind at n = 3 is worse than a headline three units coarser.)*
+
+**Two honest corrections, in opposite directions.** σ = 1,500 is the most
+favourable published row and this harness has no AIVAT, so the true σ is larger
+and these hours are a **floor**. Against that, the budget assumes ρ = 0 and
+ignores pairing entirely, while
+[§2.5](#25-win-rate-with-honest-statistics) Step 3 shows ρ = 0.5 halves the hands
+needed. Neither cancels the other and neither is known. **Re-derive this table
+from the pilot's measured σ and ρ before the first real acceptance run**, and
+record both in the result file.
+
+**What this buys and what it does not.** The pooled headline is powered to detect
+a 30 mbb/hand change — comparable to Pluribus's whole edge over professionals
+([§2.1](#21-the-unit)). Each individual cell is powered only to 100 mbb/hand, so
+**a per-cell interval is a regression screen, not evidence of no effect.** The
+report must print "powered to detect" beside every per-cell interval, or a reader
+will read a wide interval as a clean bill of health.
+[§6](#6-how-this-harness-lies-to-you) carries that as one of the ways this
+harness lies.
+
+### 3.7 Tiers: what to build, in what order
 
 **Tier 0 — the harness can run a legal game.** `deal`, `seats`, `runner`,
 `invariants`. Every check in
@@ -764,6 +993,15 @@ and false of everything else.
 as in [§3.5](#35-the-decision-rule-is-this-change-an-improvement). A run that
 covers only one table size is not a valid run.
 
+**But not every table size in every run — that does not fit in a night.**
+[§3.6](#36-the-run-budget-turning-hands-into-hours) does the arithmetic: all
+eight seat counts, crossed with per-persona compositions and stack depths, is 240
+cells and about 9.8 days of laptop time, which the operator has ruled out. The
+affordable form of this rule is the one §3.6 settles on: **four seat counts every
+run (2, 3, 6, 9), with 4, 5, 7 and 8 rotating in across nights**, so no seat count
+goes permanently unmeasured and no single run is a one-table-size run. Read this
+section's rule through that budget, not around it.
+
 **Why this is not paranoia.** Poker changes shape with the number of players in
 a way that is not a matter of degree. Two independent pointers:
 
@@ -782,9 +1020,14 @@ a way that is not a matter of degree. Two independent pointers:
 **Seat composition matters too, not just seat count.** A six-handed table of six
 calling stations and a six-handed table of one calling station and five nits are
 different games. The config specifies a *composition* — a multiset of personas
-per table — and the report records it. Recommendation: for each n, run a
-homogeneous table per persona (the clean signal) plus a mixed table drawn from
-the pool (the realistic one), and report both.
+per table — and the report records it. The ideal is, for each n, a homogeneous
+table per persona (the clean signal) plus a mixed table drawn from the pool (the
+realistic one), reporting both. **That ideal is ten compositions per seat count
+and it does not fit either** —
+[§3.6](#36-the-run-budget-turning-hands-into-hours) cuts it to **four per seat
+count: one mixed table plus three homogeneous personas drawn from the evaluation
+half, rotating across runs** so every persona is seen over a handful of nights.
+The full cross is the aspirational tier.
 
 ### 4.2 Why duplicate dies past three seats
 
@@ -912,11 +1155,22 @@ work, with a win-probability value estimate rather than chips
 Reset-per-hand ("Doyle's game") is what every cited evaluation used, it is the
 published reason those evaluations could treat each hand as an independent
 sample — which is what the statistics in
-[§2.5](#25-win-rate-with-honest-statistics) assume — and it is simpler. Run a
-declared set of depths rather than one; a short, a standard and a deep stack
-exercise materially different strategy. The specific depths are a design choice
-and belong in config; 100 big blinds must be among them, since it is what every
-cited evaluation used. Carry-over stacks are a later tier, and if they are ever
+[§2.5](#25-win-rate-with-honest-statistics) assume — and it is simpler. A short,
+a standard and a deep stack exercise materially different strategy, so a declared
+set of depths is better than one. The specific depths are a design choice and
+belong in config; 100 big blinds must be among them, since it is what every cited
+evaluation used.
+
+**Depth is the axis the budget cuts first.** Tripling the cell count triples the
+hours, and [§3.6](#36-the-run-budget-turning-hands-into-hours) has no room for
+it: **every routine and nightly run is 100 bb only**, and the short and deep
+depths get their own dedicated run on their own schedule rather than riding on
+every comparison. The reason depth is the axis to cut, rather than seat count or
+persona, is that seat count is the operator's stated requirement and personas are
+what the harness exists to measure against, while depth is the axis with the
+weakest published claim to change the answer.
+
+Carry-over stacks are a later tier, and if they are ever
 added, the independence assumption behind the sample-size arithmetic goes with
 them and the block bootstrap of
 [§3.5](#35-the-decision-rule-is-this-change-an-improvement) becomes mandatory
@@ -996,6 +1250,20 @@ not have to rediscover them.
 - **Peeking.** Watching the running win rate and stopping when it looks good
   invalidates the fixed-sample test completely. [§3.5](#35-the-decision-rule-is-this-change-an-improvement)
   forbids it and names the legitimate alternative.
+- **An underpowered cell reads as a clean cell.** This is the lie the budget
+  creates. [§3.6](#36-the-run-budget-turning-hands-into-hours) buys each cell
+  enough hands to detect a 100 mbb/hand regression and no more, so a per-cell
+  interval straddling zero means *"we could not have seen anything smaller than
+  100"*, not *"nothing is wrong here"*. The same trap sits under the per-table-size
+  breakdown in the report. Mitigation: the report prints "powered to detect"
+  beside every per-cell interval, and a cell is never described as passing — only
+  as not tripping the screen.
+- **The budget's own inputs are placeholders.** Seconds per bot decision and
+  decisions per hand are assumed, not measured ([X7](#engine-requirements)), and
+  σ = 1,500 is borrowed from a post-AIVAT six-player experiment this harness
+  cannot match before Tier 4. If the real σ is twice that, every run in
+  [§3.6](#36-the-run-budget-turning-hands-into-hours) is four times too short and
+  reports confident intervals it has not earned. Re-derive from the pilot.
 - **A too-small σ from a pilot.** The sample-size formula is only as good as the
   σ fed into it, and σ estimated from a short pilot on heavy-tailed data is
   biased low, which makes the run too short and the test underpowered. Re-estimate
@@ -1029,54 +1297,48 @@ conversion landing first.
 | X4 | Can one fixed deal be replayed with players permuted across seats? | Duplicate at n ≤ 3; [§4.2](#42-why-duplicate-dies-past-three-seats) |
 | X5 | Can the trained strategy be queried for an **action-probability distribution** at a decision point, rather than only a sampled action? *(Identical to the opponent model design's E1.)* | LBR (Tier 3), AIVAT (Tier 4) |
 | X6 | Does the engine handle side pots correctly when players are all-in for different amounts at a multiway pot? | I3; any n ≥ 3 result |
-| X7 | What is the throughput — hands per second per core — for a table of n players? | Every sample size in [§2.5](#25-win-rate-with-honest-statistics) becomes a wall-clock number only once this is measured |
+| X7 | The three numbers that convert hands into hours, for a table of n players: **(a)** engine-only throughput, complete hands per second per core, with no bot thinking; **(b)** **seconds per bot decision** at the decision-time budget actually shipped; **(c)** **bot decisions per hand**, measured, not assumed. | Every sample size in [§2.5](#25-win-rate-with-honest-statistics) and the whole budget in [§3.6](#36-the-run-budget-turning-hands-into-hours) |
+| X8 | How many `arena` workers can this laptop run in parallel without thrashing — cores usable and memory per worker? | The wall-clock column in [§3.6](#36-the-run-budget-turning-hands-into-hours) |
 
 **X7 is a measurement, not a yes/no, and it should be the first thing measured**,
 because it converts every hand count in this document into a number of hours and
-therefore decides which tiers are affordable.
+therefore decides which tiers are affordable. **Its binding term is (b) × (c),
+not (a).** The engine is idle while the bot thinks, so engine hands per second —
+the headline figure engine surveys report — is the wrong number to budget with
+and will understate the cost by orders of magnitude. `ENGINE_ALTERNATIVES.md` (on
+a branch under review at the time of writing) measures 56,414 engine hands/second
+for OpenSpiel `universal_poker` and a 250 ms decision-time budget for the bot;
+between those two, [§3.6](#36-the-run-budget-turning-hands-into-hours) is the
+difference between two minutes and ten days for the same grid.
 
 ---
 
-## Questions for the operator
+## Decisions that were open, and where they now live
 
-Each led by a recommendation, as `rules/global.md` requires.
+This section used to hold four questions. All four are answered. They are
+recorded here as decisions, with the section that carries each one, so that a
+later session can see what was decided and does not reopen it.
 
-**Q1 — Which hand evaluator may the fake opponents use?** The fake opponents
-need to know how strong their own cards are. *Recommendation: the engine's own
-evaluator*, because it keeps the harness free of an extra dependency and because
-any disagreement between the engine and the outside checker then shows up in the
-existing card-ranking tests rather than being hidden inside the harness. The
-alternative is `treys`, the outside checker already used by those tests, which
-`CLAUDE.md` permits for testing but not for the bot's own play. Either is
-consistent with the rules; the first is tidier. *Urgency: low — it does not block
-Tier 0.*
+| Was | Question | Decided | Written into |
+| --- | --- | --- | --- |
+| Q1 | Which hand evaluator may the fake opponents use? | Method call, delegated. Made-hand strength goes to **the engine's own evaluator**; preflop ranking uses a **static 169-class table from a named published source**; draw detection is a **small, explicitly test-only heuristic**. All three live under `tests/`, outside the bot's import graph, labelled test-only. | [§3.3](#33-the-forefront-rule-and-the-personas) |
+| Q2 | What mix of table sizes should the headline number weight? | **The operator's own answer**, 2026-09-15: mostly 6-handed, then 8/9 treated as one band. Headline weights 0.50 / 0.30 / 0.20; every other seat count is still evaluated and still gates a release. | [§3.5](#35-the-decision-rule-is-this-change-an-improvement), point 2 |
+| Q3 | How much may a change lose against one persona while winning overall? | Method call, delegated. The document's own operating rule stands: **any per-persona regression blocks the change** unless a written override names the persona and the reason. **No numeric tolerance**; loosening waits for data. | [§3.5](#35-the-decision-rule-is-this-change-an-improvement), "Non-inferiority, per persona" |
+| Q4 | How long may an evaluation run take? | **The operator's position**, recorded 2026-09-15: a full acceptance run finishes **within one night, at most 10 hours**, on one laptop; routine checks **within one hour**; **multi-day never**. | [§3.6](#36-the-run-budget-turning-hands-into-hours) |
 
-**Q2 — What mix of table sizes should the headline number cover?** The bot must
-work at every size from two to nine, but the single summary number has to weight
-them somehow, and weighting them equally implicitly claims the bot will spend as
-much time heads-up as it will nine-handed. *Recommendation: weight by the table
-sizes the operator actually expects to play*, and until that is known, report
-every size separately with **no** pooled headline number at all, so nothing is
-hidden by averaging. *Urgency: medium — it is needed before Tier 2's decision
-rule means anything.*
+**Why Q1 and Q3 were not sent to the operator.** Both are method decisions, not
+product ones: nothing about them depends on facts only the operator holds, and
+`rules/global.md` reserves escalation for design judgement, ambiguous product
+calls, and blast radius. Q2 was the opposite — *which table sizes the operator
+actually plays* is a fact no amount of analysis could supply — so it went, and
+its answer is quoted verbatim in the
+[provenance table](#provenance-of-every-number-in-this-document).
 
-**Q3 — How much can a change be allowed to lose against one opponent type if it
-wins overall?** A change might win more money overall while doing worse against,
-say, the opponent who never bluffs. *Recommendation: treat any measured loss
-against any single opponent type as a blocker requiring a written reason*, on the
-grounds that the published failure mode is exactly this — a strategy that
-over-adapts to one opponent and collapses against others
-([Johanson & Bowling 2009](#s-johanson2009), §4). A looser rule can be adopted
-once there is data on how often this trips. *Urgency: medium — needed at Tier 2.*
-
-**Q4 — Is a several-hour, or overnight, evaluation run acceptable before a
-change is accepted?** The sample sizes in
-[§2.5](#25-win-rate-with-honest-statistics) are large, and how long they take
-depends entirely on engine throughput ([X7](#engine-requirements)).
-*Recommendation: yes, and design for it* — the runs are unattended, and
-`rules/global.md` already permits landing at any hour. The alternative is
-accepting a lower-powered test, which means accepting changes that are not
-improvements. *Urgency: low until X7 is measured.*
+**Nothing in this document is now blocked on an answer.** What it is blocked on
+is a *measurement*: [X7](#engine-requirements) and [X8](#engine-requirements),
+which turn hand counts into hours. Until those exist, every wall-clock figure in
+[§3.6](#36-the-run-budget-turning-hands-into-hours) rests on a placeholder that
+is marked as one.
 
 ---
 
@@ -1164,6 +1426,24 @@ Michael Bowling, "Data Biased Robust Counter Strategies", *AISTATS 2009*.
 responses "perform well against their intended opponent, but they can perform
 very badly against other opponents", counter-strategies overfit their opponent
 model, and the technique is "sensitive to the choice of training opponent".
+
+<a id="s-chen"></a>**[Chen & Ankenman 2006]** Bill Chen and Jerrod Ankenman, *The
+Mathematics of Poker*, ConJelCo, 2006, ISBN 978-1-886070-25-7. The source named
+in [§3.3](#33-the-forefront-rule-and-the-personas) for the personas' static
+169-class preflop starting-hand ranking (the "Chen formula"), chosen because it
+scores all 169 classes and so gives the total order a "top X%" rule needs.
+**Not retrieved in this survey**, and neither the formula nor any ranking derived
+from it is reproduced in this document. The table must be transcribed from this
+edition and the transcription checked against it before use; a test asserts the
+table has exactly 169 entries and is a strict ranking.
+
+<a id="s-sklansky"></a>**[Sklansky & Malmuth 1999]** David Sklansky and Mason
+Malmuth, *Hold'em Poker for Advanced Players*, 21st Century Edition, Two Plus Two
+Publishing, 1999, ISBN 978-1-880685-22-3. The better-known published
+starting-hand grouping, listed in [§3.3](#33-the-forefront-rule-and-the-personas)
+as the alternative to the Chen formula and rejected only because it groups the
+playable top and leaves the remainder unordered, which a "top X%" rule cannot
+use. **Not retrieved in this survey**; no group membership is reproduced here.
 
 <a id="s-lanctot2017"></a>**[Lanctot et al. 2017]** Marc Lanctot, Vinicius
 Zambaldi, Audrūnas Gruslys, Angeliki Lazaridou, Karl Tuyls, Julien Pérolat, David
@@ -1253,12 +1533,21 @@ Per the global evidence rules, so that no figure here has to be taken on trust.
 | Baseline 21.78%–49.68%; duplicate down to −40.41%; nine agents; 180,000 hands; fifty self-play repetitions per deal; six orderings at three players | [Davidson et al. 2013](#s-baseline), Table 1 and §5.2, read directly |
 | 51,377,820 games; 158,035 players; seven player types; folds ≥72% = tight; AF > 1 = aggressive | [Teófilo & Reis 2011](#s-teofilo2011), §3, §5 Table 1, §7. The 72% and AF > 1 thresholds are attributed there to Billings' thesis and are therefore **second-hand** |
 | σ ≈ 12,981 mbb/hand (HUNL raw) | **Derived** 2026-09-15: 25.962 chips ÷ 2 chips per big blind × 1000 = 12,981 mbb, from [Burch et al. 2018](#s-aivat) Table 3 |
-| σ ≈ 4,048 mbb/hand (HUNL after AIVAT) | **Derived** 2026-09-15: 8.095 ÷ 2 × 1000 = 4,047.5 mbb, same table |
+| σ = 4,047.5 mbb/hand (HUNL after AIVAT) | **Derived** 2026-09-15: 8.095 ÷ 2 × 1000 = 4,047.5 mbb, same table. Quoted at 4,047.5 and not rounded to 4,048, because 4,047.5 is the value the [§2.5](#25-win-rate-with-honest-statistics) sample-size row reproduces from and 4,048 is not |
 | σ ≈ 2,500 and ≈ 1,500 mbb/hand (six-player, after AIVAT) | **Derived** 2026-09-15 as SD = standard error × √n = 25 × √10000 and 15 × √10000, from [Brown 2020](#s-brown2020) §6.6. Assumes the reported standard errors were computed from 10,000 hands treated as independent samples, which is what the cited one-tailed t-test implies |
-| `(z₀.₉₇₅ + z₀.₈₀)² = 7.8489`; every cell of the sample-size table; the paired-ρ table; the (1−r)² multipliers; n! for 2–9; SPRT boundaries A = 16.0, B = 0.2105 | **Computed by script on 2026-09-15.** Formulas are stated inline beside each table: `n = 2σ²(z_α + z_β)²/Δ²` unpaired, `2σ²(1−ρ)(z_α + z_β)²/Δ²` paired, `A = (1−β)/α`, `B = β/(1−α)`. Standard results, no source needed beyond [Wald 1945](#s-wald) for the SPRT boundaries |
+| `(z₀.₉₇₅ + z₀.₈₀)² = 7.8489`; every cell of the sample-size table; the paired-ρ table; the (1−r)² multipliers; n! for 2–9; SPRT boundaries A = 16.0, B = 0.2105 | **Computed by script on 2026-09-15.** Formulas are stated inline beside each table: `n = 2σ²(z_α + z_β)²/Δ²` unpaired, `2σ²(1−ρ)(z_α + z_β)²/Δ²` paired, `A = (1−β)/α`, `B = β/(1−α)`. Standard results, no source needed beyond [Wald 1945](#s-wald) for the SPRT boundaries. **7.8489 is a display rounding**; the tables are computed at 7.848879734…, and reproducing them with 7.8489 exactly gives cells a few units out |
+| The ratios 2,500 ÷ 48 ≈ 52 and 12,981 ÷ 48 ≈ 270 in [§2.5](#25-win-rate-with-honest-statistics) Step 1 | **Computed 2026-09-15** from the rows above. 52 is the like-for-like one: both terms are six-player no-limit after AIVAT ([Brown 2020](#s-brown2020), §6.6). 270 divides a *heads-up* σ by a *six-player* edge and is quoted only as an order of magnitude, labelled as such at the point of use |
 | The consistency of 68% → 0.102× and 85% → 0.023× with the AIVAT paper's own "ten times" and "factor of forty" | **Derived** 2026-09-15 as (1−r)², and checked against [Burch et al. 2018](#s-aivat)'s conclusions, which state both multipliers |
 | 100 big blinds as the standard stack; $10,000 stacks at a $100 big blind in Pluribus; the "treat each hand as a separate sample" justification; "raises can be in any whole-dollar amount" | arXiv:1612.06915v2 preprint of [Burch et al. 2018](#s-aivat), §"No-limit Texas Hold'em"; [Brown 2020](#s-brown2020) §2.4.3, both read directly |
 | Every persona parameter (`TIGHT_FRACTION`, `MANIAC_RAISE_P`, `VALUE_THRESHOLD`, `TILT_TRIGGER_BB`, `TILT_DURATION`) | **Design choices, not measured or cited.** No value is asserted in this document; all belong in `personas/params.py` and are to be randomised per session per [§3.2](#32-the-persona-set) |
 | ρ, the paired correlation between arms | **Not known.** [§2.5](#25-win-rate-with-honest-statistics) tabulates it across a range precisely because it must be measured by the harness before any sample size is fixed |
 | The example `arena report` output in [§3.5](#35-the-decision-rule-is-this-change-an-improvement) | **Invented, and only illustrates the report's format.** Not data, and not a claim about any version of the bot |
 | The stack-depth set, the persona-set split, the development/evaluation halves, the choice of bootstrap over t-test as primary | **Design choices made in this document, labelled as such at each point of use** |
+| The table-size weighting: 6-handed first, then 8 and 9 as one band | **The operator, 2026-09-15**, verbatim: *"i will be playing mostly 6 player tables, followed by 8 or 9 player tables which can honestly be treated the same, they are so close."* This is a product fact about what the operator plays, which is why it was asked rather than decided |
+| The specific weights 0.50 (n=6) / 0.30 (n=8,9) / 0.20 (n=2,3,4,5,7) | **A design choice implementing that ordering, not a quantity the operator gave.** The operator stated an order, not proportions. The weights live in config, are reprinted in every report, and are revisable without touching this document |
+| Run-length limits: 10 hours for a full acceptance run, 1 hour for a routine check, multi-day never | **The operator's position, recorded 2026-09-15**: no multi-day computing; hours on one laptop |
+| 56,414 engine hands/second (OpenSpiel `universal_poker`, 6-player, one core); the 250 ms per-decision budget | `ENGINE_ALTERNATIVES.md`, **on a branch under review and not on main at the time of writing**. Cited as pending: if that document changes or is rejected, every hour in [§3.6](#36-the-run-budget-turning-hands-into-hours) must be recomputed |
+| 4 bot decisions per hand; 8 parallel workers; ⇒ 1.0 bot-second per hand and 28,800 hands/hour | **Placeholders, explicitly marked as such at the point of use. Nothing sources them.** They are [X7](#engine-requirements)(c) and [X8](#engine-requirements) and must be measured before any budget in [§3.6](#36-the-run-budget-turning-hands-into-hours) is relied on |
+| The budget arithmetic: 240 cells; 6,781,440 hands; 235 h ≈ 9.8 days; 23.5× the cap; ≈11 ms/decision needed to fit; 16 cells; 113,024 hands; 3.9 h; 28,256 hands; 0.98 h; pooled n_eff 39,244 ⇒ Δ = 30.0 mbb/hand | **Computed by script on 2026-09-15** from the σ = 1,500 row of [§2.5](#25-win-rate-with-honest-statistics) and the placeholders above. σ = 1,500 is post-AIVAT and this harness has no AIVAT before Tier 4, so every hour is a **floor**; ρ = 0 is assumed, which pushes the other way. Both caveats are stated in [§3.6](#36-the-run-budget-turning-hands-into-hours) |
+| The personas' 169-class preflop ranking table | **Not in this document and not reproduced here.** To be transcribed from [Chen & Ankenman 2006](#s-chen), which was **not retrieved in this survey**; the transcription must be checked against that edition before use ([§3.3](#33-the-forefront-rule-and-the-personas)) |
+| The personas' draw-detection heuristic | **A design choice, and deliberately crude.** Test-only, outside the bot's import graph, unit-tested against enumerated examples; no source is claimed for it and none is needed, because a persona is a caricature ([§3.3](#33-the-forefront-rule-and-the-personas)) |
