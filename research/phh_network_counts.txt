@@ -1,0 +1,59 @@
+phh-dataset HandHQ samples, one file per network, counted 2026-09-15 by research/count_phh_networks.py
+source: https://raw.githubusercontent.com/uoftcprg/phh-dataset/main/data/handhq
+
+== PokerStars
+   file: PS-2009-07-01_2009-07-23_25NLH_OBFU/0.25/ps NLH handhq_1-OBFUSCATED.phhs
+   hands: 991
+   seat_count present: 948/991   values: {'6': 462, '9': 486}
+   seats (occupied-seat numbers) present: 991/991
+   max(seats) == seat_count: 767/948   max(seats) > seat_count: 0
+   dealt-in counts (len(players)): {2: 21, 3: 63, 4: 89, 5: 167, 6: 263, 7: 110, 8: 163, 9: 115}
+   8-handed: 163   9-handed: 115   8+9: 278/991 = 28.1%
+   starting_stacks all inf: 0/991
+
+== iPoker
+   file: IPN-2009-07-01_2009-07-23_100NLH_OBFU/1/ipn NLH handhq_1-OBFUSCATED.phhs
+   hands: 985
+   seat_count present: 0/985   values: {}
+   seats (occupied-seat numbers) present: 985/985
+   dealt-in counts (len(players)): {2: 156, 3: 20, 4: 87, 5: 205, 6: 356, 7: 15, 8: 48, 9: 82, 10: 16}
+   8-handed: 48   9-handed: 82   8+9: 130/985 = 13.2%
+   starting_stacks all inf: 985/985
+
+== PartyPoker
+   file: PTY-2009-07-01_2009-07-23_400NLH_OBFU/4/pty NLH handhq_1-OBFUSCATED.phhs
+   hands: 995
+   seat_count present: 0/995   values: {}
+   seats (occupied-seat numbers) present: 995/995
+   dealt-in counts (len(players)): {2: 105, 3: 66, 4: 147, 5: 300, 6: 332, 8: 5, 9: 30, 10: 10}
+   8-handed: 5   9-handed: 30   8+9: 35/995 = 3.5%
+   starting_stacks all inf: 0/995
+
+== Full Tilt
+   file: FTP-2009-07-01_2009-07-23_50NLH_OBFU/0.5/ftp NLH handhq_1-OBFUSCATED.phhs
+   hands: 991
+   seat_count present: 393/991   values: {'6': 393}
+   seats (occupied-seat numbers) present: 991/991
+   max(seats) == seat_count: 343/393   max(seats) > seat_count: 0
+   dealt-in counts (len(players)): {2: 506, 3: 6, 4: 48, 5: 167, 6: 191, 7: 23, 8: 19, 9: 31}
+   8-handed: 19   9-handed: 31   8+9: 50/991 = 5.0%
+   starting_stacks all inf: 0/991
+
+== Absolute Poker
+   file: ABS-2009-07-01_2009-07-23_100NLH_OBFU/1/abs NLH handhq_1-OBFUSCATED.phhs
+   hands: 999
+   seat_count present: 0/999   values: {}
+   seats (occupied-seat numbers) present: 999/999
+   dealt-in counts (len(players)): {2: 202, 3: 8, 4: 55, 5: 169, 6: 258, 7: 36, 8: 87, 9: 184}
+   8-handed: 87   9-handed: 184   8+9: 271/999 = 27.1%
+   starting_stacks all inf: 0/999
+
+== Ongame
+   file: ONG-2009-07-01_2009-07-23_400NLH_OBFU/4/ong NLH handhq_1-OBFUSCATED.phhs
+   hands: 999
+   seat_count present: 0/999   values: {}
+   seats (occupied-seat numbers) present: 999/999
+   dealt-in counts (len(players)): {3: 141, 4: 358, 5: 500}
+   8-handed: 0   9-handed: 0   8+9: 0/999 = 0.0%
+   starting_stacks all inf: 0/999
+
