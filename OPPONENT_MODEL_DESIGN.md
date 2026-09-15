@@ -62,7 +62,7 @@ states exactly where the line falls.
 5. [Safety: how this loses money if done carelessly](#5-safety-how-this-loses-money-if-done-carelessly)
 6. [Validation before it touches a real table](#6-validation-before-it-touches-a-real-table)
 7. [Engine requirements](#engine-requirements)
-8. [Open questions for the operator](#7-open-questions-for-the-operator)
+8. [Questions for the operator](#7-questions-for-the-operator)
 9. [Sources](#sources)
 10. [Provenance of every number in this document](#provenance-of-every-number-in-this-document)
 
@@ -102,16 +102,14 @@ already what `CLAUDE.md` says.
 ### The forefront rule and this design
 
 `CLAUDE.md` forbids AI-written code from deciding a poker action, evaluating a
-hand, or reading a board. The boundary this design holds to:
-
-| Allowed to the opponent-model code | Reserved to the engine |
-| --- | --- |
-| Counting observed actions | Evaluating hand strength |
-| Computing rates from counts | Choosing an action |
-| Shrinking a rate toward a baseline | Assigning a range to an opponent |
-| Sorting an opponent into a bucket | Reading board texture |
-| Selecting *which* engine strategy to load | Producing the strategy itself |
-| Substituting an opponent model into the engine's own solver | Solving |
+hand, or reading a board. **The exact boundary for opponent modelling lives in
+`CLAUDE.md`, under "The forefront rule", as a two-column table.** That table is
+the authority; this document only has to obey it. In summary: opponent-model
+code may count actions, turn counts into rates, shrink a rate toward a baseline,
+sort an opponent into a bucket, select *which* engine strategy to load, and
+substitute an opponent model into the engine's own solver. Evaluating hand
+strength, choosing an action, assigning a range, reading board texture,
+producing a strategy, and solving all stay with the engine.
 
 Every counter-strategy in this design is **produced by the engine**, by solving
 against a modified opponent, never by a human or an AI writing "against a
@@ -125,13 +123,15 @@ explicitly.
 
 ### 2.1 Design constraints that decide the stat list
 
-**Hole cards are almost never observed.** Teofilo and Reis mined a real-money
-casino hand-history corpus of 51,377,820 games across 158,035 players and
-report 2,323,538 showdowns — a showdown ratio of 4.52%
-([Teofilo & Reis 2011](#s-teofilo2011), Table 1). Roughly nineteen hands in
-twenty end without anyone's cards being revealed. **Consequence: every primary
-statistic must be computable from observed *actions* alone.** Showdown-revealed
-holdings are a bonus signal, not a foundation. Any design that needs to know
+**Hole cards are almost never observed.** Teofilo and Reis mined a corpus of
+real-money **tournament** logs — 51,377,820 games across 158,035 players —
+and report 2,323,538 showdowns, a showdown ratio of 4.52%
+([Teofilo & Reis 2011](#s-teofilo2011), Table 1). Showdown frequency can differ
+between tournament and cash play, so treat 4.52% as an order of magnitude rather
+than a cash-game constant; the conclusion survives either way. Roughly nineteen
+hands in twenty end without anyone's cards being revealed. **Consequence: every
+primary statistic must be computable from observed *actions* alone.**
+Showdown-revealed holdings are a bonus signal, not a foundation. Any design that needs to know
 what the opponent held will starve.
 
 **Everything is a pair of counters.** Store `(numerator, denominator)`, never a
@@ -164,8 +164,24 @@ with the thresholds: **a player who folds 72% or more of hands is tight,
 otherwise loose; a player with AF above 1 is aggressive, otherwise passive**
 ([Teofilo & Reis 2011](#s-teofilo2011), §3, citing
 [Billings 2006](#s-billings2006) and [Sklansky](#s-sklansky)). Folding ≥72% of
-hands is the complement of voluntarily putting money in with ≤28% of them, which
-is the same quantity the tracking-software world calls VPIP.
+hands is *approximately* the complement of voluntarily putting money in with
+≤28% of them, the quantity the tracking-software world calls VPIP — but the two
+rates do **not** sum to exactly 1. Some hands end in neither a fold nor a
+voluntary investment; the common case is a big blind who checks their option
+when nobody raised, which is not a fold and not a VPIP action either (see
+[§4.7](#47-edge-cases-a-coding-task-will-hit)). Those hands fall outside both
+counts, so `fold_rate + vpip < 1` and the VPIP value that truly corresponds to a
+72% fold rate sits *below* 0.28 by the share of such hands. Using 0.28 anyway
+therefore puts the tight/loose split slightly too high and will call some
+borderline players tight when the literature threshold would call them loose.
+
+That sign holds if "folds a hand" means the player put in no voluntary money and
+folded; it can reverse if the corpus counted a fold at any street, because then
+a player who calls preflop and folds the flop is counted in *both* rates and the
+two can sum above 1. The source does not say which it used, so **the size and
+even the direction of the gap are things to measure, not to assume**.
+[V4](#6-validation-before-it-touches-a-real-table) measures both on logged hands
+before the split is trusted.
 
 Two cautions about AF, both statistical rather than poker-specific:
 
@@ -222,7 +238,7 @@ column is what drives that; see [Table C](#table-c-how-many-hands-each-stat-need
 | --- | --- |
 | `stack_bb` | Short stacks change correct play regardless of tendency |
 | `hands_since_last_seen` | Drives the decay in [§4.3](#43-after-each-hand-the-update) |
-| `session_net_bb` | Reserved for a tilt signal; **not acted on** — see [§7](#7-open-questions-for-the-operator) |
+| `session_net_bb` | Reserved for a tilt signal; **not acted on** — see [§7](#7-questions-for-the-operator) |
 
 ### 2.4 Why bluffing is the wrong primary exploit at a multiway table
 
@@ -280,8 +296,20 @@ three opponents that requires each of them to fold 79% of the time
    from bluffing more.
 2. **Bluffing exploits are conditional on the whole live field, never on one
    opponent.** The bucket of the *one* player you want to fold is irrelevant if
-   three others are still in. Any bluff-frequency adjustment must be gated on
-   the product of fold rates across all live opponents, computed per decision.
+   three others are still in. State this carefully, because the forefront rule
+   is next to it: the fold-rate product is **a property the engine-produced
+   strategy must exhibit, not a calculation for AI-written code to do at the
+   table**. No module outside the engine may multiply fold rates together and
+   adjust a bluff frequency by the result; that is deciding a poker action, and
+   `CLAUDE.md` forbids it. The multiway discount arrives instead through the
+   engine: Tier 1 solves each counter-strategy against archetypes of the whole
+   live field ([§4.5](#45-tiers-what-to-build-in-what-order)), so the effect is
+   already inside its output. What this design owes is a check that it is
+   there — see [V5](#6-validation-before-it-touches-a-real-table), which reports
+   bluff frequency against the number of live opponents. **This paragraph is
+   descriptive, not prescriptive**, on the same footing as
+   [§4.6](#46-what-each-bucket-means-in-plain-strategic-terms): if the engine's
+   output disagrees with it, the engine is right and this paragraph is wrong.
 3. **Preflop is where single-opponent exploits are cleanest,** because preflop
    is where the field is smallest and where `fold_to_three_bet` and
    `fold_to_steal` describe a one-on-one interaction.
@@ -309,7 +337,7 @@ The earlier Libratus work makes the reasoning explicit: "The way machine
 learning has typically been used in game playing is to try to build an opponent
 model, find mistakes in the opponent's strategy, and exploit those mistakes. The
 downside is that trying to exploit the opponent opens oneself to being exploited.
-Therefore, Libratus generally did not do opponent exploitation" (ibid., §6.5).
+Therefore, Libratus generally did not do opponent exploitation" (ibid., §6.4).
 
 Results, for calibration: against five elite professionals over 10,000 hands,
 Pluribus won 48 mbb/game with a standard error of 25 mbb/game (p = 0.028). In
@@ -422,7 +450,7 @@ Named explicitly so a later task does not try.
 | RNR/DBR counter-strategies computed by solving a modified game | Requires modifying the solver's game definition. Possible in principle; gated entirely on what the engine exposes. See [Engine requirements](#engine-requirements). |
 | A neural opponent-action predictor | No training data until the bot has played. The classic chicken-and-egg. Revisit after the bot has its own hand database. |
 | Multiway equilibrium guarantees of any kind | Do not exist. See [§1](#1-goal-and-non-goals). |
-| Tilt / emotional-state modelling | No published grounding found. Filed as an open question, [§7](#7-open-questions-for-the-operator). |
+| Tilt / emotional-state modelling | No published grounding found. Filed as an open question, [§7](#7-questions-for-the-operator). |
 
 ### 3.4 What *is* realistic, and is what Part 3 specifies
 
@@ -555,7 +583,19 @@ anchors chosen to show the shape of the requirement, **not claims about any
 real population**; the width of the interval barely moves for `p̂` between 0.2
 and 0.8. Computed 2026-09-15.
 
-| Stat | Anchor `p̂` | Opportunities per hand | Target width | Opportunities needed | **Hands needed** |
+The **"Opportunities per hand" column is an illustrative estimate on the same
+footing as `p̂`, not a sourced fact.** No published figure was found for how
+often a real multiway table hands a given player these spots, and none is
+invented here: 0.08, 0.15 and 0.30 are round order-of-magnitude placeholders for
+"rare", "occasional" and "common". The "Hands needed" column inherits that
+uncertainty and scales inversely with them — halve an opportunity rate and the
+hands double. **Replace all three with measurement as soon as Tier 0 has logged
+any hands**: each is exactly `denominator / hands_dealt` for that stat, pooled
+across observed opponents. What survives the uncertainty is the *ordering* —
+Tier A stats need hundreds of hands and postflop stats need thousands — and that
+ordering is what the rest of this document leans on.
+
+| Stat | Anchor `p̂` (illustrative) | Opportunities per hand (illustrative) | Target width | Opportunities needed | **Hands needed** |
 | --- | --- | --- | --- | --- | --- |
 | `vpip` | 0.30 | 1.00 | ±5pp | 323 | **323** |
 | `vpip` | 0.30 | 1.00 | ±3pp | 896 | **896** |
@@ -608,17 +648,25 @@ hand and keep the constant configurable.
 For each stat, with raw counts `k` successes in `n` opportunities:
 
 ```python
-BASELINE = {...}          # pooled rate across observed opponents; see below
-PRIOR_STRENGTH = 25       # per-stat; see the table below
-CONF_S        = 25        # per-stat; the s-Curve constant
+BASELINE = {...}              # pooled rate across observed opponents; see below
+PRIOR_STRENGTH = {...}        # per-stat; the table below gives every value
+s = PRIOR_STRENGTH[stat]      # one constant per stat, used for both lines
 
-rate       = (BASELINE[stat] * PRIOR_STRENGTH + k) / (PRIOR_STRENGTH + n)
-confidence = n / (n + CONF_S)
+rate       = (BASELINE[stat] * s + k) / (s + n)
+confidence = n / (n + s)
 ```
 
-The `rate` line is DBBR's Equation 1 with `N_prior = PRIOR_STRENGTH`
+**There is deliberately no separate s-Curve constant.** The s-Curve's `s` *is*
+`PRIOR_STRENGTH` for that stat, so a stat has exactly one tuning constant. The
+consequence is that the sample size at which the data outweighs the prior and
+the sample size at which `confidence` passes 0.5 are the same number by
+construction — which is exactly what the "Prior and data carry equal weight at…"
+column in the table below reports. A coding task must not introduce a second
+constant here.
+
+The `rate` line is DBBR's Equation 1 with `N_prior = PRIOR_STRENGTH[stat]`
 ([Ganzfried & Sandholm 2011](#s-ganzfried2011), §4.2). The `confidence` line is
-DBR's s-Curve confidence function with `Pmax = 1`
+DBR's s-Curve confidence function with `Pmax = 1` and `s = PRIOR_STRENGTH[stat]`
 ([Johanson & Bowling 2009](#s-johanson2009), §5.2). Neither is invented for this
 document.
 
@@ -633,9 +681,9 @@ back to the blueprint's own action frequency at the corresponding decision — t
 same substitution DBBR makes, where the prior mean *is* the baseline strategy's
 probability.
 
-`PRIOR_STRENGTH` per stat, sized to the opportunity rate so that the crossover
-from "treat as average" to "treat as themselves" lands at a sensible number of
-hands:
+`PRIOR_STRENGTH` per stat — which is also the `s` in the `confidence` line
+above — sized to the opportunity rate so that the crossover from "treat as
+average" to "treat as themselves" lands at a sensible number of hands:
 
 | Stat group | `PRIOR_STRENGTH` | Prior and data carry equal weight at… |
 | --- | --- | --- |
@@ -645,19 +693,21 @@ hands:
 
 #### Table D: what the confidence weight looks like
 
-`confidence = n / (n + s)`. Computed 2026-09-15.
+`confidence = n / (n + s)`, where `s` is that stat's `PRIOR_STRENGTH`. The three
+tier values from the table above are marked; `s`=5 and `s`=10 are included only
+to show the shape. Computed 2026-09-15.
 
-| observations `n` | `s`=5 | `s`=10 | `s`=25 | `s`=50 |
-| --- | --- | --- | --- | --- |
-| 1 | 0.17 | 0.09 | 0.04 | 0.02 |
-| 2 | 0.29 | 0.17 | 0.07 | 0.04 |
-| 5 | 0.50 | 0.33 | 0.17 | 0.09 |
-| 10 | 0.67 | 0.50 | 0.29 | 0.17 |
-| 25 | 0.83 | 0.71 | 0.50 | 0.33 |
-| 50 | 0.91 | 0.83 | 0.67 | 0.50 |
-| 100 | 0.95 | 0.91 | 0.80 | 0.67 |
-| 250 | 0.98 | 0.96 | 0.91 | 0.83 |
-| 500 | 0.99 | 0.98 | 0.95 | 0.91 |
+| observations `n` | `s`=5 | `s`=10 | `s`=15 (Tier C) | `s`=25 (Tier B) | `s`=50 (Tier A) |
+| --- | --- | --- | --- | --- | --- |
+| 1 | 0.17 | 0.09 | 0.06 | 0.04 | 0.02 |
+| 2 | 0.29 | 0.17 | 0.12 | 0.07 | 0.04 |
+| 5 | 0.50 | 0.33 | 0.25 | 0.17 | 0.09 |
+| 10 | 0.67 | 0.50 | 0.40 | 0.29 | 0.17 |
+| 25 | 0.83 | 0.71 | 0.63 | 0.50 | 0.33 |
+| 50 | 0.91 | 0.83 | 0.77 | 0.67 | 0.50 |
+| 100 | 0.95 | 0.91 | 0.87 | 0.80 | 0.67 |
+| 250 | 0.98 | 0.96 | 0.94 | 0.91 | 0.83 |
+| 500 | 0.99 | 0.98 | 0.97 | 0.95 | 0.91 |
 
 #### Table E: shrinkage in practice
 
@@ -693,9 +743,17 @@ equal prior/data weight in the table above.
 
 **Where the splits come from.**
 
-- `VPIP_SPLIT` **defaults to 0.28**, the complement of the "folds 72% or more of
-  hands is tight" threshold in [Billings 2006](#s-billings2006) as reported by
-  [Teofilo & Reis 2011](#s-teofilo2011).
+- `VPIP_SPLIT` **defaults to 0.28**, the *approximate* complement of the "folds
+  72% or more of hands is tight" threshold in [Billings 2006](#s-billings2006)
+  as reported by [Teofilo & Reis 2011](#s-teofilo2011). **Approximate**, because
+  fold rate and VPIP do not sum to 1: a big blind who checks their option is
+  neither a fold nor a VPIP action, as
+  [§2.2](#22-the-two-axes-that-have-literature-behind-them) and
+  [§4.7](#47-edge-cases-a-coding-task-will-hit) both note. So 0.28 is a biased
+  stand-in for the real complement, and borderline players will land on the
+  wrong side of it. Treat it as a starting value pending
+  [V4](#6-validation-before-it-touches-a-real-table), which measures the
+  disagreement on logged hands; move the split by the measured gap.
 - `AFQ_SPLIT` **defaults to 0.50**, being the AFq value at which bets-and-raises
   equal calls-and-folds. The literature threshold is stated as `AF > 1`, i.e.
   bets+raises exceed calls; `AFq = 0.5` is the nearest bounded analogue but is
@@ -736,10 +794,11 @@ recorded in a config file rather than in code.
 **The upgrade path, when there is data for it.** The four-box grid is a
 deliberate simplification. [Teofilo & Reis 2011](#s-teofilo2011) ran
 expectation-maximisation clustering over per-player action-type frequencies
-drawn from real casino logs and recovered **7 distinct player types**, each with
-at least one characterising tactic. Once this bot has its own hand database of
-comparable size, re-derive the buckets the same way — cluster the profile
-vectors rather than hand-drawing a grid. Do not do this before the data exists.
+drawn from real-money tournament logs and recovered **7 distinct player types**,
+each with at least one characterising tactic. Once this bot has its own hand
+database of comparable size, re-derive the buckets the same way — cluster the
+profile vectors rather than hand-drawing a grid. Do not do this before the data
+exists.
 
 ### 4.5 Tiers: what to build, in what order
 
@@ -969,11 +1028,27 @@ blueprint's own action frequency. **If the per-opponent model does not beat both
 baselines, the opponent model is not adding information and Tier 1 must not
 ship.** This is falsifiable, runs offline, and costs nothing.
 
-**V4 — Split-threshold check.** `AFQ_SPLIT = 0.50` is asserted in
-[§4.4](#44-bucketing-an-opponent) as the bounded analogue of the literature's
-`AF > 1`. Compute both on the same logged population and report the
-disagreement rate. If they disagree often, the split is wrong and must move to
-whatever value reproduces the `AF > 1` partition.
+**V4 — Split-threshold check.** Both splits in
+[§4.4](#44-bucketing-an-opponent) are stand-ins for a literature threshold
+stated in a different quantity, and both are checked the same way, on the same
+logged population, at the same time.
+
+- **Aggression.** `AFQ_SPLIT = 0.50` is asserted as the bounded analogue of the
+  literature's `AF > 1`. Compute both on every logged opponent and report the
+  disagreement rate. If they disagree often, the split is wrong and must move to
+  whatever value reproduces the `AF > 1` partition.
+- **Looseness.** `VPIP_SPLIT = 0.28` is asserted as the complement of "folds
+  ≥72% of hands", which it is only approximately — checked big-blind options
+  belong to neither rate. Measure, per opponent: the fold rate, the VPIP, and
+  `1 − fold_rate − vpip`, the gap between them. Report the mean gap, and the
+  disagreement rate between "tight by fold rate ≥ 0.72" and "tight by
+  `vpip ≤ 0.28`". If the gap is material, move `VPIP_SPLIT` to the VPIP value
+  that reproduces the fold-rate partition on this population, and record the
+  measured gap beside it.
+
+Both checks are superseded, not repeated, once the population median replaces
+each split per [§4.4](#44-bucketing-an-opponent) — at that point the literature
+threshold is no longer load-bearing.
 
 **V5 — Exploitation A/B.** Alternate `S_BASE` and the counter-strategy by hand
 parity over a long run, and compare bb/100. Note the variance problem: Pluribus
@@ -982,6 +1057,14 @@ p = 0.028 ([Brown 2020](#s-brown2020), §6.6). Without variance reduction this
 measurement needs far more hands than the project will have. **Treat V5 as a
 red-flag detector — "is this losing badly?" — not as proof that exploitation
 works.** V3 is the real evidence.
+
+V5 carries one extra report, which is cheap and needs no extra hands: **bluff
+frequency broken down by the number of live opponents.** The arithmetic in
+[§2.4](#24-why-bluffing-is-the-wrong-primary-exploit-at-a-multiway-table) says a
+sound strategy bluffs less as the field grows. If the engine's output does not
+show that fall, the finding is a red flag against that strategy — a reason to
+re-examine the archetypes or the solver settings, never a licence to correct
+bluff frequency in code outside the engine.
 
 ---
 
@@ -1006,9 +1089,10 @@ assessment. That is the recommended sequencing.
 
 ---
 
-## 7. Open questions for the operator
+## 7. Questions for the operator
 
-Listed with a recommendation first, as the global rules require.
+Listed with a recommendation first, as the global rules require. Q2 is answered
+and kept here as a record of the answer; Q1 and Q3 are still open.
 
 **Q1 — Where does the bot get hands to learn from before it has played any?**
 The design needs a pool of observed opponents to set `BASELINE` and the split
@@ -1019,13 +1103,25 @@ public hand-history corpus of the kind
 [Teofilo & Reis 2011](#s-teofilo2011) used. Whether that is acceptable for a
 class project is the operator's call, and depends on the source's terms.
 
-**Q2 — Is the opponent identifier stable?** Everything depends on recognising
-the same human across hands. *Recommendation:* use the table alias if the target
-environment provides one. If opponents are anonymous or re-seated under new
-identifiers, **per-opponent modelling is impossible** and the project should
-fall back to per-*table* modelling (a single pooled profile for the whole
-table), which is a strictly weaker but still workable design. This question is
-load-bearing enough that it should be answered before any code is written.
+**Q2 — Is the opponent identifier stable? ANSWERED: yes.** Everything depends on
+recognising the same human across hands, so this was load-bearing. The operator
+has confirmed directly that the target app shows consistent player names that a
+player cannot change, and has asked for a true per-opponent adaptive model to
+maximise profit rather than a weaker per-table approximation. **Consequences,
+now settled rather than conditional:**
+
+- `opponent_id` is that player name. The schema in
+  [§4.2](#42-the-stat-table) already assumes it.
+- The per-*table* pooled-profile fallback that this question previously offered
+  is **dropped**. It was only ever the answer to "identifiers are unstable",
+  and they are not.
+- The rest of this document needs no change: per-opponent tracking was the
+  assumption throughout, and every stat, bucket and exploit flag is already
+  keyed on `opponent_id`.
+- Two edge cases in [§4.7](#47-edge-cases-a-coding-task-will-hit) survive
+  unchanged and still need their fixtures: a player who leaves and returns keeps
+  the same id, and a name reused by a different human stays undetectable in
+  principle, with decay as the only mitigation.
 
 **Q3 — Tilt modelling.** The `session_net_bb` field is reserved but not acted
 on. No grounding was found in the surveyed literature for a tilt signal that is
@@ -1044,7 +1140,7 @@ Large Adversarial Imperfect-Information Games*, PhD thesis, Carnegie Mellon
 University, CMU-CS-20-132.
 `http://reports-archive.adm.cs.cmu.edu/anon/2020/CMU-CS-20-132.pdf`
 Openly available, and the citable source for Pluribus's internals, since the
-Science paper itself is paywalled. §6.5 covers Libratus and its position on
+Science paper itself is paywalled. §6.4 covers Libratus and its position on
 opponent exploitation; §6.6 covers Pluribus, including the "does not adapt its
 strategy to its opponents" statement, the resource figures, and the multiplayer
 game-theory argument.
@@ -1091,6 +1187,8 @@ through the Analysis of Individual Moves", *EPIA 2011*.
 §3 states the tight/loose and aggression-factor thresholds and attributes them
 to Billings' thesis and Sklansky. §5 Table 1 gives the corpus statistics
 (51,377,820 games; 158,035 players; 2,323,538 showdowns; 4.52% showdown ratio).
+The corpus is real-money **tournament** play, not cash play — relevant wherever
+a rate from it is carried over to a cash table.
 §7 reports the 7 recovered player types by EM clustering.
 
 <a id="s-billings2006"></a>**[Billings 2006]** Darse Billings, *Algorithms and
@@ -1130,8 +1228,13 @@ Per the global evidence rules, so that no figure here has to be taken on trust.
 
 | Number | Where it comes from |
 | --- | --- |
-| Tables A, B, C, D, E | Computed by script on 2026-09-15. Formulas are stated inline beside each table; all are elementary arithmetic (binomial standard error, independent-event products, Beta posterior means) |
-| 51,377,820 games / 158,035 players / 4.52% showdown ratio | [Teofilo & Reis 2011](#s-teofilo2011), Table 1, read directly |
+| Tables A, B, C, D, E, and the inline `0.5^(1/3) ≈ 0.794` reading of them | Computed by script on 2026-09-15. Formulas are stated inline beside each table; all are elementary arithmetic (binomial standard error, independent-event products, Beta posterior means) |
+| Table C's anchor `p̂` column (0.30, 0.20, 0.07, 0.60, 0.50, 0.25) | **Illustrative anchors, not measured or cited.** Labelled as such beside the table; the interval width barely moves across `p̂` in 0.2–0.8 |
+| Table C's opportunities-per-hand column (`fold_to_three_bet` 0.08, `fold_to_cbet` 0.15, `wtsd` 0.30) | **Illustrative estimates, not measured or cited.** No source exists for them; labelled as such beside the table. Each is to be replaced by `denominator / hands_dealt` from the bot's own logged hands. The "Hands needed" column scales inversely with them |
+| Hysteresis dead-band `0.02` and the `10` consecutive-hand hold ([§4.4](#44-bucketing-an-opponent)) | **Starting values chosen for this design, not measured.** Tuned by V2, which measures reclassification frequency directly |
+| The `⌈2n/3⌉` shared-bucket rule for loading a counter-strategy ([§4.5](#45-tiers-what-to-build-in-what-order)) | **A design choice, not a measured or cited threshold.** It encodes "a clear majority of the live field", following the multiway argument in [§2.4](#24-why-bluffing-is-the-wrong-primary-exploit-at-a-multiway-table); tune against V5 |
+| `MIN_POOL_HANDS = 200` and `MIN_POOL_OPPONENTS = 20` ([§4.3](#43-after-each-hand-the-update)) | **Starting values chosen for this design, not measured.** They set when the bot's own population is large enough to supply `BASELINE` and the splits; both belong in config and are to be raised if the pooled rates prove unstable |
+| 51,377,820 games / 158,035 players / 4.52% showdown ratio | [Teofilo & Reis 2011](#s-teofilo2011), Table 1, read directly. Corpus is real-money **tournament** logs; showdown frequency may differ in cash play |
 | 7 player types | [Teofilo & Reis 2011](#s-teofilo2011), §7, read directly |
 | Folds ≥72% = tight; AF > 1 = aggressive | [Teofilo & Reis 2011](#s-teofilo2011), §3, citing [Billings 2006](#s-billings2006). **Second-hand** |
 | 48 mbb/game ±25, p=0.028; 32 mbb/game ±15, p=0.014; 10,000 hands | [Brown 2020](#s-brown2020), §6.6, read directly |
@@ -1141,4 +1244,5 @@ Per the global evidence rules, so that no figure here has to be taken on trust.
 | Abstraction branching factors 15/40/6/6 and 8/12/4/4 | [Ganzfried & Sandholm 2011](#s-ganzfried2011), §5, read directly |
 | The 1006th-hand river failure | [Ganzfried & Sandholm 2011](#s-ganzfried2011), §5.4, read directly |
 | s-Curve `Pmax · n/(s+n)`; 0-10 Linear; the 100-to-1m observation range | [Johanson & Bowling 2009](#s-johanson2009), §5.2 and §6, read directly |
-| `HALF_LIFE = 2000`, `PRIOR_STRENGTH` values, `WARMUP_HANDS = 200`, `MIN_CLASSIFY_HANDS = 50`, all flag margins, `MIN_STACK_BB = 5`, `VPIP_SPLIT` and `AFQ_SPLIT` after bootstrap | **Starting values chosen for this design, not measured.** Every one is labelled as such at the point of use, belongs in a config file, and is to be tuned by the validation in [§6](#6-validation-before-it-touches-a-real-table). `VPIP_SPLIT = 0.28` is the one exception: it is the literature threshold, until the bot's own population replaces it |
+| `HALF_LIFE = 2000`, `PRIOR_STRENGTH` values (50/25/15, which are also the s-Curve `s`), `WARMUP_HANDS = 200`, `MIN_CLASSIFY_HANDS = 50`, all flag margins (0.15/0.10/0.05) and flag confidence gates (0.6/0.7), the `confidence < 0.5` `UNKNOWN` gate, `MIN_STACK_BB = 5`, the 70/30 V3 holdout split, `VPIP_SPLIT` and `AFQ_SPLIT` after bootstrap | **Starting values chosen for this design, not measured.** Every one is labelled as such at the point of use, belongs in a config file, and is to be tuned by the validation in [§6](#6-validation-before-it-touches-a-real-table). `VPIP_SPLIT = 0.28` is the one part-exception: it is the *approximate* complement of the literature's 72% fold threshold — approximate because the two rates do not sum to 1 (see [§2.2](#22-the-two-axes-that-have-literature-behind-them)) — and it stands only until V4 corrects it or the bot's own population replaces it |
+| The example `pokerbot profile` output in [Tier 0](#45-tiers-what-to-build-in-what-order) (412 hands, 0.41 vpip, and the rest) | **Invented, and only illustrates the report's format.** Not data, not a claim about any player |
