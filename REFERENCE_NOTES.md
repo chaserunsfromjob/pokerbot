@@ -28,12 +28,15 @@ Plain-language note first, because two words recur throughout:
   on 2023-04-03, so it accepts no issues and no pull requests. Nothing we fix
   can ever go upstream, and there will be no upstream fixes to re-apply: every
   patch in `vendor/poker_ai/` is permanently ours to carry.
-- Licence: GPL-3.0 (`vendor/poker_ai/LICENSE`, reproduced at the repo root as
-  `LICENSE`). GPL-3.0's obligations - publishing source, licensing derived work
-  alike - are triggered by *distributing* the software, not by using it. The
-  operator's position, recorded under "Licence" in `CLAUDE.md`, is that pokerbot
-  is never distributed, so those obligations do not bite; that decision reopens
-  before the code is ever handed to anyone.
+- Licence: GPL-3.0. The full text is `vendor/poker_ai/LICENSE`, where it sits
+  with the code it covers; there is deliberately no `LICENSE` at the repository
+  root, because a licence file at the root of a repository conventionally reads
+  as a grant of *this* project to whoever holds it, and this project grants
+  nothing to anyone. GPL-3.0's obligations - publishing source, licensing
+  derived work alike - are triggered by *distributing* the software, not by
+  using it. The operator's position, recorded under "Licence" in `CLAUDE.md`, is
+  that pokerbot is never distributed, so those obligations do not bite; that
+  decision reopens before the code is ever handed to anyone.
 - Location in this repo: `vendor/poker_ai/`, as a **plain copy of the source
   tree**, not a git submodule.
 
@@ -278,7 +281,7 @@ Taken piece by piece, cheapest first:
   use real short-deck rules (where a flush beats a full house). That is an
   upstream fidelity gap that simply disappears when we move to 52 cards.
 
-  One caveat that matters for this repo specifically. `CLAUDE.md:16` treats
+  One caveat that matters for this repo specifically. `CLAUDE.md:17` treats
   `treys` as an *external* evaluator used to check hand rankings. It is not
   external to this engine in the way that wording suggests: `poker_ai`'s
   evaluator is itself a fork of the same library. Both descend from Cactus
@@ -315,11 +318,14 @@ Taken piece by piece, cheapest first:
   - `make_starting_hand_lossless` (lines 8-48) is a hand-typed chain of 25
     `elif` branches, one per short-deck starting hand class, each returning a
     magic number 0-24. A 52-card deck has **169** starting hand classes
-    (13 pairs + 78 suited + 78 unsuited). This is a mechanical enumeration
-    rather than a strategic judgment - it is just "which of the 169 classes is
-    this hand" - so it is engine code we can legitimately write under the
-    forefront rule in `CLAUDE.md`, but it must be generated and tested against
-    the evaluator, not typed out by hand or by a model.
+    (13 pairs + 78 suited + 78 unsuited). Writing that enumeration ourselves is
+    allowed by `CLAUDE.md:16`, the forefront-rule bullet that puts card
+    combinatorics - the 169 preflop classes, suit isomorphisms, deck
+    enumeration - on our side of the line and leaves ranking, valuing and
+    choosing with the engine. Deciding "which of the 169 classes is this hand"
+    only sorts hands into named boxes; it never says which box is better. It
+    must still be generated and tested against the evaluator, not typed out by
+    hand or by a model.
 
 ### The blocker
 
@@ -344,10 +350,13 @@ NumPy array of Python objects holds one 8-byte pointer per element, so the
 pointer array alone comes to
 2,809,475,760 x 7 x 8 = 157,330,642,560 bytes, i.e. **146.5 GiB** - and that is
 before a single `Card` exists behind those pointers, each of which measures 344
-bytes here. The `create_info_combos` double loop would also run 3,446,220,960
-iterations with a NumPy `isin` call inside each one. This is not "slow", it is
-"will not start": the array is allocated in one piece before any clustering
-work begins.
+bytes here. The `create_info_combos` double loop would also run
+3,446,220,960 iterations with a NumPy `isin` call inside each one - that is
+every five-card board crossed with every two-card hand, C(52,5) x C(52,2) =
+2,598,960 x 1,326 = 3,446,220,960 (the loop enumerates the two independently
+and filters out the overlapping pairs inside the body, which is why it is
+C(52,5) and not C(50,5) here). None of this is "slow", it is "will not start":
+the array is allocated in one piece before any clustering work begins.
 
 There is a second, smaller scaling problem in the same area:
 `card_info_lut_builder.py:93-103` (and the turn/flop equivalents at 117-127 and
@@ -371,26 +380,35 @@ deliberately set below anything usable (5 buckets per street, 2 simulations per
 decision, against upstream defaults of 50 and 6). Full numbers in the run log
 at the end.
 
-That 90 minutes cannot be turned into an honest time estimate for 52 cards,
-and the estimate is not what settles the question anyway.
+The budget these numbers answer to, recorded by the operator on 2026-09-15:
+**no multi-day computing. A playable bot has to be reachable in hours, on one
+laptop.** Measure every cost below against that.
 
-It cannot, because the cost per row is not constant across stages. From the run
-log table below: the flop stage took 2,338.5s for 155,040 rows, which is
-2,338.5 / 155,040 = 0.0151s per row; the river stage took 920.5s for 1,627,920
-rows, which is 920.5 / 1,627,920 = 0.00057s per row. The flop is about 27 times
-more expensive per row than the river, so no single factor taken from one stage
-carries to another. For what it is worth, the most favourable arithmetic
-available - scaling the river stage by its own row growth,
-2,809,475,760 / 1,627,920 = a factor of about 1,726, so 1,726 x 920.5s =
-about 1,588,800s, and 1,588,800 / 86,400 seconds per day - gives **18.4 days**,
-not months. Quote it only with that working attached.
+**Conclusion: this engine's 52-card clustering path is out. It fails the budget
+on time and it fails it on memory, and either one alone would be enough.**
 
-What settles the question is memory. The river combination table at 52 cards
+On time: at best **18.4 days**, against a budget of hours. The working, which
+must be quoted with the number, is the most favourable arithmetic available -
+scale the river stage by its own row growth, 2,809,475,760 / 1,627,920 = a
+factor of about 1,726, so 1,726 x 920.5s = about 1,588,800s, which over 86,400
+seconds per day is 18.4 days. It is a floor rather than an estimate, because
+cost per row is not constant across stages: the flop stage took 2,338.5s for
+155,040 rows, which is 2,338.5 / 155,040 = 0.0151s per row, while the river
+stage took 920.5s for 1,627,920 rows, which is 920.5 / 1,627,920 = 0.00057s per
+row. The flop is about 27 times more expensive per row than the river, so no
+factor taken from one stage carries to another, and the real figure is worse
+than 18.4 days rather than better.
+
+On memory: the run never starts at all. The river combination table at 52 cards
 needs **146.5 GiB** for its array of pointers alone, before any card object
 exists - the arithmetic is under "The blocker" above. That allocation happens
-in one piece before any clustering work starts, on a machine that does not have
-it, so the 52-card run does not take longer: it does not begin. The move to 52
-cards is a rewrite of the abstraction step, not a configuration change.
+in one piece before any clustering work begins, on a laptop that does not have
+it. So the 18.4 days is not even a wait that could be sat through: the job dies
+at allocation.
+
+Getting 52-card hold'em inside the budget therefore means rewriting the
+abstraction step, not configuring it - streaming and suit-isomorphic canonical
+forms, as set out under "The blocker" above.
 
 ## Question 2: does it support 3+ players (multiway), or only heads-up?
 
@@ -512,15 +530,45 @@ CLI tests actually check, which is nothing.)
 -> exit 0, real 5369.21s (1h 29m 29s), user 17744.00s
 ```
 
-Stage by stage, from the tool's own log:
+Stage by stage, from the tool's own log - `cluster.log`, written into the run's
+`--save_dir` alongside the clustering artefacts and, like them, not kept in the
+repo, so its timestamps and figures are quoted below rather than pointed at:
 
 | Stage | Rows processed | Time |
 | --- | --- | --- |
-| pre-flop | 190 | instant |
+| pre-flop | 190 | under 1s |
 | river | 1,627,920 | 920.5s |
 | turn | 581,400 | 2,022.9s |
 | flop | 155,040 | 2,338.5s |
+| lookup table built and saved after each street | | 59.9s |
 | **total** | | **5,341.8s** |
+
+That fifth row is not padding, and it is why the three street figures do not add
+up to the total on their own: 920.5 + 2,022.9 + 2,338.5 = 5,281.9s, which is
+59.9s short of the 5,341.8s the tool reports. Each street's timer stops before
+the work that follows it. The log shows the gaps directly - river clusters
+finish at 13:33:32 and the turn starts at 13:33:51 (19s), turn finishes 14:07:33
+and flop starts 14:07:55 (22s), flop finishes 14:46:54 and the overall timer
+stops at 14:47:14 (20s) - 61s at one-second timestamp resolution, against the
+59.9s the two timers differ by. In each gap the builder turns that street's
+cluster ids into a dictionary
+(`Creating lookup table`, `card_info_lut_builder.py:365`) and writes both
+`.joblib` files to disk (`card_info_lut_builder.py:76-85`), all of it outside
+the `start`/`end` pair the street times (`card_info_lut_builder.py:92-107`, with
+`create_card_lookup` called afterwards on line 111).
+
+Separately, the 5,341.8s the tool reports is less than the 5,369.21s of wall
+clock above it by 27.4s. That is the same effect at the outer edge: the overall
+timer starts at `card_info_lut_builder.py:66`, after Python has started and
+after `CardCombos` has built the flop, turn and river tables (`created flop`
+13:17:47, `created turn` 13:17:53, `created river` 13:18:12).
+
+The figures in the table are the log's own, rounded to one decimal. Verbatim,
+the log reports `920.4663696289062`, `2022.8680839538574` and
+`2338.4650852680206` seconds for river, turn and flop, and
+`5341.814363002777` seconds overall. On those raw figures the gap the fifth row
+carries is 60.0s rather than 59.9s; the table shows 59.9s so that its own
+rounded rows add up to its own rounded total.
 
 Output: `card_info_lut.joblib` (74 MB) and `centroids.joblib`.
 

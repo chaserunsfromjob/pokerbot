@@ -13,6 +13,7 @@ beat by hand-rolling it in a few weeks.
 - Never let an AI model decide a poker action, evaluate a hand, or read a board; call real engine code for that.
 - Only use AI-written code for integration, tooling, and table-state capture (screen to structured data), never for poker judgment itself.
 - Reject a change that adds hand-rolled hand-strength or decision logic in place of the vendored engine; adapt the engine instead.
+- Write card-combinatorics bookkeeping ourselves - enumerating the 169 preflop hand classes, suit isomorphisms, deck enumeration - but leave anything that ranks or values a hand, or chooses an action, to the engine.
 - Ground-truth hand ranking against a named external evaluator (currently `treys`), the reference for standard 52-card ranking, and keep it out of the bot's decision path; it validates tests only, never runtime play.
 
 ## Plan
@@ -25,8 +26,7 @@ beat by hand-rolling it in a few weeks.
 
 ## Licence
 
-- pokerbot is private and is never distributed - not published, not given to classmates, not sold. The vendored engine's GPL-3.0 terms attach only on distribution, so they impose nothing here while that holds; if the code is ever handed to anyone, this decision reopens first.
-- Treat the root `LICENSE` as the vendored engine's own GPL-3.0 text, kept for reference, not as a grant of this project to anyone.
+- Operator's position: pokerbot is private and never distributed - not published, not given to classmates, not sold. Treat the vendored engine's GPL-3.0 terms as imposing nothing while that holds, since they attach on distribution; reopen this decision before handing the code to anyone.
 
 Rules in `~/.claude/CLAUDE.md` (deployed machine-wide from the `heater` fleet
 repository) apply on top of this file.
