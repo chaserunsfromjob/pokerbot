@@ -247,6 +247,20 @@ Taken piece by piece, cheapest first:
   the current short-deck game is scored with standard rankings, so it does not
   use real short-deck rules (where a flush beats a full house). That is an
   upstream fidelity gap that simply disappears when we move to 52 cards.
+
+  One caveat that matters for this repo specifically. `CLAUDE.md:16` treats
+  `treys` as an *external* evaluator used to check hand rankings. It is not
+  external to this engine in the way that wording suggests: `poker_ai`'s
+  evaluator is itself a fork of the same library. Both descend from Cactus
+  Kev via Will Drevo's `deuces`, and
+  `vendor/poker_ai/poker_ai/poker/evaluation/eval_card.py` still carries the
+  identical internals - the same 32-bit card encoding, the same
+  `PRIMES = [2, 3, 5, ..., 41]`, and the same verbatim
+  `INT_SUIT_TO_CHAR_SUIT = "xshxdxxxc"` (lines 29-41). Checking one against
+  the other will catch a transcription slip but cannot catch a bug they
+  inherited from their common ancestor. Filed as a finding rather than
+  changed here.
+
 - **The solver** - `poker_ai/ai/ai.py` (the MCCFR training loop) never touches
   a card. It only calls `state.legal_actions`, `state.apply_action(...)`,
   `state.info_set` and `state.payout`. Deck size is invisible to it. Same for
