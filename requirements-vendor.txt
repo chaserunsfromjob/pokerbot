@@ -1,0 +1,20 @@
+# Dependency set that makes vendor/poker_ai run on Python 3.13 / macOS arm64.
+#
+# Upstream's own vendor/poker_ai/requirements.txt pins 2020-era versions
+# (numpy 1.17.4, scipy 1.4.1, scikit-learn 0.22.1) that have no wheels for
+# Python 3.13 and will not build. These are the versions actually verified
+# against the vendored test suite; see REFERENCE_NOTES.md.
+blessed==1.50.0
+click==8.5.0
+dill==0.4.1
+enlighten==1.14.1
+joblib==1.6.0
+matplotlib==3.11.2
+numpy==2.5.3
+pandas==3.0.5
+pytest==9.1.1
+PyYAML==6.0.3
+rich==15.0.0
+scikit-learn==1.9.1
+scipy==1.18.1
+tqdm==4.70.1
