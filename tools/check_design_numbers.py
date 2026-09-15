@@ -18,6 +18,13 @@ Standard library only. Run it from anywhere:
 
 Rule for anyone editing the document: change the constant here and the prose
 there in the same edit, and let this script say whether the prose is still right.
+
+Second rule, learned the hard way: a figure the document states in more than one
+place has to be checked in *every* place. Asking only that some copy is right
+lets every other copy go stale unnoticed. `Checker.every_occurrence` is how that
+question is asked; `Checker.prose` is only safe for a phrase that appears once.
+The standard this file is held to is that mutating any derived figure in the
+document, anywhere, makes this script exit 1.
 """
 
 from __future__ import annotations
@@ -25,7 +32,7 @@ from __future__ import annotations
 import math
 import re
 import sys
-from decimal import Decimal, ROUND_HALF_UP
+from decimal import Decimal, ROUND_HALF_EVEN, ROUND_HALF_UP
 from pathlib import Path
 
 # ---------------------------------------------------------------------------
@@ -102,6 +109,7 @@ HYSTERESIS_HOLD = 10
 # Warm-up and decay (sections 4.3 and 5.2).
 WARMUP_HANDS = 200
 HALF_LIFE = 2000
+HALF_LIFE_BASE = 0.5  # the base the decay halves by, per HALF_LIFE hands
 
 # Pool gates (section 4.3).
 MIN_POOL_HANDS = 200
@@ -145,6 +153,10 @@ TABLE_C_ROWS = [
 TABLE_C_ANCHORS = {stat: p for stat, p, _rate, _w in TABLE_C_ROWS}
 # Stats with no Table C anchor are read at the least favourable p-hat.
 LEAST_FAVOURABLE_P = 0.5
+# The p-hat range section 4.2 claims the interval width barely moves across, and
+# what "barely" is allowed to mean, as a share of the widest interval.
+PHAT_FLAT_RANGE = (0.2, 0.8)
+PHAT_FLAT_TOLERANCE = 0.25
 
 # Table D -- the confidence-weight illustration.
 TABLE_D_N = [1, 2, 5, 10, 25, 50, 100, 250, 500]
@@ -169,6 +181,23 @@ STRATEGIES = ["S_BASE", "S_VS_STATION", "S_VS_MANIAC", "S_VS_ROCK"]
 BASE_STRATEGY = "S_BASE"  # the one a dropped seat count still needs
 NO_COUNTER_STRATEGY = "S_VS_TAG"  # listed in the table, deliberately never solved
 MAJORITY_RULE = "⌈2n/3⌉"  # the share of the live field that must share a bucket
+
+# The two run costs section 4.5 works the cap against, and the day they divide
+# into. Neither is a measured figure; they are the two illustrative rates the
+# prose names ("ten minutes each", "an hour each").
+SOLVE_ILLUSTRATION_MINUTES = 10
+SOLVE_ILLUSTRATION_HOURS = 1
+HOURS_PER_DAY = 24
+
+# The operator's table-size priority (2026-09-15), quoted where section 4.5 uses
+# it. Not a derived figure: it fixes the order of the solve plan, nothing else.
+SEAT_PRIORITY_QUOTE = (
+    "i will be playing mostly 6 player tables, followed by 8 or 9 player tables "
+    "which can honestly be treated the same, they are so close"
+)
+SEAT_PRIORITY_TASK = "65bba741bf40"
+SEAT_PRIORITY_SOURCE = f"recorded as heater task `{SEAT_PRIORITY_TASK}`"
+SEAT_PRIORITY_ORDER = [6, 8, 9]  # 6 first, then 8 and 9 as one band, then the rest
 
 # The Tier 0 worked example: one coherent 412-hand history. Everything the
 # example prints is derived from these counts.
@@ -200,6 +229,27 @@ EXAMPLE_PRINTED = [
     ("wtsd", False),
 ]
 EXAMPLE_BUCKET = "STATION"
+# How the example's 177 voluntary investments break down, in the order the prose
+# states them. Must sum to the vpip numerator.
+EXAMPLE_VPIP_BREAKDOWN = [("limps", 106), ("preflop raises", 41), ("calls of a raise", 30)]
+# The 63 open raises faced, split the way the prose splits them. Must sum to the
+# three_bet denominator, and the calls leg must match the breakdown above.
+EXAMPLE_OPEN_RAISE_SPLIT = [("calls", 30), ("folds", 33)]
+# Where the 205 flops come from. Must sum to the wtsd denominator.
+EXAMPLE_FLOP_SOURCES = [("hands invested in that reached a flop", 155), ("unraised big blinds", 50)]
+# The example's voluntary actions and its bets-or-raises, split by street. Each
+# list must sum to the matching `afq` count, and the flop entries must match the
+# `afq[flop]` count and (preflop) the pfr numerator.
+EXAMPLE_STREET_ACTIONS = [("preflop", 400), ("flop", 168), ("turn", 118), ("river", 82)]
+EXAMPLE_STREET_AGGRESSION = [("preflop", 41), ("flop", 27), ("turn", 15), ("river", 9)]
+
+# The most voluntary actions the example's hands could contain. A player is not
+# limited to one action per street: preflop they act once per hand dealt and
+# again whenever a reraise comes back at them (the 9 below), and postflop they
+# act once per street reached and again in each spot where they checked and then
+# faced a bet (the 140 below, which the prose counts across all three streets).
+EXAMPLE_ACTION_CEILING = (412 + 9) + (3 * 205 + 140)
+
 # The example's hand history, as the prose states it. Each entry is
 # (count, what it counts, the count it must not exceed).
 EXAMPLE_HISTORY = [
@@ -214,13 +264,27 @@ EXAMPLE_HISTORY = [
     (89, "showdowns reached", 205),
     (62, "flop continuation bets faced", 205),
     (140, "checked-then-faced-a-bet spots", 768),
-    # At most one voluntary action per street: 412 preflop, and 205 on each of
-    # the three postflop streets the example's flops can reach.
-    (768, "voluntary actions", 412 + 3 * 205),
+    (768, "voluntary actions", EXAMPLE_ACTION_CEILING),
     (92, "bets or raises", 768),
 ]
+# Per street, the most actions that street could carry: one per hand dealt (or
+# per flop seen, since no later street is reached without one) plus the second
+# actions above. The 140 checked-then-faced-a-bet spots are a total across the
+# three postflop streets, so allowing all 140 to each of them is deliberately
+# generous: these are ceilings, and a count that clears them is not contradicted.
+EXAMPLE_STREET_CEILING = {
+    "preflop": 412 + 9,
+    "flop": 205 + 140,
+    "turn": 205 + 140,
+    "river": 205 + 140,
+}
 
 DEFAULT_DOC = Path(__file__).resolve().parent.parent / "OPPONENT_MODEL_DESIGN.md"
+
+# Section 1 reproduces this file's forefront-rule table verbatim, so the copy is
+# compared against the authority rather than trusted.
+FOREFRONT_SOURCE = "CLAUDE.md"
+FOREFRONT_HEADER = "| Allowed to AI-written opponent-model code | Reserved to the engine |"
 
 # ---------------------------------------------------------------------------
 # Arithmetic the document states inline, written once.
@@ -402,6 +466,33 @@ class Checker:
         if flat_phrase not in self.doc.flat:
             self.failures.append(f"{what}: document does not contain {flat_phrase!r}")
 
+    def every_occurrence(self, what: str, pattern: str, *expected: str) -> None:
+        """Assert *every* place the document states this figure states it the same.
+
+        `prose` only asks that one occurrence is right, so a figure the document
+        repeats can go stale in every copy but one and still pass. This asks the
+        question of all of them at once: each match of `pattern` must capture
+        exactly `expected`.
+        """
+        self.checked += 1
+        found = [
+            tuple(g for g in m.groups() if g is not None)
+            for m in re.finditer(pattern, self.doc.flat)
+        ]
+        if not found:
+            self.failures.append(f"{what}: document states it nowhere (pattern {pattern!r})")
+            return
+        if len(expected) == 1:
+            # One value, however many places and groups it is written in.
+            wrong = [g for g in found if any(v != expected[0] for v in g)]
+        else:
+            wrong = [g for g in found if g != tuple(expected)]
+        if wrong:
+            self.failures.append(
+                f"{what}: {len(wrong)} of {len(found)} occurrences disagree — "
+                f"document says {wrong!r}, constants give {tuple(expected)!r}"
+            )
+
     # -- Table A ----------------------------------------------------------
     def check_table_a(self) -> None:
         rows = self.doc.table_after("#### Table A: bet size, fold frequency, and bluff share")[1:]
@@ -415,15 +506,21 @@ class Checker:
 
     # -- Table B ----------------------------------------------------------
     def check_table_b(self) -> None:
-        rows = self.doc.table_after("#### Table B: the multiway problem")[1:]
+        all_rows = self.doc.table_after("#### Table B: the multiway problem")
+        header, rows = all_rows[0], all_rows[1:]
+        for n, cell in zip(OPPONENT_COUNTS, header[1:]):
+            self.equal(f"Table B header column {n}", f"{n} opponent" + ("" if n == 1 else "s"), cell)
         self.equal("Table B row count", len(FOLD_RATES), len(rows))
         for p, row in zip(FOLD_RATES, rows):
             self.equal(f"Table B fold rate label {p}", pct(p, 0), row[0])
             for n, cell in zip(OPPONENT_COUNTS, row[1:]):
                 self.equal(f"Table B p={p} n={n}", pct(p ** n), cell)
+        pot_sized = max(BET_SIZES[BET_SIZES.index(1.00)], 1.00)
         self.prose(
             "section 2.4 cube-root reading of Table B",
-            f"`0.5^(1/3) ≈ {fmt(0.5 ** (1 / 3), 3)}`",
+            f"a pot-sized bluff needs {pct(pot_sized / (1 + pot_sized), 0)} fold-through. With\n"
+            f"three opponents that requires each of them to fold "
+            f"{pct(0.5 ** (1 / 3), 0)} of the time\n(`0.5^(1/3) ≈ {fmt(0.5 ** (1 / 3), 3)}`)",
         )
 
     # -- Table C ----------------------------------------------------------
@@ -488,6 +585,15 @@ class Checker:
             self.equal(f"{tag} shrunk rate", fmt(shrunk_rate(baseline, s, k, n), 3), row[4])
             self.true(f"{tag} uses the Tier B prior", s == tier_b, f"prior strength {s} is not Tier B's {tier_b}")
         b, s, k, n = TABLE_E_ROWS[0]
+        self.prose(
+            "section 4.3 Table E row 1 read in the prose",
+            f"the prior strength in every row is the Tier B {s} — is recorded as a "
+            f"{pct(shrunk_rate(b, s, k, n), 0)} raiser, not a {pct(k / n, 0)} one",
+        )
+        self.prose(
+            "section 4.3 Table E row 1 observation count",
+            f"at {n} observations the confidence is",
+        )
         self.prose(
             "section 4.3 Table E confidence reading",
             f"the confidence is `{n}/{n + s} = {fmt(confidence(n, s), 2)}`",
@@ -649,7 +755,18 @@ class Checker:
             f"`fold_to_steal`'s half-width at its gate is "
             f"{fmt(half_width(LEAST_FAVOURABLE_P, opportunities_at_gate(PRIOR_STRENGTH['fold_to_steal'], FLAGS['OVERFOLDS_BLINDS']['gate'])), 3)} "
             f"and `limp`'s is\n"
-            f"{fmt(half_width(LEAST_FAVOURABLE_P, opportunities_at_gate(PRIOR_STRENGTH['limp'], FLAGS['LIMPS']['gate'])), 3)},",
+            f"{fmt(half_width(LEAST_FAVOURABLE_P, opportunities_at_gate(PRIOR_STRENGTH['limp'], FLAGS['LIMPS']['gate'])), 3)}, "
+            f"both below the {fmt(raw_margin(FLAGS['LIMPS']['margin'], FLAGS['LIMPS']['gate']), 3)} "
+            f"raw margin their {fmt(FLAGS['LIMPS']['margin'], 2)} margins imply",
+        )
+        self.prose(
+            "section 4.4 why NEVER_FOLDS_POSTFLOP keeps the wide margin",
+            f"**`NEVER_FOLDS_POSTFLOP` carries the same "
+            f"{fmt(FLAGS['NEVER_FOLDS_POSTFLOP']['margin'], 2)} margin as the rest",
+        )
+        self.prose(
+            "section 4.4 wtsd's prior strength as the reason it sees fewest opportunities",
+            f"its `s` = {PRIOR_STRENGTH['wtsd']} gate admits",
         )
         # The check_raise bound -- only reproducible at PRIOR_STRENGTH 25.
         spec = FLAGS["NEVER_RAISES"]
@@ -657,14 +774,19 @@ class Checker:
         bound = baseline_bound_for_leg(spec["margin"], spec["gate"], s_cr)
         n_cr = opportunities_at_gate(s_cr, spec["gate"])
         self.prose(
-            "section 4.4 check_raise baseline bound",
-            f"baseline is below about {fmt(bound, 3)}",
+            "section 4.4 check_raise leg's raw margin and the baseline bound",
+            f"its {fmt(raw_margin(spec['margin'], spec['gate']), 3)} raw margin clears only "
+            f"while that stat's\nbaseline is below about {fmt(bound, 3)}",
         )
         self.prose(
             "section 4.4 check_raise bound derivation",
-            f"the leg's gate is `{fmt(spec['gate'], 1)}`, so\nit admits "
+            f"Both of those figures are `check_raise`'s `PRIOR_STRENGTH` = {s_cr}\n"
+            f"from [§4.3](#43-after-each-hand-the-update) at work: the leg's gate is "
+            f"`{fmt(spec['gate'], 1)}`, so\nit admits "
             f"`n = {s_cr}·{fmt(spec['gate'], 1)}/{fmt(1 - spec['gate'], 1)} = {fmt(n_cr, 1)}` "
-            f"opportunities at fewest, and {fmt(bound, 3)} is the `p̂`",
+            f"opportunities at fewest, and {fmt(bound, 3)} is the `p̂`\n"
+            f"at which `{fmt(Z95, 2)}·√(p̂(1−p̂)/{fmt(n_cr, 1)})` equals the "
+            f"{fmt(spec['margin'], 2)}/{fmt(spec['gate'], 1)} raw margin",
         )
         self.true(
             "section 4.4 check_raise leg fails at the least favourable anchor",
@@ -679,15 +801,41 @@ class Checker:
             n = opportunities_at_gate(s, CLASSIFY_CONF_GATE)
             w = half_width(split, n)
             shrunk_w = CLASSIFY_CONF_GATE * w
-            self.prose(f"section 4.4 {axis} raw exposure", f"**±{pp(w)}**" if axis == "vpip" else f"±{pp(w)} raw")
-            self.prose(f"section 4.4 {axis} shrunk exposure", f"±{pp(shrunk_w)}")
+            # Both exposures are stated twice: in §4.4 and in the provenance table.
+            if axis == "vpip":
+                self.every_occurrence(
+                    "section 4.4 vpip raw exposure, wherever it is stated",
+                    r"= \*\*±([\d.]+)pp\*\*, which is|±([\d.]+)pp raw and ±[\d.]+pp shrunk on `vpip`",
+                    fmt(w * 100.0, 1),
+                )
+                self.every_occurrence(
+                    "section 4.4 vpip shrunk exposure, wherever it is stated",
+                    r"`c·w` = \*\*±([\d.]+)pp\*\*|±[\d.]+pp raw and ±([\d.]+)pp shrunk on `vpip`",
+                    fmt(shrunk_w * 100.0, 1),
+                )
+            else:
+                self.every_occurrence(
+                    "section 4.4 afq exposures, wherever they are stated",
+                    r"is ±([\d.]+)pp raw and ±([\d.]+)pp shrunk|±([\d.]+)pp and ±([\d.]+)pp on `afq`",
+                    fmt(w * 100.0, 1),
+                    fmt(shrunk_w * 100.0, 1),
+                )
             needed_gate = gate_for_band(split, s, HYSTERESIS_BAND)
             needed_n = opportunities_at_gate(s, needed_gate)
             self.prose(
                 f"section 4.4 {axis} gate needed for the band",
                 f"`confidence({axis}) ≥ {fmt(needed_gate, 3)}`",
             )
-            self.prose(f"section 4.4 {axis} sample needed for the band", fmt(needed_n, 0, thousands=True))
+            self.every_occurrence(
+                f"section 4.4 {axis} sample needed for the band, wherever it is stated",
+                (
+                    r"= \*\*([\d,]+) hands\*\* on one|the ([\d,]+) hands / [\d,]+ opportunities"
+                    if axis == "vpip"
+                    else r"i\.e\. \*\*([\d,]+)\*\* `afq` opportunities|"
+                    r"[\d,]+ hands / ([\d,]+) opportunities"
+                ),
+                fmt(needed_n, 0, thousands=True),
+            )
             self.prose(f"section 4.4 {axis} band needed", f"`{fmt(shrunk_w, 3)}` on `{axis}`")
         s = PRIOR_STRENGTH["vpip"]
         n = opportunities_at_gate(s, CLASSIFY_CONF_GATE)
@@ -768,6 +916,15 @@ class Checker:
             f"dead-band of `{fmt(HYSTERESIS_BAND, 2)}` before",
         )
         self.prose("section 4.5 majority rule", f"`{MAJORITY_RULE}` of the `n` live opponents")
+        self.every_occurrence(
+            "the majority rule wherever the document writes it",
+            r"(⌈\dn/\d⌉)",
+            MAJORITY_RULE,
+        )
+        self.prose(
+            "section 4.5 the majority rule read at one live opponent",
+            f"`n = 1` live opponent `{MAJORITY_RULE} = {math.ceil(2 * 1 / 3)}`",
+        )
         self.prose(
             "section 6 V3 holdout",
             f"last {V3_HOLDOUT[1]}% of logged hands per opponent; the "
@@ -950,35 +1107,626 @@ class Checker:
                 f"{count} {what} exceeds the {limit} it is drawn from",
             )
             self.prose(f"example history states {what}", f"**{count}**")
+        self.check_example_history()
+        self.check_example_narrative(profile, fired)
+
+    def check_example_narrative(self, profile, fired: set[str]) -> None:
+        """The paragraph that says why each flag fires, and by how much."""
+
+        def conf(stat: str) -> str:
+            return fmt(profile[stat]["conf"], 2)
+
+        def above(stat: str) -> str:
+            return fmt(profile[stat]["rate"] - profile[stat]["baseline"], 3)
+
+        def below(stat: str) -> str:
+            return fmt(profile[stat]["baseline"] - profile[stat]["rate"], 3)
+
+        wide_gate = fmt(FLAGS["NEVER_FOLDS_POSTFLOP"]["gate"], 1)
+        raise_gate = fmt(FLAGS["NEVER_RAISES"]["gate"], 1)
+        wide_margin = fmt(FLAGS["NEVER_FOLDS_POSTFLOP"]["margin"], 2)
+        raise_margin = fmt(FLAGS["NEVER_RAISES"]["margin"], 2)
+        self.prose(
+            "example narrative: the gates each fired flag clears",
+            f"`wtsd` {conf('wtsd')} and `limp` {conf('limp')} against the `{wide_gate}` gates, "
+            f"`three_bet` {conf('three_bet')} and `check_raise` {conf('check_raise')} "
+            f"against the `{raise_gate}` gate",
+        )
+        self.prose(
+            "example narrative: the margins each fired flag clears",
+            f"`wtsd` sits {above('wtsd')} above its baseline and `limp` {above('limp')}, both past "
+            f"{wide_margin}, while `NEVER_RAISES` needs both of its legs {raise_margin} below "
+            f"theirs and gets {below('three_bet')} on `three_bet` and {below('check_raise')} "
+            f"on `check_raise`",
+        )
+        self.prose(
+            "example narrative: the flags that fail their gate, and at what confidence",
+            f"fail the `{fmt(FLAGS['OVERFOLDS_TO_3BET']['gate'], 1)}` confidence gate at "
+            f"{conf('fold_to_three_bet')}",
+        )
+        self.prose(
+            "example narrative: the flags that pass their gate but not their margin",
+            f"pass their gates but sit *below* their baselines rather than {wide_margin} above",
+        )
+        self.prose(
+            "example narrative: the two axes the bucket is read off",
+            f"is `{EXAMPLE_BUCKET}` because {fmt(profile['vpip']['rate'], 2)} is above "
+            f"`VPIP_SPLIT` and {fmt(profile['afq']['rate'], 2)} below `AFQ_SPLIT`",
+        )
+        self.prose(
+            "example narrative: the classification gate and hands floor",
+            f"clears both the `{fmt(CLASSIFY_CONF_GATE, 1)}` `vpip`-confidence gate and "
+            f"`MIN_CLASSIFY_HANDS = {MIN_CLASSIFY_HANDS}`",
+        )
+        # The two "correctly absent" claims, checked rather than asserted.
+        for flag in ("OVERFOLDS_TO_3BET", "NEVER_FOLDS_TO_3BET"):
+            stat = FLAGS[flag]["stats"][0]
+            self.true(
+                f"example narrative: {flag} is absent because of its gate",
+                flag not in fired and profile[stat]["conf"] < FLAGS[flag]["gate"],
+                f"{flag} does not fail on confidence",
+            )
+        for flag in ("OVERFOLDS_TO_CBET", "OVERFOLDS_BLINDS"):
+            stat = FLAGS[flag]["stats"][0]
+            p = profile[stat]
+            self.true(
+                f"example narrative: {flag} is absent despite clearing its gate",
+                flag not in fired
+                and p["conf"] >= FLAGS[flag]["gate"]
+                and p["rate"] < p["baseline"],
+                f"{flag} does not pass its gate and sit below its baseline",
+            )
+
+    def check_example_history(self) -> None:
+        """The prose history: every count in it, read from the document."""
+        hands = EXAMPLE_HANDS
+        vpip_k, _vpip_n, _ = EXAMPLE_COUNTS["vpip"]
+        pfr_k = EXAMPLE_COUNTS["pfr"][0]
+        limps, limp_n, _ = EXAMPLE_COUNTS["limp"]
+        three_bet_n = EXAMPLE_COUNTS["three_bet"][1]
+        flops = EXAMPLE_COUNTS["wtsd"][1]
+        afq_k, afq_n, _ = EXAMPLE_COUNTS["afq"]
+        flop_k, flop_n, _ = EXAMPLE_COUNTS["afq[flop]"]
+        breakdown = dict(EXAMPLE_VPIP_BREAKDOWN)
+        split = dict(EXAMPLE_OPEN_RAISE_SPLIT)
+        sources = dict(EXAMPLE_FLOP_SOURCES)
+        actions = dict(EXAMPLE_STREET_ACTIONS)
+        aggression = dict(EXAMPLE_STREET_AGGRESSION)
+
+        # The three parts of vpip, as the prose states them.
         self.equal(
-            "example vpip breakdown",
-            str(EXAMPLE_COUNTS["vpip"][0]),
-            str(106 + 41 + 30),
+            "example vpip breakdown sums to the vpip numerator",
+            str(vpip_k),
+            str(sum(breakdown.values())),
+        )
+        self.equal("example limps match the limp numerator", str(limps), str(breakdown["limps"]))
+        self.equal("example preflop raises match pfr", str(pfr_k), str(breakdown["preflop raises"]))
+        self.prose(
+            "example history states the vpip breakdown",
+            f"those {vpip_k} break down as **{breakdown['limps']}** limps, "
+            f"**{breakdown['preflop raises']}** preflop raises and "
+            f"**{breakdown['calls of a raise']}** calls of someone else's raise",
+        )
+        self.prose(
+            "example history states the limp denominator against the hands dealt",
+            f"**{limp_n}** of the {hands} hands",
+        )
+
+        # The 63 open raises faced, split into calls and folds.
+        self.equal(
+            "example open raises faced split into calls and folds",
+            str(three_bet_n),
+            str(sum(split.values())),
         )
         self.equal(
-            "example three_bet opportunities split into calls and folds",
-            str(EXAMPLE_COUNTS["three_bet"][1]),
-            str(30 + 33),
+            "example calls of a raise are the same calls in both splits",
+            str(breakdown["calls of a raise"]),
+            str(split["calls"]),
         )
+        self.prose(
+            "example history states the calls-plus-folds split",
+            f"the same {three_bet_n} spots are the {split['calls']} calls plus {split['folds']} folds",
+        )
+        self.prose(
+            "example history states the reraises faced against the opens made",
+            f"Having open-raised {pfr_k} times, they faced a reraise "
+            f"**{EXAMPLE_COUNTS['fold_to_three_bet'][1]}** times",
+        )
+
+        # Where the flops come from.
+        self.equal(
+            "example flop sources sum to the flops seen",
+            str(flops),
+            str(sum(sources.values())),
+        )
+        self.true(
+            "example flops from invested hands cannot exceed the investments",
+            sources["hands invested in that reached a flop"] <= vpip_k,
+            f"{sources['hands invested in that reached a flop']} of {vpip_k} investments",
+        )
+        self.prose(
+            "example history states where the flops come from",
+            f"saw **{flops}** flops: {sources['hands invested in that reached a flop']} of the "
+            f"{vpip_k} hands they invested in, plus {sources['unraised big blinds']} big blinds",
+        )
+
+        # The afq numerator and denominator, street by street.
         self.equal(
             "example afq denominator is the sum of its streets",
-            str(EXAMPLE_COUNTS["afq"][1]),
-            str(400 + 168 + 118 + 82),
+            str(afq_n),
+            str(sum(actions.values())),
         )
         self.equal(
             "example afq numerator is the sum of its streets",
-            str(EXAMPLE_COUNTS["afq"][0]),
-            str(41 + 27 + 15 + 9),
+            str(afq_k),
+            str(sum(aggression.values())),
         )
+        self.equal("example flop afq denominator matches the street split", str(flop_n), str(actions["flop"]))
+        self.equal("example flop afq numerator matches the street split", str(flop_k), str(aggression["flop"]))
         self.equal(
-            "example flop afq denominator matches the history",
-            str(EXAMPLE_COUNTS["afq[flop]"][1]),
-            "168",
+            "example preflop bets or raises are the pfr numerator",
+            str(pfr_k),
+            str(aggression["preflop"]),
         )
+        for street, count in EXAMPLE_STREET_ACTIONS:
+            self.true(
+                f"example {street} actions fit the spots that street offers",
+                count <= EXAMPLE_STREET_CEILING[street],
+                f"{count} {street} actions exceeds the {EXAMPLE_STREET_CEILING[street]} available",
+            )
+            self.true(
+                f"example {street} bets or raises fit that street's actions",
+                aggression[street] <= count,
+                f"{aggression[street]} of {count}",
+            )
+        self.prose(
+            "example history states the street split of its voluntary actions",
+            f"Their voluntary postflop actions number {actions['flop']} on the flop, "
+            f"{actions['turn']} on the turn and {actions['river']} on the river, which with "
+            f"{actions['preflop']} preflop actions is the **{afq_n}** of the overall `afq`, "
+            f"of which **{afq_k}** were a bet or a raise ({aggression['preflop']} preflop, "
+            f"{aggression['flop']} flop, {aggression['turn']} turn, {aggression['river']} river)",
+        )
+
+    # -- The solve plan's cost arithmetic and the operator's seat priority --
+    def check_solve_cost(self) -> None:
+        total = len(SEAT_COUNTS) * len(STRATEGIES)
+        minutes = total * SOLVE_ILLUSTRATION_MINUTES / 60.0
+        hours = float(total * SOLVE_ILLUSTRATION_HOURS)
+        days = hours / HOURS_PER_DAY
+        self.prose(
+            "section 4.5 cost of 32 runs at ten minutes each",
+            f"{total} runs at ten minutes each is {fmt(minutes, 1)} hours already",
+        )
+        self.prose(
+            "section 4.5 cost of 32 runs at an hour each",
+            f"{total} runs at an hour each is {fmt(hours, 0)} hours, which is {fmt(days, 1)} days",
+        )
+        self.true(
+            "section 4.5 an hour a run really does breach the no-multi-day cap",
+            days > 1.0,
+            f"{fmt(hours, 0)} hours is {fmt(days, 1)} days, which is not multi-day",
+        )
+        self.true(
+            "section 4.5 ten minutes a run really does stay inside hours",
+            minutes < HOURS_PER_DAY,
+            f"{fmt(minutes, 1)} hours is not 'hours on one laptop'",
+        )
+        self.every_occurrence(
+            "the total run count, wherever the document states it",
+            r"seat counts = (\d+)|cost times (\d+)|with (\d+) runs in the plan|"
+            r"(\d+) runs at ten minutes|(\d+) runs at an hour|for (\d+) against that cap|"
+            r"the (\d+) runs below|If (\d+) runs are unaffordable|needs \*\*(\d+) of them\*\*|"
+            r"Answer for one run and for (\d+)|which at (\d+) runs means|fails it at (\d+)|"
+            r"Tier 1's (\d+) runs conditional|\| (\d+) solver runs,",
+            str(total),
+        )
+        self.every_occurrence(
+            "the runs saved by dropping one seat count, wherever it is stated",
+            r"saves (\d+) runs, not|the (\d+) saved by dropping a seat count",
+            str(len(STRATEGIES) - 1),
+        )
+        self.every_occurrence(
+            "the saving against the strategies per seat count",
+            r"saves \d+ runs, not (\d+)\*\*|The \d+ rather than (\d+) is forced",
+            str(len(STRATEGIES)),
+        )
+        self.every_occurrence(
+            "the provenance table's reading of that saving",
+            r"The (\d+) rather than \d+ is forced",
+            str(len(STRATEGIES) - 1),
+        )
+        self.every_occurrence(
+            "the S_BASE floor, wherever it is stated",
+            r"floor of \*\*(\d+) runs\*\*|saves (\d+) runs per bucket dropped|the (\d+)-run floor",
+            str(len(SEAT_COUNTS)),
+        )
+
+    def check_seat_priority(self) -> None:
+        """§4.5 records the operator's table-size priority and what follows from it."""
+        self.prose("section 4.5 operator seat priority, verbatim", f'"{SEAT_PRIORITY_QUOTE}"')
+        self.every_occurrence(
+            "the heater task the seat priority is recorded as, wherever it is cited",
+            r"recorded as heater task `([0-9a-f]+)`",
+            SEAT_PRIORITY_TASK,
+        )
+        self.prose("section 4.5 seat priority is dated and sourced", SEAT_PRIORITY_SOURCE)
+        band_lo, band_hi = SEAT_PRIORITY_ORDER[1], SEAT_PRIORITY_ORDER[2]
+        self.prose(
+            "section 4.5 what a 9-handed solve actually faces",
+            f"A {band_hi}-handed solve seats\n{spell(band_hi - 1)} archetypes against the bot, "
+            f"so its output carries an {spell(band_hi - 1)}-opponent\nmultiway discount",
+        )
+        self.prose(
+            "section 4.5 what an 8-handed table presents instead",
+            f"an {spell(band_hi - 1)}-opponent `{MAJORITY_RULE}` field; an {band_lo}-handed table "
+            f"presents {spell(band_lo - 1)} of each",
+        )
+        self.prose(
+            "section 4.5 what dropping the band would cost",
+            f"strategy loses less at an {band_lo}-handed table than dropping that band's "
+            f"{spell(len(STRATEGIES) - 1)}\ncounter-strategies loses",
+        )
+        self.prose(
+            "section 4.5 the order a cut must follow",
+            f"**Solve {SEAT_PRIORITY_ORDER[0]}-handed\nfirst; then {SEAT_PRIORITY_ORDER[1]}- and "
+            f"{SEAT_PRIORITY_ORDER[2]}-handed as one band; then every remaining seat count.**",
+        )
+        self.prose(
+            "section 4.5 the 8-versus-9 reconciliation",
+            f'**"Treated the same" is a priority, not a shared solve: {SEAT_PRIORITY_ORDER[1]} and '
+            f"{SEAT_PRIORITY_ORDER[2]} still need their\nown runs.**",
+        )
+        self.prose(
+            "section 4.5 the condition under which one solve could serve both",
+            f"The one condition that would let a single {SEAT_PRIORITY_ORDER[2]}-handed solve "
+            f"serve both",
+        )
+        for seat in SEAT_PRIORITY_ORDER:
+            self.true(
+                f"section 4.5 priority seat count {seat} is a seat count the design covers",
+                seat in SEAT_COUNTS,
+                f"{seat} is outside {SEAT_COUNTS}",
+            )
+
+    # -- The provenance table, which restates many of the figures above ----
+    def check_provenance_rows(self) -> None:
+        """Every derived figure the provenance table repeats, checked there too."""
+        anchors = []
+        for _stat, p, _rate, _w in TABLE_C_ROWS:
+            if fmt(p, 2) not in anchors:
+                anchors.append(fmt(p, 2))
+        self.prose(
+            "provenance: Table C's anchor column",
+            f"Table C's anchor `p̂` column ({', '.join(anchors)})",
+        )
+        rates = []
+        for stat, _p, rate, _w in TABLE_C_ROWS:
+            entry = f"`{stat}` {fmt(rate, 2)}"
+            if stat not in DEALT_IN_STATS and entry not in rates:
+                rates.append(entry)
+        self.prose(
+            "provenance: Table C's opportunities-per-hand column",
+            f"Table C's opportunities-per-hand column ({', '.join(rates)})",
+        )
+        self.prose(
+            "provenance: the rate the dealt-in stats escape the placeholder at",
+            f"escape the placeholder, at {fmt(1.00, 2)},",
+        )
+        self.every_occurrence(
+            "the cube-root reading of Table B, wherever it is stated",
+            r"`0\.5\^\(1/3\) ≈ ([\d.]+)`",
+            fmt(0.5 ** (1 / 3), 3),
+        )
+        self.every_occurrence(
+            "the fold-through a pot-sized bluff needs, as that reading writes it",
+            r"`([\d.]+)\^\(1/3\) ≈ [\d.]+`",
+            fmt(1.00 / (1 + 1.00), 1),
+        )
+        self.every_occurrence(
+            "the p̂ range as the provenance table writes it",
+            r"across `p̂` in (\d\.\d)–(\d\.\d)",
+            *[fmt(p, 1) for p in PHAT_FLAT_RANGE],
+        )
+        self.every_occurrence(
+            "the classification gate as the noise-exposure row writes it",
+            r"on `vpip` at the `(\d\.\d)` gate|`confidence < (\d\.\d)` `UNKNOWN` gate",
+            fmt(CLASSIFY_CONF_GATE, 1),
+        )
+        self.every_occurrence(
+            "the hysteresis band as the provenance table writes it",
+            r"Hysteresis dead-band `(\d\.\d+)`|gate and the `(\d\.\d+)` band",
+            fmt(HYSTERESIS_BAND, 2),
+        )
+        self.every_occurrence(
+            "the hysteresis hold, wherever it is stated",
+            r"hold for `(\d+)` consecutive|the `(\d+)`-hand hold|"
+            r"the `(\d+)` consecutive-hand hold",
+            str(HYSTERESIS_HOLD),
+        )
+        self.every_occurrence(
+            "the flag margins as the provenance table lists them",
+            r"all flag margins \((\d\.\d+)/(\d\.\d+)\)",
+            fmt(max(f["margin"] for f in FLAGS.values()), 2),
+            fmt(min(f["margin"] for f in FLAGS.values()), 2),
+        )
+        self.every_occurrence(
+            "the flag gates as the provenance table lists them",
+            r"flag confidence gates \((\d\.\d+)/(\d\.\d+)\)",
+            fmt(min(f["gate"] for f in FLAGS.values()), 1),
+            fmt(max(f["gate"] for f in FLAGS.values()), 1),
+        )
+        self.every_occurrence(
+            "the V3 holdout as the provenance table lists it",
+            r"the (\d+)/(\d+) V3 holdout split",
+            str(V3_HOLDOUT[0]),
+            str(V3_HOLDOUT[1]),
+        )
+        self.every_occurrence(
+            "the example's hands and vpip as the provenance table lists them",
+            r"\((\d+) hands, ([\d.]+) vpip",
+            str(EXAMPLE_HANDS),
+            fmt(
+                shrunk_rate(
+                    EXAMPLE_COUNTS["vpip"][2],
+                    PRIOR_STRENGTH["vpip"],
+                    EXAMPLE_COUNTS["vpip"][0],
+                    EXAMPLE_COUNTS["vpip"][1],
+                ),
+                2,
+            ),
+        )
+        self.every_occurrence(
+            "the seat priority order, wherever it is stated",
+            r"Solve (\d)-handed first; then (\d)- and (\d)-handed as one band|"
+            r"(\d)-handed first, then (\d)- and (\d)-handed as one band",
+            *[str(seat) for seat in SEAT_PRIORITY_ORDER],
+        )
+        # The rounding convention the whole script depends on, worked in the prose.
+        example = Decimal("6.25")
+        half_up = example.quantize(Decimal("0.1"), rounding=ROUND_HALF_UP)
+        half_even = example.quantize(Decimal("0.1"), rounding=ROUND_HALF_EVEN)
+        self.prose(
+            "provenance: the half-up rounding convention, worked",
+            f"{example}%\nprints as {half_up}%, not {half_even}%",
+        )
+        self.true(
+            "the script really does round half-up",
+            fmt(float(example), 1) == str(half_up) != str(half_even),
+            f"fmt gives {fmt(float(example), 1)}, half-up gives {half_up}",
+        )
+
+    # -- The forefront-rule table, reproduced from CLAUDE.md ---------------
+    def check_forefront_table(self) -> None:
+        """§1's two bullets claim to reproduce CLAUDE.md's table verbatim."""
+        source = self.doc.path.parent / FOREFRONT_SOURCE
+        if not source.exists():
+            source = DEFAULT_DOC.parent / FOREFRONT_SOURCE
+        self.true(f"{FOREFRONT_SOURCE} is readable", source.exists(), f"no {source}")
+        if not source.exists():
+            return
+        rows = Document(source).table_after(FOREFRONT_HEADER)
+        header, body = rows[0], rows[1:]
         self.equal(
-            "example preflop raises match pfr",
-            str(EXAMPLE_COUNTS["pfr"][0]),
-            "41",
+            f"{FOREFRONT_SOURCE} forefront table header",
+            "Allowed to AI-written opponent-model code | Reserved to the engine",
+            " | ".join(header),
+        )
+        columns = {
+            "Allowed to AI-written opponent-model code": [row[0] for row in body],
+            "Reserved to the engine": [row[1] for row in body],
+        }
+        m = re.search(
+            r"\*\*Allowed to AI-written opponent-model code:\*\* (.+?) "
+            r"- \*\*Reserved to the engine:\*\* (.+?) \*\*Live field",
+            self.doc.flat,
+        )
+        self.true("§1 reproduces both forefront columns as bullets", m is not None, "bullets not found")
+        if m is None:
+            return
+        for (label, expected), text in zip(columns.items(), m.groups()):
+            items = [clean_cell(part) for part in text.rstrip(".").split("; ")]
+            self.equal(f"§1 reproduces {FOREFRONT_SOURCE}'s '{label}' column verbatim",
+                       " | ".join(expected), " | ".join(items))
+
+    # -- Figures the document states in more than one place ----------------
+    def check_restated_constants(self) -> None:
+        """Constants the prose repeats. Every copy has to say the same thing."""
+        tier_values = [str(value) for _t, value, _s in PRIOR_STRENGTH_GROUPS]
+        self.every_occurrence("Z95 wherever a half-width is written", r"`?(\d\.\d+)·√", fmt(Z95, 2))
+        self.every_occurrence("Z95 in Table C's formula", r"\((\d\.\d+)/w\)²", fmt(Z95, 2))
+        self.every_occurrence(
+            "the confidence level those intervals are read at",
+            r"(\d+)% (?:confidence interval|half-width)",
+            "95",
+        )
+        self.every_occurrence("WARMUP_HANDS", r"WARMUP_HANDS = (\d+)", str(WARMUP_HANDS))
+        self.every_occurrence(
+            "WARMUP_HANDS wherever §5.2 argues about it without naming it",
+            r"what (\d+) buys|(\d+) is \*\*not\*\* a convergence point|"
+            r"At (\d+) hands the same formula|the width (\d+) actually buys|"
+            r"§5\), also per opponent\. (\d+) is a deliberately shorter",
+            str(WARMUP_HANDS),
+        )
+        self.every_occurrence(
+            "the Table C anchors §5.2 reads the warm-up widths at",
+            r"its (\d\.\d+) anchor and ±[\d.]+pp on `pfr` at (\d\.\d+)",
+            fmt(TABLE_C_ANCHORS["vpip"], 2),
+            fmt(TABLE_C_ANCHORS["pfr"], 2),
+        )
+        self.every_occurrence("HALF_LIFE", r"HALF_LIFE = (\d+)", str(HALF_LIFE))
+        self.every_occurrence("MIN_POOL_HANDS", r"MIN_POOL_HANDS = (\d+)", str(MIN_POOL_HANDS))
+        self.every_occurrence(
+            "MIN_POOL_OPPONENTS", r"MIN_POOL_OPPONENTS = (\d+)", str(MIN_POOL_OPPONENTS)
+        )
+        self.every_occurrence(
+            "MIN_CLASSIFY_HANDS", r"MIN_CLASSIFY_HANDS = (\d+)", str(MIN_CLASSIFY_HANDS)
+        )
+        self.every_occurrence("MIN_STACK_BB", r"MIN_STACK_BB = (\d+)", str(MIN_STACK_BB))
+        self.every_occurrence(
+            "VPIP_SPLIT wherever the document states its value",
+            r"VPIP_SPLIT = (\d\.\d+)|VPIP_SPLIT` \*\*defaults to (\d\.\d+)\*\*|"
+            r"VPIP_SPLIT`'s (\d\.\d+)|`vpip ≤ (\d\.\d+)`|So (\d\.\d+) is a biased|"
+            r"sit \*below\* (\d\.\d+) by the share|using (\d\.\d+) anyway",
+            fmt(VPIP_SPLIT, 2),
+        )
+        self.every_occurrence(
+            "VPIP_SPLIT wherever the document writes it as a percentage",
+            r"≤(\d+)% of them|literature threshold at (\d+)%",
+            fmt(VPIP_SPLIT * 100, 0),
+        )
+        self.prose(
+            "the plain-words opening's four-hand scorecard",
+            f'raised two of them, they are not "a {pct(2 / 4, 0)} raiser"',
+        )
+        self.every_occurrence(
+            "the heads-up seat count §1 points at",
+            r"and what changes at (\d)\)",
+            str(SEAT_COUNTS[0]),
+        )
+        self.every_occurrence(
+            "AFQ_SPLIT wherever the document states its value",
+            r"AFQ_SPLIT = (\d\.\d+)|AFQ_SPLIT` \*\*defaults to (\d\.\d+)\*\*|AFQ_SPLIT`'s (\d\.\d+)",
+            fmt(AFQ_SPLIT, 2),
+        )
+        self.every_occurrence(
+            "AFQ_SPLIT where §4.4 writes it as an AFq value",
+            r"`AFq = (\d\.\d+)` is the nearest",
+            fmt(AFQ_SPLIT, 1),
+        )
+        self.every_occurrence(
+            "the classification confidence gate, wherever it is stated",
+            r"`confidence\(vpip\) ≥ (\d\.\d)`|`confidence\(vpip\) < (\d\.\d)`|"
+            r"matching `afq` confidence of (\d\.\d+)|Both gates — the `(\d\.\d+)` confidence|"
+            r"`PRIOR_STRENGTH`, the `(\d\.\d+)` gate|the `(\d\.\d+)` `vpip`-confidence gate",
+            fmt(CLASSIFY_CONF_GATE, 1),
+        )
+        self.every_occurrence(
+            "Tier A's prior strength where §4.4 inverts the gate with it",
+            r"with Tier A's `s` = (\d+) inverts",
+            str(PRIOR_STRENGTH["vpip"]),
+        )
+        self.every_occurrence(
+            "MIN_CLASSIFY_HANDS where §4.4 anchors it to the Tier A crossover",
+            r"The (\d+) is anchored to the Tier A crossover",
+            str(MIN_CLASSIFY_HANDS),
+        )
+        self.every_occurrence(
+            "HALF_LIFE where §4.3 calls it a starting value",
+            r"only matters across weeks; (\d+) is a",
+            str(HALF_LIFE),
+        )
+        self.every_occurrence(
+            "the least favourable p̂ wherever §4.4 reads an unanchored stat at it",
+            r"`p̂ = (\d\.\d+)`",
+            fmt(LEAST_FAVOURABLE_P, 1),
+        )
+        self.every_occurrence(
+            "the p̂ range Table C claims the interval is flat across",
+            r"barely moves for `p̂` between (\d\.\d+) and (\d\.\d+)",
+            *[fmt(p, 1) for p in PHAT_FLAT_RANGE],
+        )
+        lo, hi = (half_width(p, 100) for p in PHAT_FLAT_RANGE)
+        widest = half_width(LEAST_FAVOURABLE_P, 100)
+        self.true(
+            "the interval really is flat across that p̂ range",
+            max(abs(widest - lo), abs(widest - hi)) / widest < PHAT_FLAT_TOLERANCE,
+            f"the width moves more than {PHAT_FLAT_TOLERANCE:.0%} across {PHAT_FLAT_RANGE}",
+        )
+        self.every_occurrence(
+            "the confidence the equal-weight sample size corresponds to",
+            r"`confidence` passes (\d\.\d+)",
+            fmt(confidence(1, 1), 1),
+        )
+        self.true(
+            "confidence really does pass that value exactly at n = s",
+            all(confidence(s, s) == confidence(1, 1) for s in PRIOR_STRENGTH.values()),
+            "confidence(n=s) is not the same number for every prior strength",
+        )
+        self.every_occurrence(
+            "the three PRIOR_STRENGTH values, listed in the prose",
+            r"`PRIOR_STRENGTH` values — (\d+), (\d+) and (\d+) —",
+            *tier_values,
+        )
+        self.every_occurrence(
+            "the PRIOR_STRENGTH values as the provenance table lists them",
+            r"`PRIOR_STRENGTH` values \((\d+)/(\d+)/(\d+)",
+            *tier_values,
+        )
+        self.every_occurrence(
+            "check_raise's PRIOR_STRENGTH where §4.3 justifies its tier",
+            r"quotes for it are `s` = (\d+) figures",
+            str(PRIOR_STRENGTH["check_raise"]),
+        )
+        self.every_occurrence(
+            "the two illustrative `s` values Table D adds to the tiers",
+            r"`s`=(\d+) and `s`=(\d+) are included only",
+            *[str(s) for s in TABLE_D_S if s not in {v for _t, v, _ in PRIOR_STRENGTH_GROUPS}],
+        )
+        self.every_occurrence(
+            "Table C's three placeholder opportunity rates",
+            r"invented here: (\d\.\d+), (\d\.\d+) and (\d\.\d+) are round",
+            *[fmt(r, 2) for r in sorted(PLACEHOLDER_RATES)],
+        )
+        self.every_occurrence(
+            "the rate the dealt-in stats are forced to",
+            r"carry a rate of (\d\.\d+)",
+            fmt(1.00, 2),
+        )
+        self.every_occurrence(
+            "the decay base, which is what HALF_LIFE halves",
+            r"`d = (\d\.\d+) \*\* \(hands_elapsed / HALF_LIFE\)`",
+            fmt(HALF_LIFE_BASE, 1),
+        )
+        self.every_occurrence(
+            "the flag margins and gates where §4.4 lists them together",
+            r"gates — (\d\.\d+), the tighter (\d\.\d+) on `NEVER_RAISES`, and the "
+            r"`(\d\.\d+)` and `(\d\.\d+)` confidence gates",
+            fmt(max(f["margin"] for f in FLAGS.values()), 2),
+            fmt(min(f["margin"] for f in FLAGS.values()), 2),
+            fmt(min(f["gate"] for f in FLAGS.values()), 1),
+            fmt(max(f["gate"] for f in FLAGS.values()), 1),
+        )
+        self.every_occurrence(
+            "the hysteresis band and hold where §4.4 names them together",
+            r"The `(\d\.\d+)` dead-band and the `(\d+)`-hand hold",
+            fmt(HYSTERESIS_BAND, 2),
+            str(HYSTERESIS_HOLD),
+        )
+        self.every_occurrence(
+            "the hysteresis band wherever §4.4 measures noise against it",
+            r"`(\d\.\d+)` dead-band|dead-band of `(\d\.\d+)`|past `(\d\.\d+)`, and a dead-band|"
+            r"to the `(\d\.\d+)` band needs|a `(\d\.\d+)`-tight gate",
+            fmt(HYSTERESIS_BAND, 2),
+        )
+        self.every_occurrence(
+            "the V3 holdout, held-out share", r"last (\d+)% of logged hands", str(V3_HOLDOUT[1])
+        )
+        self.every_occurrence(
+            "the V3 holdout, training share", r"built on the first (\d+)%", str(V3_HOLDOUT[0])
+        )
+        self.every_occurrence(
+            "the V3 holdout split as a ratio",
+            r"the (\d+)/(\d+) split",
+            str(V3_HOLDOUT[0]),
+            str(V3_HOLDOUT[1]),
+        )
+        self.every_occurrence(
+            "the seat range the design must cover",
+            r"every table size from (\d) to (\d) players|Every size from (\d) to (\d) is still "
+            r"required|seat counts \((\d) to (\d) players\)|seat counts, (\d) to (\d) players",
+            str(SEAT_COUNTS[0]),
+            str(SEAT_COUNTS[-1]),
+        )
+        self.every_occurrence(
+            "the example's hand count wherever the prose restates it",
+            r"the same (\d+) hands|Across \*\*(\d+)\*\* hands dealt|one coherent (\d+)-hand history",
+            str(EXAMPLE_HANDS),
+        )
+        self.every_occurrence(
+            "the example's flops seen wherever the prose restates it",
+            r"Of those (\d+) flops",
+            str(EXAMPLE_COUNTS["wtsd"][1]),
         )
 
     # -- Everything ------------------------------------------------------
@@ -999,6 +1747,11 @@ class Checker:
             ("stated constants", self.check_stated_constants),
             ("warm-up widths", self.check_warmup),
             ("Tier 0 worked example", self.check_example),
+            ("Tier 1 solve cost arithmetic", self.check_solve_cost),
+            ("operator seat priority", self.check_seat_priority),
+            ("provenance table", self.check_provenance_rows),
+            ("forefront-rule table copy", self.check_forefront_table),
+            ("restated constants", self.check_restated_constants),
         ]
         for name, check in checks:
             try:

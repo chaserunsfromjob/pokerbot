@@ -1247,10 +1247,11 @@ offline solver runs**, done once. [E5](#engine-requirements) asks the cost of
 here.** No multi-day computing: a playable bot must be reachable in **hours on
 one laptop** (operator, 2026-09-15). That is the cap on the *whole* offline
 build, not on one run, so with 32 runs in the plan it divides down to a single
-run of a few **minutes** — 32 runs at ten minutes each is over five hours
-already, and 32 runs at an hour each is more than a week of laptop time and is
-simply out. **Tier 1 as specified is therefore conditional on an engine whose
-single solve against fixed opponents finishes in minutes**, and a coding task
+run of a few **minutes** — 32 runs at ten minutes each is 5.3 hours already,
+and 32 runs at an hour each is 32 hours, which is 1.3 days of continuous laptop
+time and breaches the no-multi-day cap on its own. **Tier 1 as specified is
+therefore conditional on an engine whose single solve against fixed opponents
+finishes in minutes**, and a coding task
 that finds otherwise must stop and report it rather than start a solve that
 cannot finish inside the cap. [E5](#engine-requirements) is the question that
 settles it, and it must be answered for one run *and* for 32 against that cap.
@@ -1276,6 +1277,33 @@ counter-strategies. **Dropping one seat count from Tier 1 saves 3 runs, not 4**,
 and dropping all of them from Tier 1 leaves a floor of **8 runs** — one `S_BASE`
 per seat count — which is the least this design can be built on. Cutting
 buckets, by contrast, saves 8 runs per bucket dropped, one at every seat count.
+
+**The order any cut of the seat counts must follow, which is the operator's and
+not a judgement call here.** The operator's table-size priority, stated
+2026-09-15 and recorded as heater task `65bba741bf40`, verbatim: "i will be
+playing mostly 6 player tables, followed by 8 or 9 player tables which can
+honestly be treated the same, they are so close". Every size from 2 to 9 is
+still required ([§1](#1-goal-and-non-goals)); what this settles is the *order* in
+which they are built and the order in which they are given up. **Solve 6-handed
+first; then 8- and 9-handed as one band; then every remaining seat count.** A cut
+drops seat counts from the bottom of that order upward, never from the top, and
+a seat count dropped from Tier 1 still keeps its `S_BASE` by the paragraph above.
+
+**"Treated the same" is a priority, not a shared solve: 8 and 9 still need their
+own runs.** The rule at the head of this tier — a strategy solved for one seat
+count must not be loaded at a table of another size — is about what the solver
+*faced*, not about how alike the two games feel to play. A 9-handed solve seats
+eight archetypes against the bot, so its output carries an eight-opponent
+multiway discount
+([§2.4](#24-why-bluffing-is-the-wrong-primary-exploit-at-a-multiway-table)) and
+an eight-opponent `⌈2n/3⌉` field; an 8-handed table presents seven of each. The
+operator's words rank those two sizes together in priority; they do not merge the
+solver's input, and nothing here reads them as doing so. The one condition that
+would let a single 9-handed solve serve both: a measured comparison showing that
+strategy loses less at an 8-handed table than dropping that band's three
+counter-strategies loses — measurable by
+[V5](#6-validation-before-it-touches-a-real-table) once Tier 1 exists, and until
+it is measured the answer is two solves.
 
 **At two players the design still applies, with two changes.** Heads-up is the
 one case where the equilibrium argument in [§1](#1-goal-and-non-goals) does hold,
@@ -1743,8 +1771,15 @@ declares — `PRIOR_STRENGTH` per stat, the confidence and flag gates, the flag
 margins, `VPIP_SPLIT`, `AFQ_SPLIT`, the hysteresis band and hold, `WARMUP_HANDS`,
 `HALF_LIFE`, the pool and stack gates, the Table C opportunity rates and anchors,
 the seat counts, the strategy list and the Tier 0 example's counts — in one
-place, recomputes every figure this document derives from them, and
-names any figure whose printed value disagrees. The rule that follows from that,
+place and recomputes from them, naming any printed value that disagrees:
+**every cell of Tables A–E and of the flag tables, every figure in the Tier 0
+worked example including its hand history and the flags it does and does not
+fire, and every figure quoted in the prose that is computed from a constant or
+restates one.** Its scope stops there, and the boundary is worth stating
+plainly: it does **not** check figures taken from the
+[Sources](#sources) — those are checked against the papers by citation, not by
+arithmetic — nor section numbers, dates, or the numbering of tiers, steps and
+validation items. The rule that follows from that,
 and it is not optional: **a constant is changed in the script and in the prose
 together, in one edit, and the script is what says the prose is still right.**
 Adding a derived figure to this document without adding its check to the script
@@ -1762,6 +1797,7 @@ inputs, never from another figure's printed value.
 | Table C's opportunities-per-hand column (`three_bet` 0.15, `fold_to_three_bet` 0.08, `fold_to_cbet` 0.15, `wtsd` 0.30) | **Illustrative estimates, not measured or cited.** No source exists for them; labelled as such beside the table. Each is to be replaced by `denominator / hands_dealt` from the bot's own logged hands. The "Hands needed" column scales inversely with them. Only `vpip` and `pfr` escape the placeholder, at 1.00, and only because their [§4.2](#42-the-stat-table) denominator is "opponent was dealt in" |
 | The bucket boundary's noise exposure — ±12.4pp raw and ±6.2pp shrunk on `vpip` at the `0.5` gate, ±19.6pp and ±9.8pp on `afq`, and the 1,835 hands / 2,351 opportunities a `0.02`-tight gate would need ([§4.4](#44-bucketing-an-opponent)) | Computed by `tools/check_design_numbers.py` from `VPIP_SPLIT`, `AFQ_SPLIT`, `PRIOR_STRENGTH`, the `0.5` gate and the `0.02` band, by the same `n = s·c/(1−c)` and `w = 1.96·√(p̂(1−p̂)/n)` used for the flag margins |
 | **Hours on one laptop for the whole offline build, no multi-day computing** ([§4.5](#45-tiers-what-to-build-in-what-order), [E5](#engine-requirements)) | **The operator's stated cap, 2026-09-15**, not a derived or negotiable figure. It is what E5's answer has to clear, and what makes Tier 1's 32 runs conditional on a minutes-long single solve |
+| The table-size priority — 6-handed first, then 8- and 9-handed as one band, then the rest ([§4.5](#45-tiers-what-to-build-in-what-order)) | **The operator's stated priority, 2026-09-15**, recorded as heater task `65bba741bf40` and quoted verbatim at its point of use. Not derived and not negotiable here; it fixes only the order of the solve plan, never which seat counts are required |
 | 32 solver runs, the 3 saved by dropping a seat count, and the 8-run floor ([§4.5](#45-tiers-what-to-build-in-what-order)) | Computed by `tools/check_design_numbers.py` from the four strategies and the eight seat counts (2 to 9 players). The 3 rather than 4 is forced by the same section's rule that a strategy solved for one seat count must not be loaded at another, so a dropped seat count keeps its `S_BASE` |
 | Hysteresis dead-band `0.02` and the `10` consecutive-hand hold ([§4.4](#44-bucketing-an-opponent)) | **Starting values chosen for this design, not measured.** Tuned by V2, which measures reclassification frequency directly |
 | The `⌈2n/3⌉` shared-bucket rule for loading a counter-strategy ([§4.5](#45-tiers-what-to-build-in-what-order)) | **A design choice, not a measured or cited threshold.** It encodes "a clear majority of the live field", following the multiway argument in [§2.4](#24-why-bluffing-is-the-wrong-primary-exploit-at-a-multiway-table); tune against V5 |

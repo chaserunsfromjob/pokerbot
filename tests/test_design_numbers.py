@@ -54,6 +54,22 @@ def test_checker_reports_a_mismatch(tmp_path):
     assert "break-even fold frequency" in result.stdout
 
 
+def test_checker_reports_a_drifted_forefront_table(tmp_path):
+    """§1 claims to reproduce CLAUDE.md's table verbatim; drift must fail."""
+    text = DOCUMENT.read_text(encoding="utf-8")
+    broken = text.replace(
+        "Sorting an opponent into a bucket;",
+        "Sorting an opponent into a group;",
+        1,
+    )
+    assert broken != text, "the forefront-rule bullet this test edits has moved"
+    target = tmp_path / "OPPONENT_MODEL_DESIGN.md"
+    target.write_text(broken, encoding="utf-8")
+    result = run_checker(str(target))
+    assert result.returncode == 1
+    assert "verbatim" in result.stdout
+
+
 def test_missing_document_is_reported():
     result = run_checker("no/such/document.md")
     assert result.returncode == 2
