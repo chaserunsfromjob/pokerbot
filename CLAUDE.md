@@ -23,5 +23,10 @@ beat by hand-rolling it in a few weeks.
    against them specifically. This is the part that actually beats humans.
 3. Only if time remains: refine with a trained model on top of stages 1-2.
 
+## Licence
+
+- pokerbot is private and is never distributed - not published, not given to classmates, not sold. The vendored engine's GPL-3.0 terms attach only on distribution, so they impose nothing here while that holds; if the code is ever handed to anyone, this decision reopens first.
+- Treat the root `LICENSE` as the vendored engine's own GPL-3.0 text, kept for reference, not as a grant of this project to anyone.
+
 Rules in `~/.claude/CLAUDE.md` (deployed machine-wide from the `heater` fleet
 repository) apply on top of this file.

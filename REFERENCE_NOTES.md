@@ -24,7 +24,16 @@ Plain-language note first, because two words recur throughout:
 - Upstream commit: `73fb394b26623c897459ffa3e66d7a5cb47e9962`
   (2020-07-19, "Merge pull request #110 from mervai/patch-1" - the current tip
   of upstream `master`; the project has had no commits since).
-- Licence: GPL-3.0 (`vendor/poker_ai/LICENSE`).
+- Upstream status: **archived**. `fedden/poker_ai` was made read-only on GitHub
+  on 2023-04-03, so it accepts no issues and no pull requests. Nothing we fix
+  can ever go upstream, and there will be no upstream fixes to re-apply: every
+  patch in `vendor/poker_ai/` is permanently ours to carry.
+- Licence: GPL-3.0 (`vendor/poker_ai/LICENSE`, reproduced at the repo root as
+  `LICENSE`). GPL-3.0's obligations - publishing source, licensing derived work
+  alike - are triggered by *distributing* the software, not by using it. The
+  operator's position, recorded under "Licence" in `CLAUDE.md`, is that pokerbot
+  is never distributed, so those obligations do not bite; that decision reopens
+  before the code is ever handed to anyone.
 - Location in this repo: `vendor/poker_ai/`, as a **plain copy of the source
   tree**, not a git submodule.
 
@@ -33,8 +42,9 @@ this engine off the 20-card deck, which means editing its source. A submodule
 turns every such edit into a fork we have to host and track separately, and
 makes `git clone` of this repo produce a directory that is empty until someone
 remembers a second command. A copy is one clone, one diff, one review. The
-cost is that upstream fixes have to be re-applied by hand - acceptable, because
-upstream has not committed anything in five years.
+cost would normally be that upstream fixes have to be re-applied by hand, and
+here there is no such cost at all: the repository is archived, so there will be
+no upstream fixes.
 
 ### Changes made to the vendored code
 
@@ -73,13 +83,26 @@ pre-built packages for Python 3.13 and will not compile. Use
 `requirements-vendor.txt` in this repo's root instead - those are the versions
 actually verified here.
 
+There is **one** environment for this repo, the root `.venv`, and it runs both
+test suites: our own `tests/ground_truth` and the vendored `vendor/poker_ai/test`.
+That is why both requirements files go into it. `README.md` gives the same
+sequence in plain language; keep the two in step.
+
 ```bash
 cd <repo root>
 python3 -m venv .venv
 .venv/bin/pip install --upgrade pip setuptools wheel
-.venv/bin/pip install -r requirements-vendor.txt
+.venv/bin/pip install -r requirements-vendor.txt -r tests/ground_truth/requirements.txt
 .venv/bin/pip install --no-deps --no-build-isolation -e vendor/poker_ai
 ```
+
+`tests/ground_truth/requirements.txt` carries `treys`, which the vendored
+engine does not need and `requirements-vendor.txt` therefore does not list.
+Install only `requirements-vendor.txt` and `pytest tests/ground_truth` stops at
+collection with `ModuleNotFoundError: No module named 'treys'`. The two files
+stay separate because the ground-truth fixture has to be installable on its
+own, away from the engine; the single `.venv` is what makes the full suite
+runnable in one place.
 
 The two flags on the last line are both needed:
 
@@ -91,13 +114,17 @@ The two flags on the last line are both needed:
 
 Verified on: macOS 24.2.0 (arm64), Python 3.13.15, NumPy 2.5.3.
 
-### Running the test suite
+### Running the test suites
+
+Two suites, both from that one `.venv`, both from the repo root:
 
 ```bash
+.venv/bin/python -m pytest tests/ground_truth -q
 cd vendor/poker_ai && ../../.venv/bin/python -m pytest test -q
 ```
 
-Result on 2025-09-15: **`53 passed, 2 xfailed`** in 20.66s.
+Result on 2026-09-15: **`20 passed`** in 0.01s for `tests/ground_truth`, and
+**`53 passed, 2 xfailed`** in 21.52s for the vendored suite.
 
 The two `xfail`s are not breakage. They are
 `test/functional/test_short_deck.py::test_short_deck_3[0]` and `[1]`, and the
@@ -119,9 +146,12 @@ and then stops. Nothing is asserted about `result`; `catch_exceptions=True`
 swallows any error the command raised, and the only assertion in the file
 (`assert result["exit_code"] == 0`, line 176) is commented out. They also point
 `--pickle_dir` at `research/blueprint_algo/`
-(`test/functional/test_cli.py:12`), a directory that **does not exist** - it
-was never committed upstream, because upstream's own ignore file excludes
-`research/`.
+(`test/functional/test_cli.py:12`), which **does not exist**. `research/` itself
+does exist and is vendored here - it is the four files counted above under
+"Changes made to the vendored code", in `research/size_of_problem/` and
+`research/stat_test/`. It is only the `blueprint_algo/` subdirectory that
+upstream never committed, and that is where the clustering tables these tests
+pass as `--pickle_dir` were meant to be.
 
 Run by hand, that invocation returns `exit_code = 2` with
 `SystemExit(2)`. The tests still report "passed". So upstream has **no working
@@ -309,11 +339,15 @@ Measured sizes (computed from the same `comb()` arithmetic the upstream test
 | turn | 581,400 | 305,377,800 |
 | river | **1,627,920** | **2,809,475,760** |
 
-The river array at 52 cards is 2.8 billion rows of seven `Card` objects. The
-array of pointers alone - before a single `Card` exists - is **147 GiB**, and
-each `Card` object measures 344 bytes here. The `create_info_combos` double
-loop would run 3,446,220,960 iterations with a NumPy `isin` call inside each
-one. This is not "slow", it is "will not complete".
+The river array at 52 cards is 2,809,475,760 rows of seven `Card` objects. A
+NumPy array of Python objects holds one 8-byte pointer per element, so the
+pointer array alone comes to
+2,809,475,760 x 7 x 8 = 157,330,642,560 bytes, i.e. **146.5 GiB** - and that is
+before a single `Card` exists behind those pointers, each of which measures 344
+bytes here. The `create_info_combos` double loop would also run 3,446,220,960
+iterations with a NumPy `isin` call inside each one. This is not "slow", it is
+"will not start": the array is allocated in one piece before any clustering
+work begins.
 
 There is a second, smaller scaling problem in the same area:
 `card_info_lut_builder.py:93-103` (and the turn/flop equivalents at 117-127 and
@@ -337,12 +371,26 @@ deliberately set below anything usable (5 buckets per street, 2 simulations per
 decision, against upstream defaults of 50 and 6). Full numbers in the run log
 at the end.
 
-Scaling that by the river row counts in the table above gives a rough sense of
-what 52 cards would cost with the code as written: 2,809,475,760 / 1,627,920 is
-a factor of about 1,726, so roughly **six months of continuous computation** for
-the river stage alone - assuming it could allocate the memory, which it cannot.
-This is the number that settles the question. The move to 52 cards is a
-rewrite of the abstraction step, not a configuration change.
+That 90 minutes cannot be turned into an honest time estimate for 52 cards,
+and the estimate is not what settles the question anyway.
+
+It cannot, because the cost per row is not constant across stages. From the run
+log table below: the flop stage took 2,338.5s for 155,040 rows, which is
+2,338.5 / 155,040 = 0.0151s per row; the river stage took 920.5s for 1,627,920
+rows, which is 920.5 / 1,627,920 = 0.00057s per row. The flop is about 27 times
+more expensive per row than the river, so no single factor taken from one stage
+carries to another. For what it is worth, the most favourable arithmetic
+available - scaling the river stage by its own row growth,
+2,809,475,760 / 1,627,920 = a factor of about 1,726, so 1,726 x 920.5s =
+about 1,588,800s, and 1,588,800 / 86,400 seconds per day - gives **18.4 days**,
+not months. Quote it only with that working attached.
+
+What settles the question is memory. The river combination table at 52 cards
+needs **146.5 GiB** for its array of pointers alone, before any card object
+exists - the arithmetic is under "The blocker" above. That allocation happens
+in one piece before any clustering work starts, on a machine that does not have
+it, so the 52-card run does not take longer: it does not begin. The move to 52
+cards is a rewrite of the abstraction step, not a configuration change.
 
 ## Question 2: does it support 3+ players (multiway), or only heads-up?
 
@@ -425,21 +473,28 @@ Upstream's README acknowledges the gap: line 311 lists "Implement a multiplayer
 working heads up no limit poker game engine to support the self-play" as
 *future* work.
 
-This does not block anything in the current task, and a limit-betting bot is
-still a bot. But adding bet sizing later means enlarging the action set inside
-the CFR tree, which multiplies training cost - so it belongs in the same
-conversation as the 52-card move rather than being discovered afterwards.
+This does not block the current task, but it is a gap that has to be closed,
+not a state we can ship from. `CLAUDE.md` asks for no-limit, and a fixed-limit
+bot does not meet that: without a bet-sizing dimension it cannot make or read
+the sizing decisions that no-limit play turns on. Closing it means enlarging
+the action set inside the CFR tree, which multiplies training cost - so it
+belongs in the same conversation as the 52-card move rather than being
+discovered afterwards.
 
 ## Run log
 
-Everything below was run on 2025-09-15 on this machine: macOS 24.2.0 (arm64),
-Python 3.13.15, NumPy 2.5.3, inside `.venv` built from `requirements-vendor.txt`.
+Everything below was run on 2026-09-15 on this machine: macOS 24.2.0 (arm64),
+Python 3.13.15, NumPy 2.5.3, inside the single root `.venv` built by the
+sequence under "Setting up" above.
 
-### 1. The vendored test suite - PASSES
+### 1. Both test suites, from the one `.venv` - PASS
 
 ```
+.venv/bin/python -m pytest tests/ground_truth -q
+-> 20 passed in 0.01s
+
 cd vendor/poker_ai && ../../.venv/bin/python -m pytest test -q
--> 53 passed, 2 xfailed, 3 warnings in 20.66s
+-> 53 passed, 2 xfailed, 3 warnings in 21.52s
 ```
 
 (The three warnings are Click 9 deprecation notices about `isolated_filesystem`
