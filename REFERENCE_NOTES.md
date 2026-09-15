@@ -1,5 +1,26 @@
 # Reference notes: the vendored `poker_ai` engine
 
+## The short version, for the operator
+
+**Recommendation: do not try to convert this engine to the normal 52-card
+game. Keep it as a worked example to read from and a six-handed test bed.**
+
+1. **The 52-card conversion is out.** Preparing its compressed card groupings
+   (**clustering**, explained below) would need at least 18.4 days of computing
+   and 146.5 GiB of memory claimed in one piece, on a laptop that does not have
+   it, against a budget of hours. Shown at :279 and :411-431.
+2. **Its cut-down 20-card deck seats seven players at most**, so the operator's
+   second priority - 8- and 9-handed play - cannot be reached on it at all.
+   Six-handed, the first priority, works today. Shown at :438-440 and
+   :495-503.
+3. **The bot cannot choose how much to bet.** A raise is always one fixed
+   amount and only three are allowed per round - the fixed-stakes version of
+   the game (**fixed-limit**), where this project asks for the free-stakes
+   version (**no-limit**). Shown at :523-554.
+4. **What it stays good for**: 50 working automated checks of the game rules,
+   hand ranking and payouts, usable as a reference (:182-184), and real
+   three-or-more-player play up to seven seats (:440-442).
+
 What this file is for: we did not write the poker engine, we borrowed one. This
 file records what we borrowed, how to run it, and what we learned by reading it.
 It is the input to the next piece of work, so every claim below points at a
