@@ -315,7 +315,9 @@ used.
 
   **What it delivered.** In heads-up no-limit over 1,000,000 games, raw chip
   counting had a per-hand standard deviation of 25.962 chips; AIVAT with one
-  agent's strategy brought that to 8.095, a **68% reduction**. With the stronger
+  agent's strategy brought that to 8.095 — **a bit more than a 68% reduction**,
+  which is the paper's own phrasing, and **68.8%** exactly
+  (1 − 8.095 ÷ 25.962 = 0.688, computed 2026-09-15). With the stronger
   value estimates available from DeepStack, the reduction was **85%**
   ([Burch et al. 2018](#s-aivat), Table 3 and
   §"No-limit Texas Hold'em with Humans"). Those two figures are exactly where the
@@ -334,10 +336,13 @@ used.
 
   **What it bought, in human terms.** In DeepStack's evaluation — 33 players from
   17 countries, 44,852 games — the aggregate result was already significant at
-  4 sigma from raw chip counts; AIVAT pushed it to **20 sigma**, and made the
-  result significant *for individual players*, which no previous man-machine
-  competition had managed ([Burch et al. 2018](#s-aivat), §"Doyle's Game",
-  Table 5). In a freezeout format, AIVAT produced a significant result from **28
+  4 sigma from raw chip counts; AIVAT pushed it to **20 sigma**. The
+  per-player claim is narrower than "significant for individual players" and is
+  worth quoting exactly: AIVAT estimated DeepStack ahead of **all 11 players who
+  completed the required 3,000 hands**, and those individual victories were
+  2-sigma significant for **all but one of them** — a per-player result that no
+  previous man-machine competition, which needed the aggregate, had managed
+  ([Burch et al. 2018](#s-aivat), §"Doyle's Game", Table 5). In a freezeout format, AIVAT produced a significant result from **28
   matches**, where the raw 14-wins-14-losses record separated nothing at all
   ([Burch et al. 2018](#s-aivat), Table 6).
 
@@ -706,13 +711,33 @@ because a later coding task should implement it literally.
    | --- | --- | --- |
    | Primary | 6 | 0.50 |
    | Secondary | 8 and 9, treated as one band | 0.30 (0.15 each) |
-   | Everything else | 2, 3, 4, 5, 7 | 0.20 (0.04 each) |
+   | Everything else | whichever other seat counts ran that night | 0.20, split equally |
+
+   The last row is a **rule, not a fixed list**, because not every seat count
+   runs every night ([§3.6](#36-the-run-budget-turning-hands-into-hours)). On a
+   nightly acceptance run the other seat counts present are **2 and the single
+   rotating seat**, so each takes 0.20 ÷ 2 = **0.10**. On the aspirational full
+   grid all five of 2, 3, 4, 5 and 7 are present and each takes 0.20 ÷ 5 =
+   **0.04**. The three band weights never move; only the split inside the last
+   band does, and the report prints whatever split was in force.
 
    **Every seat count is still evaluated and every seat count still gates a
-   release** — the non-inferiority and per-table-size rules below apply
-   unweighted, so a collapse at three-handed blocks the change even though
-   three-handed carries 4% of the headline. The weights decide only what the
-   single summary number means. The *numbers* 0.50 / 0.30 / 0.20 are a design
+   release — on a four-night cadence.** The nightly acceptance run always plays
+   seats **6, 8, 9 and 2**: the operator's two priority bands, plus heads-up,
+   which is not a light seat count but a structurally different game — with two
+   players a no-lose strategy exists and with three or more it does not
+   ([§2.2](#22-exploitability-and-exact-best-response)). To those four it adds
+   **one** of **{3, 4, 5, 7}**, rotating in the fixed cycle 3 → 4 → 5 → 7.
+   **Nothing leaves on a rotation night**: the four fixed seats always run and
+   the rotating seat is the fifth, which is why the nightly grid is five seat
+   counts and not four. **A release requires every seat count from 2 to 9 to
+   have passed within the last four nightly runs** — a rolling four-night
+   window. So a collapse at three-handed still blocks the change, on the night
+   three-handed runs, even though it carries 10% of that night's headline; the
+   window, not any single night, is what makes the gate cover all eight seat
+   counts. The non-inferiority and per-table-size rules below apply
+   unweighted. The weights decide only what the single summary number means.
+   The *numbers* 0.50 / 0.30 / 0.20 are a design
    choice implementing the operator's stated ordering, not a quantity the
    operator gave; they live in config and are revisable without touching this
    document.
@@ -754,13 +779,14 @@ because a later coding task should implement it literally.
   entirely above zero, **and** no per-persona interval trips the blocker below.
 - **Secondary, per table size.** The same interval computed separately for each
   n in the run, **unweighted** — the weights of point 2 apply to the headline
-  only. Eight table sizes means eight tests, and testing eight things at
-  5% each produces a false alarm about a third of the time. Control the false
+  only. Five table sizes a night means five tests, and testing five things at
+  5% each produces a false alarm about a fifth of the time. Control the false
   discovery rate across the family with the
   Benjamini–Hochberg procedure ([Benjamini & Hochberg 1995](#s-bh)). The number
   of tests in the family is the number of cells the budget in
-  [§3.6](#36-the-run-budget-turning-hands-into-hours) actually bought, and the
-  report states it; correcting for eight when sixteen were run is cheating.
+  [§3.6](#36-the-run-budget-turning-hands-into-hours) actually bought — **20**
+  on a nightly run — and the report states it; correcting for five when twenty
+  were run is cheating.
 - **Non-inferiority, per persona.** Report the interval against each persona
   separately. **A change that wins overall by beating one persona harder while
   losing to another is a red flag, not a pass** — it is the signature of
@@ -794,11 +820,13 @@ Do not implement it until the simple version is working and measured.
 
 ```
 arena report  bot A=<sha> B=<sha>  engine=<sha>  seed=<n>  2026-XX-XX
-tier: nightly acceptance   cells: 16   budget: 10h   elapsed: 3h51m
-weights: n6=0.50  n8=0.15 n9=0.15  n2,3,4,5,7=0.04 each   (config, operator 2026-09-15)
+tier: nightly acceptance   cells: 20   budget: 10h   elapsed: 4h51m
+seats: 6 8 9 2 fixed + 3 rotating (cycle 3>4>5>7; night 1 of 4)
+weights: n6=0.50  n8=0.15 n9=0.15  n2=0.10 n3=0.10   (config, operator 2026-09-15)
+window: seats passed in the last four nightly runs: 2,3,6,8,9 (+4,5,7 pending) -> RELEASE BLOCKED
 primary  (weighted pool, paired, baseline-adjusted)  +34.2 mbb/hand  [ +11.8, +56.9 ]  ACCEPT
-  powered to detect: 30 mbb/hand pooled, 100 mbb/hand per cell
-  by table size, unweighted (Benjamini-Hochberg, q=0.05, family size 16)
+  powered to detect: 28.1 mbb/hand pooled, 100 mbb/hand per cell
+  by table size, unweighted (Benjamini-Hochberg, q=0.05, family size 20)
     n=2   +51.1 [ +12.0, +90.6 ]  *
     n=3   +40.7 [  +4.2, +77.1 ]  *
     ...
@@ -824,14 +852,20 @@ does the multiplication, converts it to hours, and cuts the grid down to what
 fits. **No sample size in this document may be quoted without going through
 here first.**
 
-**The hard constraint, from the operator (recorded 2026-09-15).** No multi-day
-computing; hours on one laptop. Concretely:
+**The hard constraint, from the operator (recorded 2026-09-15).** The operator's
+position, and all of it: **no multi-day computing; hours on one laptop.** That
+is a limit on what the machine may be occupied with, not a number of hours.
+Turning it into arithmetic needs two numbers the operator did not give, so they
+are stated here as **design choices implementing that position** — the same
+status as the 0.50 / 0.30 / 0.20 table-size weights in
+[§3.5](#35-the-decision-rule-is-this-change-an-improvement) point 2. They live
+in config and are revisable without touching this document:
 
-| Run | Must finish within |
-| --- | --- |
-| Full acceptance run, before a change is accepted | **one night — at most 10 hours** |
-| Routine check, during the day | **one hour** |
-| Anything multi-day | **never** |
+| Run | Must finish within | Whose number |
+| --- | --- | --- |
+| Full acceptance run, before a change is accepted | **one night — at most 10 hours** | Design choice here: 10 hours is what "one night" means on a laptop the operator needs back in the morning |
+| Routine check, during the day | **one hour** | Design choice here: short enough to run between edits without stopping work |
+| Anything multi-day | **never** | **The operator's own words** |
 
 **What the grid costs as specified.** Take §3.5 and §4.1 literally: every seat
 count, a homogeneous table per behavioural persona plus one mixed table, at
@@ -864,15 +898,19 @@ magnitude:
   engine, is the binding term: the engine is idle while the bot thinks.
 
 **So the budget must be written in seconds per decision, never in engine hands
-per second.** The working assumption, and it is a **placeholder to be measured**,
-not a result:
+per second.** Every hour below is an hour on **one specific machine, and it is
+named here so that a number measured on a different one is never silently
+substituted: an Apple M4 laptop with 16 GB of RAM and 10 cores (4 performance,
+6 efficiency)**. The working assumption, and it is a **placeholder to be
+measured**, not a result:
 
 | Quantity | Value used here | Status |
 | --- | --- | --- |
+| The machine | Apple M4, 16 GB RAM, 10 cores (4P + 6E) | **Recorded, not measured for this purpose.** Every hour in this section is an hour on this laptop and on no other |
 | Seconds per bot decision | 0.25 | Architecture budget from `ENGINE_ALTERNATIVES.md`, **under review**; not a measurement of this bot |
 | Bot decisions per hand | 4 | **Placeholder. Measure it.** Nothing sources this |
 | ⇒ bot-seconds per hand | **1.0** | Product of the two |
-| Parallel workers on the laptop | 8 | **Placeholder.** Measure usable cores and memory |
+| Parallel workers on the laptop | 8 | **Placeholder.** 8 of the 10 cores, leaving two for everything else. **Memory per worker is entirely unmeasured** ([X8](#engine-requirements)), and 16 GB is what decides whether 8 workers thrash |
 | ⇒ hands per hour | **28,800** | 3,600 × 8 ÷ 1.0 |
 
 These are [X7](#engine-requirements) and [X8](#engine-requirements), restated as
@@ -880,6 +918,18 @@ the numbers that actually decide the wall clock. **Until they are measured, ever
 hour in this section is provisional**, and the report prints the measured
 seconds-per-decision and decisions-per-hand beside the elapsed time so that the
 first real run replaces these placeholders with facts.
+
+**How much the worker count can be wrong by.** Wall clock is inversely
+proportional to the number of workers: halve the workers and the run takes twice
+as long. The nightly acceptance run below is **141,280 hands**, so the workers
+needed to finish inside the 10-hour ceiling are 141,280 ÷ (3,600 × 10) =
+**3.92 — call it 4**. At 4 workers the run takes 141,280 ÷ (3,600 × 4) =
+**9.8 hours**, which still fits; at 3 it takes 13.1 hours and does not.
+**So the 8-worker placeholder can be wrong by half and the design survives;
+wrong by more than half and the nightly run stops fitting in a night.** That is
+the sense in which [X8](#engine-requirements) matters, and it is why memory per
+worker — the thing that most plausibly forces the count down on a 16 GB
+machine — has to be measured before the first real run.
 
 **The full grid against the cap.** 6,781,440 hands ÷ 28,800 per hour =
 **235 hours ≈ 9.8 days on one laptop.** That is **23.5 times** the 10-hour cap,
@@ -892,12 +942,18 @@ the aspirational tier so that nobody re-derives it from scratch.
 
 **The reduced cell set, which is what actually runs.**
 
-- **Seat counts: 2, 3, 6, 9** — four, not eight. 6 and 9 carry the headline
-  weight ([§3.5](#35-the-decision-rule-is-this-change-an-improvement) point 2);
-  2 and 3 are where duplicate variance reduction is available and cheap
-  ([§4.2](#42-why-duplicate-dies-past-three-seats)). 4, 5, 7 and 8 rotate in
-  across nights, one swapped in per run, so the full range is covered weekly and
-  no seat count goes permanently unmeasured.
+- **Seat counts: 6, 8, 9 and 2 every night, plus one of 3, 4, 5, 7 —** five, not
+  eight. 6, 8 and 9 are the operator's own two bands and carry 0.80 of the
+  headline ([§3.5](#35-the-decision-rule-is-this-change-an-improvement)
+  point 2); 2 is fixed not because it is weighted heavily but because heads-up
+  is a different game ([§2.2](#22-exploitability-and-exact-best-response)) and
+  because duplicate variance reduction is available there and cheap
+  ([§4.2](#42-why-duplicate-dies-past-three-seats)). The fifth slot rotates
+  3 → 4 → 5 → 7, one per night, in that fixed cycle. **Nothing is dropped to make
+  room for the rotating seat**; it is an addition, which is what takes the grid
+  from four seat counts to five. Over four consecutive nights all eight seat
+  counts have run, and a release needs all eight to have passed inside that
+  rolling window.
 - **Compositions: 4** — one mixed table plus three homogeneous personas drawn
   from the *evaluation* half of the set ([§3.2](#32-the-persona-set)), rotating
   across runs so every persona is seen over a handful of nights.
@@ -905,28 +961,60 @@ the aspirational tier so that nobody re-derives it from scratch.
   ([§4.4](#44-stack-depth)). The short and deep depths move to the aspirational
   tier and to their own dedicated run, not to every run.
 
-**4 × 4 × 1 = 16 cells.**
+**5 × 4 × 1 = 20 cells** on a nightly acceptance run.
 
-| Run | Cells | Hands/cell | Total hands | Wall clock | Detects per cell | Detects pooled |
-| --- | --- | --- | --- | --- | --- | --- |
-| **Routine check** | 16 | 1,766 | 28,256 | **0.98 h** | 200 mbb/hand | — |
-| **Nightly acceptance** | 16 | 7,064 | 113,024 | **3.9 h** | 100 mbb/hand | **30 mbb/hand** |
-| Full grid (aspirational) | 240 | 28,256 | 6,781,440 | 235 h | 50 mbb/hand | — |
+| Run | Seat counts | Cells | Hands/cell | Total hands | Wall clock | Detects per cell | Detects pooled |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| **Routine check** | 2, 6, 8, 9 (no rotating seat) | 16 | 1,766 | 28,256 | **0.98 h** | 200 mbb/hand | — |
+| **Nightly acceptance** | 2, 6, 8, 9 + one of 3/4/5/7 | 20 | 7,064 | 141,280 | **4.9 h** | 100 mbb/hand | **28.1 mbb/hand** |
+| Full grid (aspirational) | all of 2…9 | 240 | 28,256 | 6,781,440 | 235 h | 50 mbb/hand | — |
 
-Both affordable rows fit inside their caps, the nightly one with more than six
-hours of headroom for the pilot that measures σ and ρ, for a re-run, and for the
-measurements above turning out worse than the placeholders.
+Nightly: 20 × 7,064 = 141,280 hands; 141,280 ÷ 28,800 per hour = **4.906 h**.
+Routine: 16 × 1,766 = 28,256; ÷ 28,800 = **0.981 h**.
 
-**Where the pooled 30 comes from, because it is the number the headline rests
-on.** The nightly run's 113,024 hands are 56,512 per arm. Split *equally* across
-the four seat counts, each gets 14,128 per arm; the weighted headline
-(0.50/0.30/0.20 over the bands present) then has an effective sample size of
-14,128 ÷ Σwᵢ² = 14,128 ÷ 0.36 = 39,244 per arm, which at σ = 1,500 is a
-detectable Δ of **30.0 mbb/hand**. *(Allocating hands in proportion to the weights
-instead of equally would raise the effective size back to the full 56,512 and the
-headline to Δ = 25, at the cost of the light seat counts' per-cell power. That is
+**Why the routine check does not carry the rotating seat.** At 20 cells it would
+be 20 × 1,766 = 35,320 hands = **1.23 h**, which breaks the one-hour bound. The
+routine check therefore runs the four fixed seat counts only. That costs
+nothing that matters: the routine check is a smoke test that detects only a
+200 mbb/hand change, and **it does not gate a release** — the four-night window
+of §3.5 point 2 is defined over *nightly acceptance* runs, which do rotate.
+
+Both affordable rows fit inside their caps, the nightly one with **5.1 hours of
+headroom** (10 − 4.9) for the pilot that measures σ and ρ, for a re-run, and for
+the measurements above turning out worse than the placeholders.
+
+**Where the pooled 28.1 comes from, because it is the number the headline rests
+on.** The nightly run's 141,280 hands are 70,640 per arm. Split *equally* across
+the five seat counts, each gets 14,128 per arm — the same per-seat sample a
+four-seat grid would give, which is why per-cell power is 100 mbb/hand either
+way and the fifth seat costs an hour of wall clock (3.9 h → 4.9 h) rather than
+costing power. The weighted headline
+then has an effective sample size of 14,128 ÷ Σwᵢ² per arm, and Σwᵢ² is the same
+on every rotation night, because the weights depend on how many other seat
+counts ran, not on which:
+
+| Rotation night | Seat counts and weights | Σwᵢ² | n_eff per arm | Δ detectable |
+| --- | --- | --- | --- | --- |
+| 1 | 6 = .50, 8 = .15, 9 = .15, 2 = .10, **3 = .10** | 0.315 | 44,851 | **28.1 mbb/hand** |
+| 2 | 6 = .50, 8 = .15, 9 = .15, 2 = .10, **4 = .10** | 0.315 | 44,851 | **28.1 mbb/hand** |
+| 3 | 6 = .50, 8 = .15, 9 = .15, 2 = .10, **5 = .10** | 0.315 | 44,851 | **28.1 mbb/hand** |
+| 4 | 6 = .50, 8 = .15, 9 = .15, 2 = .10, **7 = .10** | 0.315 | 44,851 | **28.1 mbb/hand** |
+
+Σwᵢ² = 0.50² + 0.15² + 0.15² + 0.10² + 0.10² = 0.25 + 0.0225 + 0.0225 + 0.01 +
+0.01 = **0.315**; n_eff = 14,128 ÷ 0.315 = **44,851** per arm; at σ = 1,500 and
+the same (z₀.₉₇₅ + z₀.₈₀)² = 7.8489 that
+[§2.5](#25-win-rate-with-honest-statistics) uses, Δ = √(2 × 1,500² × 7.8489 ÷
+44,851) = **28.1 mbb/hand**. **The headline is identical on all four nights**,
+which is the point of a fixed cycle: the release criterion does not move
+depending on which night a change lands on. *(For comparison, a four-seat night —
+6 = .50, 9 = .30, and two others at .10 — has Σwᵢ² = 0.36, n_eff = 39,244 and
+Δ = 30.0. The fifth seat spreads the weight further, which lowers Σwᵢ² from 0.36
+to 0.315, so the extra hour buys 1.9 mbb/hand of headline power as well as a
+wider night.)* *(Allocating hands in proportion to the weights
+instead of equally would raise the effective size to the full 70,640 and the
+headline to Δ = 22.4, at the cost of the light seat counts' per-cell power. That is
 a config switch; the default is equal, because a per-cell regression screen that
-is blind at n = 3 is worse than a headline three units coarser.)*
+is blind at the rotating seat is worse than a headline six units coarser.)*
 
 **Two honest corrections, in opposite directions.** σ = 1,500 is the most
 favourable published row and this harness has no AIVAT, so the true σ is larger
@@ -938,7 +1026,7 @@ from the pilot's measured σ and ρ before the first real acceptance run**, and
 record both in the result file.
 
 **What this buys and what it does not.** The pooled headline is powered to detect
-a 30 mbb/hand change — comparable to Pluribus's whole edge over professionals
+a 28.1 mbb/hand change — comparable to Pluribus's whole edge over professionals
 ([§2.1](#21-the-unit)). Each individual cell is powered only to 100 mbb/hand, so
 **a per-cell interval is a regression screen, not evidence of no effect.** The
 report must print "powered to detect" beside every per-cell interval, or a reader
@@ -997,10 +1085,13 @@ covers only one table size is not a valid run.
 [§3.6](#36-the-run-budget-turning-hands-into-hours) does the arithmetic: all
 eight seat counts, crossed with per-persona compositions and stack depths, is 240
 cells and about 9.8 days of laptop time, which the operator has ruled out. The
-affordable form of this rule is the one §3.6 settles on: **four seat counts every
-run (2, 3, 6, 9), with 4, 5, 7 and 8 rotating in across nights**, so no seat count
-goes permanently unmeasured and no single run is a one-table-size run. Read this
-section's rule through that budget, not around it.
+affordable form of this rule is the one §3.6 settles on: **five seat counts every
+nightly acceptance run — 2, 6, 8 and 9 always, plus one of 3, 4, 5, 7 rotating in
+the fixed cycle 3 → 4 → 5 → 7** — with a release gated on every seat count from
+2 to 9 having passed **within the last four nightly runs**. No seat count goes
+unmeasured for longer than four nights, no seat count stops gating, and no single
+run is a one-table-size run. Read this section's rule through that budget, not
+around it.
 
 **Why this is not paranoia.** Poker changes shape with the number of players in
 a way that is not a matter of degree. Two independent pointers:
@@ -1105,7 +1196,10 @@ sizes will never see the difference.**
    arbitrary fractions. Use the LBR study's own grid rather than inventing one:
    pot fractions `0.05 × 1.15^k` for `k = 0…54`, which runs from 0.05× pot to
    about 94.8× pot, with 22 of the 55 points at or below one pot
-   ([Lisý & Bowling 2017](#s-lbr), §"Experimental evaluation"). Sampling persona
+   ([Lisý & Bowling 2017](#s-lbr), §"Experimental evaluation"). **That is 55 pot
+   fractions plus the all-in bet, which is why the paper calls it 56 bets and
+   why this document does too:** `k = 0…54` is 55 values, the 56th bet is all-in,
+   and the two counts are the same grid, not two different grids. Sampling persona
    bet sizes from this grid guarantees that most bets the bot faces are sizes
    nobody chose for it.
 2. **Report split by off-tree exposure.** Every hand record carries a flag: did
@@ -1322,9 +1416,9 @@ later session can see what was decided and does not reopen it.
 | Was | Question | Decided | Written into |
 | --- | --- | --- | --- |
 | Q1 | Which hand evaluator may the fake opponents use? | Method call, delegated. Made-hand strength goes to **the engine's own evaluator**; preflop ranking uses a **static 169-class table from a named published source**; draw detection is a **small, explicitly test-only heuristic**. All three live under `tests/`, outside the bot's import graph, labelled test-only. | [§3.3](#33-the-forefront-rule-and-the-personas) |
-| Q2 | What mix of table sizes should the headline number weight? | **The operator's own answer**, 2026-09-15: mostly 6-handed, then 8/9 treated as one band. Headline weights 0.50 / 0.30 / 0.20; every other seat count is still evaluated and still gates a release. | [§3.5](#35-the-decision-rule-is-this-change-an-improvement), point 2 |
+| Q2 | What mix of table sizes should the headline number weight? | **The operator's own answer**, 2026-09-15: mostly 6-handed, then 8/9 treated as one band. Headline weights 0.50 / 0.30 / 0.20, the last split equally over whichever other seat counts ran. Every seat count still gates a release, on a **rolling four-night window**: nightly runs always play 2, 6, 8, 9 and rotate one of 3/4/5/7. | [§3.5](#35-the-decision-rule-is-this-change-an-improvement), point 2 |
 | Q3 | How much may a change lose against one persona while winning overall? | Method call, delegated. The document's own operating rule stands: **any per-persona regression blocks the change** unless a written override names the persona and the reason. **No numeric tolerance**; loosening waits for data. | [§3.5](#35-the-decision-rule-is-this-change-an-improvement), "Non-inferiority, per persona" |
-| Q4 | How long may an evaluation run take? | **The operator's position**, recorded 2026-09-15: a full acceptance run finishes **within one night, at most 10 hours**, on one laptop; routine checks **within one hour**; **multi-day never**. | [§3.6](#36-the-run-budget-turning-hands-into-hours) |
+| Q4 | How long may an evaluation run take? | **The operator's position**, recorded 2026-09-15, is *"no multi-day computing; hours on one laptop"* — that, and no numbers. The **10-hour** acceptance ceiling and the **1-hour** routine bound are **design choices made here** to turn that position into arithmetic, on the same footing as the 0.50/0.30/0.20 weights. | [§3.6](#36-the-run-budget-turning-hands-into-hours) |
 
 **Why Q1 and Q3 were not sent to the operator.** Both are method decisions, not
 product ones: nothing about them depends on facts only the operator holds, and
@@ -1524,9 +1618,9 @@ Per the global evidence rules, so that no figure here has to be taken on trust.
 | 135.427 / 141.363 / 237.330 / 300.032 / 318.465 / 399.387 / 421.850 mb/g; the PULPO bankroll finding | [Johanson et al. 2011](#s-johanson2011), Table 2 and §6, read directly |
 | "over 3180 mBB/h with 97.5% confidence"; 2 × 50,000 duplicate hands | [Lisý & Bowling 2017](#s-lbr), §"Experimental evaluation", read directly |
 | 90 mBB/h in-abstraction vs 2403 mBB/h with hard translation; 1981 ± 224 with sampled soft translation; 1849 mBB/h with seven bet sizes; LBR losing 536 mBB/h | [Lisý & Bowling 2017](#s-lbr), §"Full cards" and Table 3, read directly |
-| The 56-bet grid `0.05 × 1.15^k`, k = 0…54 | [Lisý & Bowling 2017](#s-lbr), §"Experimental evaluation", read directly. The endpoint values (0.05, 0.2023, 0.818, 3.31, 13.4, 94.8 × pot) and the count of 22 points at or below one pot were **computed by script on 2026-09-15** from that formula |
+| The 56-bet grid: 55 pot fractions `0.05 × 1.15^k`, k = 0…54, **plus all-in** | [Lisý & Bowling 2017](#s-lbr), §"Experimental evaluation" and Table 3 caption, read directly, which says "all in, and 55 pot fractions computed as 0.05 · (1.15)^k for k = 0…54 (56 bets)". The endpoint values (0.05, 0.2023, 0.818, 3.31, 13.4, 94.8 × pot) and the count of 22 points at or below one pot were **computed by script on 2026-09-15** from that formula |
 | "roughly 20%" confidence-interval reduction from duplicate + imaginary observations | [Lisý & Bowling 2017](#s-lbr), §"Variance reduction", read directly |
-| HUNL SD 25.962 → 8.095 chips (self-play) and 26.308 → 8.301 (dissimilar); 39% for MIVAT+IO; 68% for AIVAT; 18% for MIVAT; 1,000,000 games | [Burch et al. 2018](#s-aivat), Tables 3 and 4 and surrounding text, read directly |
+| HUNL SD 25.962 → 8.095 chips (self-play) and 26.308 → 8.301 (dissimilar); 39% for MIVAT+IO; "a bit more than a 68% reduction" for AIVAT; 18% for MIVAT; 1,000,000 games | [Burch et al. 2018](#s-aivat), Tables 3 and 4 and surrounding text, read directly. The exact **68.8%** is **derived 2026-09-15** as 1 − 8.095 ÷ 25.962; the paper rounds it down to "a bit more than 68%", and both [§2.4](#24-variance-reduction-duplicate-baseline-mivat-aivat) and the 0.102× multiplier use the paper's 68% so as to reproduce the paper's own "ten times less data" |
 | Big blind = 2 chips, 200-chip (100 big blind) stacks in those HUNL experiments | The **arXiv:1612.06915v2 preprint** of [Burch et al. 2018](#s-aivat), §"No-limit Texas Hold'em", read directly. The AAAI-18 version states the same experiments but not the blind structure; the identical SD figures in both versions are what licenses carrying it across. This is the conversion factor for every chips→mbb derivation below |
 | 85% SD reduction with DeepStack value functions; 4 sigma → 20 sigma; 44,852 games; 33 players from 17 countries; 28 freezeout matches; 0.5 ± 0.2 → 0.59 ± 0.018 | [Burch et al. 2018](#s-aivat), §"No-limit Texas Hold'em with Humans" and Tables 5–6, read directly |
 | Leduc 99.8% / 99.9% SD reduction; 48%–75% with dissimilar strategies | [Burch et al. 2018](#s-aivat), Tables 1 and 2 and surrounding text, read directly (referenced in passing in [§2.4](#24-variance-reduction-duplicate-baseline-mivat-aivat)) |
@@ -1544,10 +1638,12 @@ Per the global evidence rules, so that no figure here has to be taken on trust.
 | The example `arena report` output in [§3.5](#35-the-decision-rule-is-this-change-an-improvement) | **Invented, and only illustrates the report's format.** Not data, and not a claim about any version of the bot |
 | The stack-depth set, the persona-set split, the development/evaluation halves, the choice of bootstrap over t-test as primary | **Design choices made in this document, labelled as such at each point of use** |
 | The table-size weighting: 6-handed first, then 8 and 9 as one band | **The operator, 2026-09-15**, verbatim: *"i will be playing mostly 6 player tables, followed by 8 or 9 player tables which can honestly be treated the same, they are so close."* This is a product fact about what the operator plays, which is why it was asked rather than decided |
-| The specific weights 0.50 (n=6) / 0.30 (n=8,9) / 0.20 (n=2,3,4,5,7) | **A design choice implementing that ordering, not a quantity the operator gave.** The operator stated an order, not proportions. The weights live in config, are reprinted in every report, and are revisable without touching this document |
-| Run-length limits: 10 hours for a full acceptance run, 1 hour for a routine check, multi-day never | **The operator's position, recorded 2026-09-15**: no multi-day computing; hours on one laptop |
+| The specific weights 0.50 (n=6) / 0.30 (n=8,9) / 0.20 (every other seat count that ran, split equally: 0.10 each on a nightly run, 0.04 each on the full grid) | **A design choice implementing that ordering, not a quantity the operator gave.** The operator stated an order, not proportions. The weights live in config, are reprinted in every report, and are revisable without touching this document |
+| "No multi-day computing; hours on one laptop" | **The operator's position, recorded 2026-09-15**, and the whole of it. The operator gave no hour counts |
+| The specific run-length limits: **10 hours** for a full acceptance run, **1 hour** for a routine check | **Design choices made here implementing that position, not quantities the operator gave** — the same status as the table-size weights. "Multi-day never" is the operator's. Both limits live in config and are revisable without touching this document |
+| The machine the hours are measured on: Apple M4, 16 GB RAM, 10 cores (4P + 6E) | **Recorded 2026-09-15** from the laptop these runs are planned for. Memory per worker is **unmeasured** ([X8](#engine-requirements)); the 8-worker figure assumes 8 of the 10 cores and nothing about RAM |
 | 56,414 engine hands/second (OpenSpiel `universal_poker`, 6-player, one core); the 250 ms per-decision budget | `ENGINE_ALTERNATIVES.md`, **on a branch under review and not on main at the time of writing**. Cited as pending: if that document changes or is rejected, every hour in [§3.6](#36-the-run-budget-turning-hands-into-hours) must be recomputed |
 | 4 bot decisions per hand; 8 parallel workers; ⇒ 1.0 bot-second per hand and 28,800 hands/hour | **Placeholders, explicitly marked as such at the point of use. Nothing sources them.** They are [X7](#engine-requirements)(c) and [X8](#engine-requirements) and must be measured before any budget in [§3.6](#36-the-run-budget-turning-hands-into-hours) is relied on |
-| The budget arithmetic: 240 cells; 6,781,440 hands; 235 h ≈ 9.8 days; 23.5× the cap; ≈11 ms/decision needed to fit; 16 cells; 113,024 hands; 3.9 h; 28,256 hands; 0.98 h; pooled n_eff 39,244 ⇒ Δ = 30.0 mbb/hand | **Computed by script on 2026-09-15** from the σ = 1,500 row of [§2.5](#25-win-rate-with-honest-statistics) and the placeholders above. σ = 1,500 is post-AIVAT and this harness has no AIVAT before Tier 4, so every hour is a **floor**; ρ = 0 is assumed, which pushes the other way. Both caveats are stated in [§3.6](#36-the-run-budget-turning-hands-into-hours) |
+| The budget arithmetic: 240 cells; 6,781,440 hands; 235 h ≈ 9.8 days; 23.5× the cap; ≈11 ms/decision needed to fit; **20 nightly cells; 141,280 hands; 4.9 h**; 16 routine cells; 28,256 hands; 0.98 h (and 1.23 h if the routine check carried the rotating seat, which is why it does not); **Σwᵢ² = 0.315; pooled n_eff 44,851 ⇒ Δ = 28.1 mbb/hand**; the 3.92-worker breakeven against the 10-hour ceiling | **Computed by script on 2026-09-15** from the σ = 1,500 row of [§2.5](#25-win-rate-with-honest-statistics) and the placeholders above. σ = 1,500 is post-AIVAT and this harness has no AIVAT before Tier 4, so every hour is a **floor**; ρ = 0 is assumed, which pushes the other way. Both caveats are stated in [§3.6](#36-the-run-budget-turning-hands-into-hours) |
 | The personas' 169-class preflop ranking table | **Not in this document and not reproduced here.** To be transcribed from [Chen & Ankenman 2006](#s-chen), which was **not retrieved in this survey**; the transcription must be checked against that edition before use ([§3.3](#33-the-forefront-rule-and-the-personas)) |
 | The personas' draw-detection heuristic | **A design choice, and deliberately crude.** Test-only, outside the bot's import graph, unit-tested against enumerated examples; no source is claimed for it and none is needed, because a persona is a caricature ([§3.3](#33-the-forefront-rule-and-the-personas)) |
