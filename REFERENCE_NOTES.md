@@ -315,9 +315,11 @@ Taken piece by piece, cheapest first:
 - `poker_ai/clustering/preflop.py` has to be rewritten. Two problems:
   - `compute_preflop_lossless_abstraction` (lines 51-64) hard-raises unless the
     deck is exactly `{10, 11, 12, 13, 14}`.
-  - `make_starting_hand_lossless` (lines 8-48) is a hand-typed chain of 25
-    `elif` branches, one per short-deck starting hand class, each returning a
-    magic number 0-24. A 52-card deck has **169** starting hand classes
+  - `make_starting_hand_lossless` (lines 8-48) is a hand-typed chain of 15
+    branches (one `if`, then 14 `elif`), which between them return the 25 magic
+    numbers 0-24, one per short-deck starting hand class: the five pair branches
+    return one number each, and the ten non-pair branches return a suited or an
+    unsuited number. A 52-card deck has **169** starting hand classes
     (13 pairs + 78 suited + 78 unsuited). Writing that enumeration ourselves is
     allowed by `CLAUDE.md:16`, the forefront-rule bullet that puts card
     combinatorics - the 169 preflop classes, suit isomorphisms, deck
@@ -380,9 +382,10 @@ deliberately set below anything usable (5 buckets per street, 2 simulations per
 decision, against upstream defaults of 50 and 6). Full numbers in the run log
 at the end.
 
-The budget these numbers answer to, recorded by the operator on 2026-09-15:
-**no multi-day computing. A playable bot has to be reachable in hours, on one
-laptop.** Measure every cost below against that.
+The budget these numbers answer to is the compute-budget bullet at
+`CLAUDE.md:29` - **no multi-day computing; a playable bot has to be reachable in
+hours, on one laptop** - which the operator stated on 2026-09-15. Measure every
+cost below against that bullet.
 
 **Conclusion: this engine's 52-card clustering path is out. It fails the budget
 on time and it fails it on memory, and either one alone would be enough.**
@@ -454,7 +457,7 @@ The built-in terminal game where a human plays the bot is hard-wired to exactly
 three seats:
 
 - `poker_ai/terminal/runner.py:51` sets `n_players: int = 3` as a literal.
-- `runner.py:58` sets `positions = ["left", "middle", "right"]` and line 59
+- `runner.py:62` sets `positions = ["left", "middle", "right"]` and line 63
   names them `{"left": "BOT 1", "middle": "BOT 2", "right": "HUMAN"}`.
 - `poker_ai/terminal/render.py:77-85` reads `players["left"]`,
   `players["middle"]` and `players["right"]` by name and zips exactly three

@@ -11,7 +11,7 @@ beat by hand-rolling it in a few weeks.
 ## The forefront rule
 
 - Never let an AI model decide a poker action, evaluate a hand, or read a board; call real engine code for that.
-- Only use AI-written code for integration, tooling, and table-state capture (screen to structured data), never for poker judgment itself.
+- Only use AI-written code for integration, tooling, table-state capture (screen to structured data), and card combinatorics, never for poker judgment itself.
 - Reject a change that adds hand-rolled hand-strength or decision logic in place of the vendored engine; adapt the engine instead.
 - Write card-combinatorics bookkeeping ourselves - enumerating the 169 preflop hand classes, suit isomorphisms, deck enumeration - but leave anything that ranks or values a hand, or chooses an action, to the engine.
 - Ground-truth hand ranking against a named external evaluator (currently `treys`), the reference for standard 52-card ranking, and keep it out of the bot's decision path; it validates tests only, never runtime play.
@@ -23,6 +23,10 @@ beat by hand-rolling it in a few weeks.
 2. Layer in opponent modeling: track each player's tendencies and adjust
    against them specifically. This is the part that actually beats humans.
 3. Only if time remains: refine with a trained model on top of stages 1-2.
+
+## Compute budget
+
+- Keep every computation reachable in hours on one laptop; reject any approach that needs multi-day compute to reach a playable bot.
 
 ## Licence
 
