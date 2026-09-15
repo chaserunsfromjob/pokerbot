@@ -15,6 +15,20 @@ beat by hand-rolling it in a few weeks.
 - Reject a change that adds hand-rolled hand-strength or decision logic in place of the vendored engine; adapt the engine instead.
 - Write card-combinatorics bookkeeping ourselves - enumerating the 169 preflop hand classes, suit isomorphisms, deck enumeration - but leave anything that ranks or values a hand, or chooses an action, to the engine.
 - Ground-truth hand ranking against a named external evaluator (currently `treys`), the reference for standard 52-card ranking, and keep it out of the bot's decision path; it validates tests only, never runtime play.
+- Keep opponent-modelling code to the left column of this boundary, and leave every right-column job to the engine.
+
+| Allowed to AI-written opponent-model code | Reserved to the engine |
+| --- | --- |
+| Counting observed actions | Evaluating hand strength |
+| Computing a single rate from its own counts | Choosing an action |
+| Shrinking a rate toward a baseline | Assigning a range to an opponent |
+| Sorting an opponent into a bucket | Reading board texture |
+| Selecting *which* engine strategy to load | Producing the strategy itself |
+| Substituting an opponent model into the engine's own solver | Solving |
+| Reporting several rates side by side | Combining live-field rates into a quantity that drives a poker decision — multiplying the fold rates of the opponents in the current hand to gate a bluff, for one |
+
+- Allow AI-written code to combine rates across the **observed population** — the whole database, seated players' stored rows included, with being seated never the criterion for inclusion — into a baseline, a classification split, or an archetype, and hand that result to the engine, which still chooses the action.
+- Derive any opponent archetype fed to the solver from measured action frequencies alone; never hand-write one, and never let it reference hole cards, board cards, or hand strength.
 
 ## Plan
 
