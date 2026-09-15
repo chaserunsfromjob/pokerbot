@@ -56,11 +56,13 @@ Four findings drive the recommendation:
    solved a turn-and-river spot with full 6-max ranges to 0.74%
    exploitability in 0.7 s of solver time (8 s wall including tree build
    and writing the answer to JSON). postflop-solver (Rust library, AGPL)
-   solved a comparable turn spot to 0.46% in 0.44 s wall. Both measured on
-   this Mac today. A full three-street flop tree with two bet sizes per
-   street is a different animal: TexasSolver had not finished one
-   iteration of it after 35 minutes, so decision-time use means small trees
-   (one size per street, or turn/river only), not full flop solves.
+   solved a comparable turn spot to 0.46% of the pot in 0.44 to 0.89 s wall
+   across runs. Both measured on this Mac today. A full three-street flop tree
+   with two bet sizes per street is a different animal: stopped at seven
+   minutes, TexasSolver had completed four iterations of it and was still
+   222% of the pot away from the accuracy asked for. So decision-time use
+   means small trees (one bet size per street, or turn and river only), never
+   full flop solves.
 3. **Equity and hand ranking are a non-problem, in C++.** OMPEval computed
    3-way equity at 160 to 312 million hands per second on this Mac (the low
    end measured by a second run while the machine was busy), and it is
@@ -74,9 +76,11 @@ Four findings drive the recommendation:
 4. **Only one open-source project explicitly does what the operator wants,
    opponent-specific exploitation across 2 to 9 seats, and it is preflop-only
    for multiway**: GTOpen (Rust, active this week, no licence file). It
-   compiled on this Mac in 3 min 20 s and its HTTP server answered on
-   `127.0.0.1:3737` with a CPU-only solver, so "Windows/Linux only" in its
-   README is just missing documentation. Its author's own experiments report
+   compiled on this Mac in 1 min 53 s to 3 min 20 s across two builds, and its
+   HTTP server answered on `127.0.0.1:3737` with a CPU-only solver, so
+   "Windows/Linux only" in its README is just missing documentation. Both
+   Rust projects in this file need a toolchain installed first; this machine
+   ships with none. Its author's own experiments report
    40 to 80 big blinds per 100 hands gained by exploiting a correctly
    identified player type, and 194 to 287 bb/100 lost by misidentifying one.
    That is both the promise and the warning.
@@ -149,9 +153,26 @@ Each resource is scored on five criteria, 0 to 3 (3 is best):
   - The bundled 3-street sample (2-hand vs 2-hand ranges): 0.44%
     exploitability at iteration 71 in 10.5 s solver time, 16.4 s wall.
   - **Full flop tree, same full ranges, three streets, 33%/75% bets, 60%
-    raises, all-ins: did not finish.** After 35 minutes wall (21 CPU-min) it
-    had printed only iteration 0. Killed. This is the tree shape study tools
-    use; it is not a decision-time solve on a laptop.
+    raises, all-ins: re-measured today under a hard 7-minute stop.** Command
+    file and runner published at
+    `research/solvers/texassolver_flop_full_ranges.txt` and
+    `research/solvers/run_texassolver_flop.py`, so this number can be checked
+    rather than believed. 10 threads, nothing else heavy running:
+    **423.1 s wall, 699.8 s CPU (1.65 cores busy on average), 5.79 GiB peak
+    memory, iterations 0 to 3 completed, exploitability still 222% of pot
+    when it was stopped** — against the 1% the command file asks for. It is
+    the tree shape study tools use; it is not a decision-time solve on a
+    laptop, and the gap is three orders of magnitude, not a near miss.
+    An earlier draft of this file said the same run "had printed only
+    iteration 0" after 35 minutes for 21 CPU-min. **That did not reproduce
+    and is withdrawn**: the print interval was set to 20, so iterations 1 to
+    19 were being completed silently, and the 0.6-cores-busy figure it
+    implied is not what this machine does either. The conclusion survives the
+    correction; the number did not.
+  - Why so few cores are busy is itself the answer to "could a bigger machine
+    fix it": at 5.8 GiB peak on a 16 GiB laptop the solve is waiting on
+    memory, not on arithmetic, so the fix would be RAM and a smaller tree
+    rather than threads.
   - **Quoted**: 172 s vs PioSOLVER's 242 s on the same flop tree
     (author's benchmark, SPR 10, a smaller tree than mine).
 - Limits: heads-up only; the GPU successor (TexasSolverGPU) is Windows-only,
@@ -175,12 +196,21 @@ second above.
   because they moved to building a commercial solver. 349 stars on the app.
 - Licence: AGPL-3.0.
 - Price: free.
-- macOS / Python: Rust library; **verified to compile and run on this Mac**
-  once two things are pinned: Rust 1.85 (the 2026 compiler breaks it) and
-  `bincode` and `bincode_derive` at exactly `2.0.0-rc.3` (the 2.0 release
-  changed the trait). Build took 22 s after dependencies. Desktop app has an
-  Apple-silicon build on the releases page (unsigned). No Python binding;
-  you would wrap it with PyO3 or call a small Rust binary from Python.
+- macOS / Python: Rust library; **verified to compile and run on this Mac**,
+  and re-verified today, once two things are pinned: the compiler at
+  **`rustc 1.85.0 (4d91de4e4 2025-02-17)`** (the 2026 compiler, 1.98.1, breaks
+  it) and `bincode` and `bincode_derive` at exactly `2.0.0-rc.3` in
+  `Cargo.toml` (the 2.0 release changed the trait). **A toolchain has to be
+  installed first: this Mac has no `cargo`, `rustc`, `rustup` or Homebrew on
+  the command path**, and every Rust timing in this file was produced with a
+  private toolchain installed under a scratch directory
+  (`RUSTUP_HOME`/`CARGO_HOME` pointed at it) rather than into the operator's
+  home. Anyone re-running these numbers must do that first; nothing here works
+  out of the box. Exact commands in Appendix B. Build: `cargo +1.85.0 build
+  --release --example basic`, **19.1 s** with dependencies already fetched.
+  Desktop app has an Apple-silicon build on the releases page (unsigned). No
+  Python binding; you would wrap it with PyO3 or call a small Rust binary from
+  Python.
 - Produces a decision for an arbitrary spot? **Heads-up postflop only**
   (the README's "up to six players" refers to *bunching*: it accounts for
   cards removed by up to four folded players, it does not solve 3-way play).
@@ -188,8 +218,11 @@ second above.
 - Speed, **measured on this Mac**: the bundled `examples/basic` (two full
   ranges of roughly 40% each, board Td9d6h Qc, turn and river, pot 200,
   stack 900, bet sizes 60% / geometric / all-in, raises 2.5x, river donk
-  50%, target 0.5% of pot) reached **0.46% exploitability at iteration 100
-  in 0.44 s wall** (1.6 s CPU across threads), using 10 MB of memory.
+  50%, target 0.5% of pot) reached **0.46% of the pot at iteration 100
+  (0.91 chips in a pot of 200) in 0.44 to 0.89 s wall** across four runs
+  today and earlier (2.7 s CPU across threads), using 10 MB of memory. The
+  spread between repeats is the machine, not the solver; either end is well
+  inside a decision window.
   **Quoted**: author says it "surpasses PioSOLVER and GTO+"; the WASM
   version solved a full flop tree to 0.1% exploitability in 45.5 s with 16
   threads, and the native version is about 2x faster.
@@ -214,8 +247,14 @@ second above.
 - Price: free.
 - macOS / Python: Rust workspace (`crates/solver`, `crates/server`). README
   documents Windows, Linux and WSL only, but **it builds and runs on this
-  Mac**: `cargo build --release -p server` finished in 3 min 20 s (CPU-only,
-  no CUDA), `./target/release/gto-server` started, chose 5 solver threads
+  Mac** — with the same caveat as entry 2: a Rust toolchain has to be
+  installed first, and this machine has none on the command path. Re-built
+  today from a clean target directory with the stable toolchain
+  **`rustc 1.98.1 (48a229cea 2026-09-01)`**: `cargo build --release -p server`
+  finished in **1 min 53 s** (261 s CPU, 2.4 cores busy), against 3 min 20 s
+  on the first build; take the range, and note dependencies were already
+  fetched both times. CPU-only, no CUDA. `./target/release/gto-server` started,
+  chose 5 solver threads
   and answered `GET /api/status` with JSON. Driven over HTTP from any
   language: `POST /api/spot`, `/api/solve`, `/api/node {path}`,
   `/api/exploit {path, exploiter}`, `/api/lock`,
@@ -231,8 +270,12 @@ second above.
   60.8 s on a 12-thread CPU; on an RTX 3090 GPU 1.35M-node flop trees run
   31 to 52 ms per iteration. Preflop lab uses Monte-Carlo equity samples
   (20,000 per hand class pair by default). **Measured on this Mac**: the
-  same `solve-cli bench_spot.json 100 0.05` run took **110 s** to 1.233% of
-  pot (1.35M-node tree, 1.4 GB); see Appendix A.
+  same `solve-cli bench_spot.json 100 0.05` run reached **1.233% of pot at
+  iteration 100 in 110 to 179 s** — two runs, identical exploitability to
+  four decimal places, wall time 63% apart, which is as clean a demonstration
+  as this file contains that a laptop timing is a range and not a number.
+  1,346,813-node tree built in 0.06 s, 257 vs 319 hands, 1.4 GB of arenas;
+  see Appendix A.
 - Opponent modelling: player types defined by VPIP/PFR bands (Nit, TAG, LAG,
   Whale, Maniac, station/folder modifiers) with datasets from Ignition and
   CoinPoker at NL10 to NL100; hero solves a max-exploit against every other
@@ -644,33 +687,64 @@ into the repo's own text format once) and never solve preflop ourselves.
 
 ## Part 5. Ranked shortlist (best first)
 
-1. **TexasSolver** — free, ships a macOS binary, text-command driven,
-   solved a full-range turn-and-river spot in 0.7 s here (8 s wall with
-   JSON output); the obvious heads-up postflop engine to call at decision
-   time, callable from Python by writing a command file.
-2. **OMPEval** (with a thin Python wrapper) — 312 M hands/s multiway equity
-   on this Mac; the foundation for any opponent-biased rule in 3+ way pots.
-3. **phevaluator** — `pip install`, 2.5 M hands/s from Python; replaces treys
-   in the runtime path (treys stays as the test oracle).
-4. **GTOpen** — the only open project with 2 to 9 player preflop plus
-   explicit player-type exploitation and an HTTP API; builds and serves on
-   this Mac; the blocker is the missing licence, which matters little for a
-   private bot. Borrow its player-type definitions now.
-5. **postflop-solver** — solved a comparable turn spot in 0.44 s here and
-   has built-in node locking (turn a read into an exploit); needs Rust with
-   a pinned toolchain and a small wrapper, and the project is suspended.
+Ranked on one question: **how much working poker judgment does this put in the
+bot's hands today, on this machine, for what effort?** Everything above slot 6
+was run here; everything below it was read about.
+
+1. **TexasSolver** — free, ships a macOS binary, text-command driven, nothing
+   to build. Solved a full-range turn-and-river spot in 0.7 s of solving here
+   (8 s wall including the JSON dump); the same binary needs more than seven
+   minutes to get nowhere on a full flop tree, so the rule is "prune the tree
+   and start from the current street". The obvious heads-up postflop engine to
+   call at decision time, callable from Python by writing a command file.
+2. **phevaluator** — plain `pip install phevaluator`, 0.9 to 2.6 M 7-card
+   hands/s from Python, no build step and no cap on the number of players.
+   Promoted above OMPEval because it is the only thing on this list that is
+   working five seconds after the install finishes; it replaces `treys` on any
+   runtime path (`treys` stays the test oracle).
+3. **OMPEval** — 160 to 312 M hands/s of multiway Monte-Carlo equity, which is
+   free speed compared with anything in Python, but **hard-capped at six
+   players** (`omp/Constants.h:6`) and it needs a C++ patch and a wrapper you
+   compile yourself. At 7 to 9 seats it cannot be handed every live range at
+   once, which is exactly the table size this project is aiming at.
+4. **postflop-solver** — 0.46% of pot on a turn spot in 0.44 to 0.89 s here,
+   and the only free tool in this file with **node locking built in**, which
+   is the mechanism that turns a read on a person into a strategy. Promoted
+   above GTOpen because that mechanism is what stage 2 of the plan needs.
+   Costs: a pinned Rust 1.85 toolchain (this Mac has none installed), a pinned
+   dependency, a wrapper, and a project its author has suspended.
+5. **GTOpen** — the only open project combining 2 to 9 player preflop with
+   explicit player-type exploitation behind an HTTP API; builds and serves on
+   this Mac (1 min 53 s to 3 min 20 s) once a toolchain exists. Two blockers,
+   not one: **no licence file at all**, and its multiway is preflop only. Its
+   player-type definitions are worth borrowing for `OPPONENT_MODEL_DESIGN.md`
+   whatever else is decided.
 6. **MonkerGuy .txt ranges** ($69 to $499 one-time) or the free 9-max charts
    — precomputed preflop for every table size, no solving needed.
-7. **Holdem Solver** (free beta, macOS, 2 to 9 players) — the only Mac tool
-   that solves multiway postflop; no scripting, so useful for offline study
-   of specific multiway spots, not at decision time.
-8. **Pokerai API** — instant 6-max GTO answers over HTTP with a free tier;
+7. **MonkerSolver** (EUR 499 one-time, macOS) — solves **any street with any
+   number of players**, which nothing else here does natively on a Mac at a
+   one-time price. Not on the decision path: no scripting interface, and
+   multiway postflop trees take RAM and hours. Buy it only for offline study.
+8. **Holdem Solver** (free beta, macOS, 2 to 9 players) — the other Mac tool
+   that solves multiway postflop, and free while the beta lasts, but the
+   vendor, licence and terms are all UNVERIFIED and there is no scripting.
+   Offline study of specific multiway spots, not decision time.
+9. **Pokerai API** — instant 6-max GTO answers over HTTP with a free tier;
    good for testing the bot's judgment against a reference, barred from live
    real-money use by its terms.
-9. **GTO Wizard Ultra** — best opponent modelling (Profiles, Nodelocking 2.0)
-   and 9-player preflop, but $229+/month with no API; a study tool only.
-10. **HRC Pro** — tournament preflop/ICM with JavaScript tree scripting, if
+10. **GTO Wizard** top tier — best opponent modelling anywhere (Profiles,
+    Nodelocking 2.0) and 9-player preflop, but a monthly subscription (price
+    UNVERIFIED, see entry 17) with no API; a study tool only.
+11. **HRC Pro** — tournament preflop/ICM with JavaScript tree scripting, if
     the bot ever plays tournaments.
+
+The three 2026 heads-up projects added this round (**amaster97/poker_solver**,
+**ArtemIyX/TexasSolverLib**, **masterai-top/cfr-poker-ai-masterai**) are not
+shortlisted. All three are heads-up only, none was built here, and the first
+two duplicate what TexasSolver and postflop-solver already do on this machine
+today. Keep `amaster97/poker_solver` in view only: it is MIT, targets Apple
+Silicon first, and is the only one of the three that is Python-callable by
+design.
 
 Not recommended: Deepsolver API (heads-up only, $1,875/month), PioSOLVER,
 GTO+, Jesolver, Simple Poker (Windows, heads-up or no scripting),
@@ -741,50 +815,84 @@ AGPL, ISC and Apache code that private use permits.
 
 ## Appendix A. Measured timings on this Mac (Apple M4, 10 cores)
 
+Wall-clock speed on a laptop moves by tens of percent, and sometimes by a
+factor of two, with whatever else the machine is doing. Where a measurement
+was repeated the range is given, and the range is the honest figure.
+
 | Tool | Spot | Result | Time |
 | --- | --- | --- | --- |
 | TexasSolver 0.2.0 | turn+river, 93 vs 95 combos, one 66% bet, 60% raise, all-in | 0.74% exploitability, iter 51 | 0.71 s solve, 8 s wall |
 | TexasSolver 0.2.0 | bundled 3-street sample, 2 vs 2 hands | 0.44%, iter 71 | 10.5 s solve, 16.4 s wall |
-| TexasSolver 0.2.0 | flop+turn+river, same full ranges, 33/75% bets | not past iter 0 | killed at 35 min |
-| postflop-solver | turn+river, ~40% vs ~40% ranges, 60%/geo/all-in, 2.5x raises | 0.46%, iter 100 | 0.44 s wall |
-| GTOpen solve-cli | `bench_spot.json` flop, 3 streets, 1.35M nodes, CPU-only | 1.23% of pot, iter 100 | 110 s wall, 1.4 GB |
-| OMPEval | 3-way Monte-Carlo equity on a flop, 10 threads | 312 M hands/s | 2 s budget |
+| TexasSolver 0.2.0 | flop+turn+river, same full ranges, 33/75% bets, 10 threads | iterations 0-3 only; 222% of pot, still falling | stopped at 423.1 s wall / 699.8 s CPU / 5.79 GiB |
+| postflop-solver | turn+river, ~40% vs ~40% ranges, 60%/geo/all-in, 2.5x raises | 0.46% of pot (0.91 chips of 200), iter 100 | 0.44 to 0.89 s wall, 2.7 s CPU |
+| GTOpen solve-cli | `bench_spot.json` flop, 3 streets, 1.35M nodes, CPU-only | 1.233% of pot, iter 100 | 110 to 179 s wall, 1.4 GB |
+| GTOpen | `cargo build --release -p server`, clean target dir | binary | 1 min 53 s to 3 min 20 s |
+| OMPEval | 3-way Monte-Carlo equity on a flop, 10 threads | 160 to 312 M hands/s | 2 s budget |
 | OMPEval | heads-up exact enumeration, two real ranges, flop | 2.97 M matchups | 2.8 ms |
 | OMPEval | 7-card evaluation, single thread | 61.5 M hands/s | |
-| phevaluator 0.6.0 | 7-card evaluation from Python, int cards | 2.55 M hands/s | |
+| phevaluator 0.6.0 | 7-card evaluation from Python, int cards | 0.9 to 2.6 M hands/s | |
 | treys 0.1.8 | 7-card evaluation from Python | 165 k hands/s | |
 
-GTOpen `solve-cli bench_spot.json 100 0.05` on this Mac, CPU-only, 10
-threads: tree of 1,346,813 nodes built in 0.05 s, 257 vs 319 hands, 1.4 GB
-of solver memory (compressed), **1.233% of pot exploitability at 100
-iterations in 110 s** (the author's 12-thread desktop did the same in 61 s).
-That is a full three-street flop tree with two IP flop sizes: two minutes
-for a study-grade flop solve, which confirms the pattern above: full flop
-trees are minutes, turn/river trees are under a second.
+**The flop solve, in full**, because it is the number the recommendation leans
+on hardest. Command file `research/solvers/texassolver_flop_full_ranges.txt`,
+runner `research/solvers/run_texassolver_flop.py`, `set_thread_num 10`,
+`set_accuracy 1.0` (that is, stop at 1% of pot), stopped by the runner at
+420 s. Reached: **423.1 s wall, 699.8 s CPU — 1.65 cores busy out of 10 —
+5.79 GiB peak memory, four iterations (0 to 3), exploitability 226.4% of pot
+at iteration 0 and 221.7% at iteration 2.** A solve that needs 1% and is at
+222% after seven minutes is not slow, it is not started. The low core count is
+the memory ceiling, not idle threads: 5.79 GiB on a 16 GiB laptop.
+
+GTOpen `solve-cli bench_spot.json 100 0.05` on this Mac, CPU-only: tree of
+1,346,813 nodes built in 0.06 s, 257 vs 319 hands, 1,386 MB of solver arenas
+(compressed), **1.233% of pot exploitability at 100 iterations in 110 s on
+the first run and 179.1 s on the re-run** — bit-identical result, very
+different clock (the author's 12-thread desktop did the same in 61 s). That is
+a full three-street flop tree with two IP flop sizes: **two to three minutes
+for a study-grade flop solve**, which confirms the pattern above. Full flop
+trees are minutes at best and unreachable at worst; turn and river trees are
+under a second.
 
 ## Appendix B. What I ran
 
 ```
-# evaluators (scratch venv, Python 3.13)
-pip install treys phevaluator            # eval7 and pyrust-poker failed to build
+# evaluators (clean venv, Python 3.13.15)
+pip install phevaluator                  # plain install, 0.6.0 arm64 wheel, no flags
+pip install treys                        # eval7 and pyrust-poker failed to build
 python bench_treys.py                    # 165,275 hands/s
-python bench_phe.py                      # 2,550,203 hands/s (ints), 800,485 (strings)
+python bench_phe.py                      # 2,550,203 hands/s idle, 0.89-1.44 M/s under
+                                         # load (ints); 800,485 (strings)
 
 # OMPEval (clang 16, needs constexpr patch in omp/Random.h)
 make CXXFLAGS="-O3 -std=c++17 -Wall -pthread"
 ./evbench   # 61.5 M evals/s
-./eqbench   # 3-way MC 311.7 M hands/s (10 threads); HU exact flop 2.8 ms
+./eqbench   # 3-way MC 311.7 M hands/s idle, 160-177 M/s under load (10 threads);
+            # HU exact flop 2.8 ms.  Player cap: omp/Constants.h:6 MAX_PLAYERS = 6
 
 # TexasSolver v0.2.0 macOS release (unzipped from the GitHub release)
 ./console_solver -i resources/text/commandline_sample_input.txt   # 16.4 s wall
 ./console_solver -i turn_input.txt                                # 8 s wall
-./console_solver -i realistic_input.txt                           # killed at 35 min
+python3 research/solvers/run_texassolver_flop.py <release-dir> 420
+    # 423.1 s wall, 699.8 s CPU, 5.79 GiB, iterations 0-3, 222% of pot
 
-# postflop-solver: rustup 1.85.0, bincode + bincode_derive pinned =2.0.0-rc.3
-cargo +1.85.0 build --release --example basic && ./target/release/examples/basic   # 0.44 s
+# Rust toolchain: NOT installed on this Mac.  No cargo, rustc, rustup or
+# Homebrew is on the command path.  Both Rust projects below were built with a
+# private toolchain unpacked into a scratch directory and reached only through
+# these three variables, so nothing was written to the operator's home:
+export RUSTUP_HOME=<scratch>/rustup CARGO_HOME=<scratch>/cargo
+export PATH=<scratch>/cargo/bin:$PATH
+rustup toolchain list    # stable (1.98.1) default, plus 1.75.0 and 1.85.0
 
-# GTOpen (stable Rust 1.98, CPU-only)
-cargo build --release -p server                # 3 min 20 s
+# postflop-solver: rustc 1.85.0 (4d91de4e4 2025-02-17),
+#                  bincode + bincode_derive pinned =2.0.0-rc.3 in Cargo.toml
+cargo +1.85.0 build --release --example basic    # 19.1 s, dependencies cached
+./target/release/examples/basic                  # 0.72-0.89 s wall, 2.7 s CPU,
+                                                 # exploitability 0.91 of pot 200
+
+# GTOpen: rustc 1.98.1 (48a229cea 2026-09-01), CPU-only
+CARGO_TARGET_DIR=<scratch>/GTOpen/target_clean cargo build --release -p server
+    # 1 min 53 s wall, 261 s CPU (first build, earlier: 3 min 20 s)
 ./target/release/gto-server & curl 127.0.0.1:3737/api/status   # {"state":"idle","gpu":false,...}
-cargo build --release -p solver --bin solve-cli && ./target/release/solve-cli bench_spot.json 100 0.05
+./target/release/solve-cli bench_spot.json 100 0.05
+    # 1.233% of pot at iteration 100 in 179.1 s (earlier run: 110 s)
 ```
