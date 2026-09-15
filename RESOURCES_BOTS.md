@@ -153,8 +153,9 @@ Two rules about the marks themselves:
   in 3.7. `poker/decisionmaker/decisionmaker.py:23` is the whole action set —
   `bet1, bet2, bet3, bet4, bet_bluff = ['Bet','BetPlus','Bet half pot','Bet
   pot','Bet Bluff']` — and `decisionmaker.py:562-572` attaches the amounts:
-  the minimum bet, the minimum bet plus a fixed multiple of it
-  (`BetPlusInc`), half the pot, half the pot again for the bluff, and the pot.
+  the minimum bet; the minimum bet increased by a fixed multiple of itself
+  (the `BetPlusInc` setting); half the pot, for both `bet3` and the bluff;
+  and the pot.
   `poker/tools/mouse_mover.py:179-214` then executes them by clicking the poker
   client's own half-pot, pot or all-in button, or a counted number of increment
   clicks, so no other amount can be entered. The tunable parameters and the
@@ -776,11 +777,11 @@ which recommends the opposite in as many
 words — "abandon the train-in-advance approach entirely in favour of computing
 the decision at the moment we need it" — on the strength of a bot it actually
 built and measured on this laptop (6-player, 52-card, no-limit, 250 ms per
-decision, no training at all). It would also set aside `CLAUDE.md` lines 7-9,
-which name `fedden/poker_ai` as the engine this project is built on, and lines
-20-21, whose stage 1 is moving that engine to the 52-card game. Choosing
-between a strategy trained in advance and one computed while the hand is being
-played is a decision for the **reconciliation of `ENGINE_ALTERNATIVES.md`,
+decision, no training at all). It would also set aside the opening of
+`CLAUDE.md`, which names `fedden/poker_ai` as the engine this project is built
+on, and its Plan, whose stage 1 is moving that engine to the 52-card game.
+Choosing between a strategy trained in advance and one computed while the hand
+is being played is a decision for the **reconciliation of `ENGINE_ALTERNATIVES.md`,
 `RESOURCES_BOTS.md`, `RESOURCES_SOLVERS.md` and `RESOURCES_EXPLOITATION.md`**,
 and whatever it decides needs a recorded carve-out or rule change in
 `CLAUDE.md`. Not a line in a survey of other people's bots.
