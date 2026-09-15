@@ -1,0 +1,3 @@
+resample_opponents, first decision after the deal: n=713438 draws in 10.00s = 71344 per second (history 12 long)
+resample_opponents, a later decision in the same hand: n=910784 draws in 10.00s = 91078 per second (history 17 long)
+6 players, 52 cards, fcpa; hidden positions and card positions computed once per decision, not once per draw; seed=20260915

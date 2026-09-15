@@ -1,0 +1,2 @@
+random vs random, seat 0: n=100000 hands  mean=-1.61 bb/hand  sd=222.8 bb  95% CI = -2.99 .. -0.23 bb/hand (half-width 1.38) [2.5s, seed=20260915]
+    hands needed for a half-width of 1 bb/hand at this spread: 190,748

@@ -1,0 +1,8 @@
+external-sampling MCCFR, no card abstraction, bettingAbstraction=fcpa, numpy seed=20260915, 45s per configuration
+6 players, 52 cards, 200bb   rounds=   7950 situations=   778582 still-new per round (last quarter)=  84.8 [45s]
+6 players, 52 cards, 20bb    rounds=   5401 situations=   445154 still-new per round (last quarter)=  69.2 [45s]
+6 players, 52 cards, 10bb    rounds=   7870 situations=   490456 still-new per round (last quarter)=  49.2 [45s]
+6 players, 24 cards, 10bb    rounds=  17160 situations=   493221 still-new per round (last quarter)=  19.4 [45s]
+6 players, 20 cards, 10bb    rounds=  16913 situations=   418540 still-new per round (last quarter)=  16.5 [45s]
+3 players, 52 cards, 10bb    rounds=  37478 situations=   606670 still-new per round (last quarter)=  14.2 [45s]
+6 players, 52 cards, 10bb, preflop only rounds=  31936 situations=   911510 still-new per round (last quarter)=  17.4 [45s]
