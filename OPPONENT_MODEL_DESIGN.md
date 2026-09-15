@@ -863,9 +863,13 @@ What the blend actually does to a loud small sample. Computed 2026-09-15.
 | 0.60 | 25 | 18 of 20 | 0.90 | **0.733** |
 | 0.60 | 25 | 2 of 20 | 0.10 | **0.378** |
 
-Row 1 is the case that matters: somebody who has raised half of twenty hands is
-recorded as a 36% raiser, not a 50% one. That is the mechanism that stops the
-bot chasing noise.
+Row 1 is the case that matters: somebody who has raised half of twenty
+*opportunities* — Tier B units, since the prior strength in every row is the
+Tier B 25 — is recorded as a 36% raiser, not a 50% one. That is the mechanism
+that stops the bot chasing noise. Note also that at 20 observations the
+confidence is `20/45 = 0.44`, below every gate in
+[§4.4](#44-bucketing-an-opponent): the shrunk rate exists, but nothing fires on
+it yet.
 
 ### 4.4 Bucketing an opponent
 
@@ -1038,14 +1042,25 @@ $ pokerbot profile "seat3_alias"
   vpip        0.41  (conf 0.89)   raw 0.43
   pfr         0.11  (conf 0.89)   raw 0.10
   gap         0.30
+  limp        0.38  (conf 0.86)
+  three_bet   0.01  (conf 0.71)
+  check_raise 0.01  (conf 0.72)
+  afq         0.24  (conf 0.86)
   afq[flop]   0.22  (conf 0.61)
-  wtsd        0.38  (conf 0.42)
+  wtsd        0.38  (conf 0.90)
   bucket      STATION
   flags       NEVER_FOLDS_POSTFLOP, LIMPS, NEVER_RAISES
 ```
 
 Every number in that block is **invented and illustrates the report's format
-only**. It is not data and not a claim about any player.
+only**. It is not data and not a claim about any player. It is, however,
+internally consistent with the gates this document sets, and must stay that way:
+each confidence is `n/(n+s)` for that stat's `PRIOR_STRENGTH`; every flag listed
+clears its own gate from [§4.4](#44-bucketing-an-opponent) — `wtsd` 0.90 and
+`limp` 0.86 against the `0.6` gates, `three_bet` 0.71 and `check_raise` 0.72
+against the `0.7` gate — and the bucket clears both the `0.5` `vpip`-confidence
+gate and `MIN_CLASSIFY_HANDS = 50`. An example that fires a flag its own
+confidences would have blocked teaches a coding task the wrong thing.
 
 **Why this is a full tier.** It is the whole foundation, it is entirely
 engine-independent, it can be built and tested while the engine question is
@@ -1558,4 +1573,4 @@ Per the global evidence rules, so that no figure here has to be taken on trust.
 | The 1006th-hand river failure | [Ganzfried & Sandholm 2011](#s-ganzfried2011), §5.4, read directly |
 | s-Curve `Pmax · n/(s+n)`; 0-10 Linear; the 100-to-1m observation range | [Johanson & Bowling 2009](#s-johanson2009), §5.2 and §6, read directly |
 | `HALF_LIFE = 2000`, `PRIOR_STRENGTH` values (50/25/15, which are also the s-Curve `s`), `WARMUP_HANDS = 200`, `MIN_CLASSIFY_HANDS = 50`, all flag margins (0.15/0.05) and flag confidence gates (0.6/0.7), the `confidence < 0.5` `UNKNOWN` gate, `MIN_STACK_BB = 5`, the 70/30 V3 holdout split, and `VPIP_SPLIT` and `AFQ_SPLIT` until the bootstrap in [§4.4](#44-bucketing-an-opponent) replaces them with measured population medians | **Starting values chosen for this design, not measured.** Every one is labelled as such at its point of use as well as here, belongs in a config file, and is to be tuned by the validation in [§6](#6-validation-before-it-touches-a-real-table). `VPIP_SPLIT = 0.28` is the one part-exception: it is the *approximate* complement of the literature's 72% fold threshold — approximate because the two rates do not sum to 1 (see [§2.2](#22-the-two-axes-that-have-literature-behind-them)) — and it stands only until V4 corrects it or the bot's own population replaces it |
-| The example `pokerbot profile` output in [Tier 0](#45-tiers-what-to-build-in-what-order) (412 hands, 0.41 vpip, and the rest) | **Invented, and only illustrates the report's format.** Not data, not a claim about any player |
+| The example `pokerbot profile` output in [Tier 0](#45-tiers-what-to-build-in-what-order) (412 hands, 0.41 vpip, and the rest) | **Invented, and only illustrates the report's format.** Not data, not a claim about any player. The confidences are chosen so the example obeys its own gates: each is `n/(n+s)` for a plausible opportunity count inside 412 hands, and every flag and the bucket shown clear the thresholds in [§4.4](#44-bucketing-an-opponent) |
