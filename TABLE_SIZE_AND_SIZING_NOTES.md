@@ -187,7 +187,8 @@ happen, and this document does not claim it does.
 
 What the bound does establish is that the possibility is not excluded by the
 arithmetic. `VPIP_SPLIT` in `OPPONENT_MODEL_DESIGN.md` §4.4 defaults to `0.28`,
-and the flag margins in the same section fire at gaps of `0.15`. A bound of
+and six of the seven flags in the same section fire at a gap of `0.15`, the
+seventh — `NEVER_RAISES` — at `0.05` on each of its two legs. A bound of
 `0.2`–`0.47` between 9-max and 3-handed is not a rounding error against
 thresholds of that size — **it can exceed both, so a shift large enough to move a
 player across the tight/loose boundary, or to fire or suppress an exploit flag
@@ -353,10 +354,24 @@ where the definition forces it.
 
 There is a second, smaller fragmentation effect that is pure arithmetic from
 [Table 1](#table-1-what-seat-count-mechanically-fixes): a stat whose opportunity
-requires the player to be in a blind occurs on at most `2/n` of hands, so it
-needs `n/2` hands per opportunity — **4.5 times as many hands at 9-max as
-heads-up for the same precision**. `fold_to_steal` is the affected stat. Table C
-should carry an opportunities-per-hand column that is band-dependent for it.
+requires the player to be in a blind occurs on at most `2/n` of hands. **The
+blind frequency itself is 4.5 times higher heads-up than at 9-max** — `1.000`
+against `0.222` in Table 1's first column. That ratio is a fact about the blinds
+and nothing else; it is not the hands multiplier for any stat gated behind them.
+
+`fold_to_steal` is the affected stat, and its realised multiplier is not 4.5,
+because its opportunity is the blind frequency times a conditional rate that is
+**not constant in `n`**. [§1.4](#14-two-stat-definitions-that-break-outright-below-six-players)
+fixes that rate at one end: at `n = 2` the small blind is the only possible
+opener, so only the big blind can ever be the defender and only `1/2` of the
+hands in a blind are opportunities at all. Against an unrestricted `2/9` at
+9-max that gives **2.25 times as many hands at 9-max as heads-up**, on §1.4's
+reasoning. The 9-max conditional rate is below 1 as well — the open must come
+from a late-position player with no other caller — and it moves the multiplier
+the other way, so 2.25 does not bound it either. The true multiplier is a
+measurement, not a derivation. Table C should carry an
+opportunities-per-hand column that is band-dependent for this stat and filled
+from logged hands.
 
 ### 1.7 Heads-up is a different game, and it inverts the design's founding argument
 
@@ -635,9 +650,9 @@ specified in `OPPONENT_MODEL_DESIGN.md` §4.2:
 
 - **Fall back up the bucket hierarchy.** When `fold_to_bet[street, bucket]` is
   thin, back off to `fold_to_bet[street]` pooled over sizes, then to the
-  opponent's `fold_to_cbet`, then to the bucket, then to the blueprint. Implement
-  it as an explicit chain, which is what §4.2 already requires for the unsized
-  case.
+  opponent's `fold_to_cbet`, then to the archetype bucket, then to the
+  blueprint. Implement it as an explicit chain, which is what §4.2 already
+  requires for the unsized case.
 - **Collapse to two buckets for the per-opponent stat and keep four for the
   population baseline.** The population baseline pools across every opponent and
   can afford the resolution; a single opponent cannot. A two-way
@@ -663,13 +678,29 @@ column, introduced for seat buckets and streets. Banding needs no schema change:
 encode it in that column, as `band=<label>`, composed with any existing context
 key.
 
-Recommended bands: **`HU` = 2, `SHORT` = 3–4, `MID` = 5–6, `FULL` = 7–9.** These
-boundaries are **unmeasured design choices**, placed where
-[Table 2](#table-2-how-far-apart-two-seat-counts-are-as-positional-mixtures)
-shows adjacent seat counts are closest (TV of 0.111–0.25 within a band, 0.333 or
-more across one) and where [§1.7](#17-heads-up-is-a-different-game-and-it-inverts-the-designs-founding-argument)
-requires `n = 2` to stand alone. They belong in config and are to be revisited if
-V3's calibration is materially better under a different grouping.
+Recommended bands: **`HU` = 2, `SHORT` = 3–4, `MID` = 5–6, `FULL` = 7–9.**
+
+**Two things force part of this, and nothing forces the rest.** `n = 2` must
+stand alone, because [§1.7](#17-heads-up-is-a-different-game-and-it-inverts-the-designs-founding-argument)
+shows heads-up is a different game — two-player zero-sum, the one setting the
+design document's founding argument does not reach. And `n = 8` and `n = 9` must
+share a band, because the operator's table-size priority, recorded 2026-09-15,
+treats them as the same thing ([Q4](#4-questions-for-the-operator)); the same
+priority puts the bulk of the hands at `n = 6`, so whichever band holds `6` is
+the one that will fill first.
+
+**Everything else — the `4|5` and `6|7` cuts — is an unmeasured bookkeeping
+choice, and [Table 2](#table-2-how-far-apart-two-seat-counts-are-as-positional-mixtures)
+does not support it.** It cannot: the distance between adjacent seat counts `n`
+and `n+1` is exactly `1/(n+1)`, which decreases strictly as `n` grows, so no
+interior boundary is a local maximum of that distance and no placement of one can
+be justified by it. The table says so directly — the across-band steps `4|5`
+(0.200) and `6|7` (0.143) are both *smaller* than the within-band step `3|4`
+(0.250). What the choice actually does is hold the number of strata at four,
+which is the fragmentation cost [§1.6](#16-what-banding-costs) prices, while
+keeping each band's seat counts adjacent. It belongs in config, and it is to be
+revisited if V3's calibration is materially better under a different grouping —
+which is the only evidence that could settle it.
 
 The `HandRecord` in §4.3 Step 1 already records every player's seat; it must also
 record the seat count `n` explicitly, so that band assignment is a property of
@@ -698,8 +729,9 @@ live field.
 Grounding, and the exact weight it carries:
 [Table 3](#table-3-the-swing-that-costs-nothing-but-a-change-of-seat-count) — the
 cross-band aggregate shift **bound** exceeds both the `0.28` split and the `0.15`
-flag margins, so a shift that matters is admitted, though a bound does not show
-one occurs ([§1.2](#12-why-vpip-is-not-comparable-across-seat-counts) names the
+margin six of the seven §4.4 flags use, so a shift that matters is admitted,
+though a bound does not show one occurs
+([§1.2](#12-why-vpip-is-not-comparable-across-seat-counts) names the
 Tier 0 measurement that would) — and
 [§1.5](#15-the-published-thresholds-are-themselves-table-size-mixtures), where the
 literature threshold turns out to be a mixture over an unknown set of seat counts
@@ -730,8 +762,11 @@ player with `behind ≤ 1`, with no other caller"**, which is well-defined at ev
 seat count once R3 lands, and record `behind` of the opener in the context so
 that the heads-up case is separable rather than silently merged. Add
 `fold_to_steal`'s band-dependent opportunity rate to Table C: it is bounded above
-by `2/n` ([Table 1](#table-1-what-seat-count-mechanically-fixes)), so it needs
-about **4.5 times as many hands at 9-max as heads-up** for the same precision.
+by the blind frequency `2/n` ([Table 1](#table-1-what-seat-count-mechanically-fixes)),
+which is itself **4.5 times higher heads-up than at 9-max**. The multiplier the
+stat actually pays is nearer **2.25×**, because at `n = 2` only the big blind can
+defend, and it is a quantity to measure rather than derive
+([§1.6](#16-what-banding-costs)).
 
 ### R5 — Do **not** add a table-size dimension to the bucket grid or the archetypes. *(Extension. §4.4 and §4.5.)*
 
@@ -829,16 +864,16 @@ first is currently visible.
 Two rows to add, with opportunity definitions in the document's required literal
 form. The third sizing signal in
 [§2.2](#22-sizing-as-a-signal-about-the-opponent) — sizing dispersion — is
-computed from `bet_size` and needs no row of its own.
+computed from `bet_size_dist` and needs no row of its own.
 
 | `stat_name` | Numerator increments when… | Denominator increments when… | Context key |
 | --- | --- | --- | --- |
-| `bet_size` | opponent's bet or raise fell in this size bucket | opponent bet or raised on that street | `street` + `role` + `size_bucket` |
+| `bet_size_dist` | opponent's bet or raise fell in this size bucket | opponent bet or raised on that street | `street` + `role` + `size_bucket` |
 | `fold_to_bet` | opponent folded | opponent faced a bet on that street in that size bucket | `street` + `size_bucket` |
 
 Size is measured as **bet divided by the pot before the bet**, never in big
 blinds ([§2.2](#22-sizing-as-a-signal-about-the-opponent)). All-in is its own
-bucket. `bet_size` is a distribution over buckets, so its baseline is a **vector**
+bucket. `bet_size_dist` is a distribution over buckets, so its baseline is a **vector**
 and its shrinkage uses DBBR Equation 1 in its original categorical form
 ([Ganzfried & Sandholm 2011](#s-ganzfried2011) §4.2) rather than the binomial
 special case in §4.3 — the equation is unchanged, only `BASELINE` gains an index.
@@ -1182,7 +1217,8 @@ bands the bot's own measured baseline instead of hardcoding one per band.
 | [Table 1](#table-1-what-seat-count-mechanically-fixes) — `2/n`, `1/n`, `(n−3)/n`, `(n−1)/2` | Derived; computed by script 2026-09-15. Follows from preflop action order giving each "players behind" value `0…n−1` exactly once per orbit |
 | [Table 2](#table-2-how-far-apart-two-seat-counts-are-as-positional-mixtures) — total variation distances | Computed by script 2026-09-15, as `½·Σ|p−q|` over the uniform positional-weight vectors of Table 1. Elementary arithmetic |
 | [Table 3](#table-3-the-swing-that-costs-nothing-but-a-change-of-seat-count) — the shift bounds | Computed by script 2026-09-15 as `TV × spread`, the standard total-variation bound. **The spread column (0.30 / 0.50 / 0.70) is illustrative, not measured or cited**, on the same footing as the `p̂` anchors in `OPPONENT_MODEL_DESIGN.md` Table C |
-| The `4.5×` hands multiplier for a blind-only stat at 9-max versus heads-up | Derived; `(9/2)/(2/2) = 4.5`. Follows from the `2/n` column of Table 1 |
+| The `4.5×` blind-frequency ratio between heads-up and 9-max | Derived; `(2/2)/(2/9) = 4.5`, the `2/n` column of Table 1. It is the ratio of blind frequencies, **not** the hands multiplier for any particular stat |
+| The `2.25×` hands multiplier for `fold_to_steal`, 9-max versus heads-up ([§1.6](#16-what-banding-costs), [R4](#r4--redefine-fold_to_steals-opportunity-or-split-it-correction-42)) | Derived from §1.4's reasoning: at `n = 2` only the big blind can defend, so half the blind hands are opportunities, `(1/(2/9))/(1/(1/2)) = 2.25`. The 9-max conditional rate is not 1 either, so this is a reasoned figure to be replaced by `denominator / hands_dealt` from logged hands |
 | [Table 4](#table-4-the-fragmentation-multiplier) — the `k×` multiplier | Derived: the opportunity count for a fixed interval half-width does not depend on stratification, so `k` strata need `k` times the hands. **The 323 and 640 base values are inherited from `OPPONENT_MODEL_DESIGN.md` Table C and are illustrative there; the products inherit that status** |
 | 32 solver runs (R6) and 16 under banding | Derived; 8 seat counts × 4 strategies, and 4 bands × 4 strategies. Computed 2026-09-15. `OPPONENT_MODEL_DESIGN.md` §4.5 and E5 now state the same 32 independently |
 | 3 runs saved per seat count dropped, an 8-run floor, and 8 runs saved per bucket cut (R6, [Q4](#4-questions-for-the-operator)) | **Not derived here.** Taken from `OPPONENT_MODEL_DESIGN.md` §4.5 at commit `5aa40b8`, which states them: a dropped seat count still needs its own `S_BASE`, so only its three counter-strategies are saved, leaving one `S_BASE` per seat count as the floor |
@@ -1192,7 +1228,7 @@ bands the bot's own measured baseline instead of hardcoding one per band.
 | The 19.9% / 25.0% / 30.0% / 33.3% bluff shares, and the **25.2pp** break-even-fold spread cited in [§2.5](#25-what-sizing-buckets-cost) | Read from `OPPONENT_MODEL_DESIGN.md` Table A, which computes them as `s/(1+2s)` and `s/(1+s)`. Re-derived here and matched. The spread is that table's `1.00` row (50.0%) minus its `0.33` row (24.8%) |
 | The pseudo-harmonic formula `((B−x)(1+A))/((B−A)(1+x))` | [Ganzfried & Sandholm 2013](#s-ganzfried2013). **Quoted from memory; NOT retrieved or verified. Confirm against the primary text before implementing** |
 | 4.52% showdown ratio | [Teofilo & Reis 2011](#s-teofilo2011), Table 1, as read and reported by `OPPONENT_MODEL_DESIGN.md` |
-| Band boundaries `HU`=2, `SHORT`=3–4, `MID`=5–6, `FULL`=7–9 (R1) | **Unmeasured design choice.** Guided by Table 2's within-band versus across-band distances and by [§1.7](#17-heads-up-is-a-different-game-and-it-inverts-the-designs-founding-argument)'s requirement that `n=2` stand alone. Belongs in config |
+| Band boundaries `HU`=2, `SHORT`=3–4, `MID`=5–6, `FULL`=7–9 (R1) | **Two constraints and one unmeasured bookkeeping choice.** `n=2` stands alone because [§1.7](#17-heads-up-is-a-different-game-and-it-inverts-the-designs-founding-argument) requires it; `n=8` and `n=9` share a band because the operator's table-size priority, recorded 2026-09-15, treats them as the same. The `4\|5` and `6\|7` cuts are **not** derived from Table 2 and cannot be: adjacent-seat-count distance is `1/(n+1)`, strictly decreasing, so no interior boundary is a local maximum. Belongs in config |
 | Size-bucket boundaries 0.40 / 0.70 / 1.10 of pot, and the two-bucket split at 0.70 (R8) | **Unmeasured design choices**, placed to straddle the rows of `OPPONENT_MODEL_DESIGN.md` Table A. Belong in config |
 | Flag margins `0.15` and confidence gates `0.6` in R9 | **Unmeasured starting values**, copied from the existing flag table in `OPPONENT_MODEL_DESIGN.md` §4.4 for consistency, and carrying the same status there and here |
 | Pluribus's use of a small discrete bet-size abstraction, and the number of sizes in it | **Cited from memory and NOT retrieved; the count is not asserted at all.** `OPPONENT_MODEL_DESIGN.md` does not state the claim and this task had no web access, so it is listed under [Pluribus's bet-size abstraction](#s-pluribus-sizing) in the memory-cited sources. No recommendation here depends on it |
