@@ -358,7 +358,7 @@ of `B / (P + 2B)`.
 
 #### Table A: bet size, fold frequency, and bluff share
 
-Bet size `s` is the bet as a fraction of the pot. Computed 2026-09-15.
+Bet size `s` is the bet as a fraction of the pot. Computed by `tools/check_design_numbers.py`, 2026-09-15.
 
 | Bet size `s` | Fold frequency that makes a pure bluff break even | Minimum defence frequency | Bluff share of a balanced betting range |
 | --- | --- | --- | --- |
@@ -379,7 +379,7 @@ with probability `p`, the bluff succeeds with probability `p^n`. Computed
 
 | Per-opponent fold rate | 1 opponent | 2 opponents | 3 opponents | 4 opponents | 5 opponents |
 | --- | --- | --- | --- | --- | --- |
-| 50% | 50.0% | 25.0% | 12.5% | 6.2% | 3.1% |
+| 50% | 50.0% | 25.0% | 12.5% | 6.3% | 3.1% |
 | 60% | 60.0% | 36.0% | 21.6% | 13.0% | 7.8% |
 | 70% | 70.0% | 49.0% | 34.3% | 24.0% | 16.8% |
 | 80% | 80.0% | 64.0% | 51.2% | 41.0% | 32.8% |
@@ -703,16 +703,24 @@ The number of *opportunities* needed for a 95% confidence interval of half-width
 opportunities per hand gives hands. The `p̂` values below are illustrative
 anchors chosen to show the shape of the requirement, **not claims about any
 real population**; the width of the interval barely moves for `p̂` between 0.2
-and 0.8. Computed 2026-09-15.
+and 0.8. Computed by `tools/check_design_numbers.py`, 2026-09-15.
 
 The **"Opportunities per hand" column is an illustrative estimate on the same
 footing as `p̂`, not a sourced fact.** No published figure was found for how
 often a real multiway table hands a given player these spots, and none is
 invented here: 0.08, 0.15 and 0.30 are round order-of-magnitude placeholders for
-"rare", "occasional" and "common". The "Hands needed" column inherits that
-uncertainty and scales inversely with them — halve an opportunity rate and the
-hands double. **Replace all three with measurement as soon as Tier 0 has logged
-any hands**: each is exactly `denominator / hands_dealt` for that stat, pooled
+"rare", "occasional" and "common". Only `vpip` and `pfr` carry a rate of 1.00,
+and they carry it because their [§4.2](#42-the-stat-table) denominator is
+literally "opponent was dealt in" — one opportunity per hand by definition, not
+an estimate. **Every other row takes a placeholder**, because every other
+denominator in [§4.2](#42-the-stat-table) is a spot the game has to hand the
+player: `three_bet`'s is "faced exactly one open raise with chips behind",
+`fold_to_three_bet`'s is "had open-raised and then faced a reraise",
+`fold_to_cbet`'s is "faced a continuation bet on that street", `wtsd`'s is "saw
+a flop". The "Hands needed" column inherits that uncertainty and scales
+inversely with them — halve an opportunity rate and the hands double. **Replace
+every placeholder with measurement as soon as Tier 0 has logged any hands**:
+each is exactly `denominator / hands_dealt` for that stat, pooled
 across the observed population (not the live field, and not a behaviour rate at
 all — it is how often the game hands somebody that spot). What survives the
 uncertainty is the *ordering* — Tier A stats need hundreds of hands and postflop
@@ -724,7 +732,7 @@ on.
 | `vpip` | 0.30 | 1.00 | ±5pp | 323 | **323** |
 | `vpip` | 0.30 | 1.00 | ±3pp | 896 | **896** |
 | `pfr` | 0.20 | 1.00 | ±5pp | 246 | **246** |
-| `three_bet` | 0.07 | 1.00 | ±2pp | 625 | **625** |
+| `three_bet` | 0.07 | 0.15 | ±2pp | 625 | **4,168** |
 | `fold_to_three_bet` | 0.60 | 0.08 | ±10pp | 92 | **1,152** |
 | `fold_to_cbet` | 0.50 | 0.15 | ±10pp | 96 | **640** |
 | `wtsd` | 0.25 | 0.30 | ±5pp | 288 | **960** |
@@ -732,7 +740,12 @@ on.
 **This table is the honest expectation-setter for the whole project.** VPIP and
 PFR are usable inside one long session. Everything postflop needs many sessions
 against the same person. A design that promises sharp postflop exploits after
-fifty hands is promising noise.
+fifty hands is promising noise. `three_bet` is the sharpest illustration: it is
+a preflop stat, but its denominator is not "dealt in", and at a placeholder 0.15
+opportunities per hand a ±2pp reading of a 7% behaviour is thousands of hands
+away — further off than any postflop row here. "Preflop exploits ship first",
+the consequence stated just below, therefore means `vpip` and `pfr` first, not
+every preflop stat at once.
 
 Two consequences:
 
@@ -826,8 +839,30 @@ average" to "treat as themselves" lands at a sensible number of hands:
 | Stat group | `PRIOR_STRENGTH` | Prior and data carry equal weight at… |
 | --- | --- | --- |
 | Tier A (`vpip`, `pfr`, `limp`) | 50 | 50 hands |
-| Tier B (`three_bet`, `fold_to_*`, `cbet`, `afq`) | 25 | 25 opportunities |
+| Tier B (`three_bet`, `fold_to_three_bet`, `fold_to_steal`, `cbet`, `fold_to_cbet`, `afq`, `check_raise`, `open_raise`) | 25 | 25 opportunities |
 | Tier C (`wtsd`, `wsd`, `fold_to_river_bet`) | 15 | 15 opportunities |
+
+**Every stat this design shrinks is named in exactly one row above, and the rows
+are exhaustive on purpose**: a stat with no `PRIOR_STRENGTH` has no shrunk rate
+and no confidence, so any gate written against it cannot be evaluated. Two of
+them are here for that reason and sit in a group [§2.3](#23-the-stat-set) does
+not put them in. `check_raise` is one: [§4.4](#44-bucketing-an-opponent)'s
+`NEVER_RAISES` flag reads its shrunk rate and its confidence, and both figures
+that section quotes for it are `s` = 25 figures. `open_raise` is the other:
+[§2.3](#23-the-stat-set) groups it with Tier A because it is preflop, but its
+[§4.2](#42-the-stat-table) denominator is "first-in with no prior raiser" *split
+five ways by seat bucket*, so each of its contexts sees a Tier B handful of
+opportunities per ten hands and is sized as Tier B. No row above is a wildcard:
+`fold_to_river_bet` is Tier C and is **not** covered by the Tier B `fold_to_*`
+family it resembles.
+
+The stats named elsewhere in this document that deliberately have **no**
+`PRIOR_STRENGTH`, because nothing shrinks them: `hands_dealt` (a count, not a
+rate); `af_bets_raises` and `af_calls` (raw counters behind the reported `AF`
+diagnostic, and `AF` is unbounded, so neither admits shrinkage — see
+[§2.2](#22-the-two-axes-that-have-literature-behind-them)); `vpip_pfr_gap` (a
+difference of two already-shrunk rates); `showdown_holdings`; and the Tier D
+bookkeeping fields `stack_bb`, `hands_since_last_seen` and `session_net_bb`.
 
 **All three `PRIOR_STRENGTH` values — 50, 25 and 15 — are unmeasured starting
 values chosen for this design**, neither measured nor cited. They belong in a
@@ -838,7 +873,7 @@ config file and are to be tuned by the validation in
 
 `confidence = n / (n + s)`, where `s` is that stat's `PRIOR_STRENGTH`. The three
 tier values from the table above are marked; `s`=5 and `s`=10 are included only
-to show the shape. Computed 2026-09-15.
+to show the shape. Computed by `tools/check_design_numbers.py`, 2026-09-15.
 
 | observations `n` | `s`=5 | `s`=10 | `s`=15 (Tier C) | `s`=25 (Tier B) | `s`=50 (Tier A) |
 | --- | --- | --- | --- | --- | --- |
@@ -854,7 +889,7 @@ to show the shape. Computed 2026-09-15.
 
 #### Table E: shrinkage in practice
 
-What the blend actually does to a loud small sample. Computed 2026-09-15.
+What the blend actually does to a loud small sample. Computed by `tools/check_design_numbers.py`, 2026-09-15.
 
 | Baseline | Prior strength | Observed | Raw rate | **Shrunk rate** |
 | --- | --- | --- | --- | --- |
@@ -934,6 +969,56 @@ that never changes it. The `0.02` dead-band and the `10`-hand hold are
 **unmeasured starting values chosen for this design**; V2 measures
 reclassification frequency directly and tunes both.
 
+**What the dead-band is not: a noise control. The bucket boundary's own noise
+exposure, stated.** The margin-versus-interval discipline further down this
+section is applied to flags; the same arithmetic applied here gives a much worse
+answer,
+and it is stated rather than left for a reader to derive. At the classification
+gate — `confidence(vpip) ≥ 0.5`, which with Tier A's `s` = 50 inverts to
+`n = 50·0.5/0.5 = 50` hands — the 95% half-width around `VPIP_SPLIT`'s 0.28 is
+`w = 1.96·√(0.28·0.72/50)` = **±12.4pp**, which is 6.2 times the `0.02`
+dead-band. Shrinkage does not rescue it: the shrunk rate moves only `c` of the
+way to the raw rate, so its own half-width at that gate is `c·w` = **±6.2pp**,
+still 3.1 times the band. The aggression axis is worse and is not gated at
+all — `UNKNOWN` is assigned on `confidence(vpip)`, never on `confidence(afq)` — so
+at the matching `afq` confidence of 0.5 (`s` = 25, `n` = 25) the half-width
+around `AFQ_SPLIT`'s 0.50 is ±19.6pp raw and ±9.8pp shrunk.
+
+**What that implies, and the choice this document makes.** Of the three
+available responses — widen the band, raise the gate, or say why the interval is
+the wrong comparator — this design takes the first two as unaffordable and
+refuses the third:
+
+- A band wide enough to cover the noise would have to be `0.062` on `vpip` and
+  `0.098` on `afq`, an order of magnitude past `0.02`, and a dead-band that wide
+  freezes most opponents in whichever bucket they were first given.
+- A gate high enough to shrink the noise to the `0.02` band needs
+  `confidence(vpip) ≥ 0.973`, i.e. `n = s·c/(1−c)` = **1,835 hands** on one
+  opponent, and `confidence(afq) ≥ 0.989`, i.e. **2,351** `afq` opportunities.
+  [Table C](#table-c-how-many-hands-each-stat-needs) already says that is out of
+  reach, and `MIN_CLASSIFY_HANDS` would stop being a classification gate and
+  start being a refusal to classify.
+- The interval *is* the right comparator. The question "which side of the split
+  is this opponent on" is exactly a question about a rate near a threshold, and
+  the interval answers it: at the gate, near the split, it is close to a
+  coin-flip.
+
+**So the exposure is accepted, and bounded by what depends on it.** A
+misclassification here costs one adjacent bucket's counter-strategy rather than
+a fired exploit: the flags, which are what actually reach for money against a
+specific leak, carry the margin discipline of the next subsection and their own
+higher gates. Three consequences a coding task must keep:
+
+- The `0.02` dead-band controls *flapping between hands*, not sampling error,
+  and must never be described or tuned as though it controlled the latter.
+- `report.py` must mark a bucket as near-boundary whenever the shrunk rate is
+  within `c·w` of its split, so a person reading a profile sees the exposure
+  instead of reading the bucket as settled.
+- V2 measures reclassification frequency and V3 scores the model's predictions;
+  neither validates the bucket label itself, and no result in
+  [§6](#6-validation-before-it-touches-a-real-table) should be read as saying a
+  near-boundary bucket was right.
+
 **Exploit flags — orthogonal to the bucket.** The four buckets are coarse; the
 money is often in one specific leak. Flags are independent booleans, each with
 its own confidence gate. A flag fires only when *both* the confidence threshold
@@ -977,8 +1062,8 @@ away from `BASELINE` only when the **raw** rate is `m / c` away from it. At the
 to `n = s·c/(1−c)`, the fewest opportunities the gate admits. Table C's formula
 inverts to a half-width `w = 1.96·√(p̂(1−p̂)/n)` at that `n`, read at the same
 illustrative anchor `p̂` Table C uses for the stat. The margin is sound only if
-the raw margin from step 1 exceeds `w`. Computed 2026-09-15 by the same script
-as Tables A–E.
+the raw margin from step 1 exceeds `w`. Computed by `tools/check_design_numbers.py`,
+the same script as Tables A–E, 2026-09-15.
 
 | Flag | Stat, `s`, gate | Fewest opportunities at the gate | Half-width `w` there, at Table C's anchor | Margin | Raw margin it implies | Exceeds `w`? |
 | --- | --- | --- | --- | --- | --- | --- |
@@ -1001,9 +1086,12 @@ the narrowest.
 0.113, both below the 0.250 raw margin their 0.15 margins imply, so
 `OVERFOLDS_BLINDS` and `LIMPS` clear at any anchor. `NEVER_RAISES`'s
 `check_raise` leg does not: its 0.071 raw margin clears only while that stat's
-baseline is below about 0.084, and fails at `p̂ = 0.5`. `NEVER_RAISES` needs
+baseline is below about 0.085, and fails at `p̂ = 0.5`. `NEVER_RAISES` needs
 *both* legs, so it is no sounder than its `check_raise` leg until that baseline
-is measured.
+is measured. Both of those figures are `check_raise`'s `PRIOR_STRENGTH` = 25
+from [§4.3](#43-after-each-hand-the-update) at work: the leg's gate is `0.7`, so
+it admits `n = 25·0.7/0.3 = 58.3` opportunities at fewest, and 0.085 is the `p̂`
+at which `1.96·√(p̂(1−p̂)/58.3)` equals the 0.05/0.7 raw margin.
 
 **A coding task must recompute the whole table above from measured `p̂` values
 once Tier 0 has logged hands, and raise any margin that stops clearing its
@@ -1039,28 +1127,89 @@ this. The only visible output is a report command:
 ```
 $ pokerbot profile "seat3_alias"
   hands       412
-  vpip        0.41  (conf 0.89)   raw 0.43
+  vpip        0.42  (conf 0.89)   raw 0.43
   pfr         0.11  (conf 0.89)   raw 0.10
-  gap         0.30
-  limp        0.38  (conf 0.86)
-  three_bet   0.01  (conf 0.71)
-  check_raise 0.01  (conf 0.72)
-  afq         0.24  (conf 0.86)
-  afq[flop]   0.22  (conf 0.61)
-  wtsd        0.38  (conf 0.90)
+  gap         0.31
+  limp        0.38  (conf 0.83)
+  three_bet   0.02  (conf 0.72)
+  check_raise 0.01  (conf 0.85)
+  afq         0.13  (conf 0.97)
+  afq[flop]   0.18  (conf 0.87)
+  wtsd        0.42  (conf 0.93)
   bucket      STATION
   flags       NEVER_FOLDS_POSTFLOP, LIMPS, NEVER_RAISES
 ```
 
 Every number in that block is **invented and illustrates the report's format
-only**. It is not data and not a claim about any player. It is, however,
-internally consistent with the gates this document sets, and must stay that way:
-each confidence is `n/(n+s)` for that stat's `PRIOR_STRENGTH`; every flag listed
-clears its own gate from [§4.4](#44-bucketing-an-opponent) — `wtsd` 0.90 and
-`limp` 0.86 against the `0.6` gates, `three_bet` 0.71 and `check_raise` 0.72
-against the `0.7` gate — and the bucket clears both the `0.5` `vpip`-confidence
-gate and `MIN_CLASSIFY_HANDS = 50`. An example that fires a flag its own
-confidences would have blocked teaches a coding task the wrong thing.
+only**. It is not data and not a claim about any player. It is, however, **one
+single coherent hand history** rather than a set of individually plausible
+numbers, and it must stay that way: nothing above is chosen, everything above is
+*derived* from the counts below by the two lines in
+[§4.3](#43-after-each-hand-the-update), `rate = (BASELINE·s + k)/(s + n)` and
+`confidence = n/(n + s)`, with `s` each stat's `PRIOR_STRENGTH`. An example whose
+counts cannot all come from the same 412 hands, or that fires a flag its own
+confidences would have blocked, teaches a coding task the wrong thing.
+
+**The counts the block is computed from.** `BASELINE` is pooled from the bot's
+database ([§4.3](#43-after-each-hand-the-update)), so the example has to assume
+values for it; where a stat has an anchor in
+[Table C](#table-c-how-many-hands-each-stat-needs) the anchor is used, and the
+other three are invented like the rest of the example. Rows below the rule are
+not printed in the block above — the report prints a selection — and are here
+because [§4.4](#44-bucketing-an-opponent)'s flags read them, so leaving them
+unstated would leave it unchecked that the flags the example does *not* list are
+correctly absent.
+
+| Stat | `k` | `n` | `s` | Assumed `BASELINE` | Shrunk | `confidence` |
+| --- | --- | --- | --- | --- | --- | --- |
+| `vpip` | 177 | 412 | 50 | 0.30 | 0.42 | 0.89 |
+| `pfr` | 41 | 412 | 50 | 0.20 | 0.11 | 0.89 |
+| `limp` | 106 | 250 | 50 | 0.15 | 0.38 | 0.83 |
+| `three_bet` | 0 | 63 | 25 | 0.07 | 0.02 | 0.72 |
+| `check_raise` | 0 | 140 | 25 | 0.06 | 0.01 | 0.85 |
+| `afq` | 92 | 768 | 25 | 0.30 | 0.13 | 0.97 |
+| `afq[flop]` | 27 | 168 | 25 | 0.30 | 0.18 | 0.87 |
+| `wtsd` | 89 | 205 | 15 | 0.25 | 0.42 | 0.93 |
+| `fold_to_three_bet` | 5 | 9 | 25 | 0.60 | 0.59 | 0.26 |
+| `fold_to_cbet[flop]` | 14 | 62 | 25 | 0.50 | 0.30 | 0.71 |
+| `fold_to_steal` | 19 | 55 | 25 | 0.50 | 0.39 | 0.69 |
+
+**The history those counts describe, so that no two of them contradict.** Across
+**412** hands dealt, this opponent put money in voluntarily **177** times, and
+those 177 break down as **106** limps, **41** preflop raises and **30** calls of
+someone else's raise. They had the option to limp — no raise before them — in
+**250** of the 412 hands. They faced exactly one open raise with chips behind
+**63** times, and reraised none of them: the same 63 spots are the 30 calls plus
+33 folds. Having open-raised 41 times, they faced a reraise **9** times. They
+saw **205** flops: 155 of the 177 hands they invested in, plus 50 big blinds
+that reached a flop unraised. Of those 205 flops they reached showdown **89**
+times, faced a continuation bet **62** times, and were in **140** spots across
+all three streets where they checked and then faced a bet — check-raising in
+none of them. Their voluntary postflop actions number 168 on the flop, 118 on
+the turn and 82 on the river, which with 400 preflop actions is the **768** of
+the overall `afq`, of which **92** were a bet or a raise (41 preflop, 27 flop, 15
+turn, 9 river). Every denominator above is inside the one it is drawn
+from — that is the whole point of listing them.
+
+**What the block then has to satisfy, and does.** Each confidence is `n/(n+s)`
+for that stat's `PRIOR_STRENGTH` from [§4.3](#43-after-each-hand-the-update).
+Every flag listed clears its own gate from
+[§4.4](#44-bucketing-an-opponent) — `wtsd` 0.93 and `limp` 0.83 against the `0.6`
+gates, `three_bet` 0.72 and `check_raise` 0.85 against the `0.7` gate — and
+clears its margin: `wtsd` sits 0.172 above its baseline and `limp` 0.228, both
+past 0.15, while `NEVER_RAISES` needs both of its legs 0.05 below theirs and gets
+0.050 on `three_bet` and 0.051 on `check_raise` — barely, exactly as
+[§4.4](#44-bucketing-an-opponent) warns that leg does. Every flag *not* listed is
+correctly absent: `OVERFOLDS_TO_3BET` and `NEVER_FOLDS_TO_3BET` fail the `0.6`
+confidence gate at 0.26, and `OVERFOLDS_TO_CBET` and `OVERFOLDS_BLINDS` pass
+their gates but sit *below* their baselines rather than 0.15 above. The bucket
+clears both the `0.5` `vpip`-confidence gate and `MIN_CLASSIFY_HANDS = 50`, and
+is `STATION` because 0.42 is above `VPIP_SPLIT` and 0.13 below `AFQ_SPLIT` — on
+both axes by more than the near-boundary width `c·w` of
+[§4.4](#44-bucketing-an-opponent), so this profile is not a near-boundary call
+and the report prints no such mark. The hands count also clears
+`WARMUP_HANDS = 200` from [§5.2](#52-mitigations-each-traceable-to-a-source),
+without which the bot would be playing `S_BASE` against them regardless.
 
 **Why this is a full tier.** It is the whole foundation, it is entirely
 engine-independent, it can be built and tested while the engine question is
@@ -1092,10 +1241,41 @@ bot must work at every table size from 2 to 9 players
 count needs **four strategies** — `S_BASE` plus the three counter-strategies in
 the table below, `TAG` having none. **Four strategies × eight seat counts = 32
 offline solver runs**, done once. [E5](#engine-requirements) asks the cost of
-*one* run; what Tier 1's feasibility actually turns on is that cost times 32. If
-32 is unaffordable, the two honest responses are to narrow the seat counts Tier 1
-covers — falling back to `S_BASE` at the rest — or to cut buckets; never to load
-a strategy at a table size it was not solved for.
+*one* run; what Tier 1's feasibility actually turns on is that cost times 32.
+
+**The cost bound this has to clear, which is the operator's and not negotiable
+here.** No multi-day computing: a playable bot must be reachable in **hours on
+one laptop** (operator, 2026-09-15). That is the cap on the *whole* offline
+build, not on one run, so with 32 runs in the plan it divides down to a single
+run of a few **minutes** — 32 runs at ten minutes each is over five hours
+already, and 32 runs at an hour each is more than a week of laptop time and is
+simply out. **Tier 1 as specified is therefore conditional on an engine whose
+single solve against fixed opponents finishes in minutes**, and a coding task
+that finds otherwise must stop and report it rather than start a solve that
+cannot finish inside the cap. [E5](#engine-requirements) is the question that
+settles it, and it must be answered for one run *and* for 32 against that cap.
+
+**The decision that may remove the solve plan entirely is pending, and this
+section does not pre-empt it.** `ENGINE_ALTERNATIVES.md` is under review and
+recommends computing decisions at play time instead of solving strategies
+offline at all; its numbers are its own and are deliberately not restated here.
+If that recommendation is accepted, the 32 runs below do not happen and Tier 1's
+"select among precomputed strategies" structure is what changes — not the stats,
+the shrinkage, the buckets or the flags, which are what
+[§4.2](#42-the-stat-table) to [§4.4](#44-bucketing-an-opponent) specify and are
+engine-independent. **Read this subsection as conditional on that decision.**
+
+**If 32 runs are unaffordable, what cutting actually saves.** The two honest
+responses are to cut buckets or to narrow the seat counts Tier 1 covers, never
+to load a strategy at a table size it was not solved for — and the second saves
+less than it looks. Because this tier's own rule — "a strategy solved for a
+different seat count must not be loaded at a table of another size", stated
+where the solve plan is — a seat count dropped from Tier 1 still needs its
+own `S_BASE` to play at all; what is dropped is only that seat count's three
+counter-strategies. **Dropping one seat count from Tier 1 saves 3 runs, not 4**,
+and dropping all of them from Tier 1 leaves a floor of **8 runs** — one `S_BASE`
+per seat count — which is the least this design can be built on. Cutting
+buckets, by contrast, saves 8 runs per bucket dropped, one at every seat count.
 
 **At two players the design still applies, with two changes.** Heads-up is the
 one case where the equilibrium argument in [§1](#1-goal-and-non-goals) does hold,
@@ -1302,7 +1482,7 @@ counter-strategy while any live opponent is `UNKNOWN`.
 [Table C](#table-c-how-many-hands-each-stat-needs). Table C's ±5pp rows need 323
 hands for `vpip` and 246 for `pfr`. At
 200 hands the same formula, `w = 1.96·√(p̂(1−p̂)/n)`, gives ±6.4pp on `vpip` at
-its 0.30 anchor and ±5.5pp on `pfr` at 0.20 — Tier A is inside roughly ±6pp and
+its 0.30 anchor and ±5.5pp on `pfr` at 0.20 — Tier A is inside ±6.4pp and
 no tighter. That is the width 200 actually buys; it is chosen as a deliberately
 shorter warm-up than DBBR's 1000 hands, and remains a tuning parameter.
 
@@ -1401,7 +1581,7 @@ yes or no.
 | E2 | Can the solver be run against a **fixed** opponent strategy instead of self-play copies? | Tier 1 |
 | E3 | Can more than one trained strategy be held in memory and switched between hands? | Tier 1 |
 | E4 | Is there a stable identifier for a decision point (an information set or public history) that the model can key observations on? | Tier 2 |
-| E5 | What is the cost of one solver run against fixed opponents — minutes, hours, or days? Tier 1 needs **32 of them**: four strategies × eight seat counts, 2 to 9 players ([§4.5](#45-tiers-what-to-build-in-what-order)). Answer for one run and for 32 | Tier 1 feasibility |
+| E5 | What is the cost of one solver run against fixed opponents — minutes, hours, or days? Tier 1 needs **32 of them**: four strategies × eight seat counts, 2 to 9 players ([§4.5](#45-tiers-what-to-build-in-what-order)). Answer for one run and for 32, and answer both against the cap: **hours on one laptop for the whole offline build, no multi-day computing** (operator, 2026-09-15), which at 32 runs means a single run of minutes. A "days" answer fails the cap outright; an "hours" answer fails it at 32 | Tier 1 feasibility |
 | E6 | Does the engine expose the table state the `HandRecorder` needs — seats, stacks, full action sequence with amounts? | Tier 0 |
 
 **E6 is the only requirement Tier 0 has.** If E6 is satisfiable from the capture
@@ -1554,11 +1734,35 @@ not obtainable, so no claim is drawn from it.
 
 Per the global evidence rules, so that no figure here has to be taken on trust.
 
+**`tools/check_design_numbers.py` is the source of truth for every derived
+number in this document, and it must exit 0 before any edit to this file
+lands.** Run it with `python3 tools/check_design_numbers.py` (standard library
+only; `tests/test_design_numbers.py` runs it under the test suite, so a full
+`pytest` run covers it too). It holds every constant this document
+declares — `PRIOR_STRENGTH` per stat, the confidence and flag gates, the flag
+margins, `VPIP_SPLIT`, `AFQ_SPLIT`, the hysteresis band and hold, `WARMUP_HANDS`,
+`HALF_LIFE`, the pool and stack gates, the Table C opportunity rates and anchors,
+the seat counts, the strategy list and the Tier 0 example's counts — in one
+place, recomputes every figure this document derives from them, and
+names any figure whose printed value disagrees. The rule that follows from that,
+and it is not optional: **a constant is changed in the script and in the prose
+together, in one edit, and the script is what says the prose is still right.**
+Adding a derived figure to this document without adding its check to the script
+is how the six review rounds before this one each found a stale number.
+
+Two conventions the script enforces so that "disagrees" is well defined. Every
+figure is rounded **half-up** to the precision the document prints it at — 6.25%
+prints as 6.3%, not 6.2% — and every figure is computed from **unrounded**
+inputs, never from another figure's printed value.
+
 | Number | Where it comes from |
 | --- | --- |
-| Tables A, B, C, D, E, the flag margin-versus-interval table in [§4.4](#44-bucketing-an-opponent), and the inline `0.5^(1/3) ≈ 0.794` reading of them | Computed by script on 2026-09-15. Formulas are stated inline beside each table; all are elementary arithmetic (binomial standard error, independent-event products, Beta posterior means) |
+| Tables A, B, C, D, E, the flag margin-versus-interval table in [§4.4](#44-bucketing-an-opponent), and the inline `0.5^(1/3) ≈ 0.794` reading of them | Computed by `tools/check_design_numbers.py`, 2026-09-15, which also re-checks them on every run. Formulas are stated inline beside each table; all are elementary arithmetic (binomial standard error, independent-event products, Beta posterior means) |
 | Table C's anchor `p̂` column (0.30, 0.20, 0.07, 0.60, 0.50, 0.25) | **Illustrative anchors, not measured or cited.** Labelled as such beside the table; the interval width barely moves across `p̂` in 0.2–0.8 |
-| Table C's opportunities-per-hand column (`fold_to_three_bet` 0.08, `fold_to_cbet` 0.15, `wtsd` 0.30) | **Illustrative estimates, not measured or cited.** No source exists for them; labelled as such beside the table. Each is to be replaced by `denominator / hands_dealt` from the bot's own logged hands. The "Hands needed" column scales inversely with them |
+| Table C's opportunities-per-hand column (`three_bet` 0.15, `fold_to_three_bet` 0.08, `fold_to_cbet` 0.15, `wtsd` 0.30) | **Illustrative estimates, not measured or cited.** No source exists for them; labelled as such beside the table. Each is to be replaced by `denominator / hands_dealt` from the bot's own logged hands. The "Hands needed" column scales inversely with them. Only `vpip` and `pfr` escape the placeholder, at 1.00, and only because their [§4.2](#42-the-stat-table) denominator is "opponent was dealt in" |
+| The bucket boundary's noise exposure — ±12.4pp raw and ±6.2pp shrunk on `vpip` at the `0.5` gate, ±19.6pp and ±9.8pp on `afq`, and the 1,835 hands / 2,351 opportunities a `0.02`-tight gate would need ([§4.4](#44-bucketing-an-opponent)) | Computed by `tools/check_design_numbers.py` from `VPIP_SPLIT`, `AFQ_SPLIT`, `PRIOR_STRENGTH`, the `0.5` gate and the `0.02` band, by the same `n = s·c/(1−c)` and `w = 1.96·√(p̂(1−p̂)/n)` used for the flag margins |
+| **Hours on one laptop for the whole offline build, no multi-day computing** ([§4.5](#45-tiers-what-to-build-in-what-order), [E5](#engine-requirements)) | **The operator's stated cap, 2026-09-15**, not a derived or negotiable figure. It is what E5's answer has to clear, and what makes Tier 1's 32 runs conditional on a minutes-long single solve |
+| 32 solver runs, the 3 saved by dropping a seat count, and the 8-run floor ([§4.5](#45-tiers-what-to-build-in-what-order)) | Computed by `tools/check_design_numbers.py` from the four strategies and the eight seat counts (2 to 9 players). The 3 rather than 4 is forced by the same section's rule that a strategy solved for one seat count must not be loaded at another, so a dropped seat count keeps its `S_BASE` |
 | Hysteresis dead-band `0.02` and the `10` consecutive-hand hold ([§4.4](#44-bucketing-an-opponent)) | **Starting values chosen for this design, not measured.** Tuned by V2, which measures reclassification frequency directly |
 | The `⌈2n/3⌉` shared-bucket rule for loading a counter-strategy ([§4.5](#45-tiers-what-to-build-in-what-order)) | **A design choice, not a measured or cited threshold.** It encodes "a clear majority of the live field", following the multiway argument in [§2.4](#24-why-bluffing-is-the-wrong-primary-exploit-at-a-multiway-table); tune against V5 |
 | `MIN_POOL_HANDS = 200` and `MIN_POOL_OPPONENTS = 20` ([§4.3](#43-after-each-hand-the-update)) | **Starting values chosen for this design, not measured.** They set when the bot's own population is large enough to supply `BASELINE` and the splits; both belong in config and are to be raised if the pooled rates prove unstable |
@@ -1573,4 +1777,4 @@ Per the global evidence rules, so that no figure here has to be taken on trust.
 | The 1006th-hand river failure | [Ganzfried & Sandholm 2011](#s-ganzfried2011), §5.4, read directly |
 | s-Curve `Pmax · n/(s+n)`; 0-10 Linear; the 100-to-1m observation range | [Johanson & Bowling 2009](#s-johanson2009), §5.2 and §6, read directly |
 | `HALF_LIFE = 2000`, `PRIOR_STRENGTH` values (50/25/15, which are also the s-Curve `s`), `WARMUP_HANDS = 200`, `MIN_CLASSIFY_HANDS = 50`, all flag margins (0.15/0.05) and flag confidence gates (0.6/0.7), the `confidence < 0.5` `UNKNOWN` gate, `MIN_STACK_BB = 5`, the 70/30 V3 holdout split, and `VPIP_SPLIT` and `AFQ_SPLIT` until the bootstrap in [§4.4](#44-bucketing-an-opponent) replaces them with measured population medians | **Starting values chosen for this design, not measured.** Every one is labelled as such at its point of use as well as here, belongs in a config file, and is to be tuned by the validation in [§6](#6-validation-before-it-touches-a-real-table). `VPIP_SPLIT = 0.28` is the one part-exception: it is the *approximate* complement of the literature's 72% fold threshold — approximate because the two rates do not sum to 1 (see [§2.2](#22-the-two-axes-that-have-literature-behind-them)) — and it stands only until V4 corrects it or the bot's own population replaces it |
-| The example `pokerbot profile` output in [Tier 0](#45-tiers-what-to-build-in-what-order) (412 hands, 0.41 vpip, and the rest) | **Invented, and only illustrates the report's format.** Not data, not a claim about any player. The confidences are chosen so the example obeys its own gates: each is `n/(n+s)` for a plausible opportunity count inside 412 hands, and every flag and the bucket shown clear the thresholds in [§4.4](#44-bucketing-an-opponent) |
+| The example `pokerbot profile` output in [Tier 0](#45-tiers-what-to-build-in-what-order) (412 hands, 0.42 vpip, and the rest) | **Invented, and only illustrates the report's format.** Not data, not a claim about any player. What is invented is the count table beside it — one coherent 412-hand history, every denominator inside the one it is drawn from — plus the three assumed `BASELINE` values that Table C has no anchor for. Every rate and every confidence printed is then *computed* from those counts by [§4.3](#43-after-each-hand-the-update)'s two lines, and `tools/check_design_numbers.py` recomputes all of them, the bucket, and every flag's presence or absence |

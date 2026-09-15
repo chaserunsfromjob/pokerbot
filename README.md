@@ -22,3 +22,23 @@ one line per case. All cases should say PASSED.
 
 `treys` is used only to check the tests. It never takes part in the bot's own
 play -- `CLAUDE.md` states that rule.
+
+## Checking the design document's arithmetic
+
+`OPPONENT_MODEL_DESIGN.md` states a small number of settings and then works out
+hundreds of figures from them: tables, a worked example, numbers quoted in the
+text. When a setting changes, every figure worked out from it has to change too,
+and one left behind is a mistake nobody reliably spots by reading.
+
+This command re-does all of that arithmetic and says whether the document still
+agrees with itself:
+
+    python3 tools/check_design_numbers.py
+
+It prints one line for each figure that disagrees, and a single count when they
+all agree. **Run it before committing any edit to that document.** The test
+suite runs it as well, so a stale figure fails the tests:
+
+    python3 -m pytest tests/test_design_numbers.py -q
+
+It needs nothing installed -- no virtual environment, no outside libraries.
