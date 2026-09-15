@@ -45,9 +45,10 @@ paid with good hands rather than on bluffing.
 
 One rule constrains everything below. `CLAUDE.md` in this repository forbids any
 AI-written code from deciding a poker action, evaluating a hand, or reading a
-board. Nothing in this design breaks that. The opponent model only ever produces
-three things: **numbers describing what an opponent does**, **summaries of those
-numbers across the whole observed population** — a baseline to shrink toward, a
+board. Nothing in this design breaks that. Everything the opponent model hands to
+the bot in play is one of three things: **numbers describing what an opponent
+does**, **summaries of those numbers across the whole observed
+population** — a baseline to shrink toward, a
 threshold to classify against, an archetype for the engine to solve against — and
 **a choice of which engine-produced strategy to load**. It never combines the
 numbers of the opponents in the current hand into anything that moves the bot's
@@ -130,15 +131,27 @@ distinction `CLAUDE.md` states in the two bullets directly beneath its table, an
 this design leans on it everywhere, so it is worth restating in full. Combining
 rates across the **live field** — the opponents in the current hand — into
 anything that adjusts the bot's own action is reserved to the engine. Combining
-rates across the **observed population** — every opponent in the bot's database,
-not the players at the current table — into a baseline, a classification split,
-or an archetype handed to the engine is allowed AI-written work, because the
-engine still chooses the action.
+rates across the **observed population** — the whole database, seated players'
+stored rows included, with being seated never the criterion for inclusion — into
+a baseline, a classification split, or an archetype handed to the engine is
+allowed AI-written work, because the engine still chooses the action.
 
-**Every rate combination in this design is on the allowed side, and each one
-says which side it is on at its own point of use.** Combinations *across*
-opponents, all of them population-level and computed from the stored database
-rather than from the players in the current hand: the pooled `BASELINE`
+"The whole database" is meant literally, and the ambiguity is worth killing
+outright, because it is the one that would otherwise be read the wrong way.
+Pooling across the observed population does **not** mean the database with the
+currently seated players held out. Their stored rows are in the pool like anyone
+else's. What makes the pool population-level is that nobody is selected *for*
+being at the table: the pool is every opponent meeting the stored-hands
+threshold, and seating neither adds an opponent to it nor removes one. Filtering
+the pool down to the players in the current hand is the reserved live-field
+combination; leaving them in it is not.
+
+**Every rate combination this design puts on the live decision path — anything
+computed while a hand is in progress, or loaded into play from something that
+was — is on the allowed side, and each one says which side it is on at its own
+point of use.** Combinations *across* opponents, all of them population-level and
+computed from the stored database rather than from the players in the current
+hand: the pooled `BASELINE`
 ([§4.3](#43-after-each-hand-the-update)); the population-median split thresholds
 ([§4.4](#44-bucketing-an-opponent)); the pooled archetype fed to the solver
 ([§4.5](#45-tiers-what-to-build-in-what-order)); the pooled opportunity rates
@@ -148,19 +161,42 @@ the model against ([§6](#6-validation-before-it-touches-a-real-table)).
 Combinations *within* one opponent: `AF` ([§4.2](#42-the-stat-table)) and
 `vpip_pfr_gap` ([§2.3](#23-the-stat-set)), both of which combine that one
 opponent's own counts and are reported as diagnostics without ever being an input
-to a decision. The only place the *live field* is looked at collectively is
-choosing which precomputed strategy to load
-([§4.5](#45-tiers-what-to-build-in-what-order)), which counts already-assigned
-buckets rather than combining rates, and whose whole output is a strategy
-handle — the "Selecting *which* engine strategy to load" row above.
+to a poker decision the bot acts on. The only place *on the live decision path*
+where the *live field* is looked at collectively is choosing which precomputed
+strategy to load ([§4.5](#45-tiers-what-to-build-in-what-order)), which counts
+already-assigned buckets rather than combining rates, and whose whole output is a
+strategy handle — the "Selecting *which* engine strategy to load" row above.
+
+**Away from the decision path this design also combines rates offline, over
+logged hands, and those combinations are not enumerated above because none of
+them is computed at the table.** They are: V4's mean fold-rate-versus-VPIP gap
+and its two disagreement rates, both taken across the whole logged population
+([§6](#6-validation-before-it-touches-a-real-table)); the upgrade path's
+expectation-maximisation clustering over the stored population's profile vectors
+([§4.4](#44-bucketing-an-opponent)); and the realised win rate pooled per bucket
+and per flag, together with the per-opponent profit tracking, in
+[§5.2](#52-mitigations-each-traceable-to-a-source) and
+[§5.3](#53-the-one-risk-the-literature-does-not-cover). Two of them also read the
+live field collectively, again offline and descriptively: V5's bluff frequency
+broken down by the number of live opponents, and the "Multiway gate" column of
+[§4.6](#46-what-each-bucket-means-in-plain-strategic-terms), which describes
+which field sizes an exploit survives. What any of these can change is a config
+value, a switched-off exploit, or a red flag raised between sessions — reviewed
+by a person, never a quantity a module computes while a hand is live.
 
 **The test a coding task should apply to any new line of opponent-model code:**
-if a quantity is built from more than one *live* opponent's rates and anything
-downstream of it changes what the bot does, it belongs in the engine, not in this
-codebase. The one thing that reads across the live field and is still allowed is
-the strategy-selection rule in [§4.5](#45-tiers-what-to-build-in-what-order): it
-counts bucket labels assigned to opponents one at a time, performs no arithmetic
-on rates, and can only pick among strategies the engine itself produced.
+if a quantity is built by reading the rates of more than one of *the opponents in
+the current hand* — the live field as such — and anything downstream of it
+changes what the bot does, it belongs in the engine, not in this codebase. What
+decides the test is how the opponents were selected, not who they turn out to
+be: a quantity pooled over the stored database passes even though, after the
+first session, some of those stored rows belong to people sitting at the table
+right now, because being seated is never what put them in the pool. A quantity
+whose inputs were chosen *because* those opponents are in the hand fails. The one
+live-field read still allowed on the decision path is the strategy-selection rule
+in [§4.5](#45-tiers-what-to-build-in-what-order): it counts bucket labels
+assigned to opponents one at a time, performs no arithmetic on rates, and can
+only pick among strategies the engine itself produced.
 
 Every counter-strategy in this design is **produced by the engine**, by solving
 against a modified opponent, never by a human or an AI writing "against a
@@ -260,7 +296,7 @@ column is what drives that; see [Table C](#table-c-how-many-hands-each-stat-need
 | `hands_dealt` | Denominator for everything | Confidence weight depends on it |
 | `vpip` | Voluntarily put money in pot | The tight/loose axis; literature threshold at 28% |
 | `pfr` | Preflop raise | Separates aggressive-loose from passive-loose |
-| `vpip_pfr_gap` | `vpip − pfr` | Passive callers show a wide gap; the derived "limps a lot" signal. It combines two rates, so — exactly like `AF` in [§4.2](#42-the-stat-table) — it is *reported* as a diagnostic **without ever being used as an input to a decision**; it is one opponent's own two rates, never a live-field combination |
+| `vpip_pfr_gap` | `vpip − pfr` | Passive callers show a wide gap; the derived "limps a lot" signal. It combines two rates, so — exactly like `AF` in [§4.2](#42-the-stat-table) — it is *reported* as a diagnostic **without ever being used as an input to a poker decision the bot acts on**; it is one opponent's own two rates, never a live-field combination |
 | `limp` | Called the big blind unraised, first in | Strongly recreational; Pluribus's self-play discarded limping as suboptimal for everyone but the small blind ([Brown 2020](#s-brown2020), §6.6) |
 | `open_raise_by_seat` | PFR split by early / middle / late / blinds | Position-blind opponents are the exploitable ones |
 
@@ -636,8 +672,13 @@ downstream number.**
 | `fold_to_river_bet` | opponent folded on the river | opponent faced a bet on the river | — |
 
 `af_bets_raises` and `af_calls` exist so `AF` can be *reported* in the units the
-literature threshold uses, without ever being used as an input to a decision —
-see the caution in [§2.2](#22-the-two-axes-that-have-literature-behind-them).
+literature threshold uses, without ever being used as an input to a poker
+decision the bot acts on — see the caution in
+[§2.2](#22-the-two-axes-that-have-literature-behind-them). The bot acting on
+`AFq` instead does not stop `AF` being computed offline on logged hands:
+[V4](#6-validation-before-it-touches-a-real-table) computes it on every logged
+opponent and moves `AFQ_SPLIT` if the two disagree, which is calibration between
+sessions, not a quantity read at the table.
 
 #### Table C: how many hands each stat needs
 
@@ -880,13 +921,22 @@ and the magnitude threshold are met.
 
 | Flag | Condition | Confidence gate |
 | --- | --- | --- |
-| `OVERFOLDS_TO_3BET` | shrunk `fold_to_three_bet` exceeds baseline by ≥ 0.15 | `confidence ≥ 0.6` |
-| `NEVER_FOLDS_TO_3BET` | shrunk `fold_to_three_bet` below baseline by ≥ 0.15 | `confidence ≥ 0.6` |
-| `OVERFOLDS_TO_CBET` | shrunk `fold_to_cbet[flop]` exceeds baseline by ≥ 0.15 | `confidence ≥ 0.6` |
-| `NEVER_FOLDS_POSTFLOP` | shrunk `wtsd` exceeds baseline by ≥ 0.10 | `confidence ≥ 0.6` |
-| `OVERFOLDS_BLINDS` | shrunk `fold_to_steal` exceeds baseline by ≥ 0.15 | `confidence ≥ 0.6` |
-| `NEVER_RAISES` | shrunk `three_bet` and `check_raise` both below baseline by ≥ 0.05 | `confidence ≥ 0.7` |
-| `LIMPS` | shrunk `limp` exceeds baseline by ≥ 0.15 | `confidence ≥ 0.6` |
+| `OVERFOLDS_TO_3BET` | shrunk `fold_to_three_bet` exceeds `BASELINE[fold_to_three_bet]` by ≥ 0.15 | `confidence ≥ 0.6` |
+| `NEVER_FOLDS_TO_3BET` | shrunk `fold_to_three_bet` below `BASELINE[fold_to_three_bet]` by ≥ 0.15 | `confidence ≥ 0.6` |
+| `OVERFOLDS_TO_CBET` | shrunk `fold_to_cbet[flop]` exceeds `BASELINE[fold_to_cbet[flop]]` by ≥ 0.15 | `confidence ≥ 0.6` |
+| `NEVER_FOLDS_POSTFLOP` | shrunk `wtsd` exceeds `BASELINE[wtsd]` by ≥ 0.10 | `confidence ≥ 0.6` |
+| `OVERFOLDS_BLINDS` | shrunk `fold_to_steal` exceeds `BASELINE[fold_to_steal]` by ≥ 0.15 | `confidence ≥ 0.6` |
+| `NEVER_RAISES` | shrunk `three_bet` below `BASELINE[three_bet]` **and** shrunk `check_raise` below `BASELINE[check_raise]`, both by ≥ 0.05 | `confidence ≥ 0.7` |
+| `LIMPS` | shrunk `limp` exceeds `BASELINE[limp]` by ≥ 0.15 | `confidence ≥ 0.6` |
+
+**`BASELINE` in every row above is the one defined in
+[§4.3](#43-after-each-hand-the-update)** — `BASELINE[stat]`, the rate pooled over
+every qualifying opponent in the bot's stored database, indexed by the stat named
+in the same row. A coding task must not substitute anything else for it: not an
+average over the opponents at the current table, which would be the reserved
+live-field combination of [§1](#the-forefront-rule-and-this-design); not an
+average over the handful of opponents a flag happens to be evaluated against; and
+not a constant written into this table.
 
 The 0.15 and 0.10 margins are deliberately larger than the confidence intervals
 in [Table C](#table-c-how-many-hands-each-stat-needs) at the gate's
@@ -947,9 +997,17 @@ fixtures, including the awkward cases in
 #### Tier 1 — Select among precomputed engine strategies.
 
 Precompute, offline, one strategy per bucket. **Each is produced by the engine**,
-by running its solver against a table of synthetic archetype opponents rather
-than against self-play copies. The archetypes are defined as *action-frequency
-perturbations of the blueprint*, in exactly DBBR's sense: take the blueprint
+by running its solver against a *full* table of synthetic archetype opponents
+rather than against self-play copies. **Full** means the seat count of the live
+game: if the bot will sit at a six-handed table, the solve puts the bot in one
+seat and an archetype in each of the other five. That is not a detail —
+[§2.4](#24-why-bluffing-is-the-wrong-primary-exploit-at-a-multiway-table) leans
+on it, because the multiway discount on bluffing is only in the solver's output
+if the solve faced the same number of opponents the bot will. Solve one table per
+seat count the bot plays; a strategy solved for a different seat count must not
+be loaded at a table of another size. The archetypes are defined as
+*action-frequency perturbations of the blueprint*, in exactly DBBR's sense: take
+the blueprint
 strategy and shift its action probabilities to match the bucket's measured
 profile.
 
@@ -976,9 +1034,14 @@ Otherwise `S_BASE`. The `⌈2n/3⌉` fraction is an **unmeasured design choice**
 encoding "a clear majority of the live field", to be tuned against
 [V5](#6-validation-before-it-touches-a-real-table).
 
-**This is the one place the live field is looked at collectively, and it stays
-inside the rule.** It counts bucket labels that were each assigned to one
-opponent on that opponent's own rates; no rate is combined with another live
+**This is the one place on the live decision path where the live field is looked
+at collectively, and it stays inside the rule.** (Offline, two reports read the
+live field collectively as well, and neither touches a live decision:
+[V5](#6-validation-before-it-touches-a-real-table)'s bluff frequency by number of
+live opponents, and the "Multiway gate" column in
+[§4.6](#46-what-each-bucket-means-in-plain-strategic-terms).) It counts bucket
+labels that were each assigned to one opponent on that opponent's own rates; no
+rate is combined with another live
 opponent's rate, and the output is a strategy handle — the "Selecting *which*
 engine strategy to load" row of the `CLAUDE.md` table, not the reserved
 live-field combination described in
