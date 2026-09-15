@@ -46,8 +46,12 @@ paid with good hands rather than on bluffing.
 One rule constrains everything below. `CLAUDE.md` in this repository forbids any
 AI-written code from deciding a poker action, evaluating a hand, or reading a
 board. Nothing in this design breaks that. The opponent model only ever produces
-two things: **numbers describing what an opponent does**, and **a choice of
-which engine-produced strategy to load**. The engine keeps every piece of poker
+three things: **numbers describing what an opponent does**, **summaries of those
+numbers across the whole observed population** — a baseline to shrink toward, a
+threshold to classify against, an archetype for the engine to solve against — and
+**a choice of which engine-produced strategy to load**. It never combines the
+numbers of the opponents in the current hand into anything that moves the bot's
+own action; that is the engine's job. The engine keeps every piece of poker
 judgment. `CLAUDE.md` states exactly where the line falls, in its own two-column
 table under "The forefront rule";
 [The forefront rule and this design](#the-forefront-rule-and-this-design) below
@@ -106,12 +110,57 @@ already what `CLAUDE.md` says.
 `CLAUDE.md` forbids AI-written code from deciding a poker action, evaluating a
 hand, or reading a board. **The exact boundary for opponent modelling lives in
 `CLAUDE.md`, under "The forefront rule", as a two-column table.** That table is
-the authority; this document only has to obey it. In summary: opponent-model
-code may count actions, turn counts into rates, shrink a rate toward a baseline,
-sort an opponent into a bucket, select *which* engine strategy to load, and
-substitute an opponent model into the engine's own solver. Evaluating hand
-strength, choosing an action, assigning a range, reading board texture,
-producing a strategy, and solving all stay with the engine.
+the authority; this document only has to obey it. Both of its columns are
+reproduced here **verbatim**, item for item, so that this summary can be checked
+against the authority by inspection rather than trusted:
+
+- **Allowed to AI-written opponent-model code:** Counting observed actions;
+  Computing a single rate from its own counts; Shrinking a rate toward a
+  baseline; Sorting an opponent into a bucket; Selecting *which* engine strategy
+  to load; Substituting an opponent model into the engine's own solver;
+  Reporting several rates side by side.
+- **Reserved to the engine:** Evaluating hand strength; Choosing an action;
+  Assigning a range to an opponent; Reading board texture; Producing the strategy
+  itself; Solving; Combining live-field rates into a quantity that drives a poker
+  decision — multiplying the fold rates of the opponents in the current hand to
+  gate a bluff, for one.
+
+**Live field versus observed population.** That last reserved item turns on a
+distinction `CLAUDE.md` states in the two bullets directly beneath its table, and
+this design leans on it everywhere, so it is worth restating in full. Combining
+rates across the **live field** — the opponents in the current hand — into
+anything that adjusts the bot's own action is reserved to the engine. Combining
+rates across the **observed population** — every opponent in the bot's database,
+not the players at the current table — into a baseline, a classification split,
+or an archetype handed to the engine is allowed AI-written work, because the
+engine still chooses the action.
+
+**Every rate combination in this design is on the allowed side, and each one
+says which side it is on at its own point of use.** Combinations *across*
+opponents, all of them population-level and computed from the stored database
+rather than from the players in the current hand: the pooled `BASELINE`
+([§4.3](#43-after-each-hand-the-update)); the population-median split thresholds
+([§4.4](#44-bucketing-an-opponent)); the pooled archetype fed to the solver
+([§4.5](#45-tiers-what-to-build-in-what-order)); the pooled opportunity rates
+that replace the placeholders in
+[Table C](#table-c-how-many-hands-each-stat-needs); and the pooled rate V3 scores
+the model against ([§6](#6-validation-before-it-touches-a-real-table)).
+Combinations *within* one opponent: `AF` ([§4.2](#42-the-stat-table)) and
+`vpip_pfr_gap` ([§2.3](#23-the-stat-set)), both of which combine that one
+opponent's own counts and are reported as diagnostics without ever being an input
+to a decision. The only place the *live field* is looked at collectively is
+choosing which precomputed strategy to load
+([§4.5](#45-tiers-what-to-build-in-what-order)), which counts already-assigned
+buckets rather than combining rates, and whose whole output is a strategy
+handle — the "Selecting *which* engine strategy to load" row above.
+
+**The test a coding task should apply to any new line of opponent-model code:**
+if a quantity is built from more than one *live* opponent's rates and anything
+downstream of it changes what the bot does, it belongs in the engine, not in this
+codebase. The one thing that reads across the live field and is still allowed is
+the strategy-selection rule in [§4.5](#45-tiers-what-to-build-in-what-order): it
+counts bucket labels assigned to opponents one at a time, performs no arithmetic
+on rates, and can only pick among strategies the engine itself produced.
 
 Every counter-strategy in this design is **produced by the engine**, by solving
 against a modified opponent, never by a human or an AI writing "against a
@@ -211,7 +260,7 @@ column is what drives that; see [Table C](#table-c-how-many-hands-each-stat-need
 | `hands_dealt` | Denominator for everything | Confidence weight depends on it |
 | `vpip` | Voluntarily put money in pot | The tight/loose axis; literature threshold at 28% |
 | `pfr` | Preflop raise | Separates aggressive-loose from passive-loose |
-| `vpip_pfr_gap` | `vpip − pfr` | Passive callers show a wide gap; the derived "limps a lot" signal |
+| `vpip_pfr_gap` | `vpip − pfr` | Passive callers show a wide gap; the derived "limps a lot" signal. It combines two rates, so — exactly like `AF` in [§4.2](#42-the-stat-table) — it is *reported* as a diagnostic **without ever being used as an input to a decision**; it is one opponent's own two rates, never a live-field combination |
 | `limp` | Called the big blind unraised, first in | Strongly recreational; Pluribus's self-play discarded limping as suboptimal for everyone but the small blind ([Brown 2020](#s-brown2020), §6.6) |
 | `open_raise_by_seat` | PFR split by early / middle / late / blinds | Position-blind opponents are the exploitable ones |
 
@@ -303,12 +352,15 @@ three opponents that requires each of them to fold 79% of the time
    three others are still in. State this carefully, because the forefront rule
    is next to it: the fold-rate product is **a property the engine-produced
    strategy must exhibit, not a calculation for AI-written code to do at the
-   table**. No module outside the engine may multiply fold rates together and
-   adjust a bluff frequency by the result; that is deciding a poker action, and
-   `CLAUDE.md` forbids it. The multiway discount arrives instead through the
-   engine: Tier 1 solves each counter-strategy against archetypes of the whole
-   live field ([§4.5](#45-tiers-what-to-build-in-what-order)), so the effect is
-   already inside its output. What this design owes is a check that it is
+   table**. No module outside the engine may multiply the live field's fold
+   rates together and adjust a bluff frequency by the result; that is deciding a
+   poker action, and `CLAUDE.md` forbids it — it is the exact case named in the
+   reserved column, and the live-field side of the line summarised in
+   [§1](#the-forefront-rule-and-this-design). The multiway discount arrives
+   instead through the engine: Tier 1 solves each counter-strategy offline
+   against a full table of population-derived archetype opponents
+   ([§4.5](#45-tiers-what-to-build-in-what-order)), so the effect is already
+   inside its output. What this design owes is a check that it is
    there — see [V5](#6-validation-before-it-touches-a-real-table), which reports
    bluff frequency against the number of live opponents. **This paragraph is
    descriptive, not prescriptive**, on the same footing as
@@ -525,6 +577,15 @@ Suggested layout under `pokerbot/opponent/`:
 `select.py` is the only module that touches the engine. `classify.py` and below
 have no engine dependency at all and are therefore unit-testable without it.
 
+Every module down to `classify.py` runs **one opponent at a time**; the only
+rates any of them pools across opponents are the population-level ones in
+[§4.3](#43-after-each-hand-the-update) and
+[§4.4](#44-bucketing-an-opponent), read from stored history. `select.py` is the
+only module that looks at the live field as a whole, and it does that by counting
+bucket labels ([§4.5](#45-tiers-what-to-build-in-what-order)), never by combining
+live opponents' rates — the line drawn in
+[§1](#the-forefront-rule-and-this-design).
+
 ### 4.2 The stat table
 
 Schema. One row per opponent identity; counters are integers.
@@ -595,9 +656,11 @@ invented here: 0.08, 0.15 and 0.30 are round order-of-magnitude placeholders for
 uncertainty and scales inversely with them — halve an opportunity rate and the
 hands double. **Replace all three with measurement as soon as Tier 0 has logged
 any hands**: each is exactly `denominator / hands_dealt` for that stat, pooled
-across observed opponents. What survives the uncertainty is the *ordering* —
-Tier A stats need hundreds of hands and postflop stats need thousands — and that
-ordering is what the rest of this document leans on.
+across the observed population (not the live field, and not a behaviour rate at
+all — it is how often the game hands somebody that spot). What survives the
+uncertainty is the *ordering* — Tier A stats need hundreds of hands and postflop
+stats need thousands — and that ordering is what the rest of this document leans
+on.
 
 | Stat | Anchor `p̂` (illustrative) | Opportunities per hand (illustrative) | Target width | Opportunities needed | **Hands needed** |
 | --- | --- | --- | --- | --- | --- |
@@ -652,7 +715,8 @@ hand and keep the constant configurable.
 For each stat, with raw counts `k` successes in `n` opportunities:
 
 ```python
-BASELINE = {...}              # pooled rate across observed opponents; see below
+BASELINE = {...}              # pooled across the observed population, never
+                              # across the live field; see below
 PRIOR_STRENGTH = {...}        # per-stat; the table below gives every value
 s = PRIOR_STRENGTH[stat]      # one constant per stat, used for both lines
 
@@ -683,7 +747,20 @@ document would be exactly the kind of invented number the design must avoid.
 Until the pool has at least `MIN_POOL_OPPONENTS = 20` qualifying opponents, fall
 back to the blueprint's own action frequency at the corresponding decision — the
 same substitution DBBR makes, where the prior mean *is* the baseline strategy's
-probability.
+probability. `MIN_POOL_HANDS = 200` and `MIN_POOL_OPPONENTS = 20` are both
+**unmeasured starting values chosen for this design**, belong in a config file,
+and are to be raised if the pooled rates prove unstable.
+
+**That Σ is population-level, not live-field, and that is what makes it
+allowed.** It sums over every qualifying opponent in the database — people not at
+the current table, and past sessions — and its output is a prior mean that a
+single opponent's rate is shrunk toward. It is never a combination of the rates
+of the opponents in the current hand, and it adjusts no action by itself; the
+engine still chooses every action. This is the allowed side of the live-field
+versus observed-population line in `CLAUDE.md`, summarised in
+[§1](#the-forefront-rule-and-this-design). A coding task must compute it from
+stored history only, and must never restrict the pool to the players currently
+seated.
 
 `PRIOR_STRENGTH` per stat — which is also the `s` in the `confidence` line
 above — sized to the opportunity rate so that the crossover from "treat as
@@ -694,6 +771,11 @@ average" to "treat as themselves" lands at a sensible number of hands:
 | Tier A (`vpip`, `pfr`, `limp`) | 50 | 50 hands |
 | Tier B (`three_bet`, `fold_to_*`, `cbet`, `afq`) | 25 | 25 opportunities |
 | Tier C (`wtsd`, `wsd`, `fold_to_river_bet`) | 15 | 15 opportunities |
+
+**All three `PRIOR_STRENGTH` values — 50, 25 and 15 — are unmeasured starting
+values chosen for this design**, neither measured nor cited. They belong in a
+config file and are to be tuned by the validation in
+[§6](#6-validation-before-it-touches-a-real-table).
 
 #### Table D: what the confidence weight looks like
 
@@ -743,7 +825,12 @@ bot chasing noise.
 Plus `UNKNOWN`, assigned whenever `confidence(vpip) < 0.5` **or**
 `hands_dealt < MIN_CLASSIFY_HANDS`. `UNKNOWN` always plays the blueprint.
 Default `MIN_CLASSIFY_HANDS = 50`, which is the point where Tier A stats reach
-equal prior/data weight in the table above.
+equal prior/data weight in the table above. **Both gates — the `0.5` confidence
+threshold and `MIN_CLASSIFY_HANDS = 50` — are unmeasured starting values chosen
+for this design.** The 50 is anchored to the Tier A crossover above, but that
+crossover is itself set by an unmeasured `PRIOR_STRENGTH`, so it inherits the
+same status. Both belong in a config file and are to be tuned by
+[§6](#6-validation-before-it-touches-a-real-table).
 
 **Where the splits come from.**
 
@@ -768,11 +855,23 @@ equal prior/data weight in the table above.
   rationale as `BASELINE`: a fixed constant would be a guess about a population
   nobody here has measured.
 
+**That median is population-level, not live-field, and that is what makes it
+allowed.** It is taken over every qualifying opponent in the database, including
+people not at the current table, and it produces a classification threshold — the
+"Sorting an opponent into a bucket" row of the `CLAUDE.md` table — not an
+adjustment to any action. It must never be recomputed over just the opponents in
+the current hand: that would be combining live-field rates, which
+[§1](#the-forefront-rule-and-this-design) reserves to the engine. Each opponent
+is then compared to the threshold **individually**; no opponent's rate is ever
+mixed with another live opponent's.
+
 **Hysteresis.** An opponent near a boundary must not flip bucket every hand.
 Require the shrunk stat to cross the split by a dead-band of `0.02` before
 reclassifying, and require the new classification to hold for `10` consecutive
 hands. A bot that changes its whole strategy every third hand is worse than one
-that never changes it.
+that never changes it. The `0.02` dead-band and the `10`-hand hold are
+**unmeasured starting values chosen for this design**; V2 measures
+reclassification frequency directly and tunes both.
 
 **Exploit flags — orthogonal to the bucket.** The four buckets are coarse; the
 money is often in one specific leak. Flags are independent booleans, each with
@@ -831,6 +930,9 @@ $ pokerbot profile "seat3_alias"
   flags       NEVER_FOLDS_POSTFLOP, LIMPS, NEVER_RAISES
 ```
 
+Every number in that block is **invented and illustrates the report's format
+only**. It is not data and not a claim about any player.
+
 **Why this is a full tier.** It is the whole foundation, it is entirely
 engine-independent, it can be built and tested while the engine question is
 still open, and it produces the data that every later tier needs. It also cannot
@@ -870,7 +972,19 @@ is on the *live field*, not on one opponent, for the reason in
 [§2.4](#24-why-bluffing-is-the-wrong-primary-exploit-at-a-multiway-table). Rule:
 load a counter-strategy only if **every** live opponent is classified (none
 `UNKNOWN`) **and** at least `⌈2n/3⌉` of the `n` live opponents share the bucket.
-Otherwise `S_BASE`.
+Otherwise `S_BASE`. The `⌈2n/3⌉` fraction is an **unmeasured design choice**
+encoding "a clear majority of the live field", to be tuned against
+[V5](#6-validation-before-it-touches-a-real-table).
+
+**This is the one place the live field is looked at collectively, and it stays
+inside the rule.** It counts bucket labels that were each assigned to one
+opponent on that opponent's own rates; no rate is combined with another live
+opponent's rate, and the output is a strategy handle — the "Selecting *which*
+engine strategy to load" row of the `CLAUDE.md` table, not the reserved
+live-field combination described in
+[§1](#the-forefront-rule-and-this-design). A coding task must not "improve" this
+by averaging or multiplying the live opponents' rates to decide what to load;
+that crosses the line.
 
 **Where the forefront rule comes under strain, and how it is handled.** Defining
 the archetype perturbation ("calls up-weighted") is a judgment about poker made
@@ -879,7 +993,14 @@ coding task must not relax:
 
 - The perturbation is **derived from measured statistics**, not chosen by hand:
   the archetype's action frequencies are set to the pooled shrunk rates of real
-  opponents in that bucket, from the bot's own database.
+  opponents in that bucket, from the bot's own database. **That pooling is
+  population-level, not live-field, and that is what makes it allowed.** It runs
+  offline, over every stored opponent in the bucket — not over the players at any
+  table the bot is sitting at — and what it produces is an archetype handed to
+  the engine's solver, which `CLAUDE.md` permits explicitly. Pooling the rates of
+  the opponents in the current hand to shape a strategy mid-session would be the
+  reserved live-field combination instead; see
+  [§1](#the-forefront-rule-and-this-design).
 - The perturbation touches **only action probabilities**. It never references
   hole cards, board cards, or hand strength.
 - The bot's *own* strategy is then computed **entirely by the engine's solver**
@@ -933,7 +1054,7 @@ will actually have enough data behind them:
 | `OVERFOLDS_BLINDS` | Open more hands when only they are behind you | Only when they are the sole remaining player to act |
 | `NEVER_FOLDS_TO_3BET` | Stop reraising as a bluff; reraise only for value | — |
 | `NEVER_FOLDS_POSTFLOP` | Value-bet thinner; never bluff them | Applies regardless of field size — this is the value exploit |
-| `OVERFOLDS_TO_CBET` | Continuation-bet more | **The multiway discount belongs to the engine.** Per [Table B](#table-b-the-multiway-problem) the counter-strategy must already bet less often as the field grows; no flag or classification code may multiply live opponents' fold rates together to gate a bluff. [V5](#6-validation-before-it-touches-a-real-table) checks the engine's output for that fall after the fact |
+| `OVERFOLDS_TO_CBET` | Continuation-bet more | **The multiway discount belongs to the engine.** Per [Table B](#table-b-the-multiway-problem) the counter-strategy must already bluff less often as the field grows; no module outside the engine may multiply live opponents' fold rates together to gate a bluff. [V5](#6-validation-before-it-touches-a-real-table) checks the engine's output for that fall after the fact |
 | `NEVER_RAISES` | Their calls are weak; keep betting | — |
 | `LIMPS` | Raise their limps | Only when few players remain to act behind |
 
@@ -1030,9 +1151,10 @@ than a handful of times in a thousand hands has its hysteresis wrong.
 real.** Hold out the last 30% of logged hands per opponent; the 70/30 split is
 an unmeasured starting value. From the profile built on the first 70%, predict
 each held-out action (fold / call / raise) and score by log-loss against two
-baselines: the pooled population rate, and the
-blueprint's own action frequency. **If the per-opponent model does not beat both
-baselines, the opponent model is not adding information and Tier 1 must not
+baselines: the pooled rate across the observed population (the same
+population-level pooling as `BASELINE`, computed offline on logged hands), and
+the blueprint's own action frequency. **If the per-opponent model does not beat
+both baselines, the opponent model is not adding information and Tier 1 must not
 ship.** This is falsifiable, runs offline, and costs nothing.
 
 **V4 — Split-threshold check.** Both splits in
@@ -1121,7 +1243,10 @@ now settled rather than conditional:**
   [§4.2](#42-the-stat-table) already assumes it.
 - The per-*table* pooled-profile fallback that this question previously offered
   is **dropped**. It was only ever the answer to "identifiers are unstable",
-  and they are not.
+  and they are not. It is also not to be reintroduced for any other reason:
+  pooling the rates of the players at the current table is a live-field
+  combination, which [§1](#the-forefront-rule-and-this-design) reserves to the
+  engine.
 - The rest of this document needs no change: per-opponent tracking was the
   assumption throughout, and every stat, bucket and exploit flag is already
   keyed on `opponent_id`.
@@ -1251,5 +1376,5 @@ Per the global evidence rules, so that no figure here has to be taken on trust.
 | Abstraction branching factors 15/40/6/6 and 8/12/4/4 | [Ganzfried & Sandholm 2011](#s-ganzfried2011), §5, read directly |
 | The 1006th-hand river failure | [Ganzfried & Sandholm 2011](#s-ganzfried2011), §5.4, read directly |
 | s-Curve `Pmax · n/(s+n)`; 0-10 Linear; the 100-to-1m observation range | [Johanson & Bowling 2009](#s-johanson2009), §5.2 and §6, read directly |
-| `HALF_LIFE = 2000`, `PRIOR_STRENGTH` values (50/25/15, which are also the s-Curve `s`), `WARMUP_HANDS = 200`, `MIN_CLASSIFY_HANDS = 50`, all flag margins (0.15/0.10/0.05) and flag confidence gates (0.6/0.7), the `confidence < 0.5` `UNKNOWN` gate, `MIN_STACK_BB = 5`, the 70/30 V3 holdout split, `VPIP_SPLIT` and `AFQ_SPLIT` after bootstrap | **Starting values chosen for this design, not measured.** Every one is labelled as such at the point of use, belongs in a config file, and is to be tuned by the validation in [§6](#6-validation-before-it-touches-a-real-table). `VPIP_SPLIT = 0.28` is the one part-exception: it is the *approximate* complement of the literature's 72% fold threshold — approximate because the two rates do not sum to 1 (see [§2.2](#22-the-two-axes-that-have-literature-behind-them)) — and it stands only until V4 corrects it or the bot's own population replaces it |
+| `HALF_LIFE = 2000`, `PRIOR_STRENGTH` values (50/25/15, which are also the s-Curve `s`), `WARMUP_HANDS = 200`, `MIN_CLASSIFY_HANDS = 50`, all flag margins (0.15/0.10/0.05) and flag confidence gates (0.6/0.7), the `confidence < 0.5` `UNKNOWN` gate, `MIN_STACK_BB = 5`, the 70/30 V3 holdout split, and `VPIP_SPLIT` and `AFQ_SPLIT` until the bootstrap in [§4.4](#44-bucketing-an-opponent) replaces them with measured population medians | **Starting values chosen for this design, not measured.** Every one is labelled as such at its point of use as well as here, belongs in a config file, and is to be tuned by the validation in [§6](#6-validation-before-it-touches-a-real-table). `VPIP_SPLIT = 0.28` is the one part-exception: it is the *approximate* complement of the literature's 72% fold threshold — approximate because the two rates do not sum to 1 (see [§2.2](#22-the-two-axes-that-have-literature-behind-them)) — and it stands only until V4 corrects it or the bot's own population replaces it |
 | The example `pokerbot profile` output in [Tier 0](#45-tiers-what-to-build-in-what-order) (412 hands, 0.41 vpip, and the rest) | **Invented, and only illustrates the report's format.** Not data, not a claim about any player |

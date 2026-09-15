@@ -23,8 +23,10 @@ beat by hand-rolling it in a few weeks.
 | Sorting an opponent into a bucket | Reading board texture |
 | Selecting *which* engine strategy to load | Producing the strategy itself |
 | Substituting an opponent model into the engine's own solver | Solving |
-| Reporting several rates side by side | Combining rates into a quantity that drives a poker decision — multiplying opponents' fold rates to gate a bluff, for one |
+| Reporting several rates side by side | Combining live-field rates into a quantity that drives a poker decision — multiplying the fold rates of the opponents in the current hand to gate a bluff, for one |
 
+- Reserve to the engine every combination of rates across the **live field** — the opponents in the current hand — that adjusts the bot's own action; no module outside the engine may pool, multiply, or average them for that purpose.
+- Allow AI-written code to combine rates across the **observed population** — every opponent in the bot's database, not the players at the current table — into a baseline, a classification split, or an archetype, and hand that result to the engine, which still chooses the action.
 - Derive any opponent archetype fed to the solver from measured action frequencies alone; never hand-write one, and never let it reference hole cards, board cards, or hand strength.
 
 ## Plan
