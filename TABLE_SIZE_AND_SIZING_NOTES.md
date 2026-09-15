@@ -12,8 +12,9 @@ solve budget — it states the 2-to-9 scope in §1 and the 32 solver runs it imp
 in §4.5 — but the rest of it, the stat definitions above all, still reads as
 though the seat count were fixed; and it says nothing at all about bet sizing as
 a source of information. **This document does not edit it.** It is mid-review on
-a separate task, so every cross-reference below is to that document as it stands
-today. What this document does is work out what those two requirements change,
+a separate task, so every cross-reference below is to one fixed revision of it:
+`OPPONENT_MODEL_DESIGN.md` at commit `5aa40b8`, 2026-09-15. What this document
+does is work out what those two requirements change,
 and end with concrete recommended edits, each naming the exact section of that
 document to change, so that a later task can make the edits without re-deciding
 anything.
@@ -235,7 +236,10 @@ field size, and the Tier 1 solve — which §4.5 already requires to be run at "
 seat count of the live game" — is the **32 runs** §4.5 and E5 now both state,
 which is a cost question for the operator
 ([§4](#4-questions-for-the-operator)) and, against the operator's compute cap, a
-question about which solver can do it at all.
+question about which solver can do it at all. §4.5 also marks that whole solve
+plan as conditional on a pending decision: `ENGINE_ALTERNATIVES.md` recommends
+computing decisions at play time instead, and if that is accepted the 32 runs do
+not happen at all.
 
 ### 1.4 Two stat definitions that break outright below six players
 
@@ -275,8 +279,13 @@ is worth stating because it changes how much trust the bootstrap deserves.
 
 `VPIP_SPLIT = 0.28` and `AFQ_SPLIT = 0.50` descend from the "folds ≥ 72% of hands
 is tight, AF > 1 is aggressive" thresholds that [Teofilo &
-Reis 2011](#s-teofilo2011) report from [Billings 2006](#s-billings2006)
-(**not retrieved by either survey**). The
+Reis 2011](#s-teofilo2011) — which *was* retrieved and read — reports at its §3,
+citing two works it took them from: [Billings 2006](#s-billings2006)
+(**not retrieved by either survey**) for the numeric classification and
+[Sklansky](#s-sklansky) (**also not retrieved**) for the tight/loose,
+passive/aggressive taxonomy behind it. That is the attribution
+`OPPONENT_MODEL_DESIGN.md` makes at its §2.2 and in its Sources, and this
+document follows it. The
 design document already flags two problems with them: they are cited at second
 hand, and fold rate and VPIP do not sum to 1. There is a third, and it is about
 the corpus those thresholds were fitted on.
@@ -287,11 +296,12 @@ describes.** The 51,377,820-game real-money **tournament** corpus that
 **Teofilo and Reis's own**. It is the source of the 4.52% showdown ratio this
 document leans on in [§2](#2-continuous-bet-sizing); it is
 **not** the source of the 72% / AF > 1 thresholds, which Teofilo and Reis report
-from Billings' thesis. The two must not be run together, and an earlier draft of
-this section did exactly that.
+from Billings' thesis and Sklansky. The two must not be run together, and an
+earlier draft of this section did exactly that.
 
-**So the thresholds' own corpus is unknown to this document.** Billings 2006 was
-not retrieved by either survey, so nothing here is known about its size, its
+**So the thresholds' own corpus is unknown to this document.** Neither Billings
+2006 nor Sklansky was retrieved by either survey, so nothing here is known about
+the corpus behind the numeric thresholds — its size, its
 stakes, its era, or — the point of this section — **the seat counts it
 contained**. What can still be said is structural and needs no knowledge of the
 corpus: a fold rate or an aggression factor averaged over any corpus is
@@ -739,35 +749,48 @@ Keep `STATION` / `ROCK` / `TAG` / `MANIAC` / `UNKNOWN` as the global vocabulary.
 Move the seat-count knowledge into the thresholds and the baselines, where it is
 cheap.
 
-### R6 — Put the operator's compute cap beside the Tier 1 solve budget, and make the budget conditional on it. *(Extension. §4.5 and Engine requirements.)*
+### R6 — The compute cap is already in §4.5 and E5; what is left is the `RESOURCES_SOLVERS.md` pointer. *(Extension, most of it already applied. §4.5 and Engine requirements.)*
 
-**The number itself needs no correcting.** §4.5 already requires a
-counter-strategy to be solved at the seat count it will be used at, forbids
-loading one solved for a different size, and already states the multiplier in
-full: **four strategies (`S_BASE` plus three counters) × eight seat counts = 32
-offline solver runs**. E5 already asks for the cost of one run *and* of 32. What
-is missing beside the number is the constraint it has to satisfy.
+**This item asked for a cap that the design document now states itself**, at the
+revision this document is written against (`OPPONENT_MODEL_DESIGN.md` at
+commit `5aa40b8`). Recorded here rather than dropped, because the reasoning is
+what the remaining recommendation rests on. What §4.5 and E5 already carry:
 
-**The constraint.** The operator's compute cap, recorded 2026-09-15: **no
-multi-day computing, and a playable bot must be reachable in hours on one
-laptop.** 32 runs fit inside that only if a single run finishes in **minutes on
-one laptop**. Nothing yet establishes that any available solver does; the design
-document's own §3.3 rules out the far end of that axis, Pluribus's 12,400 CPU
-core-hours *per strategy*, but rules out nothing in between. Three edits follow:
+- **The multiplier and the prohibition.** §4.5 requires a counter-strategy to be
+  solved at the seat count it will be used at, forbids loading one solved for a
+  different size, and states the multiplier in full: **four strategies (`S_BASE`
+  plus three counters) × eight seat counts = 32 offline solver runs**.
+- **The cap, as a pass/fail on E5.** E5 now asks the cost of one run *and* of 32
+  against the operator's cap, recorded 2026-09-15 — **no multi-day computing, and
+  a playable bot must be reachable in hours on one laptop** — and records that a
+  "days" answer fails outright and an "hours" answer fails at 32.
+- **Tier 1 made conditional on that answer.** §4.5 states that Tier 1 as
+  specified is conditional on an engine whose single solve against fixed
+  opponents finishes in **minutes**, and that a coding task finding otherwise
+  must stop and report rather than start a solve that cannot finish.
+- **The pending alternative that may remove the solve plan entirely.** §4.5
+  records that `ENGINE_ALTERNATIVES.md` is under review and recommends computing
+  decisions at play time instead of solving strategies offline at all; if that is
+  accepted, the 32 runs do not happen and Tier 1's "select among precomputed
+  strategies" structure is what changes, not the stats, shrinkage, buckets or
+  flags.
+- **The corrected fallback arithmetic.** §4.5 states that dropping one seat count
+  from Tier 1 saves **3 runs, not 4** — the dropped seat count still needs its own
+  `S_BASE` to play at all — leaving a floor of **8 runs**, one `S_BASE` per seat
+  count; cutting a bucket saves 8 runs, one at every seat count.
 
-- **Write the cap into E5, not just the multiplier.** E5's answer should be
-  pass/fail against "minutes per run on one laptop, and the whole set of 32
-  inside hours", rather than an open-ended cost in unspecified units.
-- **Make the per-seat-count solve plan conditional.** Until a solver meeting that
-  cap is identified, **the 32 runs are a requirement on the engine choice, not a
-  plan to execute with the vendored `poker_ai`.** `ENGINE_ALTERNATIVES.md` and
-  `RESOURCES_SOLVERS.md` — both surveys in progress — are what will establish
-  whether such a solver exists, and §4.5's budget should say so and point at
-  them.
-- **Do not treat banding as the escape.** Solving one representative seat count
-  per band, 16 runs, contradicts §4.5's own prohibition and must not be adopted
-  silently — and it does not rescue the budget anyway, because 16 multi-day runs
-  breach the cap exactly as 32 do. The cap is about the cost of *one* run first.
+**The genuine delta, and all this item now recommends.** Two points:
+
+- **Point §4.5 at `RESOURCES_SOLVERS.md` as well.** §4.5 names
+  `ENGINE_ALTERNATIVES.md`, which is the play-time alternative; the survey of
+  which *offline* solvers exist and what one run costs on one laptop is
+  `RESOURCES_SOLVERS.md`, and that is the survey E5's pass/fail answer will come
+  from if the offline plan survives. Both are in progress and §4.5's budget
+  should name both.
+- **Banding is not the escape.** Solving one representative seat count per band,
+  16 runs, contradicts §4.5's own prohibition and must not be adopted silently —
+  and it does not rescue the budget anyway, because 16 multi-day runs breach the
+  cap exactly as 32 do. The cap binds on the cost of *one* run first.
 
 See [Q4](#4-questions-for-the-operator).
 
@@ -917,9 +940,11 @@ config.
 ### R14 — Record the seat-count mixture V4 measured. *(Extension. §6.)*
 
 V4 checks `VPIP_SPLIT` and `AFQ_SPLIT` against the literature thresholds on
-logged hands. Those thresholds descend from a corpus this project has never
-seen — Billings' thesis was retrieved by neither survey, so **the seat counts it
-contained are unknown**, and it is *not* the tournament corpus
+logged hands. Those thresholds are attributed by Teofilo and Reis to **Billings'
+thesis and Sklansky**, as `OPPONENT_MODEL_DESIGN.md` §2.2 and its Sources record,
+and they descend from a corpus this project has never
+seen — neither work was retrieved by either survey, so **the seat counts behind
+the thresholds are unknown**, and that corpus is *not* the tournament corpus
 `OPPONENT_MODEL_DESIGN.md` §2.1 describes, which is Teofilo and Reis's own and
 supplies the 4.52% ratio instead
 ([§1.5](#15-the-published-thresholds-are-themselves-table-size-mixtures)).
@@ -952,17 +977,31 @@ reachable in hours on one laptop.** Thirty-two runs are inside that cap only if
 one run takes minutes on one laptop, so the question is not only "how many seat
 counts" but "with which solver, if any".
 
+**This question may not need answering at all.** §4.5 marks its own solve plan as
+conditional: `ENGINE_ALTERNATIVES.md` is under review and recommends computing
+decisions at play time rather than solving strategies offline, and if that
+recommendation is accepted there are no precomputed per-seat-count strategies to
+budget for and this question lapses. It is asked here because the decision is
+pending, not because the offline plan is settled.
+
 *Recommendation:* treat the 32-run budget as **a requirement the engine choice
 has to meet, not a plan to execute with the vendored `poker_ai`** (R6). Answer E5
 against the cap — minutes per run on one laptop, pass or fail — using the two
-surveys already in progress, `ENGINE_ALTERNATIVES.md` and `RESOURCES_SOLVERS.md`.
-If something passes, solve the seat counts the bot will actually sit at most, in
-order, and have the bot decline to load a counter-strategy at an unsolved seat
-count, falling back to `S_BASE`, which §4.5 already makes the default for
+surveys already in progress, `ENGINE_ALTERNATIVES.md` for the play-time
+alternative and `RESOURCES_SOLVERS.md` for the offline solvers. If something
+passes, solve in the order the operator's own table-size priority sets, recorded
+2026-09-15: **mostly 6-handed play, then 8 and 9 which the operator treats as the
+same thing** — so `n = 6` first, then `n = 8` and `n = 9` together, then the rest
+of the 2-to-9 range, which stays a firm requirement rather than becoming
+optional. (Solve order, not the stat bands of
+[R1](#r1--define-the-seat-count-band-as-a-context-value-not-a-new-table-extension-42);
+the two answer different questions.) Have the bot decline to load a
+counter-strategy at an unsolved seat count, falling back to `S_BASE`, which §4.5 already makes the default for
 anything uncertain; that keeps the prohibition intact and makes the cost
 incremental rather than up-front. If nothing passes, Tier 1 as specified is not
 reachable on this hardware, and the honest responses are §4.5's own — narrow the
-seat counts Tier 1 covers, or cut buckets — never a multi-day solve, and never a
+seat counts Tier 1 covers, at **3 runs saved per seat count dropped and a floor of
+8**, or cut buckets at 8 runs each — never a multi-day solve, and never a
 strategy loaded at a table size it was not solved for.
 
 *Alternative:* solve one representative seat count per band and accept a known
@@ -979,20 +1018,24 @@ since the answer may change which engine the project is built on.
 now states the goal as beating the humans at the table "at **every table size
 from 2 to 9 players**", and notes that two players is the one size where the
 equilibrium guarantee exists. `CLAUDE.md` in this repository has not: it still
-states the goal as beating humans "at a table of 3 or more". **The two now
-disagree, and `CLAUDE.md` is the authority of the two.** The design document's
+states the goal as beating humans "at a table of 3 or more". **The two disagree
+because `CLAUDE.md` is stale, not because it is right:** its "3 or more" was
+written before the operator stated the firm 2-to-9 requirement, and that
+requirement governs. `CLAUDE.md` is to be brought to 2 to 9, and a queued task
+does exactly that. The design document's
 case against pursuing game-theory-optimal play still rests on the multiplayer
 result in [Brown 2020](#s-brown2020) §6.6, which is explicitly about tables of
 three or more and does not reach two-handed play, where the opposite conclusion
 holds
 ([§1.7](#17-heads-up-is-a-different-game-and-it-inverts-the-designs-founding-argument)).
-*Recommendation:* settle it in `CLAUDE.md`'s favour on scope wording but keep the
-substance — support two-handed play as a deliberately conservative mode, tight
-deviation cap (R13), blueprint-first — rather than rewriting the project's
-premise around it. **This document does not edit `CLAUDE.md`**; the change, if
-any, is the operator's and the stoker's. **Urgency: low, but settle it before
-Tier 1 solves are commissioned**, because it decides whether `n = 2` is in the
-solve budget in Q4 at all.
+*Recommendation:* bring `CLAUDE.md`'s scope wording up to 2 to 9, rather than
+narrowing the design document back to three or more, and keep the substance —
+support two-handed play as a deliberately conservative mode, tight deviation cap
+(R13), blueprint-first — rather than rewriting the project's premise around it.
+**This document does not edit `CLAUDE.md`**; the change is the operator's and the
+stoker's, and is already queued. **Urgency: low, but settle it before Tier 1
+solves are commissioned**, because it decides how `n = 2` is treated in the solve
+budget in Q4.
 
 ---
 
@@ -1054,13 +1097,20 @@ by a retrieved source.
 
 <a id="s-billings2006"></a>**[Billings 2006]** Darse Billings, *Algorithms and
 Assessment in Computer Poker*, PhD thesis, University of Alberta. The origin of
-the 72% / AF > 1 thresholds. **Cited at third hand** — via
+the 72% / AF > 1 thresholds in their numeric form, alongside
+[Sklansky](#s-sklansky) for the taxonomy they express. **Cited at third hand** — via
 [Teofilo & Reis 2011](#s-teofilo2011), who cite it; the thesis itself was
 retrieved by neither survey. **Consequently this document knows nothing about the
 corpus those thresholds were fitted on, including the seat counts it contained**,
 and [§1.5](#15-the-published-thresholds-are-themselves-table-size-mixtures) rests
 on that unknown rather than on any property of Teofilo and Reis's tournament
 corpus.
+
+<a id="s-sklansky"></a>**[Sklansky]** David Sklansky, *The Theory of Poker*. The
+other work [Teofilo & Reis 2011](#s-teofilo2011) §3 attributes the tight/loose,
+passive/aggressive thresholds to, as `OPPONENT_MODEL_DESIGN.md`'s Sources also
+record. **Cited at third hand** by the same route as
+[Billings 2006](#s-billings2006), and retrieved by neither survey.
 
 <a id="s-pluribus-sizing"></a>**[Pluribus's bet-size abstraction]** The claim that
 Pluribus used a small discrete set of bet sizes while beating elite professionals
@@ -1135,6 +1185,7 @@ bands the bot's own measured baseline instead of hardcoding one per band.
 | The `4.5×` hands multiplier for a blind-only stat at 9-max versus heads-up | Derived; `(9/2)/(2/2) = 4.5`. Follows from the `2/n` column of Table 1 |
 | [Table 4](#table-4-the-fragmentation-multiplier) — the `k×` multiplier | Derived: the opportunity count for a fixed interval half-width does not depend on stratification, so `k` strata need `k` times the hands. **The 323 and 640 base values are inherited from `OPPONENT_MODEL_DESIGN.md` Table C and are illustrative there; the products inherit that status** |
 | 32 solver runs (R6) and 16 under banding | Derived; 8 seat counts × 4 strategies, and 4 bands × 4 strategies. Computed 2026-09-15. `OPPONENT_MODEL_DESIGN.md` §4.5 and E5 now state the same 32 independently |
+| 3 runs saved per seat count dropped, an 8-run floor, and 8 runs saved per bucket cut (R6, [Q4](#4-questions-for-the-operator)) | **Not derived here.** Taken from `OPPONENT_MODEL_DESIGN.md` §4.5 at commit `5aa40b8`, which states them: a dropped seat count still needs its own `S_BASE`, so only its three counter-strategies are saved, leaving one `S_BASE` per seat count as the floor |
 | The compute cap R6 and [Q4](#4-questions-for-the-operator) hold the solve budget to — hours on one laptop, no multi-day computing | **The operator's own requirement, recorded 2026-09-15.** Not derived and not a measurement: it is a constraint stated by the operator, and it is repeated here verbatim in substance rather than paraphrased into a number of hours |
 | [Table 5](#table-5-what-mis-reading-a-bet-size-costs-exactly) — required pot equity `B/(P+2B)` and the error columns | Computed by script 2026-09-15. Elementary pot-odds arithmetic, `P = 1` |
 | [Table 6](#table-6-pot-fraction-needed-to-reach-all-in-in-k-equal-bets) — `f` from `(1+2f)^k = 1+2·SPR` | Derived and computed by script 2026-09-15. Each bet-and-call multiplies the pot by `(1+2f)`; elementary |
