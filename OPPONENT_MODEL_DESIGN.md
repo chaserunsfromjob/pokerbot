@@ -48,8 +48,10 @@ AI-written code from deciding a poker action, evaluating a hand, or reading a
 board. Nothing in this design breaks that. The opponent model only ever produces
 two things: **numbers describing what an opponent does**, and **a choice of
 which engine-produced strategy to load**. The engine keeps every piece of poker
-judgment. [The forefront rule and this design](#the-forefront-rule-and-this-design)
-states exactly where the line falls.
+judgment. `CLAUDE.md` states exactly where the line falls, in its own two-column
+table under "The forefront rule";
+[The forefront rule and this design](#the-forefront-rule-and-this-design) below
+points at that table and this design obeys it.
 
 ---
 
@@ -169,17 +171,19 @@ hands is *approximately* the complement of voluntarily putting money in with
 rates do **not** sum to exactly 1. Some hands end in neither a fold nor a
 voluntary investment; the common case is a big blind who checks their option
 when nobody raised, which is not a fold and not a VPIP action either (see
-[§4.7](#47-edge-cases-a-coding-task-will-hit)). Those hands fall outside both
-counts, so `fold_rate + vpip < 1` and the VPIP value that truly corresponds to a
-72% fold rate sits *below* 0.28 by the share of such hands. Using 0.28 anyway
-therefore puts the tight/loose split slightly too high and will call some
-borderline players tight when the literature threshold would call them loose.
+[§4.7](#47-edge-cases-a-coding-task-will-hit)). Under the reading that "folds a
+hand" means the player put in no voluntary money and folded, those hands fall
+outside both counts, so `fold_rate + vpip < 1` and the VPIP value that truly
+corresponds to a 72% fold rate would sit *below* 0.28 by the share of such
+hands; using 0.28 anyway would then put the tight/loose split slightly too high
+and call some borderline players tight when the literature threshold would call
+them loose.
 
-That sign holds if "folds a hand" means the player put in no voluntary money and
-folded; it can reverse if the corpus counted a fold at any street, because then
-a player who calls preflop and folds the flop is counted in *both* rates and the
-two can sum above 1. The source does not say which it used, so **the size and
-even the direction of the gap are things to measure, not to assume**.
+That is one of two readings, not an established fact. The other — the corpus
+counting a fold at any street — reverses the sign, because then a player who
+calls preflop and folds the flop is counted in *both* rates and the two can sum
+above 1. The source does not say which it used, so **the size and even the
+direction of the gap are things to measure, not to assume**.
 [V4](#6-validation-before-it-touches-a-real-table) measures both on logged hands
 before the split is trusted.
 
@@ -787,9 +791,11 @@ and the magnitude threshold are met.
 
 The 0.15 and 0.10 margins are deliberately larger than the confidence intervals
 in [Table C](#table-c-how-many-hands-each-stat-needs) at the gate's
-corresponding sample size. They are starting values to be tuned by the
-validation in [§6](#6-validation-before-it-touches-a-real-table), and should be
-recorded in a config file rather than in code.
+corresponding sample size. Those two margins, the tighter 0.05 margin on
+`NEVER_RAISES`, and the `0.6` and `0.7` confidence gates in the table above are
+all **unmeasured starting values**, to be tuned by the validation in
+[§6](#6-validation-before-it-touches-a-real-table), and should be recorded in a
+config file rather than in code.
 
 **The upgrade path, when there is data for it.** The four-box grid is a
 deliberate simplification. [Teofilo & Reis 2011](#s-teofilo2011) ran
@@ -927,7 +933,7 @@ will actually have enough data behind them:
 | `OVERFOLDS_BLINDS` | Open more hands when only they are behind you | Only when they are the sole remaining player to act |
 | `NEVER_FOLDS_TO_3BET` | Stop reraising as a bluff; reraise only for value | — |
 | `NEVER_FOLDS_POSTFLOP` | Value-bet thinner; never bluff them | Applies regardless of field size — this is the value exploit |
-| `OVERFOLDS_TO_CBET` | Continuation-bet more | **Gate on the product of all live opponents' fold rates**, per Table B |
+| `OVERFOLDS_TO_CBET` | Continuation-bet more | **The multiway discount belongs to the engine.** Per [Table B](#table-b-the-multiway-problem) the counter-strategy must already bet less often as the field grows; no flag or classification code may multiply live opponents' fold rates together to gate a bluff. [V5](#6-validation-before-it-touches-a-real-table) checks the engine's output for that fall after the fact |
 | `NEVER_RAISES` | Their calls are weak; keep betting | — |
 | `LIMPS` | Raise their limps | Only when few players remain to act behind |
 
@@ -948,7 +954,7 @@ test.
 | Seat change | `opponent_id` is the alias, never the seat. Seat is a per-hand field |
 | Bot folds preflop | **Still record the hand.** Free observation |
 | Hand history truncated or unparseable | Reject the whole hand. Never partially apply increments |
-| Opponent has fewer than 1 big blind | Their fold/call frequencies are structurally distorted. Exclude hands where the opponent started with under `MIN_STACK_BB = 5` from all counters |
+| Opponent has fewer than 1 big blind | Their fold/call frequencies are structurally distorted. Exclude hands where the opponent started with under `MIN_STACK_BB = 5` (an unmeasured starting value) from all counters |
 
 ---
 
@@ -1021,9 +1027,10 @@ opponent's bucket changes. A classifier that reclassifies the same person more
 than a handful of times in a thousand hands has its hysteresis wrong.
 
 **V3 — Predictive calibration. This is the test that says whether the model is
-real.** Hold out the last 30% of logged hands per opponent. From the profile
-built on the first 70%, predict each held-out action (fold / call / raise) and
-score by log-loss against two baselines: the pooled population rate, and the
+real.** Hold out the last 30% of logged hands per opponent; the 70/30 split is
+an unmeasured starting value. From the profile built on the first 70%, predict
+each held-out action (fold / call / raise) and score by log-loss against two
+baselines: the pooled population rate, and the
 blueprint's own action frequency. **If the per-opponent model does not beat both
 baselines, the opponent model is not adding information and Tier 1 must not
 ship.** This is falsifiable, runs offline, and costs nothing.
@@ -1234,7 +1241,7 @@ Per the global evidence rules, so that no figure here has to be taken on trust.
 | Hysteresis dead-band `0.02` and the `10` consecutive-hand hold ([§4.4](#44-bucketing-an-opponent)) | **Starting values chosen for this design, not measured.** Tuned by V2, which measures reclassification frequency directly |
 | The `⌈2n/3⌉` shared-bucket rule for loading a counter-strategy ([§4.5](#45-tiers-what-to-build-in-what-order)) | **A design choice, not a measured or cited threshold.** It encodes "a clear majority of the live field", following the multiway argument in [§2.4](#24-why-bluffing-is-the-wrong-primary-exploit-at-a-multiway-table); tune against V5 |
 | `MIN_POOL_HANDS = 200` and `MIN_POOL_OPPONENTS = 20` ([§4.3](#43-after-each-hand-the-update)) | **Starting values chosen for this design, not measured.** They set when the bot's own population is large enough to supply `BASELINE` and the splits; both belong in config and are to be raised if the pooled rates prove unstable |
-| 51,377,820 games / 158,035 players / 4.52% showdown ratio | [Teofilo & Reis 2011](#s-teofilo2011), Table 1, read directly. Corpus is real-money **tournament** logs; showdown frequency may differ in cash play |
+| 51,377,820 games / 158,035 players / 2,323,538 showdowns / 4.52% showdown ratio | [Teofilo & Reis 2011](#s-teofilo2011), Table 1, read directly. Corpus is real-money **tournament** logs; showdown frequency may differ in cash play |
 | 7 player types | [Teofilo & Reis 2011](#s-teofilo2011), §7, read directly |
 | Folds ≥72% = tight; AF > 1 = aggressive | [Teofilo & Reis 2011](#s-teofilo2011), §3, citing [Billings 2006](#s-billings2006). **Second-hand** |
 | 48 mbb/game ±25, p=0.028; 32 mbb/game ±15, p=0.014; 10,000 hands | [Brown 2020](#s-brown2020), §6.6, read directly |

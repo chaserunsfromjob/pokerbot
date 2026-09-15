@@ -18,11 +18,12 @@ beat by hand-rolling it in a few weeks.
 | Allowed to AI-written opponent-model code | Reserved to the engine |
 | --- | --- |
 | Counting observed actions | Evaluating hand strength |
-| Computing rates from counts | Choosing an action |
+| Computing a single rate from its own counts | Choosing an action |
 | Shrinking a rate toward a baseline | Assigning a range to an opponent |
 | Sorting an opponent into a bucket | Reading board texture |
 | Selecting *which* engine strategy to load | Producing the strategy itself |
 | Substituting an opponent model into the engine's own solver | Solving |
+| Reporting several rates side by side | Combining rates into a quantity that drives a poker decision — multiplying opponents' fold rates to gate a bluff, for one |
 
 - Derive any opponent archetype fed to the solver from measured action frequencies alone; never hand-write one, and never let it reference hole cards, board cards, or hand strength.
 
