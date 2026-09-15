@@ -7,12 +7,16 @@ cover, both now firm requirements from the operator:
 2. **The bot must use true no-limit bet sizing** — a continuous raise amount, not
    a fixed increment.
 
-`OPPONENT_MODEL_DESIGN.md` was written mostly assuming a fixed-ish table size and
-says nothing about bet sizing as a source of information. **This document does
-not edit it.** It is mid-review on a separate task. What this document does is
-work out what those two requirements change, and end with concrete recommended
-edits, each naming the exact section of that document to change, so that a later
-task can make the edits without re-deciding anything.
+`OPPONENT_MODEL_DESIGN.md` has taken the first requirement into its goal and its
+solve budget — it states the 2-to-9 scope in §1 and the 32 solver runs it implies
+in §4.5 — but the rest of it, the stat definitions above all, still reads as
+though the seat count were fixed; and it says nothing at all about bet sizing as
+a source of information. **This document does not edit it.** It is mid-review on
+a separate task, so every cross-reference below is to that document as it stands
+today. What this document does is work out what those two requirements change,
+and end with concrete recommended edits, each naming the exact section of that
+document to change, so that a later task can make the edits without re-deciding
+anything.
 
 Where this document needs a number it either derives it, or cites it, or labels
 it as an illustrative or unmeasured value — the same three categories
@@ -100,7 +104,7 @@ this section.
 
 Derived; `n` is the seat count. Computed 2026-09-15.
 
-| `n` | Dealt in a blind (`2/n`) | On the button (`1/n`) | Neither blind nor button (`(n−3)/n`) | Mean players still to act behind (`(n−1)/2`) |
+| `n` | Dealt in a blind (`2/n`) | On the button (`1/n`) | Neither blind nor button (`max(0, (n−3)/n)`) | Mean players still to act behind (`(n−1)/2`) |
 | --- | --- | --- | --- | --- |
 | 2 | 1.000 | 0.500 | 0.000 | 0.5 |
 | 3 | 0.667 | 0.333 | 0.000 | 1.0 |
@@ -112,13 +116,18 @@ Derived; `n` is the seat count. Computed 2026-09-15.
 | 9 | 0.222 | 0.111 | 0.667 | 4.0 |
 
 At `n = 2` the small blind *is* the button, which is why that row's first two
-columns overlap; heads-up is structurally different and gets
+columns overlap, and why the third column carries a `max(0, ·)`: unclamped,
+`(n−3)/n` is `−0.5` at `n = 2`, and no share of hands can be negative. At `n = 2`
+and `n = 3` there is genuinely no seat that is neither a blind nor the button, so
+`0.000` is the true value in both rows and the clamp is what makes the formula
+say so. Heads-up is structurally different and gets
 [§1.7](#17-heads-up-is-a-different-game-and-it-inverts-the-designs-founding-argument)
 to itself.
 
 That a player should enter more pots as fewer opponents remain behind them is the
 oldest position argument in the strategy literature — [Sklansky &
-Malmuth](#s-sklanskymalmuth) present full-ring starting requirements as a table
+Malmuth](#s-sklanskymalmuth) (**not retrieved during this survey; cited from
+memory**) present full-ring starting requirements as a table
 indexed by position for exactly this reason, and
 `OPPONENT_MODEL_DESIGN.md` already tracks `open_raise_by_seat` on the grounds
 that "position-blind opponents are the exploitable ones" (§2.3). What
@@ -168,16 +177,37 @@ Computed 2026-09-15.
 | 6-max vs heads-up | 0.667 | ≤ 0.200 | ≤ 0.333 | ≤ 0.467 |
 | 3-handed vs heads-up | 0.333 | ≤ 0.100 | ≤ 0.167 | ≤ 0.233 |
 
-**The consequence, which is the load-bearing one.** These are upper bounds, and
-the true shift will be smaller. But `VPIP_SPLIT` in
-`OPPONENT_MODEL_DESIGN.md` §4.4 defaults to `0.28`, and the flag margins in the
-same section fire at gaps of `0.15`. A bound of `0.2`–`0.47` between 9-max and
-3-handed is not a rounding error against thresholds of that size — **it is large
-enough on its own to move a player across the tight/loose boundary and to fire or
-suppress an exploit flag, with no change in the person at all.** A single global
-`BASELINE[vpip]` pooled across every seat count the bot has ever played will
-therefore misclassify systematically: it will read short-table players as loose
-and full-ring players as tight.
+**The consequence, and the exact weight it can carry.** These are **upper
+bounds**. They say how far the aggregate *can* move when only the seat count
+changes; they do not say how far it does, and the realised shift is smaller by
+however much a real player's per-position VPIP varies less than the illustrative
+spread column assumes. An upper bound cannot establish that anything *will*
+happen, and this document does not claim it does.
+
+What the bound does establish is that the possibility is not excluded by the
+arithmetic. `VPIP_SPLIT` in `OPPONENT_MODEL_DESIGN.md` §4.4 defaults to `0.28`,
+and the flag margins in the same section fire at gaps of `0.15`. A bound of
+`0.2`–`0.47` between 9-max and 3-handed is not a rounding error against
+thresholds of that size — **it can exceed both, so a shift large enough to move a
+player across the tight/loose boundary, or to fire or suppress an exploit flag
+with no change in the person at all, is admitted rather than ruled out.** A
+single global `BASELINE[vpip]` pooled across every seat count the bot has ever
+played **can** therefore misclassify in a systematic direction: reading
+short-table players as loose and full-ring players as tight.
+
+**The measurement that would settle it, and it is cheap.** Whether the shift is
+real and how large it is are questions for Tier 0's own logged hands, not for
+this argument: **compute each opponent's `vpip` separately per seat-count band,
+and report, for opponents with enough hands in two or more bands, the
+distribution of the same person's band-to-band difference** — alongside the
+per-band population median. That distribution is the realised shift the bound
+only caps. If its bulk sits well inside `0.15`, banding `BASELINE` is tidiness
+and can be dropped; if not, [R2](#r2--make-baseline-and-both-split-thresholds-per-band-correction-43-and-44)
+is necessary on measured grounds rather than on an admitted possibility. Until
+that number exists, R2 bands the *population* baseline anyway, because the bound
+admits a shift larger than the thresholds and banding a pooled baseline is cheap
+([§1.6](#16-what-banding-costs)) — a precaution against a possibility, which is
+what it should be called.
 
 The same argument applies with different weights to every stat whose opportunity
 definition involves position — `pfr`, `limp`, `open_raise`, `three_bet`,
@@ -192,16 +222,20 @@ fragmentation cost in [§1.6](#16-what-banding-costs) affordable.
 the collapse of bluff success as the number of opponents rises, and §2.4 builds
 the whole strategic stance on it. Every entry in that table is indexed by **live
 opponents**, which is field size `m`, not seat count `n`. The design document is
-already correct on this and V5 already reports bluff frequency against the number
-of live opponents.
+already correct on this: its §6 gives V5 one extra report, **bluff frequency
+broken down by the number of live opponents**, and §2.4 and §4.6's "Multiway
+gate" column both read that breakdown as the check on whether the engine's output
+carries the multiway discount.
 
 What changes with the 2-to-9 requirement is that **the distribution of `m` is now
 something the bot ranges over rather than a fixed property of its table.** Two
 recommendations follow, both in [§3](#3-recommended-reconciliation-with-opponent_model_designmd):
-V5's breakdown should be cross-tabulated by seat count as well as by field size,
-and the Tier 1 solve — which §4.5 already requires to be run at "the seat count
-of the live game" — becomes eight solves rather than one, which is a cost
-question for the operator ([§4](#4-questions-for-the-operator)).
+V5's existing breakdown should be cross-tabulated by seat count as well as by
+field size, and the Tier 1 solve — which §4.5 already requires to be run at "the
+seat count of the live game" — is the **32 runs** §4.5 and E5 now both state,
+which is a cost question for the operator
+([§4](#4-questions-for-the-operator)) and, against the operator's compute cap, a
+question about which solver can do it at all.
 
 ### 1.4 Two stat definitions that break outright below six players
 
@@ -241,26 +275,36 @@ is worth stating because it changes how much trust the bootstrap deserves.
 
 `VPIP_SPLIT = 0.28` and `AFQ_SPLIT = 0.50` descend from the "folds ≥ 72% of hands
 is tight, AF > 1 is aggressive" thresholds that [Teofilo &
-Reis 2011](#s-teofilo2011) report from [Billings 2006](#s-billings2006). The
+Reis 2011](#s-teofilo2011) report from [Billings 2006](#s-billings2006)
+(**not retrieved by either survey**). The
 design document already flags two problems with them: they are cited at second
-hand, and fold rate and VPIP do not sum to 1. There is a third, which follows
-from a fact the design document already establishes about the corpus and does not
-draw this conclusion from.
+hand, and fold rate and VPIP do not sum to 1. There is a third, and it is about
+the corpus those thresholds were fitted on.
 
-**The corpus is real-money tournament play** — `OPPONENT_MODEL_DESIGN.md` says so
-twice, in §2.1 and in its [Sources](#sources) entry, and warns that rates from it
-may not carry to cash play. In a tournament the seat count is not constant: it
-falls as players bust, tables break, and play reaches the final table and then
-heads-up. So any per-player rate averaged over such a corpus is **an average over
-a mixture of seat counts, weighted by however that particular tournament
-structure happened to distribute hands**. By
-[Table 3](#table-3-the-swing-that-costs-nothing-but-a-change-of-seat-count),
-mixtures over different seat counts can differ by more than the threshold's own
-distance from its neighbours.
+**Whose corpus that is matters, and it is not the one the design document
+describes.** The 51,377,820-game real-money **tournament** corpus that
+`OPPONENT_MODEL_DESIGN.md` §2.1 and its [Sources](#sources) entry describe is
+**Teofilo and Reis's own**. It is the source of the 4.52% showdown ratio this
+document leans on in [§2](#2-continuous-bet-sizing); it is
+**not** the source of the 72% / AF > 1 thresholds, which Teofilo and Reis report
+from Billings' thesis. The two must not be run together, and an earlier draft of
+this section did exactly that.
 
-The conclusion is not that the threshold is wrong. It is that **it is not a
-threshold for any particular seat count**, and so it cannot be corrected into one
-by any amount of arithmetic on this side. It is a starting value for the
+**So the thresholds' own corpus is unknown to this document.** Billings 2006 was
+not retrieved by either survey, so nothing here is known about its size, its
+stakes, its era, or — the point of this section — **the seat counts it
+contained**. What can still be said is structural and needs no knowledge of the
+corpus: a fold rate or an aggression factor averaged over any corpus is
+**an average over whatever mixture of seat counts that corpus happened to hold**,
+and by [Table 3](#table-3-the-swing-that-costs-nothing-but-a-change-of-seat-count)
+two different mixtures can differ by more than the threshold's own distance from
+its neighbours. Here the mixture is not merely varying, as it would be within a
+tournament; it is **unrecorded**, so the offset it induces cannot be signed, let
+alone sized.
+
+The conclusion is not that the threshold is wrong. It is that **it is not known
+to be a threshold for any particular seat count**, and so it cannot be corrected
+into one by any amount of arithmetic on this side. It is a starting value for the
 bootstrap and nothing more — which is what §4.4 already says, for different
 reasons, when it specifies that both splits are replaced by the bot's own
 population median once enough data exists. This section strengthens that
@@ -272,8 +316,7 @@ correctly.
 ### 1.6 What banding costs
 
 Splitting a statistic by seat-count band is not free, and the cost is exactly the
-arithmetic already in `OPPONENT_MODEL_DESIGN.md`
-`OPPONENT_MODEL_DESIGN.md` Table C: the opportunities needed for
+arithmetic already in `OPPONENT_MODEL_DESIGN.md` Table C: the opportunities needed for
 a confidence interval of a given half-width depend only on the target width and
 the anchor proportion, so **stratifying into `k` bands multiplies the hands
 needed by `k`, per band.** Four bands means four times the hands before any band
@@ -360,7 +403,7 @@ consequences, and the design document addresses none of them.
 3. **The engine's action set is discrete and the game's is not**, so opponents'
    bets will routinely fall outside it and must be mapped onto it. This is a
    named, published problem with a named, published solution, and it is currently
-   absent from the design document's `OPPONENT_MODEL_DESIGN.md` Engine requirements.
+   absent from the design document's Engine requirements.
 
 ### 2.2 Sizing as a signal about the opponent
 
@@ -556,12 +599,18 @@ at all is a poker judgment reserved to the engine.
 automatically better: [Waugh et al. 2009](#s-waugh2009) (**not retrieved during
 this survey**) report abstraction pathologies in extensive-form games, where
 refining an abstraction can produce a *worse*-performing strategy. The
-corroborating data point that was verified is that Pluribus used a small discrete
-set of bet sizes and beat elite professionals at six-player no-limit
-([Brown 2020](#s-brown2020), §6.6; **the exact count of sizes in its abstraction
-was not verified during this survey and no number is asserted here**). The
-recommendation is therefore "more than one size per spot, and measure", not
-"as many sizes as possible".
+corroborating data point usually reached for here — that Pluribus used a small
+discrete set of bet sizes and beat elite professionals at six-player no-limit —
+is **cited from memory and was not retrieved**
+([Pluribus's bet-size abstraction](#s-pluribus-sizing)): no web retrieval was
+available to this task, and `OPPONENT_MODEL_DESIGN.md`, which did retrieve
+[Brown 2020](#s-brown2020), does not state it. **Nothing here rests on it.** The
+recommendation — "more than one size per spot, and measure", not "as many sizes
+as possible" — stands on
+[Table 6](#table-6-pot-fraction-needed-to-reach-all-in-in-k-equal-bets)'s derived
+arithmetic for the lower end and on Waugh for the caution at the upper end, and
+E7 in [R10](#r10--add-three-engine-requirements-extension-opponent_model_designmd-engine-requirements)
+asks the engine for its own count rather than assuming anybody else's.
 
 ### 2.5 What sizing buckets cost
 
@@ -584,8 +633,8 @@ specified in `OPPONENT_MODEL_DESIGN.md` §4.2:
   can afford the resolution; a single opponent cannot. A two-way
   small-versus-large split at 0.70 of pot halves the cost and still separates the
   two ends of `OPPONENT_MODEL_DESIGN.md` Table A, where
-  break-even fold frequency differs by more than 17 percentage points between the
-  0.33 and 1.00 rows.
+  break-even fold frequency differs by **25.2 percentage points** between the
+  `0.33` row (24.8%) and the `1.00` row (50.0%).
 
 ---
 
@@ -636,12 +685,18 @@ played hands in that band, never by being seated. A coding task must not
 reinterpret "band" as "the current table", which would restrict the pool to the
 live field.
 
-Grounding for why this is necessary rather than tidy:
+Grounding, and the exact weight it carries:
 [Table 3](#table-3-the-swing-that-costs-nothing-but-a-change-of-seat-count) — the
-cross-band aggregate shift bound exceeds both the `0.28` split and the `0.15`
-flag margins — and [§1.5](#15-the-published-thresholds-are-themselves-table-size-mixtures),
-which shows the literature threshold is itself a seat-count mixture and so cannot
-serve as a per-band value.
+cross-band aggregate shift **bound** exceeds both the `0.28` split and the `0.15`
+flag margins, so a shift that matters is admitted, though a bound does not show
+one occurs ([§1.2](#12-why-vpip-is-not-comparable-across-seat-counts) names the
+Tier 0 measurement that would) — and
+[§1.5](#15-the-published-thresholds-are-themselves-table-size-mixtures), where the
+literature threshold turns out to be a mixture over an unknown set of seat counts
+and so cannot serve as a per-band value for any band. Banding a **population**
+baseline is cheap ([§1.6](#16-what-banding-costs)), which is why this is worth
+doing against an admitted possibility rather than a measured effect; banding the
+per-opponent counters is not, and R2 does not ask for it.
 
 ### R3 — Replace the `EP`/`MP`/`LP`/`SB`/`BB` context key with players-to-act-behind. *(Correction. §4.2.)*
 
@@ -684,26 +739,67 @@ Keep `STATION` / `ROCK` / `TAG` / `MANIAC` / `UNKNOWN` as the global vocabulary.
 Move the seat-count knowledge into the thresholds and the baselines, where it is
 cheap.
 
-### R6 — State the Tier 1 solve budget as a number and escalate it. *(Extension. §4.5.)*
+### R6 — Put the operator's compute cap beside the Tier 1 solve budget, and make the budget conditional on it. *(Extension. §4.5 and Engine requirements.)*
 
-§4.5 already requires that a counter-strategy be solved at the seat count it will
-be used at, and forbids loading one solved for a different size. Under the 2-to-9
-requirement that is **8 seat counts × 4 strategies (`S_BASE` plus three
-counters) = 32 solver runs**, against the 1 the document currently implies.
-Engine requirement E5 asks the cost of one run; 32 times that number is the real
-figure and it should be written beside E5. The band compromise — solving one
-representative seat count per band, 16 runs — contradicts §4.5's own prohibition
-and must not be adopted silently. See [Q1](#4-questions-for-the-operator).
+**The number itself needs no correcting.** §4.5 already requires a
+counter-strategy to be solved at the seat count it will be used at, forbids
+loading one solved for a different size, and already states the multiplier in
+full: **four strategies (`S_BASE` plus three counters) × eight seat counts = 32
+offline solver runs**. E5 already asks for the cost of one run *and* of 32. What
+is missing beside the number is the constraint it has to satisfy.
+
+**The constraint.** The operator's compute cap, recorded 2026-09-15: **no
+multi-day computing, and a playable bot must be reachable in hours on one
+laptop.** 32 runs fit inside that only if a single run finishes in **minutes on
+one laptop**. Nothing yet establishes that any available solver does; the design
+document's own §3.3 rules out the far end of that axis, Pluribus's 12,400 CPU
+core-hours *per strategy*, but rules out nothing in between. Three edits follow:
+
+- **Write the cap into E5, not just the multiplier.** E5's answer should be
+  pass/fail against "minutes per run on one laptop, and the whole set of 32
+  inside hours", rather than an open-ended cost in unspecified units.
+- **Make the per-seat-count solve plan conditional.** Until a solver meeting that
+  cap is identified, **the 32 runs are a requirement on the engine choice, not a
+  plan to execute with the vendored `poker_ai`.** `ENGINE_ALTERNATIVES.md` and
+  `RESOURCES_SOLVERS.md` — both surveys in progress — are what will establish
+  whether such a solver exists, and §4.5's budget should say so and point at
+  them.
+- **Do not treat banding as the escape.** Solving one representative seat count
+  per band, 16 runs, contradicts §4.5's own prohibition and must not be adopted
+  silently — and it does not rescue the budget anyway, because 16 multi-day runs
+  breach the cap exactly as 32 do. The cap is about the cost of *one* run first.
+
+See [Q4](#4-questions-for-the-operator).
 
 ### R7 — Cross-tabulate V5's bluff-frequency report by seat count. *(Extension. §6.)*
 
-V5 already reports bluff frequency broken down by the number of live opponents,
-which is the correct index
+**What exists today.** V5 is an exploitation A/B — `S_BASE` against the
+counter-strategy by hand parity, compared in bb/100 — and §6 gives it **one extra
+report** on top of that comparison: *bluff frequency broken down by the number of
+live opponents*. That index is field size `m`, which is the correct one
 ([§1.3](#13-table-size-versus-field-size-where-the-multiway-arithmetic-actually-attaches)).
-Add seat count as a second axis, so that the report distinguishes "the strategy
-bluffs correctly less into larger fields" from "the strategy solved for 9-max
-behaves differently three-way than the one solved for 4-max does". Both are
-worth knowing and the current single axis conflates them.
+The bb/100 comparison is not what this item touches; the extra report is.
+
+**What to add, stated in full so a later task need not infer it.** Make that
+report a two-way table rather than a single column. Both axes, explicitly:
+
+| Axis | Values | Where it comes from |
+| --- | --- | --- |
+| Field size `m` | live opponents at the moment of the bluffing decision, `1 … n−1` | the report's existing index; unchanged |
+| Seat count `n` | players dealt in at the start of the hand, `2 … 9`, **and** which strategy was loaded if it was solved for a different `n` | the `HandRecord`'s seat count, which [R1](#r1--define-the-seat-count-band-as-a-context-value-not-a-new-table-extension-42) makes an explicit field |
+
+For each `(n, m)` cell with `m ≤ n − 1`, report **the bot's bluff frequency and
+the count of bluffing opportunities behind it**, marking as "insufficient" rather
+than as a rate any cell whose opportunity count is too low to read. Keep both
+margins: the `m` margin summed over `n` **is** today's report, so nothing is
+lost, and the `n` margin is the new one.
+
+**Why both.** The single axis conflates two different findings: "the strategy
+bluffs correctly less into larger fields", which is the check §2.4 wants and is a
+property of `m`; and "the strategy solved for 9-max behaves differently
+three-way than the one solved for 4-max does", which is a property of `n` and is
+invisible until the cells are separated. Both are worth knowing, and only the
+first is currently visible.
 
 ### R8 — Add the sizing stats to the stat table. *(Extension. §4.2 and §2.3 of the design document.)*
 
@@ -756,10 +852,31 @@ fire on noise.
 | E9 | Can the engine be run at **every seat count from 2 to 9**, and does the abstraction change with seat count? | The whole 2-to-9 requirement; R6's solve budget |
 
 E7 and E9 are answerable without writing any code and should be answered before
-the Tier 1 solve budget in R6 is committed to. If E7's answer is "one size", **the
-correct response is to report that and stop**, exactly as §4.5 instructs for E2 —
-not to add a size randomiser outside the engine, which would be AI-written code
-deciding a poker action.
+the Tier 1 solve budget in R6 is committed to. **Each of the three carries its own
+"and if the answer is no, then what", because that is the point at which somebody
+will otherwise reach for a patch outside the engine.**
+
+- **If E7's answer is "one size": report it and stop**, exactly as §4.5 instructs
+  for E2 — not a size randomiser outside the engine, which would be AI-written
+  code deciding a poker action.
+- **If E8's answer is "no translation" or "a deterministic one": the same shape
+  of response, and for the same reason.** Deciding which abstraction size an
+  off-abstraction bet *counts as* is reading a poker action, so a translation
+  layer written here would be AI-written code making a poker judgment, and
+  `CLAUDE.md`'s forefront rule forbids it in the same breath as it forbids the
+  randomiser above. The rule's own instruction is what applies: **adapt the
+  engine instead.** In order — (1) prefer an engine that already translates
+  randomly, which is a point for E9's survey and for `ENGINE_ALTERNATIVES.md` to
+  weigh; (2) failing that, implement the pseudo-harmonic mapping
+  ([Ganzfried & Sandholm 2013](#s-ganzfried2013), **formula not verified — confirm
+  against the primary text first**) *inside the engine's own translation code*, as
+  a change to the vendored engine covered by its tests, never as a wrapper in the
+  integration layer that rewrites the opponent's bet before the engine sees it;
+  (3) if neither is possible, **report that and stop**, as for E7.
+- **If E9's answer is "not at every seat count": report it and stop** for the seat
+  counts it cannot reach, and fall back to `S_BASE` there, which §4.5 already
+  makes the default for anything uncertain. Do not simulate a missing seat count
+  by loading a strategy solved for another one; §4.5 forbids exactly that.
 
 ### R11 — Write the sampling rule into the design as a rule, not an assumption. *(Correction. §4.1 and §4.5.)*
 
@@ -800,11 +917,18 @@ config.
 ### R14 — Record the seat-count mixture V4 measured. *(Extension. §6.)*
 
 V4 checks `VPIP_SPLIT` and `AFQ_SPLIT` against the literature thresholds on
-logged hands. Because those thresholds descend from a tournament corpus whose
-seat count varies within it
-([§1.5](#15-the-published-thresholds-are-themselves-table-size-mixtures)), V4
-must report the seat-count mixture of the population it measured alongside the
-disagreement rate, or the disagreement cannot be interpreted. V4 remains
+logged hands. Those thresholds descend from a corpus this project has never
+seen — Billings' thesis was retrieved by neither survey, so **the seat counts it
+contained are unknown**, and it is *not* the tournament corpus
+`OPPONENT_MODEL_DESIGN.md` §2.1 describes, which is Teofilo and Reis's own and
+supplies the 4.52% ratio instead
+([§1.5](#15-the-published-thresholds-are-themselves-table-size-mixtures)).
+Because one side of the comparison has an unknown seat-count mixture, the other
+side must have a recorded one: V4 must report the seat-count mixture of the
+population **it** measured alongside the disagreement rate. Without it, a gap
+between the bot's population and the threshold cannot be told apart from a
+difference in the two mixtures, and the disagreement cannot be interpreted at
+all. V4 remains
 superseded once the per-band population medians replace both splits, as §4.4
 already specifies.
 
@@ -812,36 +936,63 @@ already specifies.
 
 ## 4. Questions for the operator
 
-Recommendation first, as the global rules require.
+Recommendation first, as the global rules require. **These are numbered Q4 and
+Q5 because `OPPONENT_MODEL_DESIGN.md` §7 already holds Q1, Q2 and Q3; they are
+additions to that list, not replacements for it, and keep these numbers when the
+two lists are merged.**
 
-**Q1 — How many seat counts should the Tier 1 solve actually cover?**
+**Q4 — How many seat counts should the Tier 1 solve cover, and with which
+solver?**
 `OPPONENT_MODEL_DESIGN.md` §4.5 forbids loading a counter-strategy solved for a
-different seat count. Honouring that across 2 to 9 players means 32 solver runs
-(R6), and the cost of a single run is engine requirement E5, still unanswered.
-*Recommendation:* answer E5 first, then solve the seat counts the bot will
-actually sit at most, in order, and have the bot decline to load a counter-strategy
-at an unsolved seat count — falling back to `S_BASE`, which §4.5 already makes
-the default for anything uncertain. That keeps the prohibition intact and makes
-the cost incremental rather than up-front. *Alternative:* solve one representative
-seat count per band and accept a known mismatch, which would require §4.5's
-prohibition to be relaxed deliberately and in writing. **Urgency: not blocking.**
-Tier 0 — the whole measurement layer, and everything in R1 through R4 and R8 —
-needs no solver at all.
+different seat count, and states the resulting budget: 32 solver runs, four
+strategies × eight seat counts. Engine requirement E5 asks what one run costs and
+is still unanswered. **The operator's compute cap, recorded 2026-09-15, is what
+decides this question: no multi-day computing, and a playable bot must be
+reachable in hours on one laptop.** Thirty-two runs are inside that cap only if
+one run takes minutes on one laptop, so the question is not only "how many seat
+counts" but "with which solver, if any".
 
-**Q2 — Does "2 to 9 players" change the project's stated goal?**
-`CLAUDE.md` in this repository states the goal as beating humans "at a table of 3
-or more", and `OPPONENT_MODEL_DESIGN.md` §1 rests its case against pursuing
-game-theory-optimal play on the multiplayer result in
-[Brown 2020](#s-brown2020) §6.6, which is explicitly about tables of three or
-more. The new requirement includes two-handed play, where that argument does not
-apply and the opposite conclusion holds
+*Recommendation:* treat the 32-run budget as **a requirement the engine choice
+has to meet, not a plan to execute with the vendored `poker_ai`** (R6). Answer E5
+against the cap — minutes per run on one laptop, pass or fail — using the two
+surveys already in progress, `ENGINE_ALTERNATIVES.md` and `RESOURCES_SOLVERS.md`.
+If something passes, solve the seat counts the bot will actually sit at most, in
+order, and have the bot decline to load a counter-strategy at an unsolved seat
+count, falling back to `S_BASE`, which §4.5 already makes the default for
+anything uncertain; that keeps the prohibition intact and makes the cost
+incremental rather than up-front. If nothing passes, Tier 1 as specified is not
+reachable on this hardware, and the honest responses are §4.5's own — narrow the
+seat counts Tier 1 covers, or cut buckets — never a multi-day solve, and never a
+strategy loaded at a table size it was not solved for.
+
+*Alternative:* solve one representative seat count per band and accept a known
+mismatch. That would require §4.5's prohibition to be relaxed deliberately and in
+writing, and it still breaches the cap if a single run takes days.
+
+**Urgency: not blocking for Tier 0** — the whole measurement layer, and
+everything in R1 through R4 and R8, needs no solver at all. **Blocking for
+Tier 1**, which should not be commissioned before the cap question has an answer,
+since the answer may change which engine the project is built on.
+
+**Q5 — Does "2 to 9 players" change the project's stated goal?**
+`OPPONENT_MODEL_DESIGN.md` §1 has already been brought to the new requirement: it
+now states the goal as beating the humans at the table "at **every table size
+from 2 to 9 players**", and notes that two players is the one size where the
+equilibrium guarantee exists. `CLAUDE.md` in this repository has not: it still
+states the goal as beating humans "at a table of 3 or more". **The two now
+disagree, and `CLAUDE.md` is the authority of the two.** The design document's
+case against pursuing game-theory-optimal play still rests on the multiplayer
+result in [Brown 2020](#s-brown2020) §6.6, which is explicitly about tables of
+three or more and does not reach two-handed play, where the opposite conclusion
+holds
 ([§1.7](#17-heads-up-is-a-different-game-and-it-inverts-the-designs-founding-argument)).
-*Recommendation:* keep the goal as written and treat two-handed play as a
-supported but conservative mode — tight deviation cap (R13), blueprint-first —
-rather than rewriting the project's premise. **This document does not edit
-`CLAUDE.md`**; the change, if any, is the operator's and the stoker's. **Urgency:
-low, but it should be settled before Tier 1 solves are commissioned**, because it
-decides whether `n = 2` is in the solve budget in Q1 at all.
+*Recommendation:* settle it in `CLAUDE.md`'s favour on scope wording but keep the
+substance — support two-handed play as a deliberately conservative mode, tight
+deviation cap (R13), blueprint-first — rather than rewriting the project's
+premise around it. **This document does not edit `CLAUDE.md`**; the change, if
+any, is the operator's and the stoker's. **Urgency: low, but settle it before
+Tier 1 solves are commissioned**, because it decides whether `n = 2` is in the
+solve budget in Q4 at all.
 
 ---
 
@@ -856,11 +1007,13 @@ this document relies on them only for claims that document already establishes.
 Large Adversarial Imperfect-Information Games*, PhD thesis, Carnegie Mellon
 University, CMU-CS-20-132.
 `http://reports-archive.adm.cs.cmu.edu/anon/2020/CMU-CS-20-132.pdf`
-Used here for: the multiplayer/two-player boundary in the equilibrium argument
-(§6.6), Libratus's position on exploitation (§6.4), and Pluribus's use of a small
-discrete bet-size abstraction at six-player no-limit (§6.6). **The exact number
-of bet sizes in that abstraction was not verified during this survey and no
-figure is asserted.**
+Used here for two claims, and only two, both of which
+`OPPONENT_MODEL_DESIGN.md` quotes from the retrieved text: the
+multiplayer/two-player boundary in the equilibrium argument (§6.6), and
+Libratus's position on exploitation (§6.4). **Anything this document says about
+Pluribus's *bet sizing* is not among them** — see
+[Pluribus's bet-size abstraction](#s-pluribus-sizing) in the memory-cited list
+below.
 
 <a id="s-ganzfried2011"></a>**[Ganzfried & Sandholm 2011]** Sam Ganzfried and
 Tuomas Sandholm, "Game Theory-Based Opponent Modeling in Large
@@ -880,27 +1033,44 @@ which R13 turns into a per-band table.
 Paulo Reis, "Identifying Player's Strategies in No Limit Texas Hold'em Poker
 through the Analysis of Individual Moves", *EPIA 2011*.
 `https://arxiv.org/pdf/1301.5943`
-Used here for: the 4.52% showdown ratio, and — load-bearing for
-[§1.5](#15-the-published-thresholds-are-themselves-table-size-mixtures) — the
-fact, already established in `OPPONENT_MODEL_DESIGN.md` §2.1 and its own source
-note, that the corpus is real-money **tournament** play. That the seat count
-varies within a tournament is a property of the format, not a claim drawn from
-the paper.
-
-<a id="s-billings2006"></a>**[Billings 2006]** Darse Billings, *Algorithms and
-Assessment in Computer Poker*, PhD thesis, University of Alberta. The origin of
-the 72% / AF > 1 thresholds. **Cited at third hand here** — via Teofilo and Reis,
-who cite it, and the thesis itself was not retrieved by either survey.
+Used here for: the 4.52% showdown ratio, which comes from **their own** corpus of
+real-money **tournament** logs (§5, Table 1), as already established in
+`OPPONENT_MODEL_DESIGN.md` §2.1 and its source note.
+**That corpus is not the source of the 72% / AF > 1 thresholds**, which Teofilo
+and Reis report from Billings; the two are separate and
+[§1.5](#15-the-published-thresholds-are-themselves-table-size-mixtures) turns on
+keeping them apart.
 
 ---
 
 **Cited from memory and NOT retrieved during this survey.** No web retrieval was
-available to this task. Each of the following is a work this survey is confident
-exists, but no page, section, or wording was verified, and **a later task must
+available to this task. Each of the following is a work — or, in one case, a
+claim about a published system — that this survey is confident exists, but no
+page, section, or wording was verified, and **a later task must
 confirm any of them before an implementation depends on it.** Nothing in
 [§3](#3-recommended-reconciliation-with-opponent_model_designmd) depends on one
 of these alone — each recommendation is also supported by derived arithmetic or
 by a retrieved source.
+
+<a id="s-billings2006"></a>**[Billings 2006]** Darse Billings, *Algorithms and
+Assessment in Computer Poker*, PhD thesis, University of Alberta. The origin of
+the 72% / AF > 1 thresholds. **Cited at third hand** — via
+[Teofilo & Reis 2011](#s-teofilo2011), who cite it; the thesis itself was
+retrieved by neither survey. **Consequently this document knows nothing about the
+corpus those thresholds were fitted on, including the seat counts it contained**,
+and [§1.5](#15-the-published-thresholds-are-themselves-table-size-mixtures) rests
+on that unknown rather than on any property of Teofilo and Reis's tournament
+corpus.
+
+<a id="s-pluribus-sizing"></a>**[Pluribus's bet-size abstraction]** The claim that
+Pluribus used a small discrete set of bet sizes while beating elite professionals
+at six-player no-limit. Presumably in [Brown 2020](#s-brown2020) §6.6 or the
+underlying *Science* paper, but **no page was read for it by this task and
+`OPPONENT_MODEL_DESIGN.md` does not state it**, so it is recorded here rather
+than beside the retrieved uses of that thesis. No count of sizes is asserted, and
+nothing in [§3](#3-recommended-reconciliation-with-opponent_model_designmd)
+depends on the claim at all — see
+[§2.4](#24-what-the-strategy-literature-says-about-choosing-sizes).
 
 <a id="s-ganzfried2013"></a>**[Ganzfried & Sandholm 2013]** Sam Ganzfried and
 Tuomas Sandholm, "Action Translation in Extensive-Form Games with Large Action
@@ -964,14 +1134,15 @@ bands the bot's own measured baseline instead of hardcoding one per band.
 | [Table 3](#table-3-the-swing-that-costs-nothing-but-a-change-of-seat-count) — the shift bounds | Computed by script 2026-09-15 as `TV × spread`, the standard total-variation bound. **The spread column (0.30 / 0.50 / 0.70) is illustrative, not measured or cited**, on the same footing as the `p̂` anchors in `OPPONENT_MODEL_DESIGN.md` Table C |
 | The `4.5×` hands multiplier for a blind-only stat at 9-max versus heads-up | Derived; `(9/2)/(2/2) = 4.5`. Follows from the `2/n` column of Table 1 |
 | [Table 4](#table-4-the-fragmentation-multiplier) — the `k×` multiplier | Derived: the opportunity count for a fixed interval half-width does not depend on stratification, so `k` strata need `k` times the hands. **The 323 and 640 base values are inherited from `OPPONENT_MODEL_DESIGN.md` Table C and are illustrative there; the products inherit that status** |
-| 32 solver runs (R6) and 16 under banding | Derived; 8 seat counts × 4 strategies, and 4 bands × 4 strategies. Computed 2026-09-15 |
+| 32 solver runs (R6) and 16 under banding | Derived; 8 seat counts × 4 strategies, and 4 bands × 4 strategies. Computed 2026-09-15. `OPPONENT_MODEL_DESIGN.md` §4.5 and E5 now state the same 32 independently |
+| The compute cap R6 and [Q4](#4-questions-for-the-operator) hold the solve budget to — hours on one laptop, no multi-day computing | **The operator's own requirement, recorded 2026-09-15.** Not derived and not a measurement: it is a constraint stated by the operator, and it is repeated here verbatim in substance rather than paraphrased into a number of hours |
 | [Table 5](#table-5-what-mis-reading-a-bet-size-costs-exactly) — required pot equity `B/(P+2B)` and the error columns | Computed by script 2026-09-15. Elementary pot-odds arithmetic, `P = 1` |
 | [Table 6](#table-6-pot-fraction-needed-to-reach-all-in-in-k-equal-bets) — `f` from `(1+2f)^k = 1+2·SPR` | Derived and computed by script 2026-09-15. Each bet-and-call multiplies the pot by `(1+2f)`; elementary |
-| The 19.9% / 25.0% / 30.0% / 33.3% bluff shares and the 17pp spread cited in [§2.5](#25-what-sizing-buckets-cost) | Read from `OPPONENT_MODEL_DESIGN.md` `OPPONENT_MODEL_DESIGN.md` Table A, which computes them as `s/(1+2s)` and `s/(1+s)`. Re-derived here and matched |
+| The 19.9% / 25.0% / 30.0% / 33.3% bluff shares, and the **25.2pp** break-even-fold spread cited in [§2.5](#25-what-sizing-buckets-cost) | Read from `OPPONENT_MODEL_DESIGN.md` Table A, which computes them as `s/(1+2s)` and `s/(1+s)`. Re-derived here and matched. The spread is that table's `1.00` row (50.0%) minus its `0.33` row (24.8%) |
 | The pseudo-harmonic formula `((B−x)(1+A))/((B−A)(1+x))` | [Ganzfried & Sandholm 2013](#s-ganzfried2013). **Quoted from memory; NOT retrieved or verified. Confirm against the primary text before implementing** |
 | 4.52% showdown ratio | [Teofilo & Reis 2011](#s-teofilo2011), Table 1, as read and reported by `OPPONENT_MODEL_DESIGN.md` |
 | Band boundaries `HU`=2, `SHORT`=3–4, `MID`=5–6, `FULL`=7–9 (R1) | **Unmeasured design choice.** Guided by Table 2's within-band versus across-band distances and by [§1.7](#17-heads-up-is-a-different-game-and-it-inverts-the-designs-founding-argument)'s requirement that `n=2` stand alone. Belongs in config |
 | Size-bucket boundaries 0.40 / 0.70 / 1.10 of pot, and the two-bucket split at 0.70 (R8) | **Unmeasured design choices**, placed to straddle the rows of `OPPONENT_MODEL_DESIGN.md` Table A. Belong in config |
 | Flag margins `0.15` and confidence gates `0.6` in R9 | **Unmeasured starting values**, copied from the existing flag table in `OPPONENT_MODEL_DESIGN.md` §4.4 for consistency, and carrying the same status there and here |
-| Number of bet sizes in Pluribus's action abstraction | **Not asserted.** The claim used is only that the set was small and discrete, from [Brown 2020](#s-brown2020) §6.6; the count was not verified during this survey |
+| Pluribus's use of a small discrete bet-size abstraction, and the number of sizes in it | **Cited from memory and NOT retrieved; the count is not asserted at all.** `OPPONENT_MODEL_DESIGN.md` does not state the claim and this task had no web access, so it is listed under [Pluribus's bet-size abstraction](#s-pluribus-sizing) in the memory-cited sources. No recommendation here depends on it |
 | Any table-size-specific VPIP, PFR or aggression norm | **Not asserted anywhere in this document.** See [Sources](#sources), "Deliberately not cited" |
