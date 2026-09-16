@@ -1,2 +1,3 @@
-chooser (seat 0, 0.25s/decision, fcpa) vs 5 random: n=3412 hands  mean=+22.80 bb/hand  sd=230.4 bb  95% CI = +15.07 .. +30.53 bb/hand (half-width 7.73) [900s, 3550 decisions, seed=20260915]
-    hands needed for a half-width of 1 bb/hand at this spread: 203,928
+# 1-minute load average at start: 3.98
+# uptime: 21:42  up 43 days,  3:58, 2 users, load averages: 3.98 4.13 4.32
+# command: ../../.venv-engines/bin/python bench_play.py headtohead 900

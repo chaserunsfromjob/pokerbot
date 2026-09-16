@@ -1,1 +1,7 @@
 # load 4.55 > 4.0, waiting 60s (0 s so far)
+# 1-minute load average at start: 3.72
+# uptime: 21:42  up 43 days,  3:58, 2 users, load averages: 3.72 4.08 4.31
+# command: ../../.venv-engines/bin/python bench_play.py variance 100000
+random vs random, seat 0: n=100000 hands  mean=-1.61 bb/hand  sd=222.8 bb  95% CI = -2.99 .. -0.23 bb/hand (half-width 1.38) [2.2s, seed=20260915]
+    hands needed for a half-width of 1 bb/hand at this spread: 190,748
+# 1-minute load average at end: 3.72
