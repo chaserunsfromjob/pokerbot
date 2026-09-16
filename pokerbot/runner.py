@@ -33,6 +33,8 @@ def provenance():
     return {"git_commit": git("rev-parse", "HEAD"), "git_status": git("status", "--porcelain"),
             "source_sha256": hashes, "python": platform.python_version(),
             "platform": platform.platform(), "open_spiel": version("open-spiel"),
+            "rules_engine": "pokerkit", "pokerkit": version("pokerkit"),
+            "payout_rule": "fractional",
             "numpy": version("numpy"), "scipy": version("scipy")}
 
 
@@ -84,7 +86,7 @@ def session(*, seats, hands, seed, config, pool, log_path=None,
                 hand.apply(result)
                 if len(hand.events) > 10000:
                     raise RuntimeError("Hand exceeded decision limit")
-            total += hand.state.returns()[seated.index("hero")] / 100
+            total += hand.returns()[seated.index("hero")] / 100
             profiles.record(h, hand.events)
             if hand_log:
                 hand_log.write(json.dumps({"hand_id": h, **hand.record()}) + "\n")

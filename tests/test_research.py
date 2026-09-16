@@ -7,7 +7,7 @@ import pytest
 from treys import Card, Evaluator
 
 from pokerbot.adapters import ProcessPolicy
-from pokerbot.engine import Decision, Hand, card_id, replay
+from pokerbot.engine import Decision, Hand, OpenSpielHand, card_id, replay
 from pokerbot.equity import estimate, showdown_share
 from pokerbot.policies import EquityConfig, EquityPolicy, menu
 from pokerbot.profiles import Profiles
@@ -33,7 +33,7 @@ def test_random_mechanics_and_replay(n):
         while not hand.terminal:
             obs = hand.observation()
             assert obs.pot == sum(p.contribution for p in obs.players)
-            assert set(menu(obs)).issubset(hand.state.legal_actions())
+            assert all(hand.is_legal(a) for a in menu(obs))
             assert set(c for c in obs.hole_cards).isdisjoint(obs.board)
             hand.apply(Decision(rng.choice(menu(obs)), {}))
             assert len(hand.events) < 10000
@@ -72,7 +72,7 @@ def test_side_pots_and_unmatched_return():
     hand = Hand(["aces", "kings", "queens"], [100, 200, 300], deck_for(holdings, board))
     hand.apply(Decision(300, {}))
     finish_calls(hand)
-    assert hand.state.returns() == [200, 0, -200]
+    assert hand.returns() == [200, 0, -200]
 
 
 def test_folded_best_hand_is_ineligible():
@@ -82,7 +82,7 @@ def test_folded_best_hand_is_ineligible():
     hand.apply(Decision(300, {}))
     hand.apply(Decision(0, {}))
     finish_calls(hand)
-    assert hand.state.returns() == [-50, 250, -200]
+    assert hand.returns() == [-50, 250, -200]
 
 
 def test_exact_postflop_increment_and_heads_up_order():
@@ -100,7 +100,6 @@ def test_exact_postflop_increment_and_heads_up_order():
     assert hand.events[-1].amount == 137
 
 
-@pytest.mark.xfail(strict=True, reason="OpenSpiel 2.0.2 reopens action after an insufficient all-in raise; promotion blocker")
 def test_short_all_in_does_not_reopen_prior_raiser():
     hand = Hand(["sb", "bb", "button"], [10000, 250, 10000])
     hand.apply(Decision(200, {}))
@@ -109,6 +108,88 @@ def test_short_all_in_does_not_reopen_prior_raiser():
     assert hand.observation().actor == 2
     assert hand.observation().legal.call_cost == 50
     assert hand.observation().legal.min_raise_to is None
+    with pytest.raises(ValueError, match="Illegal action"):
+        hand.apply(Decision(350, {}))
+
+
+def test_cumulative_short_all_ins_reopen_when_full_increment_reached():
+    hand = Hand(["sb", "bb", "utg", "button"], [300, 10000, 10000, 250])
+    for action in (200, 250, 300, 1):
+        hand.apply(Decision(action, {}))
+    obs = hand.observation()
+    assert obs.actor == 2
+    assert obs.legal.min_raise_to == 400
+    hand.apply(Decision(400, {}))
+    assert hand.events[-1].amount == 200
+
+
+def test_postflop_short_all_in_and_whole_hand_raise_translation():
+    hand = Hand(["sb", "bb", "button"], [10000, 350, 10000])
+    for action in (1, 1, 1, 300, 350, 1):
+        hand.apply(Decision(action, {}))
+    obs = hand.observation()
+    assert obs.actor == 0 and obs.street == 1
+    assert obs.legal.call_cost == 50 and obs.legal.min_raise_to is None
+    hand.apply(Decision(1, {}))
+    assert hand.observation().street == 2
+    assert hand.observation().legal.min_raise_to == 450
+    assert len(hand.observation().opponents) == 2
+    assert any(p.all_in for p in hand.observation().opponents)
+
+
+def test_fractional_split_preserves_original_odd_pot_convention():
+    holdings = [[r + "c", r + "d"] for r in "23456"]
+    board = ["Ts", "Js", "Qs", "Ks", "As"]
+    for cls in (Hand, OpenSpielHand):
+        hand = cls(list("abcde"), deck=deck_for(holdings, board))
+        for action in [1] * 5 + [200, 0, 0, 1, 1]:
+            hand.apply(Decision(action, {}))
+        finish_calls(hand)
+        # 800 chips split three ways; folded 100-chip contributions remain dead money.
+        assert hand.returns() == pytest.approx([200 / 3, -100, -100, 200 / 3, 200 / 3])
+        replay(json.loads(json.dumps(hand.record())))
+
+
+@pytest.mark.parametrize("n", range(2, 10))
+def test_unequal_all_in_payouts_against_independent_layered_oracle(n):
+    from pokerbot.engine import RANKS, SUITS
+    rng = random.Random(1800 + n)
+    evaluator = Evaluator()
+    for _ in range(20):
+        drawn = rng.sample([r + s for r in RANKS for s in SUITS], 2 * n + 5)
+        holdings = [drawn[2*i:2*i+2] for i in range(n)]
+        board = drawn[-5:]
+        stacks = [rng.choice([100, 125, 250, 777, 1000, 10000]) for _ in range(n)]
+        ranks = [evaluator.evaluate([Card.new(c) for c in board], [Card.new(c) for c in h]) for h in holdings]
+        expected = [-s for s in stacks]
+        previous = 0
+        for level in sorted(set(stacks)):
+            eligible = [i for i, stack in enumerate(stacks) if stack >= level]
+            winners = [i for i in eligible if ranks[i] == min(ranks[j] for j in eligible)]
+            pot = (level - previous) * len(eligible)
+            for winner in winners:
+                expected[winner] += pot / len(winners)
+            previous = level
+        hand = Hand([str(i) for i in range(n)], stacks, deck_for(holdings, board))
+        while not hand.terminal:
+            legal = hand.observation().legal
+            hand.apply(Decision(legal.max_raise_to if legal.min_raise_to is not None else 1, {}))
+        assert hand.returns() == pytest.approx(expected)
+
+
+def test_old_unversioned_replays_use_the_historical_engine():
+    hand = OpenSpielHand(list("abc"), seed=44)
+    finish_calls(hand)
+    record = hand.record()
+    record.pop("engine")
+    assert isinstance(replay(record), OpenSpielHand)
+
+
+def test_changing_only_future_cards_preserves_current_observation():
+    hand = Hand(list("abcdef"), seed=4)
+    deck = hand.deck.copy()
+    deck[-2], deck[-1] = deck[-1], deck[-2]
+    assert Hand(hand.names, deck=deck).observation() == hand.observation()
 
 
 def test_independent_pokerkit_confirms_short_all_in_rule():
@@ -183,10 +264,11 @@ def test_statistical_units_are_independent_trials():
         estimate(["Ac", "Ac"], [], 3, 1, random.Random(1))
 
 
-def test_confirmation_cannot_ignore_known_mechanics_defect(tmp_path):
-    from pokerbot.benchmark import create_confirmation
+def test_confirmation_cannot_ignore_known_mechanics_defect(tmp_path, monkeypatch):
+    from pokerbot import benchmark
+    monkeypatch.setattr(benchmark, "Hand", OpenSpielHand)
     with pytest.raises(RuntimeError, match="short all-in"):
-        create_confirmation(tmp_path / "confirm", EquityConfig())
+        benchmark.create_confirmation(tmp_path / "confirm", EquityConfig())
     assert not (tmp_path / "confirm").exists()
 
 

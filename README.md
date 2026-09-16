@@ -26,11 +26,24 @@ replay logs are privileged host data; the policy interface receives only its
 own cards and public state. Profiles are stored separately and isolated by
 session. Runs record parameters, source hashes, versions, seeds and latency.
 
-**Not yet validated for strength:** a demonstrated OpenSpiel short-all-in
-reopening defect blocks confirmation (`python -m pokerbot check-gates`). The
-smoke tournament runs for diagnosis, and its returns must not be promoted as
-evidence of a correct or strong bot. Generic process adapters are implemented;
-native NoRegrets/dickreuter policy bridges and trained artifacts are not.
+PokerKit now referees betting and payouts after independent tests exposed an
+OpenSpiel short-all-in reopening defect. OpenSpiel still supplies the frozen
+equity sampler and replays old logs. The benchmark retains fractional split-pot
+payouts; integer odd-chip allocation requires a separate class-app rules profile.
+Run `python -m pokerbot check-gates` for the focused mechanics checks.
+
+**Not yet validated for strength:** mechanics tests pass, but no candidate has
+passed the held-out performance benchmark. Generic process adapters are
+implemented; native NoRegrets/dickreuter policy bridges and trained artifacts
+are not. Run a bounded development sweep with:
+
+```sh
+.venv/bin/python research/parameter_screen.py --out runs/my-parameter-screen
+```
+
+The sweep resumes completed sessions when rerun with the same source and
+configuration. It leaves confirmation deals untouched and makes no promotion
+decision.
 
 What the borrowed poker engine is, how to run it, and what it would cost to move
 it from its 20-card deck to a normal 52-card one: `REFERENCE_NOTES.md`.

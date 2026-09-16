@@ -1,0 +1,639 @@
+{
+  "status": "development screening; no promotion decision",
+  "hands": 5400,
+  "paired_gain_bb_per_100": {
+    "original": {
+      "6": {
+        "mean": 0.0,
+        "low": 0.0,
+        "high": 0.0,
+        "trials": 3
+      },
+      "7": {
+        "mean": 0.0,
+        "low": 0.0,
+        "high": 0.0,
+        "trials": 3
+      },
+      "8": {
+        "mean": 0.0,
+        "low": 0.0,
+        "high": 0.0,
+        "trials": 3
+      },
+      "9": {
+        "mean": 0.0,
+        "low": 0.0,
+        "high": 0.0,
+        "trials": 3
+      }
+    },
+    "selective_raises": {
+      "6": {
+        "mean": 65.85648148148134,
+        "low": -231.80667467071385,
+        "high": 363.51963763367655,
+        "trials": 3
+      },
+      "7": {
+        "mean": 32.99206349206344,
+        "low": -896.3726720236459,
+        "high": 962.3567990077729,
+        "trials": 3
+      },
+      "8": {
+        "mean": -28.211805555555582,
+        "low": -149.59740774032784,
+        "high": 93.17379662921668,
+        "trials": 3
+      },
+      "9": {
+        "mean": 145.29320987654322,
+        "low": -422.58514892912365,
+        "high": 713.17156868221,
+        "trials": 3
+      }
+    },
+    "selective_calls": {
+      "6": {
+        "mean": -455.5555555555556,
+        "low": -2734.1742614154223,
+        "high": 1823.063150304311,
+        "trials": 3
+      },
+      "7": {
+        "mean": -575.4404761904763,
+        "low": -1933.655093916489,
+        "high": 782.7741415355366,
+        "trials": 3
+      },
+      "8": {
+        "mean": -382.2916666666667,
+        "low": -912.5171107076778,
+        "high": 147.93377737434452,
+        "trials": 3
+      },
+      "9": {
+        "mean": -68.28703703703705,
+        "low": -791.6311991938217,
+        "high": 655.0571251197475,
+        "trials": 3
+      }
+    },
+    "selective_both": {
+      "6": {
+        "mean": -434.2592592592593,
+        "low": -2780.679513810527,
+        "high": 1912.1609952920087,
+        "trials": 3
+      },
+      "7": {
+        "mean": -581.5912698412699,
+        "low": -2241.051573211019,
+        "high": 1077.8690335284791,
+        "trials": 3
+      },
+      "8": {
+        "mean": -239.75694444444446,
+        "low": -1281.03354538649,
+        "high": 801.5196564976012,
+        "trials": 3
+      },
+      "9": {
+        "mean": 70.52469135802471,
+        "low": -1131.378093058309,
+        "high": 1272.4274757743585,
+        "trials": 3
+      }
+    },
+    "more_value_raises": {
+      "6": {
+        "mean": 74.01388888888887,
+        "low": -578.6483367019398,
+        "high": 726.6761144797176,
+        "trials": 3
+      },
+      "7": {
+        "mean": 65.62698412698404,
+        "low": -619.9188681183487,
+        "high": 751.1728363723169,
+        "trials": 3
+      },
+      "8": {
+        "mean": -0.9548611111111048,
+        "low": -5.063296877364904,
+        "high": 3.153574655142694,
+        "trials": 3
+      },
+      "9": {
+        "mean": 108.33333333333331,
+        "low": -495.11926737265134,
+        "high": 711.7859340393179,
+        "trials": 3
+      }
+    }
+  },
+  "rows": [
+    {
+      "seats": 6,
+      "trial": 0,
+      "variant": "original",
+      "bb_per_100": 1205.2083333333333,
+      "delta": 0.0
+    },
+    {
+      "seats": 6,
+      "trial": 0,
+      "variant": "selective_raises",
+      "bb_per_100": 1205.2083333333333,
+      "delta": 0.0
+    },
+    {
+      "seats": 6,
+      "trial": 0,
+      "variant": "selective_calls",
+      "bb_per_100": 1209.7222222222222,
+      "delta": 4.513888888888914
+    },
+    {
+      "seats": 6,
+      "trial": 0,
+      "variant": "selective_both",
+      "bb_per_100": 1209.7222222222222,
+      "delta": 4.513888888888914
+    },
+    {
+      "seats": 6,
+      "trial": 0,
+      "variant": "more_value_raises",
+      "bb_per_100": 1573.263888888889,
+      "delta": 368.05555555555566
+    },
+    {
+      "seats": 6,
+      "trial": 1,
+      "variant": "original",
+      "bb_per_100": 2329.8611111111113,
+      "delta": 0.0
+    },
+    {
+      "seats": 6,
+      "trial": 1,
+      "variant": "selective_raises",
+      "bb_per_100": 2323.2638888888887,
+      "delta": -6.597222222222626
+    },
+    {
+      "seats": 6,
+      "trial": 1,
+      "variant": "selective_calls",
+      "bb_per_100": 818.0555555555555,
+      "delta": -1511.8055555555557
+    },
+    {
+      "seats": 6,
+      "trial": 1,
+      "variant": "selective_both",
+      "bb_per_100": 811.4583333333334,
+      "delta": -1518.4027777777778
+    },
+    {
+      "seats": 6,
+      "trial": 1,
+      "variant": "more_value_raises",
+      "bb_per_100": 2321.527777777778,
+      "delta": -8.333333333333485
+    },
+    {
+      "seats": 6,
+      "trial": 2,
+      "variant": "original",
+      "bb_per_100": 297.9166666666667,
+      "delta": 0.0
+    },
+    {
+      "seats": 6,
+      "trial": 2,
+      "variant": "selective_raises",
+      "bb_per_100": 502.0833333333333,
+      "delta": 204.16666666666663
+    },
+    {
+      "seats": 6,
+      "trial": 2,
+      "variant": "selective_calls",
+      "bb_per_100": 438.5416666666667,
+      "delta": 140.625
+    },
+    {
+      "seats": 6,
+      "trial": 2,
+      "variant": "selective_both",
+      "bb_per_100": 509.02777777777777,
+      "delta": 211.1111111111111
+    },
+    {
+      "seats": 6,
+      "trial": 2,
+      "variant": "more_value_raises",
+      "bb_per_100": 160.23611111111111,
+      "delta": -137.68055555555557
+    },
+    {
+      "seats": 7,
+      "trial": 0,
+      "variant": "original",
+      "bb_per_100": 1793.154761904762,
+      "delta": 0.0
+    },
+    {
+      "seats": 7,
+      "trial": 0,
+      "variant": "selective_raises",
+      "bb_per_100": 2205.059523809524,
+      "delta": 411.9047619047619
+    },
+    {
+      "seats": 7,
+      "trial": 0,
+      "variant": "selective_calls",
+      "bb_per_100": 985.4166666666666,
+      "delta": -807.7380952380953
+    },
+    {
+      "seats": 7,
+      "trial": 0,
+      "variant": "selective_both",
+      "bb_per_100": 1281.845238095238,
+      "delta": -511.30952380952385
+    },
+    {
+      "seats": 7,
+      "trial": 0,
+      "variant": "more_value_raises",
+      "bb_per_100": 2175.4523809523807,
+      "delta": 382.2976190476188
+    },
+    {
+      "seats": 7,
+      "trial": 1,
+      "variant": "original",
+      "bb_per_100": 168.1547619047619,
+      "delta": 0.0
+    },
+    {
+      "seats": 7,
+      "trial": 1,
+      "variant": "selective_raises",
+      "bb_per_100": 191.36904761904762,
+      "delta": 23.214285714285722
+    },
+    {
+      "seats": 7,
+      "trial": 1,
+      "variant": "selective_calls",
+      "bb_per_100": 217.26190476190476,
+      "delta": 49.10714285714286
+    },
+    {
+      "seats": 7,
+      "trial": 1,
+      "variant": "selective_both",
+      "bb_per_100": 216.66666666666666,
+      "delta": 48.51190476190476
+    },
+    {
+      "seats": 7,
+      "trial": 1,
+      "variant": "more_value_raises",
+      "bb_per_100": 44.642857142857146,
+      "delta": -123.51190476190476
+    },
+    {
+      "seats": 7,
+      "trial": 2,
+      "variant": "original",
+      "bb_per_100": 1475.7261904761906,
+      "delta": 0.0
+    },
+    {
+      "seats": 7,
+      "trial": 2,
+      "variant": "selective_raises",
+      "bb_per_100": 1139.5833333333333,
+      "delta": -336.14285714285734
+    },
+    {
+      "seats": 7,
+      "trial": 2,
+      "variant": "selective_calls",
+      "bb_per_100": 508.0357142857143,
+      "delta": -967.6904761904764
+    },
+    {
+      "seats": 7,
+      "trial": 2,
+      "variant": "selective_both",
+      "bb_per_100": 193.75,
+      "delta": -1281.9761904761906
+    },
+    {
+      "seats": 7,
+      "trial": 2,
+      "variant": "more_value_raises",
+      "bb_per_100": 1413.8214285714287,
+      "delta": -61.904761904761926
+    },
+    {
+      "seats": 8,
+      "trial": 0,
+      "variant": "original",
+      "bb_per_100": 907.5520833333334,
+      "delta": 0.0
+    },
+    {
+      "seats": 8,
+      "trial": 0,
+      "variant": "selective_raises",
+      "bb_per_100": 907.5520833333334,
+      "delta": 0.0
+    },
+    {
+      "seats": 8,
+      "trial": 0,
+      "variant": "selective_calls",
+      "bb_per_100": 693.4895833333334,
+      "delta": -214.0625
+    },
+    {
+      "seats": 8,
+      "trial": 0,
+      "variant": "selective_both",
+      "bb_per_100": 1116.9270833333333,
+      "delta": 209.3749999999999
+    },
+    {
+      "seats": 8,
+      "trial": 0,
+      "variant": "more_value_raises",
+      "bb_per_100": 907.5520833333334,
+      "delta": 0.0
+    },
+    {
+      "seats": 8,
+      "trial": 1,
+      "variant": "original",
+      "bb_per_100": 183.07291666666666,
+      "delta": 0.0
+    },
+    {
+      "seats": 8,
+      "trial": 1,
+      "variant": "selective_raises",
+      "bb_per_100": 183.07291666666666,
+      "delta": 0.0
+    },
+    {
+      "seats": 8,
+      "trial": 1,
+      "variant": "selective_calls",
+      "bb_per_100": -127.34375,
+      "delta": -310.41666666666663
+    },
+    {
+      "seats": 8,
+      "trial": 1,
+      "variant": "selective_both",
+      "bb_per_100": -125.0,
+      "delta": -308.07291666666663
+    },
+    {
+      "seats": 8,
+      "trial": 1,
+      "variant": "more_value_raises",
+      "bb_per_100": 180.20833333333334,
+      "delta": -2.8645833333333144
+    },
+    {
+      "seats": 8,
+      "trial": 2,
+      "variant": "original",
+      "bb_per_100": 1214.84375,
+      "delta": 0.0
+    },
+    {
+      "seats": 8,
+      "trial": 2,
+      "variant": "selective_raises",
+      "bb_per_100": 1130.2083333333333,
+      "delta": -84.63541666666674
+    },
+    {
+      "seats": 8,
+      "trial": 2,
+      "variant": "selective_calls",
+      "bb_per_100": 592.4479166666666,
+      "delta": -622.3958333333334
+    },
+    {
+      "seats": 8,
+      "trial": 2,
+      "variant": "selective_both",
+      "bb_per_100": 594.2708333333334,
+      "delta": -620.5729166666666
+    },
+    {
+      "seats": 8,
+      "trial": 2,
+      "variant": "more_value_raises",
+      "bb_per_100": 1214.84375,
+      "delta": 0.0
+    },
+    {
+      "seats": 9,
+      "trial": 0,
+      "variant": "original",
+      "bb_per_100": 35.648148148148145,
+      "delta": 0.0
+    },
+    {
+      "seats": 9,
+      "trial": 0,
+      "variant": "selective_raises",
+      "bb_per_100": 35.648148148148145,
+      "delta": 0.0
+    },
+    {
+      "seats": 9,
+      "trial": 0,
+      "variant": "selective_calls",
+      "bb_per_100": -16.666666666666668,
+      "delta": -52.31481481481481
+    },
+    {
+      "seats": 9,
+      "trial": 0,
+      "variant": "selective_both",
+      "bb_per_100": -16.666666666666668,
+      "delta": -52.31481481481481
+    },
+    {
+      "seats": 9,
+      "trial": 0,
+      "variant": "more_value_raises",
+      "bb_per_100": 35.648148148148145,
+      "delta": 0.0
+    },
+    {
+      "seats": 9,
+      "trial": 1,
+      "variant": "original",
+      "bb_per_100": 312.5,
+      "delta": 0.0
+    },
+    {
+      "seats": 9,
+      "trial": 1,
+      "variant": "selective_raises",
+      "bb_per_100": 339.5833333333333,
+      "delta": 27.083333333333314
+    },
+    {
+      "seats": 9,
+      "trial": 1,
+      "variant": "selective_calls",
+      "bb_per_100": -54.629629629629626,
+      "delta": -367.1296296296296
+    },
+    {
+      "seats": 9,
+      "trial": 1,
+      "variant": "selective_both",
+      "bb_per_100": -27.546296296296298,
+      "delta": -340.0462962962963
+    },
+    {
+      "seats": 9,
+      "trial": 1,
+      "variant": "more_value_raises",
+      "bb_per_100": 250.92592592592592,
+      "delta": -61.574074074074076
+    },
+    {
+      "seats": 9,
+      "trial": 2,
+      "variant": "original",
+      "bb_per_100": -347.68518518518516,
+      "delta": 0.0
+    },
+    {
+      "seats": 9,
+      "trial": 2,
+      "variant": "selective_raises",
+      "bb_per_100": 61.111111111111114,
+      "delta": 408.7962962962963
+    },
+    {
+      "seats": 9,
+      "trial": 2,
+      "variant": "selective_calls",
+      "bb_per_100": -133.10185185185185,
+      "delta": 214.58333333333331
+    },
+    {
+      "seats": 9,
+      "trial": 2,
+      "variant": "selective_both",
+      "bb_per_100": 256.25,
+      "delta": 603.9351851851852
+    },
+    {
+      "seats": 9,
+      "trial": 2,
+      "variant": "more_value_raises",
+      "bb_per_100": 38.888888888888886,
+      "delta": 386.574074074074
+    }
+  ],
+  "hypothesis": "Larger equity margins reduce unprofitable calls/raises versus the frozen original",
+  "limitations": "Small development sample; weak controls; confidence intervals are descriptive and unadjusted for selecting variants",
+  "experiment_manifest": {
+    "kind": "development screening only",
+    "trials": 3,
+    "rotations": 12,
+    "seats": [
+      6,
+      7,
+      8,
+      9
+    ],
+    "pool": [
+      "caller",
+      "tight",
+      "aggressive",
+      "equity"
+    ],
+    "variants": {
+      "original": {
+        "samples": 32,
+        "call_margin": 0.02,
+        "raise_margin": 0.12,
+        "bet_fraction": 0.5,
+        "adaptive": false
+      },
+      "selective_raises": {
+        "samples": 32,
+        "call_margin": 0.02,
+        "raise_margin": 0.2,
+        "bet_fraction": 0.5,
+        "adaptive": false
+      },
+      "selective_calls": {
+        "samples": 32,
+        "call_margin": 0.08,
+        "raise_margin": 0.12,
+        "bet_fraction": 0.5,
+        "adaptive": false
+      },
+      "selective_both": {
+        "samples": 32,
+        "call_margin": 0.08,
+        "raise_margin": 0.2,
+        "bet_fraction": 0.5,
+        "adaptive": false
+      },
+      "more_value_raises": {
+        "samples": 32,
+        "call_margin": 0.02,
+        "raise_margin": 0.08,
+        "bet_fraction": 0.5,
+        "adaptive": false
+      }
+    },
+    "provenance": {
+      "git_commit": "306bdf137625b4065607b4191473f76288d4ee8d",
+      "git_status": "M pokerbot/benchmark.py\n M pokerbot/engine.py\n M pokerbot/runner.py\n M tests/test_research.py\n?? research/parameter_screen.py",
+      "source_sha256": {
+        "pokerbot/__init__.py": "9d25d92bccf3d24419aa67731462554dde88a919ba4e0b6a6c8bb8b236a4bf8b",
+        "pokerbot/__main__.py": "557a4d834582bae8a50728538fad9aa92d68af8e8a07f718a7ae97a4cb768cb1",
+        "pokerbot/adapters.py": "d5b6c209c9b7c18413ce950cd0ed6ef720d4a0131bec6b926fd347d7861f4bfd",
+        "pokerbot/baseline_v1.py": "a0496890a106b3704613f044099adac9e1d13296b8bafe5fd64d85068f686020",
+        "pokerbot/benchmark.py": "cbef6ab41a1caa3344a3200a6e9e31898d4efbc9071b6f60c941e836a34fad63",
+        "pokerbot/engine.py": "df82a739c17fa382c0312e5341d5da561eaf721dd39856773cc1f456130eec2b",
+        "pokerbot/equity.py": "0473e0dfdf3f7eb8ae0909145e94e50470011b78e44b277d0e59d0a105178f0e",
+        "pokerbot/policies.py": "950baffc2fe205950bf9b5a09d7268e4eb47989ba73b21720acd3bfbb62ed4bb",
+        "pokerbot/profiles.py": "bdc6d4137ae754a00ff6faaf48d8b791d5031ffed6830cfbf441ebfb3152ab44",
+        "pokerbot/runner.py": "f983dbcbd1605de7f2f9af92c0a453f7f900ec8003c550170a8beba440085d96"
+      },
+      "python": "3.14.7",
+      "platform": "macOS-15.6.1-arm64-arm-64bit-Mach-O",
+      "open_spiel": "2.0.2",
+      "rules_engine": "pokerkit",
+      "pokerkit": "0.7.5",
+      "payout_rule": "fractional",
+      "numpy": "2.5.3",
+      "scipy": "1.18.1"
+    },
+    "script_sha256": "28a189166654ec73ed468c182f545c730b82150f66b849b00d7fb437ebe184a4"
+  }
+}

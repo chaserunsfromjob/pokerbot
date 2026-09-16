@@ -12,8 +12,9 @@ poker strength, a GTO claim, or evidence that the bot beats classmates.
 1. **Correctness gate.** Independent payout/hand-ranking fixtures, side pots,
    folded-player eligibility, exact bet amounts, short all-ins, 2–9-player
    mechanics, secret-free observations, legal actions and reproducible replay.
-   No known correctness failure may be waived for promotion. The short-all-in
-   gate currently fails, so strength confirmation is blocked in code.
+   No known correctness failure may be waived for promotion. PokerKit now
+   passes the short-all-in and cumulative-reopening gates that blocked the
+   original OpenSpiel rules path. Keep these regressions mandatory.
 2. **Frozen baseline.** Original equity policy v0.1: 32 samples, .02 call
    margin, .12 raise margin, half-pot sizing, learning off. Freeze its code
    and parameters before candidate tuning. Changing its behavior requires a
@@ -22,6 +23,10 @@ poker strength, a GTO claim, or evidence that the bot beats classmates.
    rotation against identical opponent configurations. They play separate
    tables so one arm cannot learn from or affect the other. Reset stacks to
    100bb each hand, no rake, and preserve learning only within each session.
+   Betting uses integer chip units and tied payouts split fractionally, matching
+   the original OpenSpiel benchmark. The PokerKit adapter explicitly overrides
+   its default leftover-chip convention. Class-app integer chip allocation has
+   not been validated and is a separate rules profile.
 4. **Confirmation size.** At least 30 independent sessions per table size,
    504 hands per session, at 6, 7, 8 and 9 seats. This is 120,960 hands across
    both arms at the minimum size. 504 permits balanced rotation for all four
@@ -46,8 +51,8 @@ first-stage pass only establishes improvement against this restricted pool.
 
 Before confirmation, run the full test suites and record results. A known
 failure remains a blocker even if pytest calls it an expected failure.
-`check-gates` exits nonzero for the demonstrated OpenSpiel bug. Do not remove
-the gate without a regression that proves the defect fixed under actual rules.
+`check-gates` checks the active referee. A test also verifies that substituting
+the defective historical OpenSpiel adapter still blocks confirmation.
 
 ## Later stages, specified before execution
 
@@ -77,10 +82,11 @@ success. Do not acquire paid compute or change repository permissions.
 .venv/bin/python -m pokerbot resume runs/confirm-001
 ```
 
-Confirmation currently refuses to start because of the correctness blocker.
-It freezes versions and parameters, logs full simulated histories separately
+The referee replacement clears the demonstrated correctness blocker. No
+strength confirmation has passed. Confirmation freezes versions and parameters,
+logs full simulated histories separately
 from public profiles, saves each completed session, and resumes only with the
-same source hashes. Partial sessions restart with empty learning state. Do not
+same source hashes and runtime versions. Partial sessions restart with empty learning state. Do not
 edit strategy source while a run is in progress. Confirmations use file locks
 to prevent overlapping copies; a scheduled agent must inspect existing jobs
 before starting anything else.

@@ -2,5 +2,5 @@
 open_spiel==2.0.2
 numpy==2.5.3
 scipy==1.18.1
-# Independent betting-rule oracle (not yet the runtime referee).
+# Runtime rules referee; OpenSpiel remains the frozen equity evaluator.
 pokerkit==0.7.5

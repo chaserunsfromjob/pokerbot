@@ -1,12 +1,26 @@
-"""Host-only OpenSpiel adapter. Never give a policy a Hand or pyspiel.State."""
+"""Host-only rules adapters. Never give a policy a Hand or native engine state.
+
+PokerKit handles live simulation; OpenSpiel remains for frozen equity sampling
+and replaying historical records made before the rules defect was identified.
+"""
 from dataclasses import asdict, dataclass
 from functools import lru_cache
 import random
 
 import pyspiel
+from pokerkit import Automation, NoLimitTexasHoldem
 
 RANKS = "23456789TJQKA"
 SUITS = "cdhs"
+
+
+def fractional_split(amount, count):
+    """Preserve the benchmark's OpenSpiel fractional-pot convention.
+
+    Bet amounts remain integer chip units; tied payouts may be fractional.
+    Integer odd-chip allocation is a separate class-app rules profile.
+    """
+    return amount / count, 0
 
 
 def card_id(card: str) -> int:
@@ -97,7 +111,7 @@ class Decision:
     diagnostics: dict
 
 
-class Hand:
+class OpenSpielHand:
     def __init__(self, names, stacks=None, deck=None, seed=0):
         if len(set(names)) != len(names):
             raise ValueError("Names must be unique")
@@ -126,6 +140,12 @@ class Hand:
     @property
     def terminal(self):
         return self.state.is_terminal()
+
+    def returns(self):
+        return self.state.returns()
+
+    def is_legal(self, action):
+        return type(action) is int and action in self.state.legal_actions()
 
     def observation(self):
         if self.terminal:
@@ -174,16 +194,160 @@ class Hand:
     def record(self):
         if not self.terminal:
             raise ValueError("Can only save completed hands")
-        return {"names": self.names, "stacks": self.stacks, "deck": self.deck,
+        return {"engine": "openspiel-2.0.2", "names": self.names, "stacks": self.stacks, "deck": self.deck,
                 "decisions": self.decisions, "events": [asdict(e) for e in self.events],
                 "returns": self.state.returns()}
 
 
+class Hand:
+    """PokerKit rules with the original whole-hand raise-to policy contract.
+
+    Host seat 0 posts SB, seat 1 BB; seat 0 is the button heads-up. PokerKit
+    reverses those two seats heads-up, so the adapter maps seats explicitly.
+    Hole/board cards follow the saved shuffled deck. Unknown burn placeholders
+    preserve the original marginal deal distribution without leaking a card.
+    """
+    def __init__(self, names, stacks=None, deck=None, seed=0):
+        n = len(names)
+        self.names = tuple(names)
+        self.stacks = tuple([10000] * n if stacks is None else stacks)
+        if not 2 <= n <= 9 or len(set(names)) != n or len(self.stacks) != n:
+            raise ValueError("Require 2–9 unique names and matching stacks")
+        if any(type(s) is not int or s < 100 for s in self.stacks):
+            raise ValueError("Stacks must be integer amounts of at least one big blind")
+        self.deck = list(range(52)) if deck is None else list(deck)
+        if len(self.deck) != 52 or any(type(c) is not int for c in self.deck) or set(self.deck) != set(range(52)):
+            raise ValueError("Deck must be a permutation of all 52 cards")
+        if deck is None:
+            random.Random(seed).shuffle(self.deck)
+        self._seat_map = (1, 0) if n == 2 else tuple(range(n))
+        self._holes = [tuple(self._card(c) for c in self.deck[2*i:2*i+2]) for i in range(n)]
+        self._board = []
+        self.deck_index = 2 * n
+        self.folded = set()
+        self.events = []
+        self.decisions = []
+        automations = (Automation.ANTE_POSTING, Automation.BET_COLLECTION,
+                       Automation.BLIND_OR_STRADDLE_POSTING,
+                       Automation.HOLE_CARDS_SHOWING_OR_MUCKING, Automation.HAND_KILLING,
+                       Automation.CHIPS_PUSHING, Automation.CHIPS_PULLING)
+        self.state = NoLimitTexasHoldem.create_state(
+            automations, True, 0, (50, 100), 100,
+            tuple(self.stacks[i] for i in self._seat_map), n, divmod=fractional_split)
+        for host_seat in self._seat_map:
+            self.state.deal_hole("".join(self._holes[host_seat]))
+        self.advance()
+
+    @staticmethod
+    def _card(index):
+        return RANKS[index // 4] + SUITS[index % 4]
+
+    def _host_order(self, values):
+        return [values[i] for i in self._seat_map]  # Mapping is its own inverse.
+
+    @property
+    def terminal(self):
+        return not self.state.status
+
+    def returns(self):
+        if not self.terminal:
+            raise ValueError("Payouts are available only for completed hands")
+        return self._host_order(self.state.payoffs)
+
+    def advance(self):
+        # Explicit card supply makes deals independent of PokerKit's internal RNG.
+        for _ in range(12):
+            if self.terminal or self.state.actor_index is not None:
+                return
+            if self.state.can_burn_card("??"):
+                self.state.burn_card("??")
+            elif self.state.can_deal_board():
+                count = self.state.board_dealing_count
+                board = [self._card(c) for c in self.deck[self.deck_index:self.deck_index + count]]
+                self.state.deal_board("".join(board))
+                self.deck_index += count
+                self._board.extend(board)
+            else:
+                raise RuntimeError("PokerKit reached an unsupported automatic transition")
+        raise RuntimeError("Automatic transitions exceeded the bounded runout")
+
+    def observation(self):
+        if self.terminal:
+            raise ValueError("Terminal hands have no decision observation")
+        actor = self.state.actor_index
+        host_actor = self._seat_map[actor]
+        contributions = self._host_order([-p for p in self.state.payoffs])
+        prior_streets = contributions[host_actor] - self.state.bets[actor]
+        minimum = self.state.min_completion_betting_or_raising_to_amount
+        maximum = self.state.max_completion_betting_or_raising_to_amount
+        call = self.state.checking_or_calling_amount
+        return Observation(
+            host_actor, self._holes[host_actor], tuple(self._board),
+            {0: 0, 3: 1, 4: 2, 5: 3}[len(self._board)],
+            0 if len(self.names) == 2 else len(self.names) - 1,
+            tuple(Player(name, i, self.stacks[i], contributions[i], i in self.folded)
+                  for i, name in enumerate(self.names)),
+            self.state.total_pot_amount,
+            LegalActions(bool(call) and self.state.can_fold(), self.state.can_check_or_call(),
+                         call, None if minimum is None else minimum + prior_streets,
+                         None if maximum is None else maximum + prior_streets), tuple(self.events))
+
+    def is_legal(self, action):
+        if type(action) is not int or self.terminal:
+            return False
+        if action == 0:
+            return bool(self.state.checking_or_calling_amount) and self.state.can_fold()
+        if action == 1:
+            return self.state.can_check_or_call()
+        actor = self.state.actor_index
+        prior = -self.state.payoffs[actor] - self.state.bets[actor]
+        return self.state.can_complete_bet_or_raise_to(action - prior)
+
+    def apply(self, decision: Decision):
+        obs = self.observation()
+        if not obs.legal.contains(decision.action) or not self.is_legal(decision.action):
+            raise ValueError(f"Illegal action {decision.action}; {obs.legal}")
+        actor = self.state.actor_index
+        before = self.state.bets[actor]
+        prior = obs.players[obs.actor].contribution - before
+        if decision.action == 0:
+            self.state.fold()
+            self.folded.add(obs.actor)
+            kind, amount = "fold", 0
+        elif decision.action == 1:
+            operation = self.state.check_or_call()
+            kind, amount = ("call" if obs.legal.call_cost else "check"), operation.amount
+        else:
+            operation = self.state.complete_bet_or_raise_to(decision.action - prior)
+            kind, amount = "raise", operation.amount - before
+        self.events.append(Event(self.names[obs.actor], obs.street, kind, amount, bool(obs.legal.call_cost)))
+        self.decisions.append(asdict(decision))
+        self.advance()
+        if self.terminal:
+            values = self.returns()
+            if abs(sum(values)) > 1e-7 or any(s + v < -1e-7 for s, v in zip(self.stacks, values)):
+                raise AssertionError("Chip conservation or nonnegative-stack failure")
+
+    def record(self):
+        if not self.terminal:
+            raise ValueError("Can only save completed hands")
+        return {"schema": 2, "engine": "pokerkit-0.7.5", "payout_rule": "fractional",
+                "names": self.names,
+                "stacks": self.stacks, "deck": self.deck, "decisions": self.decisions,
+                "events": [asdict(e) for e in self.events], "returns": self.returns()}
+
+
 def replay(record):
-    hand = Hand(record["names"], record["stacks"], record["deck"])
+    backend = record.get("engine", "openspiel-2.0.2")
+    engines = {"openspiel-2.0.2": OpenSpielHand, "pokerkit-0.7.5": Hand}
+    if backend not in engines:
+        raise ValueError(f"Unknown replay engine: {backend}")
+    if backend == "pokerkit-0.7.5" and record.get("payout_rule") != "fractional":
+        raise ValueError("Unsupported PokerKit payout rule")
+    hand = engines[backend](record["names"], record["stacks"], record["deck"])
     for decision in record["decisions"]:
         hand.apply(Decision(**decision))
-    if not hand.terminal or hand.state.returns() != record["returns"]:
+    if not hand.terminal or hand.returns() != record["returns"]:
         raise AssertionError("Replay did not reproduce recorded payouts")
     if [asdict(e) for e in hand.events] != record["events"]:
         raise AssertionError("Replay did not reproduce public events")

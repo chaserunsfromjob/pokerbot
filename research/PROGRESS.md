@@ -1,96 +1,124 @@
-# Research checkpoint — September 16, 2026
+# Research checkpoint — September 16, 2026, referee replacement
 
 ## Current state
 
-New `pokerbot/` research package uses OpenSpiel 2.0.2 with a 52-card deck and
-exact integer no-limit action amounts for 2–9 seats. It includes:
+The standard 52-card simulation now uses **PokerKit 0.7.5 for betting and
+payouts**. OpenSpiel 2.0.2 remains the frozen Monte Carlo equity sampler and
+historical replay backend. Original policy and equity sampler hashes are
+unchanged. No held-out strength benchmark has passed.
 
-- Frozen public observations, legal-action bounds and a shared decision API.
-- Uniform-hidden-card Monte Carlo pot share through OpenSpiel's evaluator;
-  original configurable pot-odds policy, half-pot sizing, optional bounded
-  fold-profile adjustment; random/caller/tight/aggressive controls.
-- Reproducible independent sessions, seat rotation, fixed stacks per hand,
-  mixed opponents, source/dependency hashes, decision diagnostics and latency.
-- Separate SQLite public observations with stable names, idempotent completed
-  hands, restart persistence and session isolation.
-- Saved privileged simulator decks/actions and exact replay. Policies never
-  receive those logs; this is API isolation, not a malicious-code sandbox.
-- Session-level confidence intervals, a frozen paired confirmation protocol,
-  resumable completed trials, repeated-confirmation alpha budget and locks.
-- Tested generic local-process candidate interface; upstream native bridges
-  remain explicitly unavailable.
+Implemented: sanitized immutable policy observations; original tunable
+pot-odds strategy; frozen original opponent/baseline; scripted controls;
+seeded matches and seat rotation; SQLite public player profiles isolated by
+session; learning off/oracle/learned comparisons; separate privileged replay
+logs; source/runtime versions; latency; paired confidence intervals; resumable
+confirmation with an error budget across repeated attempts; generic process
+policy adapter. Native NoRegrets/dickreuter bridges remain unfinished.
 
-## Demonstrated blocker
+## Rules defect resolved for the active referee
 
-OpenSpiel 2.0.2 incorrectly reopens betting in this three-player fixture:
-stacks `[10000, 250, 10000]`, blinds 50/100; button raises to 200, SB calls,
-BB raises all-in to 250. The button should only call or fold, but the native
-engine permits another raise. Test `test_short_all_in_does_not_reopen_prior_raiser`
-is a strict expected failure. **It is still a promotion blocker.**
+OpenSpiel incorrectly allows the prior raiser to re-raise after a 200/call/250
+short-all-in sequence. The native OpenSpiel backend remains defective and is
+used only for old replays and equal-contribution showdown equity calculations.
+It does not referee new tournaments.
 
-Independently reproduced the same sequence in PokerKit 0.7.5, which correctly
-forbids another raise. That independent oracle is now a passing test. PokerKit
-is installed and pinned, but has not yet replaced the runtime rules adapter.
+The PokerKit adapter passes that regression plus cumulative short raises that
+*do* reopen action, postflop whole-hand raise-to conversion, and heads-up seat
+mapping. Betting, payout eligibility and hand ranking stay in existing engines.
+A test substitutes the defective OpenSpiel backend and checks that confirmation
+still rejects it, so the gate was repaired rather than removed.
 
-`python -m pokerbot check-gates` exits nonzero, and `confirm` refuses to start.
-Investigate an upstream fix or independently validated PokerKit rules path.
-Preserve the fixture, extend to cumulative short all-ins and postflop raises,
-and do not workaround it by pretending multiway pots are heads-up.
+The adapter uses PokerKit's supported division callback to retain the original
+benchmark's fractional split-pot convention. Native PokerKit instead assigns
+leftover chip units to its first eligible winner. A three-way 800-chip split is
+now independently tested against the original fractional payout. Integer
+class-app odd-chip allocation is a separate, unvalidated rules profile. Current
+supported starting stacks are at least one big blind; the benchmark resets
+stacks to 100bb each hand. Smaller starting stacks require additional validation.
 
-## First screening run
+New records identify backend and payout rule. Unversioned historical logs
+select the legacy backend, and old replay verification still passes.
 
-`runs/initial-screen`: three independent seeds × 36 hands at 6, 8 and 9 seats
-= 324 hands. Original policy used 16 equity samples; control pool includes
-caller, tight, aggressive and the 32-sample equity policy. Results are diagnostic
-only and **not valid strength confirmation while the rules defect is open**.
+## Validation
 
-| Seats | Mean bb/100 | 95% session-level interval |
-| --- | ---: | --- |
-| 6 | 1139.58 | -1596.10 to 3875.27 |
-| 8 | 2018.06 | -1459.84 to 5495.95 |
-| 9 | 58.33 | -1063.20 to 1179.87 |
+- **73 root tests passed; no expected failures in the root suite.**
+- **53 vendor tests passed, 2 existing expected failures.** The three historical
+  CLI tests still do not assert command success.
+- All **680 design arithmetic checks passed**.
+- Independent `treys` ranking plus a separate layered-pot calculation matched
+  **160 unequal-stack all-in hands across 2–9 seats**.
+- Seeded random mechanics and exact replay tests cover another 96 hands across
+  2–9 seats. An additional bounded probe completed 160 hands with arbitrary
+  legal integer raise amounts.
+- `python -m pokerbot check-gates` reports no promotion blockers. This clears
+  the demonstrated defects; it is not a proof that every possible state is
+  correct or that any strategy is strong.
 
-All intervals include zero. The large values reflect small samples, stack-reset
-play and weak scripted opposition; they are not believable estimates of human
-win rates. Peak process RSS was about 101 MiB on this Mac. Raw logs are ignored
-by git; regenerate from the saved command and source revision.
+## Development screen: 5,400 hands
 
-The off/oracle/learned ablation ran another **1,944 hands** (three modes × three
-table sizes × three seeds × 72 hands). Learned-minus-off gains were +7.18,
--1.62 and -44.56 bb/100 for 6, 8 and 9 seats respectively; all intervals include
-zero. Oracle and learned modes had identical aggregate returns on these small
-samples. This does not establish learning benefit or calibration. Run it with
-`python research/learning_ablation.py --out runs/ablation-new --hands 72`.
+`runs/parameter-screen-001`: five variants × four table sizes × three
+independent sessions, each with twelve complete seat rotations. Candidate and
+original play matched deals against caller/tight/aggressive/frozen-equity
+mixtures. This uses **development deals only**, not held-out confirmation.
 
-Validation: **59 root tests passed, 1 expected failure** (the promotion blocker);
-**53 vendor tests passed, 2 expected failures**; all **680 arithmetic checks**
-passed. The vendor suite required permission for its local multiprocessing
-socket. Three old vendor CLI tests still do not assert command success.
-Recorded summary: `research/results/2026-09-16-initial.json`.
+| Candidate change | 6 seats gain | 7 seats gain | 8 seats gain | 9 seats gain |
+| --- | ---: | ---: | ---: | ---: |
+| Raise margin .12 → .20 | +65.86 | +32.99 | -28.21 | +145.29 |
+| Call margin .02 → .08 | -455.56 | -575.44 | -382.29 | -68.29 |
+| Both margins raised | -434.26 | -581.59 | -239.76 | +70.52 |
+| Raise margin .12 → .08 | +74.01 | +65.63 | -0.95 | +108.33 |
+
+Units: paired **bb/100 improvement over the frozen original**. All descriptive
+95% intervals include zero. With only three independent sessions per table
+size and multiple candidates screened, these numbers do not establish gains.
+Calling more conservatively looks unpromising in this pool; varying the raise
+threshold merits fresh screening, but neither direction is a confirmed winner.
+Do not launch a full confirmation solely because a few point estimates are high.
+
+The screen took approximately 34.6 simulation seconds; the largest session p95
+policy-decision latency was 0.984 ms on this Mac. This excludes adapter work
+from the policy timer; total session time includes it. Completed-screen resume
+was exercised. Summary and all paired trial values are tracked in
+`research/results/2026-09-16-parameter-screen-001.json`; full replay logs remain
+local under ignored `runs/`.
+
+Run/restart with:
+
+```
+.venv/bin/python research/parameter_screen.py --out runs/parameter-screen-001 --trials 3 --rotations 12
+```
+
+## Earlier results retained
+
+The original OpenSpiel-refereed run contained 324 screening hands and 1,944
+learning-ablation hands. All learning-effect intervals included zero. These
+remain historical diagnostics, not strength confirmation. Their recorded
+summary is `research/results/2026-09-16-initial.json` and their logs still replay.
+Total strategy-evaluation hands so far: **7,668**, excluding mechanics fixtures.
 
 ## Next bounded work
 
-1. Fix/referee the short-all-in defect before confirmation; expand independent
-   mechanics fixtures. Keep OpenSpiel available for ranking if its payouts are
-   independently verified, even if rules need another engine.
-2. Add the remaining stress cases: changing and wrong profiles, stack diversity,
-   cumulative short all-ins, odd chips, and genuinely card-aware held-out controls.
-3. Keep `baseline_v1.py` frozen while changing candidate strategy code. Its
-   policy and equity sampler hashes are recorded in `baseline-v0.1.json`, and
-   confirmation rejects changes. Equity opponents also use the frozen version.
-4. Screen hypotheses; perform paired learning ablations. The oracle currently
-   supports caller/tight/aggressive controls only and rejects random-menu or
-   learned equity opponents rather than inventing their true fold probability.
-5. Build one native candidate bridge and a reproducible local checkpoint/config.
-   NoRegrets and dickreuter are candidates, not currently working policies.
-6. Run the fixed confirmation when all correctness gates pass. On passage,
-   retain results and start a harder prespecified stage per BENCHMARKS.md.
+1. Add independently authored card-aware control opponents using the same
+   observation boundary. Keep the existing confirmation mixes frozen, and
+   define any harder benchmark separately.
+2. Screen better equity precision, position/preflop logic and raise sizing on
+   development deals; retain baseline code and sampler hashes. Use fresh
+   development sessions to check that a candidate survives the initial screen.
+3. Improve named-player modeling beyond one pooled fold rate. Compare exactly
+   the same policy with no model, a known scripted model and a learned model;
+   include sparse, deliberately wrong and changing histories.
+4. Build a native candidate bridge and reproducible local checkpoint/config.
+   NoRegrets supports only 2–6 seats upstream; dickreuter needs its demonstrated
+   tie-equity fix and isolated local configuration before use. Research broader
+   training and search candidates in parallel with the experiment backlog.
+5. Freeze a promising candidate and execute the existing 6–9-seat confirmation
+   protocol. No confirmation attempt has yet been allocated. On passage,
+   preserve the result and start the next prespecified harder benchmark.
 
 ## Continuing task
 
-Codex heartbeat `poker-strategy-research-and-testing` is active in the original
-conversation every 30 minutes. The user removed the morning cutoff and asked
-for expanded research after benchmark passage. Inspect running processes and
-run locks before launching experiments; do not edit a running experiment's
-source. Save useful progress and report meaningful results or blockers.
-Local scheduled runs require the machine powered on and the app running.
+Codex heartbeat `poker-strategy-research-and-testing` is active every 30 minutes
+in the original conversation. There is no morning cutoff, and passing a stage
+starts harder research. Inspect running jobs/locks before starting experiments;
+never edit their source while they run. Save evidence and notify on meaningful
+results or blockers. Local runs require the machine and app to remain running.

@@ -6,8 +6,8 @@ from measured evidence. Research is not limited to these candidates.
 
 | Priority | Experiment / hypothesis | Benefit / readiness | Judge it by | Main unresolved risk |
 | --- | --- | --- | --- | --- |
-| 0 | Correct short-all-in reopening using an existing rules engine or upstream fix | Critical / reproducible fixture ready | Prior raiser cannot re-raise after 200/call/250 all-in; cumulative short raises also checked | OpenSpiel ACPC semantics; do not hide by reducing table size |
-| 1 | More conservative equity/pot-odds parameters improve the original policy | High / runnable now for diagnostics | Development screening then frozen held-out +5 bb/100 gate after mechanics pass | Uniform opponent holdings, high-variance random aggression, no future betting model |
+| Done | Replace faulty OpenSpiel betting referee with PokerKit | Implemented / 73 root tests pass | Single and cumulative short all-ins, postflop translation, independent side-pot payouts at 2–9 seats | Benchmark uses fractional tied payouts; class-app integer chip rules remain separate |
+| 1 | More conservative equity/pot-odds parameters improve the original policy | Screened / 5,400 hands, inconclusive | No tested variant passes the held-out +5 bb/100 gate; call-margin increases looked poor in development | Uniform opponent holdings, high-variance aggression, small sample, no future betting model |
 | 2 | Position-aware preflop and independently authored card-aware controls make screening informative | High / code experiment | Hold out different control parameters; verify legal decisions and compare to baseline | Handcrafted opponent weaknesses can be overfit |
 | 3 | Named-player shrinkage improves decisions over the exact same unadapted policy | High / simple fold counters implemented | Off / oracle / learned matched sessions; fresh seeds and learning resets | Current threshold adjustment is a heuristic, not a calibrated response solver |
 | 4 | Restricted rollout search improves multiway postflop choices | High / sampler and legal menus available | Paired returns and latency versus same policy without search | Strategy fusion, wrong opponent ranges, side-pot-specific values |

@@ -1,4 +1,4 @@
-"""Fixed, resumable paired confirmation; no promotion on known rules defects."""
+"""Fixed, resumable paired confirmation with required mechanics checks."""
 from dataclasses import asdict
 import fcntl
 import hashlib
@@ -27,8 +27,15 @@ def correctness_failures():
     hand = Hand(["sb", "bb", "button"], [10000, 250, 10000])
     for action in (200, 1, 250):
         hand.apply(Decision(action, {}))
-    if hand.observation().legal.min_raise_to is not None:
-        failures.append("OpenSpiel short all-in incorrectly reopens the prior raiser")
+    obs = hand.observation()
+    if obs.actor != 2 or obs.legal.call_cost != 50 or obs.legal.min_raise_to is not None:
+        failures.append("Referee fails the short all-in reopening regression")
+    hand = Hand(["sb", "bb", "utg", "button"], [300, 10000, 10000, 250])
+    for action in (200, 250, 300, 1):
+        hand.apply(Decision(action, {}))
+    obs = hand.observation()
+    if obs.actor != 2 or obs.legal.min_raise_to != 400:
+        failures.append("Referee fails cumulative short-all-in reopening")
     return failures
 
 
@@ -69,7 +76,7 @@ def create_confirmation(out, candidate, *, trials=30, hands=504):
             "trials": trials, "hands": hands, "seats": [6, 7, 8, 9],
             "pools": HOLDOUT_POOLS, "baseline": asdict(BASELINE), "candidate": asdict(candidate),
             "learning": "learned" if candidate.adaptive else "off",
-            "stack_bb": 100, "rake": 0,
+            "stack_bb": 100, "rake": 0, "payout_rule": "fractional",
             "family_alpha": .05 / (attempt * (attempt + 1)),
             "minimum_improvement_bb_per_100": 5,
             "provenance": provenance()}
@@ -87,8 +94,12 @@ def run_confirmation(out):
 
 def _run(out):
     spec = json.loads((out / "manifest.json").read_text())
-    if provenance()["source_sha256"] != spec["provenance"]["source_sha256"]:
+    current = provenance()
+    if current["source_sha256"] != spec["provenance"]["source_sha256"]:
         raise RuntimeError("Code changed since freeze; use a new experiment")
+    for key in ("python", "open_spiel", "pokerkit", "numpy", "scipy", "rules_engine", "payout_rule"):
+        if current[key] != spec["provenance"].get(key):
+            raise RuntimeError(f"Runtime changed since freeze: {key}")
     failures = correctness_failures()
     if failures:
         raise RuntimeError("Confirmation blocked: " + "; ".join(failures))

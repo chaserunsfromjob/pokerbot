@@ -9,9 +9,10 @@ strategy evaluation. Player names are stable identifiers.
 - Original coded strategies, trained policies, opponent exploitation and
   combinations of them are allowed. The former ban on AI-authored strategy
   code is superseded. Live LLM move selection remains outside the project.
-- Existing engines implement poker rules and hand ranking. OpenSpiel is the
-  initial referee, subject to independent mechanics tests. `treys` remains a
-  test oracle, never the runtime evaluator.
+- Existing engines implement poker rules and hand ranking. PokerKit replaced
+  OpenSpiel as referee after the short-all-in reopening defect was reproduced.
+  OpenSpiel remains the frozen equity sampler and historical replay backend.
+  `treys` is an independent test oracle, never the runtime evaluator.
 - Treat `vendor/poker_ai` as a historical 20-card fixed-limit reference. Do
   not describe it as an implemented standard-deck no-limit strategy.
 - Remove the former hours-on-one-laptop ceiling. Measure latency, memory and
