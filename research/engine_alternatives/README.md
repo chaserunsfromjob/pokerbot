@@ -19,7 +19,7 @@ can be re-run by someone who does not believe them. **None of it is the bot.**
 | --- | --- |
 | `chooser.py` | The decision-time chooser: for each of a few candidate moves, guess the opponents' cards, play the hand out at random many times, take the best average. Prints how many rollouts each candidate got, its mean result and the standard error of that mean. |
 | `resample_opponents.py` | The workaround for the multiway crash at `universal_poker.cc:1111`: redraws the other seats' hole cards by replaying the hand's history. |
-| `bench_speed.py` | Complete hands per second for OpenSpiel (`fcpa` and `fullgame`), `texasholdem` and PokerKit, in both a four-move menu mode and a real-sizing mode, so engines are compared doing equal work. |
+| `bench_speed.py` | Complete hands per second for OpenSpiel (`fcpa` and `fullgame`), `texasholdem`, PokerKit and PyPokerEngine, in both a four-move menu mode and a real-sizing mode, so engines are compared doing equal work. |
 | `bench_cfr.py` | External-sampling MCCFR on `universal_poker` with no card abstraction: rounds run and brand-new situations still appearing per round. |
 | `bench_play.py` | `variance`: the spread of one seat's per-hand result, which sets how many hands any strength claim needs. `headtohead`: the chooser against five random opponents, reported with a confidence interval. |
 | `pypoker_playouts.py` | PyPokerEngine's `Emulator` API driven as a search would drive it - per-seat stacks, "what is legal here", clone a position and play the clone out - and how many play-outs a second that buys. |
@@ -54,12 +54,18 @@ that makes them comparable with each other:
     cd research/engine_alternatives
     ../../.venv-engines/bin/python paired_session.py 6 10   # -> raw/paired_session.txt
 
-The rest are run on their own, because nothing else is compared against them:
+The rest are run on their own, because nothing else is compared against them.
+Each was still run only once the load average was under 4, and the `#` lines
+at the top and bottom of its raw file record the load and the exact command:
 
     ../../.venv-engines/bin/python bench_cfr.py 45          # -> raw/cfr.txt
     ../../.venv-engines/bin/python bench_requirements.py    # -> raw/requirements.txt
-    ../../.venv-engines/bin/python bench_play.py variance 100000
-    ../../.venv-engines/bin/python bench_play.py headtohead 900
+    ../../.venv-engines/bin/python bench_play.py variance 100000   # -> raw/variance.txt
+    ../../.venv-engines/bin/python bench_play.py headtohead 900    # -> raw/headtohead.txt
+
+`raw/pokerrl_install.txt` is the one file that is not a measurement: it is the
+output of `pip install PokerRL` into a throwaway environment, kept because the
+document says the package will not install and that claim should be checkable.
 
 And each program the paired session drives can be run singly, which is how to
 read what it is doing:
