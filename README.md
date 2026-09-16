@@ -45,6 +45,23 @@ The sweep resumes completed sessions when rerun with the same source and
 configuration. It leaves confirmation deals untouched and makes no promotion
 decision.
 
+Card-aware development opponents are available as `card_tight`, `card_loose`
+and `card_pressure`. They use engine-calculated equity plus distinct preflop,
+position and betting rules; they are test controls, not validated strong bots.
+The fixed first-stage confirmation opponents remain unchanged.
+
+```sh
+.venv/bin/python research/precision_screen.py --out runs/my-precision-screen
+.venv/bin/python research/train_kuhn.py --out runs/my-kuhn-training
+```
+
+The first command screens sample counts and decision parameters against both
+scripted and card-aware tables on fresh development deals. The second validates
+OpenSpiel's existing MCCFR trainer and exported policies on **two-player,
+three-card Kuhn poker only**; it does not train the no-limit hold'em bot.
+See `research/patches/README.md` for isolated equity/ranking repairs for the
+dickreuter candidate. Its complete decision-policy bridge is still unfinished.
+
 What the borrowed poker engine is, how to run it, and what it would cost to move
 it from its 20-card deck to a normal 52-card one: `REFERENCE_NOTES.md`.
 

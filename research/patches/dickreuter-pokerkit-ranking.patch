@@ -1,0 +1,124 @@
+--- a/poker/decisionmaker/montecarlo_python.py
++++ b/poker/decisionmaker/montecarlo_python.py
+@@ -54,108 +54,19 @@
+         winner = sorted(scores, key=lambda x: x[1], reverse=True)[0][0]
+         return hands[winner], scores[winner][1][-1]
+ 
+-    def calc_score(self, hand):  # assign a calc_score to the hand so it can be compared with other hands
+-        card_ranks_original = '23456789TJQKA'
+-        original_suits = 'CDHS'
+-        try:
+-            rcounts = {card_ranks_original.find(r): ''.join(hand).count(r) for r, _ in hand}.items()
+-            score, card_ranks = zip(*sorted((cnt, rank) for rank, cnt in rcounts)[::-1])
+-        except ValueError:
+-            self.logger.error("Unable to perform montecarlo. This table most likely does not support collusion."
+-                              "Please deactivate collusion in the strategy editor.")
+-            sys.exit()
+-
+-        potential_threeofakind = score[0] == 3
+-        potential_twopair = score == (2, 2, 1, 1, 1)
+-        potential_pair = score == (2, 1, 1, 1, 1, 1)
+-
+-        if score[0:2] == (3, 2) or score[0:2] == (3, 3):  # fullhouse (three of a kind and pair, or two three of a kind)
+-            card_ranks = (card_ranks[0], card_ranks[1])
+-            score = (3, 2)
+-        elif score[0:4] == (2, 2, 2, 1):  # special case: convert three pair to two pair
+-            score = (2, 2, 1)  # as three pair are not worth more than two pair
+-            kicker = max(card_ranks[2], card_ranks[3])  # avoid for example 11,8,6,7
+-            card_ranks = (card_ranks[0], card_ranks[1], kicker)
+-        elif score[0] == 4:  # four of a kind
+-            score = (4,)
+-            sortedCrdRanks = sorted(card_ranks, reverse=True)  # avoid for example 11,8,9
+-            card_ranks = (sortedCrdRanks[0], sortedCrdRanks[1])
+-        elif len(score) >= 5:  # high card, flush, straight and straight flush
+-            # straight
+-            if 12 in card_ranks:  # adjust if 5 high straight
+-                card_ranks += (-1,)
+-            sortedCrdRanks = sorted(card_ranks, reverse=True)  # sort again as if pairs the first rank matches the pair
+-            for i in range(len(sortedCrdRanks) - 4):
+-                straight = sortedCrdRanks[i] - sortedCrdRanks[i + 4] == 4
+-                if straight:
+-                    card_ranks = (
+-                        sortedCrdRanks[i], sortedCrdRanks[i + 1], sortedCrdRanks[i + 2], sortedCrdRanks[i + 3],
+-                        sortedCrdRanks[i + 4])
+-                    break
+-
+-            # flush
+-            suits = [s for _, s in hand]
+-            flush = max(suits.count(s) for s in suits) >= 5
+-            if flush:
+-                for flushSuit in original_suits:  # get the suit of the flush
+-                    if suits.count(flushSuit) >= 5:
+-                        break
+-
+-                flushHand = [k for k in hand if flushSuit in k]  # pylint: disable=undefined-loop-variable
+-                rcountsFlush = {card_ranks_original.find(r): ''.join(flushHand).count(r) for r, _ in flushHand}.items()
+-                score, card_ranks = zip(*sorted((cnt, rank) for rank, cnt in rcountsFlush)[::-1])
+-                card_ranks = tuple(
+-                    sorted(card_ranks, reverse=True))  # ignore original sorting where pairs had influence
+-
+-                # check for straight in flush
+-                if 12 in card_ranks and -1 not in card_ranks:  # adjust if 5 high straight
+-                    card_ranks += (-1,)
+-                for i in range(len(card_ranks) - 4):
+-                    straight = card_ranks[i] - card_ranks[i + 4] == 4
+-                    if straight:
+-                        break
+-
+-            # no pair, straight, flush, or straight flush
+-            score = ([(1,), (3, 1, 2)], [(3, 1, 3), (5,)])[flush][straight]
+-
+-        if score == (1,) and potential_threeofakind:
+-            score = (3, 1)
+-        elif score == (1,) and potential_twopair:
+-            score = (2, 2, 1)
+-        elif score == (1,) and potential_pair:
+-            score = (2, 1, 1)
+-
+-        if score[0] == 5:
+-            hand_type = "StraightFlush"
+-            # crdRanks=crdRanks[:5] # five card rule makes no difference {:5] would be incorrect
+-        elif score[0] == 4:
+-            hand_type = "FoufOfAKind"
+-            # crdRanks=crdRanks[:2] # already implemented above
+-        elif score[0:2] == (3, 2):
+-            hand_type = "FullHouse"
+-            # crdRanks=crdRanks[:2] # already implmeneted above
+-        elif score[0:3] == (3, 1, 3):
+-            hand_type = "Flush"
+-            card_ranks = card_ranks[:5]
+-        elif score[0:3] == (3, 1, 2):
+-            hand_type = "Straight"
+-            card_ranks = card_ranks[:5]
+-        elif score[0:2] == (3, 1):
+-            hand_type = "ThreeOfAKind"
+-            card_ranks = card_ranks[:3]
+-        elif score[0:2] == (2, 2):
+-            hand_type = "TwoPair"
+-            card_ranks = card_ranks[:3]
+-        elif score[0] == 2:
+-            hand_type = "Pair"
+-            card_ranks = card_ranks[:4]
+-        elif score[0] == 1:
+-            hand_type = "HighCard"
+-            card_ranks = card_ranks[:5]
+-        else:
+-            raise Exception('Card Type error!')
+-
+-        return score, card_ranks, hand_type
++    def calc_score(self, hand):
++        # Use a maintained engine for ranking; preserve existing category keys.
++        # Additional dependency: pokerkit==0.7.5.
++        from pokerkit import StandardHighHand
++        labels = {
++            "HIGH_CARD": "HighCard", "ONE_PAIR": "Pair", "TWO_PAIR": "TwoPair",
++            "THREE_OF_A_KIND": "ThreeOfAKind", "STRAIGHT": "Straight",
++            "FLUSH": "Flush", "FULL_HOUSE": "FullHouse",
++            "FOUR_OF_A_KIND": "FoufOfAKind", "STRAIGHT_FLUSH": "StraightFlush",
++        }
++        cards = "".join(card[0] + card[1].lower() for card in hand)
++        evaluated = StandardHighHand.from_game(cards)
++        return evaluated.entry.index, (), labels[evaluated.entry.label.name]
+ 
+     def create_card_deck(self):
+         values = "23456789TJQKA"

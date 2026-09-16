@@ -1,0 +1,455 @@
+{
+  "candidate": "https://github.com/dickreuter/Poker",
+  "commit": "cae3a108b6cbf22ed8ef90bc0e70f790346289a4",
+  "source_sha256": "e92c00ddb9a932c412ced4d5c324969e48cddb0c05dbe9d7a1ff5efc51c7f6b2",
+  "patched_sha256": "bace9a1805cb5fb63b66d59a5bc062a21def2b2fe528595cacb759f3cbf9239f",
+  "engine_ranked_sha256": "d6897a875e9e5b24169a82be3c8187ed8c53b3e939d778a0383d8efbae2389a1",
+  "status": "patched equity fixtures pass; full policy not integrated",
+  "remaining_failures": [],
+  "results": [
+    {
+      "fixture": "royal_flush_2_way",
+      "holdings": [
+        [
+          "2C",
+          "2D"
+        ],
+        [
+          "2H",
+          "3C"
+        ]
+      ],
+      "board": [
+        "TS",
+        "JS",
+        "QS",
+        "KS",
+        "AS"
+      ],
+      "expected": 0.5,
+      "upstream": {
+        "equity": 1.0,
+        "matches": false,
+        "win_type_share_sum": 1.0
+      },
+      "tie_patch": {
+        "equity": 0.5,
+        "matches": true,
+        "win_type_share_sum": 0.5
+      },
+      "engine_ranking": {
+        "equity": 0.5,
+        "matches": true,
+        "win_type_share_sum": 0.5
+      }
+    },
+    {
+      "fixture": "royal_flush_6_way",
+      "holdings": [
+        [
+          "2C",
+          "2D"
+        ],
+        [
+          "2H",
+          "3C"
+        ],
+        [
+          "3D",
+          "3H"
+        ],
+        [
+          "4C",
+          "4D"
+        ],
+        [
+          "4H",
+          "5C"
+        ],
+        [
+          "5D",
+          "5H"
+        ]
+      ],
+      "board": [
+        "TS",
+        "JS",
+        "QS",
+        "KS",
+        "AS"
+      ],
+      "expected": 0.16666666666666666,
+      "upstream": {
+        "equity": 1.0,
+        "matches": false,
+        "win_type_share_sum": 1.0
+      },
+      "tie_patch": {
+        "equity": 0.1666666666666666,
+        "matches": true,
+        "win_type_share_sum": 0.1666666666666666
+      },
+      "engine_ranking": {
+        "equity": 0.1666666666666666,
+        "matches": true,
+        "win_type_share_sum": 0.1666666666666666
+      }
+    },
+    {
+      "fixture": "royal_flush_8_way",
+      "holdings": [
+        [
+          "2C",
+          "2D"
+        ],
+        [
+          "2H",
+          "3C"
+        ],
+        [
+          "3D",
+          "3H"
+        ],
+        [
+          "4C",
+          "4D"
+        ],
+        [
+          "4H",
+          "5C"
+        ],
+        [
+          "5D",
+          "5H"
+        ],
+        [
+          "6C",
+          "6D"
+        ],
+        [
+          "6H",
+          "7C"
+        ]
+      ],
+      "board": [
+        "TS",
+        "JS",
+        "QS",
+        "KS",
+        "AS"
+      ],
+      "expected": 0.125,
+      "upstream": {
+        "equity": 1.0,
+        "matches": false,
+        "win_type_share_sum": 1.0
+      },
+      "tie_patch": {
+        "equity": 0.125,
+        "matches": true,
+        "win_type_share_sum": 0.125
+      },
+      "engine_ranking": {
+        "equity": 0.125,
+        "matches": true,
+        "win_type_share_sum": 0.125
+      }
+    },
+    {
+      "fixture": "royal_flush_9_way",
+      "holdings": [
+        [
+          "2C",
+          "2D"
+        ],
+        [
+          "2H",
+          "3C"
+        ],
+        [
+          "3D",
+          "3H"
+        ],
+        [
+          "4C",
+          "4D"
+        ],
+        [
+          "4H",
+          "5C"
+        ],
+        [
+          "5D",
+          "5H"
+        ],
+        [
+          "6C",
+          "6D"
+        ],
+        [
+          "6H",
+          "7C"
+        ],
+        [
+          "7D",
+          "7H"
+        ]
+      ],
+      "board": [
+        "TS",
+        "JS",
+        "QS",
+        "KS",
+        "AS"
+      ],
+      "expected": 0.1111111111111111,
+      "upstream": {
+        "equity": 1.0,
+        "matches": false,
+        "win_type_share_sum": 1.0
+      },
+      "tie_patch": {
+        "equity": 0.11111111111111113,
+        "matches": true,
+        "win_type_share_sum": 0.11111111111111113
+      },
+      "engine_ranking": {
+        "equity": 0.11111111111111113,
+        "matches": true,
+        "win_type_share_sum": 0.11111111111111113
+      }
+    },
+    {
+      "fixture": "partial_tie",
+      "holdings": [
+        [
+          "AC",
+          "QD"
+        ],
+        [
+          "AH",
+          "QC"
+        ],
+        [
+          "JD",
+          "TS"
+        ]
+      ],
+      "board": [
+        "KS",
+        "KD",
+        "7H",
+        "4S",
+        "2C"
+      ],
+      "expected": 0.5,
+      "upstream": {
+        "equity": 1.0,
+        "matches": false,
+        "win_type_share_sum": 1.0
+      },
+      "tie_patch": {
+        "equity": 0.5,
+        "matches": true,
+        "win_type_share_sum": 0.5
+      },
+      "engine_ranking": {
+        "equity": 0.5,
+        "matches": true,
+        "win_type_share_sum": 0.5
+      }
+    },
+    {
+      "fixture": "unique_win",
+      "holdings": [
+        [
+          "AC",
+          "AD"
+        ],
+        [
+          "KC",
+          "KD"
+        ],
+        [
+          "QC",
+          "QD"
+        ]
+      ],
+      "board": [
+        "2C",
+        "3D",
+        "7H",
+        "8S",
+        "9C"
+      ],
+      "expected": 1.0,
+      "upstream": {
+        "equity": 1.0,
+        "matches": true,
+        "win_type_share_sum": 1.0
+      },
+      "tie_patch": {
+        "equity": 1.0,
+        "matches": true,
+        "win_type_share_sum": 1.0
+      },
+      "engine_ranking": {
+        "equity": 1.0,
+        "matches": true,
+        "win_type_share_sum": 1.0
+      }
+    },
+    {
+      "fixture": "unique_loss",
+      "holdings": [
+        [
+          "QC",
+          "QD"
+        ],
+        [
+          "KC",
+          "KD"
+        ],
+        [
+          "AC",
+          "AD"
+        ]
+      ],
+      "board": [
+        "2C",
+        "3D",
+        "7H",
+        "8S",
+        "9C"
+      ],
+      "expected": 0.0,
+      "upstream": {
+        "equity": 0.0,
+        "matches": true,
+        "win_type_share_sum": 0
+      },
+      "tie_patch": {
+        "equity": 0.0,
+        "matches": true,
+        "win_type_share_sum": 0
+      },
+      "engine_ranking": {
+        "equity": 0.0,
+        "matches": true,
+        "win_type_share_sum": 0
+      }
+    },
+    {
+      "fixture": "quads_rank_before_kicker",
+      "holdings": [
+        [
+          "2S",
+          "AC"
+        ],
+        [
+          "3H",
+          "3S"
+        ]
+      ],
+      "board": [
+        "2C",
+        "2D",
+        "2H",
+        "3C",
+        "3D"
+      ],
+      "expected": 0.0,
+      "upstream": {
+        "equity": 1.0,
+        "matches": false,
+        "win_type_share_sum": 1.0
+      },
+      "tie_patch": {
+        "equity": 1.0,
+        "matches": false,
+        "win_type_share_sum": 1.0
+      },
+      "engine_ranking": {
+        "equity": 0.0,
+        "matches": true,
+        "win_type_share_sum": 0
+      }
+    }
+  ],
+  "randomized_ranking_checks": [
+    {
+      "players": 2,
+      "fixtures": 50,
+      "mismatches": {
+        "upstream": 0,
+        "tie_patch": 0,
+        "engine_ranking": 0
+      }
+    },
+    {
+      "players": 3,
+      "fixtures": 50,
+      "mismatches": {
+        "upstream": 0,
+        "tie_patch": 0,
+        "engine_ranking": 0
+      }
+    },
+    {
+      "players": 4,
+      "fixtures": 50,
+      "mismatches": {
+        "upstream": 0,
+        "tie_patch": 0,
+        "engine_ranking": 0
+      }
+    },
+    {
+      "players": 5,
+      "fixtures": 50,
+      "mismatches": {
+        "upstream": 0,
+        "tie_patch": 0,
+        "engine_ranking": 0
+      }
+    },
+    {
+      "players": 6,
+      "fixtures": 50,
+      "mismatches": {
+        "upstream": 0,
+        "tie_patch": 0,
+        "engine_ranking": 0
+      }
+    },
+    {
+      "players": 7,
+      "fixtures": 50,
+      "mismatches": {
+        "upstream": 0,
+        "tie_patch": 0,
+        "engine_ranking": 0
+      }
+    },
+    {
+      "players": 8,
+      "fixtures": 50,
+      "mismatches": {
+        "upstream": 0,
+        "tie_patch": 0,
+        "engine_ranking": 0
+      }
+    },
+    {
+      "players": 9,
+      "fixtures": 50,
+      "mismatches": {
+        "upstream": 0,
+        "tie_patch": 0,
+        "engine_ranking": 0
+      }
+    }
+  ],
+  "native_evaluator_failure": "Quads rank loses priority to the kicker; tie-only patch is insufficient",
+  "limitations": "Known-card equity fixtures only; no GUI, remote strategy config, ranges, policy strength or class-app integration"
+}

@@ -1,0 +1,48 @@
+--- a/poker/decisionmaker/montecarlo_python.py
++++ b/poker/decisionmaker/montecarlo_python.py
+@@ -246,7 +246,7 @@
+             logger.info('Preflop reverse tables for ranges for opponent: YES')
+             opponent_allowed_cards = opponent_range
+ 
+-        winnerCardTypeList = []
++        winnerCardTypeList = Counter()
+         wins = 0
+         runs = 0
+         passes = 0
+@@ -268,19 +268,14 @@
+             for o in range(0, player_amount):
+                 PlayerFinalCardsWithTableCards.append(Players[o] + Deck5Cards)
+ 
+-            bestHand, winnerCardType = self.eval_best_hand(PlayerFinalCardsWithTableCards)
+-            winner = (PlayerFinalCardsWithTableCards.index(bestHand))
+-
+-            # print (winnerCardType)
+-
+-            CollusionPlayers = 0
+-            if winner < CollusionPlayers + 1:
+-                wins += 1
+-                winnerCardTypeList.append(winnerCardType)
+-                # winnerlist.append(winner)
+-                # self.equity=wins/m
+-                # if self.equity>0.99: self.equity=0.99
+-                # EquityList.append(self.equity)
++            # Equity is expected pot share; ties divide the win among winners.
++            scores = [self.calc_score(hand) for hand in PlayerFinalCardsWithTableCards]
++            best_score = max(scores)
++            winners = [i for i, score in enumerate(scores) if score == best_score]
++            if 0 in winners:
++                share = 1.0 / len(winners)
++                wins += share
++                winnerCardTypeList[best_score[-1]] += share
+ 
+             self.equity = np.round(wins / runs, 3)
+ 
+@@ -293,7 +288,7 @@
+                 # if passes >= maxruns: break
+ 
+         self.equity = wins / runs
+-        self.winnerCardTypeList = Counter(winnerCardTypeList)
++        self.winnerCardTypeList = winnerCardTypeList
+         for key, value in self.winnerCardTypeList.items():
+             self.winnerCardTypeList[key] = value / runs
+ 

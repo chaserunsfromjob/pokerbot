@@ -1,0 +1,107 @@
+{
+  "status": "toy training criterion passed",
+  "manifest": {
+    "game": "two-player three-card Kuhn poker",
+    "scope": "toy training plumbing only",
+    "algorithm": "OpenSpiel external-sampling MCCFR; average strategy",
+    "open_spiel": "2.0.2",
+    "numpy": "2.5.3",
+    "iterations": 20000,
+    "seeds": [
+      73,
+      89,
+      113
+    ],
+    "criterion": "Every final exact NashConv < 0.05 and checkpoint roundtrip preserves it"
+  },
+  "results": [
+    {
+      "seed": 73,
+      "curve": [
+        {
+          "iteration": 0,
+          "nash_conv": 0.9166666666666666
+        },
+        {
+          "iteration": 100,
+          "nash_conv": 0.17861353198221058
+        },
+        {
+          "iteration": 1000,
+          "nash_conv": 0.041676252485494114
+        },
+        {
+          "iteration": 5000,
+          "nash_conv": 0.030129518931225507
+        },
+        {
+          "iteration": 20000,
+          "nash_conv": 0.013853375145368163
+        }
+      ],
+      "restored_nash_conv": 0.013853375145368163,
+      "elapsed_seconds": 1.2377839162945747,
+      "passed_toy_criterion": true,
+      "information_sets": 12
+    },
+    {
+      "seed": 89,
+      "curve": [
+        {
+          "iteration": 0,
+          "nash_conv": 0.9166666666666666
+        },
+        {
+          "iteration": 100,
+          "nash_conv": 0.21373530013728576
+        },
+        {
+          "iteration": 1000,
+          "nash_conv": 0.027325144575564952
+        },
+        {
+          "iteration": 5000,
+          "nash_conv": 0.022627252637197504
+        },
+        {
+          "iteration": 20000,
+          "nash_conv": 0.018971494623800045
+        }
+      ],
+      "restored_nash_conv": 0.018971494623800045,
+      "elapsed_seconds": 1.2300762082450092,
+      "passed_toy_criterion": true,
+      "information_sets": 12
+    },
+    {
+      "seed": 113,
+      "curve": [
+        {
+          "iteration": 0,
+          "nash_conv": 0.9166666666666666
+        },
+        {
+          "iteration": 100,
+          "nash_conv": 0.2725059845188974
+        },
+        {
+          "iteration": 1000,
+          "nash_conv": 0.11286079116126163
+        },
+        {
+          "iteration": 5000,
+          "nash_conv": 0.01961661038890755
+        },
+        {
+          "iteration": 20000,
+          "nash_conv": 0.004148037450637132
+        }
+      ],
+      "restored_nash_conv": 0.004148037450637132,
+      "elapsed_seconds": 1.1957025001756847,
+      "passed_toy_criterion": true,
+      "information_sets": 12
+    }
+  ],
+  "limitations": "Not no-limit hold'em, not multiway, not a strength benchmark result; exported policies do not resume solver regrets"
+}

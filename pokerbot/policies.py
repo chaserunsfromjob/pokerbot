@@ -88,4 +88,7 @@ class EquityPolicy:
 
 
 def make_policy(name, config=None):
+    if name.startswith("card_"):
+        from .card_controls import CardControl
+        return CardControl(name)
     return EquityPolicy(config or EquityConfig()) if name == "equity" else Control(name)
