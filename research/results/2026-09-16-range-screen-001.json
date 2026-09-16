@@ -1,0 +1,7342 @@
+{
+  "status": "development only; no promotion decision",
+  "hands": 28800,
+  "paired_gain_bb_per_100": {
+    "scripted": {
+      "original": {
+        "6": {
+          "mean": 0.0,
+          "low": 0.0,
+          "high": 0.0,
+          "trials": 8
+        },
+        "7": {
+          "mean": 0.0,
+          "low": 0.0,
+          "high": 0.0,
+          "trials": 8
+        },
+        "8": {
+          "mean": 0.0,
+          "low": 0.0,
+          "high": 0.0,
+          "trials": 8
+        },
+        "9": {
+          "mean": 0.0,
+          "low": 0.0,
+          "high": 0.0,
+          "trials": 8
+        }
+      },
+      "uniform128": {
+        "6": {
+          "mean": 141.03819444444446,
+          "low": -194.69422370784844,
+          "high": 476.77061259673735,
+          "trials": 8
+        },
+        "7": {
+          "mean": -90.80654761904762,
+          "low": -658.3223708448406,
+          "high": 476.70927560674545,
+          "trials": 8
+        },
+        "8": {
+          "mean": -78.63020833333331,
+          "low": -370.23965694881934,
+          "high": 212.97924028215272,
+          "trials": 8
+        },
+        "9": {
+          "mean": 137.06712962962962,
+          "low": -174.14218096881365,
+          "high": 448.2764402280729,
+          "trials": 8
+        }
+      },
+      "position128": {
+        "6": {
+          "mean": -108.85416666666667,
+          "low": -491.1330729514108,
+          "high": 273.4247396180774,
+          "trials": 8
+        },
+        "7": {
+          "mean": -420.8839285714285,
+          "low": -838.728392351787,
+          "high": -3.0394647910700314,
+          "trials": 8
+        },
+        "8": {
+          "mean": -240.41536458333331,
+          "low": -542.8545052990044,
+          "high": 62.02377613233767,
+          "trials": 8
+        },
+        "9": {
+          "mean": -10.372106481481481,
+          "low": -446.54464191711645,
+          "high": 425.8004289541535,
+          "trials": 8
+        }
+      },
+      "ranges128": {
+        "6": {
+          "mean": 42.276041666666714,
+          "low": -186.90824194156644,
+          "high": 271.4603252748999,
+          "trials": 8
+        },
+        "7": {
+          "mean": -80.96726190476188,
+          "low": -508.97470576645225,
+          "high": 347.0401819569285,
+          "trials": 8
+        },
+        "8": {
+          "mean": -132.63411458333334,
+          "low": -453.55366933133007,
+          "high": 188.2854401646634,
+          "trials": 8
+        },
+        "9": {
+          "mean": 210.59143518518522,
+          "low": -179.84579578340396,
+          "high": 601.0286661537743,
+          "trials": 8
+        }
+      },
+      "combined128": {
+        "6": {
+          "mean": -255.24652777777774,
+          "low": -697.6030494303881,
+          "high": 187.1099938748326,
+          "trials": 8
+        },
+        "7": {
+          "mean": -408.92559523809524,
+          "low": -808.3022863985084,
+          "high": -9.548904077682039,
+          "trials": 8
+        },
+        "8": {
+          "mean": -229.67317708333331,
+          "low": -538.2122510518473,
+          "high": 78.86589688518058,
+          "trials": 8
+        },
+        "9": {
+          "mean": 56.81539351851849,
+          "low": -392.8209774483151,
+          "high": 506.45176448535204,
+          "trials": 8
+        }
+      }
+    },
+    "card_aware": {
+      "original": {
+        "6": {
+          "mean": 0.0,
+          "low": 0.0,
+          "high": 0.0,
+          "trials": 8
+        },
+        "7": {
+          "mean": 0.0,
+          "low": 0.0,
+          "high": 0.0,
+          "trials": 8
+        },
+        "8": {
+          "mean": 0.0,
+          "low": 0.0,
+          "high": 0.0,
+          "trials": 8
+        },
+        "9": {
+          "mean": 0.0,
+          "low": 0.0,
+          "high": 0.0,
+          "trials": 8
+        }
+      },
+      "uniform128": {
+        "6": {
+          "mean": -81.02777777777776,
+          "low": -259.1365840389916,
+          "high": 97.08102848343607,
+          "trials": 8
+        },
+        "7": {
+          "mean": -21.428571428571438,
+          "low": -129.82511357614493,
+          "high": 86.96797071900204,
+          "trials": 8
+        },
+        "8": {
+          "mean": 91.2174479166667,
+          "low": -22.11852630991919,
+          "high": 204.5534221432526,
+          "trials": 8
+        },
+        "9": {
+          "mean": -70.34259259259258,
+          "low": -218.96087360330918,
+          "high": 78.27568841812402,
+          "trials": 8
+        }
+      },
+      "position128": {
+        "6": {
+          "mean": 131.19444444444446,
+          "low": -32.008174220946756,
+          "high": 294.3970631098357,
+          "trials": 8
+        },
+        "7": {
+          "mean": -70.01785714285715,
+          "low": -262.47011360449704,
+          "high": 122.43439931878272,
+          "trials": 8
+        },
+        "8": {
+          "mean": 75.41666666666666,
+          "low": -70.6443804901592,
+          "high": 221.4777138234925,
+          "trials": 8
+        },
+        "9": {
+          "mean": 92.72685185185185,
+          "low": -56.43573138147593,
+          "high": 241.88943508517963,
+          "trials": 8
+        }
+      },
+      "ranges128": {
+        "6": {
+          "mean": -9.059027777777771,
+          "low": -215.68378616561125,
+          "high": 197.5657306100557,
+          "trials": 8
+        },
+        "7": {
+          "mean": 29.866071428571406,
+          "low": -96.18994609768983,
+          "high": 155.92208895483265,
+          "trials": 8
+        },
+        "8": {
+          "mean": 55.59635416666666,
+          "low": -46.231285435363574,
+          "high": 157.4239937686969,
+          "trials": 8
+        },
+        "9": {
+          "mean": -66.35532407407406,
+          "low": -214.29179355767133,
+          "high": 81.58114540952319,
+          "trials": 8
+        }
+      },
+      "combined128": {
+        "6": {
+          "mean": 142.26215277777777,
+          "low": -31.00211633453756,
+          "high": 315.5264218900931,
+          "trials": 8
+        },
+        "7": {
+          "mean": -71.22321428571428,
+          "low": -264.1728218229257,
+          "high": 121.72639325149714,
+          "trials": 8
+        },
+        "8": {
+          "mean": 51.92708333333333,
+          "low": -124.64447580836314,
+          "high": 228.49864247502978,
+          "trials": 8
+        },
+        "9": {
+          "mean": 98.71643518518518,
+          "low": -48.287494987584566,
+          "high": 245.7203653579549,
+          "trials": 8
+        }
+      }
+    }
+  },
+  "feature_contrasts_bb_per_100": {
+    "scripted": {
+      "position_minus_uniform": {
+        "6": {
+          "mean": -249.8923611111111,
+          "low": -621.0089403748623,
+          "high": 121.22421815264005,
+          "trials": 8
+        },
+        "7": {
+          "mean": -330.07738095238096,
+          "low": -715.5988890556014,
+          "high": 55.44412715083945,
+          "trials": 8
+        },
+        "8": {
+          "mean": -161.78515625000003,
+          "low": -446.27562458944124,
+          "high": 122.70531208944121,
+          "trials": 8
+        },
+        "9": {
+          "mean": -147.4392361111111,
+          "low": -457.9414601859593,
+          "high": 163.0629879637371,
+          "trials": 8
+        }
+      },
+      "ranges_minus_uniform": {
+        "6": {
+          "mean": -98.76215277777771,
+          "low": -331.6223888933513,
+          "high": 134.09808333779588,
+          "trials": 8
+        },
+        "7": {
+          "mean": 9.839285714285722,
+          "low": -251.48229523816377,
+          "high": 271.1608666667352,
+          "trials": 8
+        },
+        "8": {
+          "mean": -54.003906250000014,
+          "low": -187.07015729903463,
+          "high": 79.06234479903459,
+          "trials": 8
+        },
+        "9": {
+          "mean": 73.52430555555556,
+          "low": -60.842795735898065,
+          "high": 207.8914068470092,
+          "trials": 8
+        }
+      },
+      "combined_minus_position": {
+        "6": {
+          "mean": -146.39236111111111,
+          "low": -419.4789195769922,
+          "high": 126.69419735476995,
+          "trials": 8
+        },
+        "7": {
+          "mean": 11.9583333333333,
+          "low": -132.00720244779404,
+          "high": 155.92386911446062,
+          "trials": 8
+        },
+        "8": {
+          "mean": 10.742187500000007,
+          "low": -15.64002889825652,
+          "high": 37.12440389825653,
+          "trials": 8
+        },
+        "9": {
+          "mean": 67.1875,
+          "low": -39.55852218160727,
+          "high": 173.93352218160726,
+          "trials": 8
+        }
+      },
+      "combined_minus_ranges": {
+        "6": {
+          "mean": -297.52256944444446,
+          "low": -655.8342696004258,
+          "high": 60.78913071153687,
+          "trials": 8
+        },
+        "7": {
+          "mean": -327.95833333333337,
+          "low": -686.6636340480327,
+          "high": 30.74696738136595,
+          "trials": 8
+        },
+        "8": {
+          "mean": -97.03906249999997,
+          "low": -288.5447649086944,
+          "high": 94.46663990869445,
+          "trials": 8
+        },
+        "9": {
+          "mean": -153.77604166666669,
+          "low": -414.4603881702222,
+          "high": 106.90830483688882,
+          "trials": 8
+        }
+      }
+    },
+    "card_aware": {
+      "position_minus_uniform": {
+        "6": {
+          "mean": 212.22222222222223,
+          "low": 31.964163723689637,
+          "high": 392.4802807207548,
+          "trials": 8
+        },
+        "7": {
+          "mean": -48.58928571428571,
+          "low": -274.41959038288405,
+          "high": 177.24101895431266,
+          "trials": 8
+        },
+        "8": {
+          "mean": -15.800781250000028,
+          "low": -206.4899105428941,
+          "high": 174.88834804289405,
+          "trials": 8
+        },
+        "9": {
+          "mean": 163.06944444444446,
+          "low": 91.64472170446308,
+          "high": 234.49416718442583,
+          "trials": 8
+        }
+      },
+      "ranges_minus_uniform": {
+        "6": {
+          "mean": 71.96875,
+          "low": -2.944045024169199,
+          "high": 146.8815450241692,
+          "trials": 8
+        },
+        "7": {
+          "mean": 51.29464285714284,
+          "low": -13.895190730773727,
+          "high": 116.48447644505941,
+          "trials": 8
+        },
+        "8": {
+          "mean": -35.62109375000005,
+          "low": -162.34265237326903,
+          "high": 91.10046487326895,
+          "trials": 8
+        },
+        "9": {
+          "mean": 3.987268518518535,
+          "low": -38.500748418475574,
+          "high": 46.47528545551264,
+          "trials": 8
+        }
+      },
+      "combined_minus_position": {
+        "6": {
+          "mean": 11.067708333333334,
+          "low": -21.336825177676275,
+          "high": 43.472241844342946,
+          "trials": 8
+        },
+        "7": {
+          "mean": -1.2053571428571423,
+          "low": -27.36550159573264,
+          "high": 24.954787310018354,
+          "trials": 8
+        },
+        "8": {
+          "mean": -23.48958333333333,
+          "low": -87.30544907427284,
+          "high": 40.32628240760618,
+          "trials": 8
+        },
+        "9": {
+          "mean": 5.9895833333333295,
+          "low": -26.238126737537698,
+          "high": 38.217293404204355,
+          "trials": 8
+        }
+      },
+      "combined_minus_ranges": {
+        "6": {
+          "mean": 151.32118055555554,
+          "low": -25.36149077301863,
+          "high": 328.00385188412974,
+          "trials": 8
+        },
+        "7": {
+          "mean": -101.0892857142857,
+          "low": -348.1706111751462,
+          "high": 145.99203974657476,
+          "trials": 8
+        },
+        "8": {
+          "mean": -3.669270833333311,
+          "low": -169.51455525090478,
+          "high": 162.17601358423815,
+          "trials": 8
+        },
+        "9": {
+          "mean": 165.07175925925924,
+          "low": 88.95264100964953,
+          "high": 241.19087750886894,
+          "trials": 8
+        }
+      }
+    }
+  },
+  "rows": [
+    {
+      "pool": "scripted",
+      "seats": 6,
+      "trial": 0,
+      "variant": "original",
+      "hands": 72,
+      "bb_per_100": -181.59722222222223,
+      "delta": 0.0,
+      "elapsed_seconds": 0.3663102090358734,
+      "decision_latency_ms": {
+        "p50": 0.002791173756122589,
+        "p95": 0.7273915223777287,
+        "max": 0.8614170365035534
+      },
+      "range_diagnostics": {
+        "decisions": 0,
+        "mean_ess": null,
+        "min_ess": null,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "scripted",
+      "seats": 6,
+      "trial": 0,
+      "variant": "uniform128",
+      "hands": 72,
+      "bb_per_100": 369.09722222222223,
+      "delta": 550.6944444444445,
+      "elapsed_seconds": 0.5981569173745811,
+      "decision_latency_ms": {
+        "p50": 0.002874992787837982,
+        "p95": 2.5601497851312147,
+        "max": 3.0058748088777065
+      },
+      "range_diagnostics": {
+        "decisions": 0,
+        "mean_ess": null,
+        "min_ess": null,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "scripted",
+      "seats": 6,
+      "trial": 0,
+      "variant": "position128",
+      "hands": 72,
+      "bb_per_100": 521.875,
+      "delta": 703.4722222222222,
+      "elapsed_seconds": 0.8964866660535336,
+      "decision_latency_ms": {
+        "p50": 0.0027921050786972046,
+        "p95": 3.049782756716012,
+        "max": 9.672124870121479
+      },
+      "range_diagnostics": {
+        "decisions": 0,
+        "mean_ess": null,
+        "min_ess": null,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "scripted",
+      "seats": 6,
+      "trial": 0,
+      "variant": "ranges128",
+      "hands": 72,
+      "bb_per_100": 372.22222222222223,
+      "delta": 553.8194444444445,
+      "elapsed_seconds": 1.3993298332206905,
+      "decision_latency_ms": {
+        "p50": 0.002874992787837982,
+        "p95": 3.0332414899021387,
+        "max": 526.0135419666767
+      },
+      "range_diagnostics": {
+        "decisions": 119,
+        "mean_ess": 104.55573302697692,
+        "min_ess": 52.06000072225864,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "scripted",
+      "seats": 6,
+      "trial": 0,
+      "variant": "combined128",
+      "hands": 72,
+      "bb_per_100": 527.0833333333334,
+      "delta": 708.6805555555557,
+      "elapsed_seconds": 0.5808235839940608,
+      "decision_latency_ms": {
+        "p50": 0.002832617610692978,
+        "p95": 3.0718873953446746,
+        "max": 3.957000095397234
+      },
+      "range_diagnostics": {
+        "decisions": 90,
+        "mean_ess": 103.75961826772229,
+        "min_ess": 52.06000072225864,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "scripted",
+      "seats": 6,
+      "trial": 1,
+      "variant": "original",
+      "hands": 72,
+      "bb_per_100": 400.0,
+      "delta": 0.0,
+      "elapsed_seconds": 0.39387004217132926,
+      "decision_latency_ms": {
+        "p50": 0.002791639417409897,
+        "p95": 0.7232162170112122,
+        "max": 2.6956251822412014
+      },
+      "range_diagnostics": {
+        "decisions": 0,
+        "mean_ess": null,
+        "min_ess": null,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "scripted",
+      "seats": 6,
+      "trial": 1,
+      "variant": "uniform128",
+      "hands": 72,
+      "bb_per_100": 379.8611111111111,
+      "delta": -20.138888888888914,
+      "elapsed_seconds": 0.618439625017345,
+      "decision_latency_ms": {
+        "p50": 0.0028330832719802856,
+        "p95": 2.3358736652880907,
+        "max": 3.071750048547983
+      },
+      "range_diagnostics": {
+        "decisions": 0,
+        "mean_ess": null,
+        "min_ess": null,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "scripted",
+      "seats": 6,
+      "trial": 1,
+      "variant": "position128",
+      "hands": 72,
+      "bb_per_100": 393.75,
+      "delta": -6.25,
+      "elapsed_seconds": 0.5559668750502169,
+      "decision_latency_ms": {
+        "p50": 0.002791639417409897,
+        "p95": 2.2804168984293938,
+        "max": 3.0728750862181187
+      },
+      "range_diagnostics": {
+        "decisions": 0,
+        "mean_ess": null,
+        "min_ess": null,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "scripted",
+      "seats": 6,
+      "trial": 1,
+      "variant": "ranges128",
+      "hands": 72,
+      "bb_per_100": 384.72222222222223,
+      "delta": -15.277777777777771,
+      "elapsed_seconds": 0.6560969999991357,
+      "decision_latency_ms": {
+        "p50": 0.002750195562839508,
+        "p95": 2.955543785355985,
+        "max": 3.7632500752806664
+      },
+      "range_diagnostics": {
+        "decisions": 115,
+        "mean_ess": 107.3095433869553,
+        "min_ess": 31.712200968129217,
+        "below_quarter_samples": 1
+      }
+    },
+    {
+      "pool": "scripted",
+      "seats": 6,
+      "trial": 1,
+      "variant": "combined128",
+      "hands": 72,
+      "bb_per_100": 393.75,
+      "delta": -6.25,
+      "elapsed_seconds": 0.606625041924417,
+      "decision_latency_ms": {
+        "p50": 0.002791639417409897,
+        "p95": 2.938812738284469,
+        "max": 3.687082789838314
+      },
+      "range_diagnostics": {
+        "decisions": 100,
+        "mean_ess": 105.97000570761784,
+        "min_ess": 31.712200968129217,
+        "below_quarter_samples": 1
+      }
+    },
+    {
+      "pool": "scripted",
+      "seats": 6,
+      "trial": 2,
+      "variant": "original",
+      "hands": 72,
+      "bb_per_100": 294.09722222222223,
+      "delta": 0.0,
+      "elapsed_seconds": 0.3850912917405367,
+      "decision_latency_ms": {
+        "p50": 0.002791173756122589,
+        "p95": 0.6670664995908735,
+        "max": 0.7503326050937176
+      },
+      "range_diagnostics": {
+        "decisions": 0,
+        "mean_ess": null,
+        "min_ess": null,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "scripted",
+      "seats": 6,
+      "trial": 2,
+      "variant": "uniform128",
+      "hands": 72,
+      "bb_per_100": -295.1388888888889,
+      "delta": -589.2361111111111,
+      "elapsed_seconds": 0.6026990003883839,
+      "decision_latency_ms": {
+        "p50": 0.0027921050786972046,
+        "p95": 2.500620856881141,
+        "max": 3.0284998938441277
+      },
+      "range_diagnostics": {
+        "decisions": 0,
+        "mean_ess": null,
+        "min_ess": null,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "scripted",
+      "seats": 6,
+      "trial": 2,
+      "variant": "position128",
+      "hands": 72,
+      "bb_per_100": -170.13888888888889,
+      "delta": -464.2361111111111,
+      "elapsed_seconds": 0.5386381670832634,
+      "decision_latency_ms": {
+        "p50": 0.002750195562839508,
+        "p95": 2.484149392694234,
+        "max": 2.9895827174186707
+      },
+      "range_diagnostics": {
+        "decisions": 0,
+        "mean_ess": null,
+        "min_ess": null,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "scripted",
+      "seats": 6,
+      "trial": 2,
+      "variant": "ranges128",
+      "hands": 72,
+      "bb_per_100": -159.02777777777777,
+      "delta": -453.125,
+      "elapsed_seconds": 0.6824041251093149,
+      "decision_latency_ms": {
+        "p50": 0.0028330832719802856,
+        "p95": 2.9430249240249395,
+        "max": 3.9458749815821648
+      },
+      "range_diagnostics": {
+        "decisions": 125,
+        "mean_ess": 103.291869070604,
+        "min_ess": 31.312617670104054,
+        "below_quarter_samples": 1
+      }
+    },
+    {
+      "pool": "scripted",
+      "seats": 6,
+      "trial": 2,
+      "variant": "combined128",
+      "hands": 72,
+      "bb_per_100": -34.02777777777778,
+      "delta": -328.125,
+      "elapsed_seconds": 0.5920690419152379,
+      "decision_latency_ms": {
+        "p50": 0.002791406586766243,
+        "p95": 2.9116024961695075,
+        "max": 3.6218748427927494
+      },
+      "range_diagnostics": {
+        "decisions": 100,
+        "mean_ess": 105.55448847254594,
+        "min_ess": 58.9339942452596,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "scripted",
+      "seats": 6,
+      "trial": 3,
+      "variant": "original",
+      "hands": 72,
+      "bb_per_100": 811.6388888888889,
+      "delta": 0.0,
+      "elapsed_seconds": 0.3824712079949677,
+      "decision_latency_ms": {
+        "p50": 0.0027704518288373947,
+        "p95": 0.6485766964033245,
+        "max": 0.7404591888189316
+      },
+      "range_diagnostics": {
+        "decisions": 0,
+        "mean_ess": null,
+        "min_ess": null,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "scripted",
+      "seats": 6,
+      "trial": 3,
+      "variant": "uniform128",
+      "hands": 72,
+      "bb_per_100": 898.0972222222222,
+      "delta": 86.45833333333326,
+      "elapsed_seconds": 0.6229389170184731,
+      "decision_latency_ms": {
+        "p50": 0.002791639417409897,
+        "p95": 2.5151292327791452,
+        "max": 2.91337538510561
+      },
+      "range_diagnostics": {
+        "decisions": 0,
+        "mean_ess": null,
+        "min_ess": null,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "scripted",
+      "seats": 6,
+      "trial": 3,
+      "variant": "position128",
+      "hands": 72,
+      "bb_per_100": 511.4583333333333,
+      "delta": -300.1805555555556,
+      "elapsed_seconds": 0.5484089576639235,
+      "decision_latency_ms": {
+        "p50": 0.0027497299015522003,
+        "p95": 2.5241252034902573,
+        "max": 2.929416950792074
+      },
+      "range_diagnostics": {
+        "decisions": 0,
+        "mean_ess": null,
+        "min_ess": null,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "scripted",
+      "seats": 6,
+      "trial": 3,
+      "variant": "ranges128",
+      "hands": 72,
+      "bb_per_100": 896.7083333333334,
+      "delta": 85.06944444444446,
+      "elapsed_seconds": 0.7180001665838063,
+      "decision_latency_ms": {
+        "p50": 0.0027921050786972046,
+        "p95": 2.98205642029643,
+        "max": 3.68337519466877
+      },
+      "range_diagnostics": {
+        "decisions": 134,
+        "mean_ess": 104.6488679253572,
+        "min_ess": 42.95979042982652,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "scripted",
+      "seats": 6,
+      "trial": 3,
+      "variant": "combined128",
+      "hands": 72,
+      "bb_per_100": 592.4027777777778,
+      "delta": -219.2361111111111,
+      "elapsed_seconds": 0.6145272911526263,
+      "decision_latency_ms": {
+        "p50": 0.002750195562839508,
+        "p95": 2.99054104834795,
+        "max": 3.724041860550642
+      },
+      "range_diagnostics": {
+        "decisions": 101,
+        "mean_ess": 101.15468481691985,
+        "min_ess": 21.9879506102717,
+        "below_quarter_samples": 2
+      }
+    },
+    {
+      "pool": "scripted",
+      "seats": 6,
+      "trial": 4,
+      "variant": "original",
+      "hands": 72,
+      "bb_per_100": 2133.6111111111113,
+      "delta": 0.0,
+      "elapsed_seconds": 0.3937637498602271,
+      "decision_latency_ms": {
+        "p50": 0.002750195562839508,
+        "p95": 0.6679183105006814,
+        "max": 0.762708019465208
+      },
+      "range_diagnostics": {
+        "decisions": 0,
+        "mean_ess": null,
+        "min_ess": null,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "scripted",
+      "seats": 6,
+      "trial": 4,
+      "variant": "uniform128",
+      "hands": 72,
+      "bb_per_100": 2248.8888888888887,
+      "delta": 115.27777777777737,
+      "elapsed_seconds": 0.6350648747757077,
+      "decision_latency_ms": {
+        "p50": 0.002791639417409897,
+        "p95": 2.5150378933176394,
+        "max": 3.2502501271665096
+      },
+      "range_diagnostics": {
+        "decisions": 0,
+        "mean_ess": null,
+        "min_ess": null,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "scripted",
+      "seats": 6,
+      "trial": 4,
+      "variant": "position128",
+      "hands": 72,
+      "bb_per_100": 2122.152777777778,
+      "delta": -11.458333333333485,
+      "elapsed_seconds": 0.5812811250798404,
+      "decision_latency_ms": {
+        "p50": 0.002916436642408371,
+        "p95": 2.579270582646112,
+        "max": 3.1245406717061996
+      },
+      "range_diagnostics": {
+        "decisions": 0,
+        "mean_ess": null,
+        "min_ess": null,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "scripted",
+      "seats": 6,
+      "trial": 4,
+      "variant": "ranges128",
+      "hands": 72,
+      "bb_per_100": 2168.3333333333335,
+      "delta": 34.72222222222217,
+      "elapsed_seconds": 0.742701499722898,
+      "decision_latency_ms": {
+        "p50": 0.0029578804969787598,
+        "p95": 3.1173670198768373,
+        "max": 3.891916945576668
+      },
+      "range_diagnostics": {
+        "decisions": 131,
+        "mean_ess": 102.27966188871773,
+        "min_ess": 14.774222790742302,
+        "below_quarter_samples": 1
+      }
+    },
+    {
+      "pool": "scripted",
+      "seats": 6,
+      "trial": 4,
+      "variant": "combined128",
+      "hands": 72,
+      "bb_per_100": 1286.736111111111,
+      "delta": -846.8750000000002,
+      "elapsed_seconds": 0.6144307921640575,
+      "decision_latency_ms": {
+        "p50": 0.002874992787837982,
+        "p95": 3.1025728909298778,
+        "max": 3.8522500544786453
+      },
+      "range_diagnostics": {
+        "decisions": 95,
+        "mean_ess": 102.53117227200529,
+        "min_ess": 14.774222790742302,
+        "below_quarter_samples": 1
+      }
+    },
+    {
+      "pool": "scripted",
+      "seats": 6,
+      "trial": 5,
+      "variant": "original",
+      "hands": 72,
+      "bb_per_100": 625.3472222222222,
+      "delta": 0.0,
+      "elapsed_seconds": 0.39485058281570673,
+      "decision_latency_ms": {
+        "p50": 0.002874992787837982,
+        "p95": 0.7079374045133591,
+        "max": 0.8232081308960915
+      },
+      "range_diagnostics": {
+        "decisions": 0,
+        "mean_ess": null,
+        "min_ess": null,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "scripted",
+      "seats": 6,
+      "trial": 5,
+      "variant": "uniform128",
+      "hands": 72,
+      "bb_per_100": 634.2083333333334,
+      "delta": 8.8611111111112,
+      "elapsed_seconds": 0.6320045827887952,
+      "decision_latency_ms": {
+        "p50": 0.002874992787837982,
+        "p95": 2.6870919391512866,
+        "max": 3.119667060673237
+      },
+      "range_diagnostics": {
+        "decisions": 0,
+        "mean_ess": null,
+        "min_ess": null,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "scripted",
+      "seats": 6,
+      "trial": 5,
+      "variant": "position128",
+      "hands": 72,
+      "bb_per_100": -160.41666666666666,
+      "delta": -785.7638888888888,
+      "elapsed_seconds": 0.5525047909468412,
+      "decision_latency_ms": {
+        "p50": 0.002874992787837982,
+        "p95": 2.6580827776342626,
+        "max": 3.141624853014946
+      },
+      "range_diagnostics": {
+        "decisions": 0,
+        "mean_ess": null,
+        "min_ess": null,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "scripted",
+      "seats": 6,
+      "trial": 5,
+      "variant": "ranges128",
+      "hands": 72,
+      "bb_per_100": 634.2083333333334,
+      "delta": 8.8611111111112,
+      "elapsed_seconds": 0.7105290829204023,
+      "decision_latency_ms": {
+        "p50": 0.0029578804969787598,
+        "p95": 3.11267077922821,
+        "max": 4.312417004257441
+      },
+      "range_diagnostics": {
+        "decisions": 121,
+        "mean_ess": 101.10899627521137,
+        "min_ess": 17.35272727698943,
+        "below_quarter_samples": 2
+      }
+    },
+    {
+      "pool": "scripted",
+      "seats": 6,
+      "trial": 5,
+      "variant": "combined128",
+      "hands": 72,
+      "bb_per_100": -160.41666666666666,
+      "delta": -785.7638888888888,
+      "elapsed_seconds": 0.5846567084081471,
+      "decision_latency_ms": {
+        "p50": 0.0028330832719802856,
+        "p95": 2.938635856844484,
+        "max": 4.020459018647671
+      },
+      "range_diagnostics": {
+        "decisions": 89,
+        "mean_ess": 105.00664181831122,
+        "min_ess": 17.35272727698943,
+        "below_quarter_samples": 2
+      }
+    },
+    {
+      "pool": "scripted",
+      "seats": 6,
+      "trial": 6,
+      "variant": "original",
+      "hands": 72,
+      "bb_per_100": 1228.8194444444443,
+      "delta": 0.0,
+      "elapsed_seconds": 0.3838277906179428,
+      "decision_latency_ms": {
+        "p50": 0.002750195562839508,
+        "p95": 0.6996295880526301,
+        "max": 0.8282908238470554
+      },
+      "range_diagnostics": {
+        "decisions": 0,
+        "mean_ess": null,
+        "min_ess": null,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "scripted",
+      "seats": 6,
+      "trial": 6,
+      "variant": "uniform128",
+      "hands": 72,
+      "bb_per_100": 1452.7777777777778,
+      "delta": 223.95833333333348,
+      "elapsed_seconds": 0.6191574581898749,
+      "decision_latency_ms": {
+        "p50": 0.002750195562839508,
+        "p95": 2.5440931785851717,
+        "max": 3.062250092625618
+      },
+      "range_diagnostics": {
+        "decisions": 0,
+        "mean_ess": null,
+        "min_ess": null,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "scripted",
+      "seats": 6,
+      "trial": 6,
+      "variant": "position128",
+      "hands": 72,
+      "bb_per_100": 1490.4583333333335,
+      "delta": 261.63888888888914,
+      "elapsed_seconds": 0.566794500220567,
+      "decision_latency_ms": {
+        "p50": 0.002750195562839508,
+        "p95": 2.523234765976665,
+        "max": 3.0767088755965233
+      },
+      "range_diagnostics": {
+        "decisions": 0,
+        "mean_ess": null,
+        "min_ess": null,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "scripted",
+      "seats": 6,
+      "trial": 6,
+      "variant": "ranges128",
+      "hands": 72,
+      "bb_per_100": 1367.8888888888891,
+      "delta": 139.0694444444448,
+      "elapsed_seconds": 0.7032084157690406,
+      "decision_latency_ms": {
+        "p50": 0.0027921050786972046,
+        "p95": 2.997062401846051,
+        "max": 4.084290936589241
+      },
+      "range_diagnostics": {
+        "decisions": 129,
+        "mean_ess": 98.95206334811007,
+        "min_ess": 23.697161112465587,
+        "below_quarter_samples": 1
+      }
+    },
+    {
+      "pool": "scripted",
+      "seats": 6,
+      "trial": 6,
+      "variant": "combined128",
+      "hands": 72,
+      "bb_per_100": 1352.2638888888891,
+      "delta": 123.4444444444448,
+      "elapsed_seconds": 0.6332755419425666,
+      "decision_latency_ms": {
+        "p50": 0.002750195562839508,
+        "p95": 2.99439977388829,
+        "max": 4.120542202144861
+      },
+      "range_diagnostics": {
+        "decisions": 106,
+        "mean_ess": 99.1157080252205,
+        "min_ess": 23.697161112465587,
+        "below_quarter_samples": 1
+      }
+    },
+    {
+      "pool": "scripted",
+      "seats": 6,
+      "trial": 7,
+      "variant": "original",
+      "hands": 72,
+      "bb_per_100": 1368.4027777777778,
+      "delta": 0.0,
+      "elapsed_seconds": 0.3962207920849323,
+      "decision_latency_ms": {
+        "p50": 0.002791173756122589,
+        "p95": 0.6663749227300286,
+        "max": 0.7647089660167694
+      },
+      "range_diagnostics": {
+        "decisions": 0,
+        "mean_ess": null,
+        "min_ess": null,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "scripted",
+      "seats": 6,
+      "trial": 7,
+      "variant": "uniform128",
+      "hands": 72,
+      "bb_per_100": 2120.8333333333335,
+      "delta": 752.4305555555557,
+      "elapsed_seconds": 0.6657026247121394,
+      "decision_latency_ms": {
+        "p50": 0.0027921050786972046,
+        "p95": 2.528375200927256,
+        "max": 2.974207978695631
+      },
+      "range_diagnostics": {
+        "decisions": 0,
+        "mean_ess": null,
+        "min_ess": null,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "scripted",
+      "seats": 6,
+      "trial": 7,
+      "variant": "position128",
+      "hands": 72,
+      "bb_per_100": 1100.3472222222222,
+      "delta": -268.05555555555566,
+      "elapsed_seconds": 0.5644285422749817,
+      "decision_latency_ms": {
+        "p50": 0.002791173756122589,
+        "p95": 2.264983206987381,
+        "max": 3.1284159049391747
+      },
+      "range_diagnostics": {
+        "decisions": 0,
+        "mean_ess": null,
+        "min_ess": null,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "scripted",
+      "seats": 6,
+      "trial": 7,
+      "variant": "ranges128",
+      "hands": 72,
+      "bb_per_100": 1353.4722222222222,
+      "delta": -14.930555555555657,
+      "elapsed_seconds": 0.7331858752295375,
+      "decision_latency_ms": {
+        "p50": 0.0028330832719802856,
+        "p95": 3.006407804787159,
+        "max": 3.630292136222124
+      },
+      "range_diagnostics": {
+        "decisions": 138,
+        "mean_ess": 99.87285097300578,
+        "min_ess": 41.55237817217888,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "scripted",
+      "seats": 6,
+      "trial": 7,
+      "variant": "combined128",
+      "hands": 72,
+      "bb_per_100": 680.5555555555555,
+      "delta": -687.8472222222223,
+      "elapsed_seconds": 0.619155790656805,
+      "decision_latency_ms": {
+        "p50": 0.002791173756122589,
+        "p95": 2.9772001318633556,
+        "max": 3.637957852333784
+      },
+      "range_diagnostics": {
+        "decisions": 103,
+        "mean_ess": 103.37277941806488,
+        "min_ess": 52.24361594692334,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "scripted",
+      "seats": 7,
+      "trial": 0,
+      "variant": "original",
+      "hands": 84,
+      "bb_per_100": 511.76190476190476,
+      "delta": 0.0,
+      "elapsed_seconds": 0.43860837491229177,
+      "decision_latency_ms": {
+        "p50": 0.0027082860469818115,
+        "p95": 0.7373290602117777,
+        "max": 0.8797501213848591
+      },
+      "range_diagnostics": {
+        "decisions": 0,
+        "mean_ess": null,
+        "min_ess": null,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "scripted",
+      "seats": 7,
+      "trial": 0,
+      "variant": "uniform128",
+      "hands": 84,
+      "bb_per_100": 1259.5238095238096,
+      "delta": 747.7619047619048,
+      "elapsed_seconds": 0.7393741658888757,
+      "decision_latency_ms": {
+        "p50": 0.002709217369556427,
+        "p95": 2.5685204891487956,
+        "max": 3.405083902180195
+      },
+      "range_diagnostics": {
+        "decisions": 0,
+        "mean_ess": null,
+        "min_ess": null,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "scripted",
+      "seats": 7,
+      "trial": 0,
+      "variant": "position128",
+      "hands": 84,
+      "bb_per_100": 537.6547619047619,
+      "delta": 25.892857142857167,
+      "elapsed_seconds": 0.6665890417061746,
+      "decision_latency_ms": {
+        "p50": 0.002750195562839508,
+        "p95": 2.5722086429595947,
+        "max": 3.630375023931265
+      },
+      "range_diagnostics": {
+        "decisions": 0,
+        "mean_ess": null,
+        "min_ess": null,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "scripted",
+      "seats": 7,
+      "trial": 0,
+      "variant": "ranges128",
+      "hands": 84,
+      "bb_per_100": 900.8928571428571,
+      "delta": 389.13095238095235,
+      "elapsed_seconds": 0.8055326254107058,
+      "decision_latency_ms": {
+        "p50": 0.0027497299015522003,
+        "p95": 3.0340769793838263,
+        "max": 3.922875039279461
+      },
+      "range_diagnostics": {
+        "decisions": 138,
+        "mean_ess": 106.60656964195493,
+        "min_ess": 13.058679906580306,
+        "below_quarter_samples": 1
+      }
+    },
+    {
+      "pool": "scripted",
+      "seats": 7,
+      "trial": 0,
+      "variant": "combined128",
+      "hands": 84,
+      "bb_per_100": 541.5238095238095,
+      "delta": 29.76190476190476,
+      "elapsed_seconds": 0.7246225839480758,
+      "decision_latency_ms": {
+        "p50": 0.002709217369556427,
+        "p95": 3.0421456787735224,
+        "max": 3.8999170064926147
+      },
+      "range_diagnostics": {
+        "decisions": 113,
+        "mean_ess": 105.0638558278738,
+        "min_ess": 13.058679906580306,
+        "below_quarter_samples": 1
+      }
+    },
+    {
+      "pool": "scripted",
+      "seats": 7,
+      "trial": 1,
+      "variant": "original",
+      "hands": 84,
+      "bb_per_100": 1196.7261904761904,
+      "delta": 0.0,
+      "elapsed_seconds": 0.4715544590726495,
+      "decision_latency_ms": {
+        "p50": 0.0027497299015522003,
+        "p95": 0.7400000467896461,
+        "max": 0.8785002864897251
+      },
+      "range_diagnostics": {
+        "decisions": 0,
+        "mean_ess": null,
+        "min_ess": null,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "scripted",
+      "seats": 7,
+      "trial": 1,
+      "variant": "uniform128",
+      "hands": 84,
+      "bb_per_100": 2023.5119047619048,
+      "delta": 826.7857142857144,
+      "elapsed_seconds": 0.8141399999149144,
+      "decision_latency_ms": {
+        "p50": 0.0029159709811210632,
+        "p95": 2.7146749198436737,
+        "max": 3.5047908313572407
+      },
+      "range_diagnostics": {
+        "decisions": 0,
+        "mean_ess": null,
+        "min_ess": null,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "scripted",
+      "seats": 7,
+      "trial": 1,
+      "variant": "position128",
+      "hands": 84,
+      "bb_per_100": 1365.4761904761904,
+      "delta": 168.75,
+      "elapsed_seconds": 0.7373047498986125,
+      "decision_latency_ms": {
+        "p50": 0.002874992787837982,
+        "p95": 2.7769998414441943,
+        "max": 3.62791633233428
+      },
+      "range_diagnostics": {
+        "decisions": 0,
+        "mean_ess": null,
+        "min_ess": null,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "scripted",
+      "seats": 7,
+      "trial": 1,
+      "variant": "ranges128",
+      "hands": 84,
+      "bb_per_100": 1601.0238095238096,
+      "delta": 404.29761904761926,
+      "elapsed_seconds": 0.8791131670586765,
+      "decision_latency_ms": {
+        "p50": 0.0029169023036956787,
+        "p95": 3.3907165750861163,
+        "max": 4.410333000123501
+      },
+      "range_diagnostics": {
+        "decisions": 138,
+        "mean_ess": 102.28147330294057,
+        "min_ess": 13.59318640880101,
+        "below_quarter_samples": 3
+      }
+    },
+    {
+      "pool": "scripted",
+      "seats": 7,
+      "trial": 1,
+      "variant": "combined128",
+      "hands": 84,
+      "bb_per_100": 1084.9523809523807,
+      "delta": -111.77380952380963,
+      "elapsed_seconds": 0.8102195002138615,
+      "decision_latency_ms": {
+        "p50": 0.0028957147151231766,
+        "p95": 3.3214789582416415,
+        "max": 4.398833028972149
+      },
+      "range_diagnostics": {
+        "decisions": 118,
+        "mean_ess": 101.69462942664754,
+        "min_ess": 13.59318640880101,
+        "below_quarter_samples": 2
+      }
+    },
+    {
+      "pool": "scripted",
+      "seats": 7,
+      "trial": 2,
+      "variant": "original",
+      "hands": 84,
+      "bb_per_100": 2292.440476190476,
+      "delta": 0.0,
+      "elapsed_seconds": 0.5215319162234664,
+      "decision_latency_ms": {
+        "p50": 0.002834014594554901,
+        "p95": 0.7958251517266035,
+        "max": 0.9259581565856934
+      },
+      "range_diagnostics": {
+        "decisions": 0,
+        "mean_ess": null,
+        "min_ess": null,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "scripted",
+      "seats": 7,
+      "trial": 2,
+      "variant": "uniform128",
+      "hands": 84,
+      "bb_per_100": 2047.154761904762,
+      "delta": -245.28571428571422,
+      "elapsed_seconds": 0.8135993746109307,
+      "decision_latency_ms": {
+        "p50": 0.002834014594554901,
+        "p95": 2.7543646283447742,
+        "max": 3.540291916579008
+      },
+      "range_diagnostics": {
+        "decisions": 0,
+        "mean_ess": null,
+        "min_ess": null,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "scripted",
+      "seats": 7,
+      "trial": 2,
+      "variant": "position128",
+      "hands": 84,
+      "bb_per_100": 1883.7738095238096,
+      "delta": -408.6666666666665,
+      "elapsed_seconds": 0.7453342922963202,
+      "decision_latency_ms": {
+        "p50": 0.002834014594554901,
+        "p95": 2.730351570062339,
+        "max": 3.675874788314104
+      },
+      "range_diagnostics": {
+        "decisions": 0,
+        "mean_ess": null,
+        "min_ess": null,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "scripted",
+      "seats": 7,
+      "trial": 2,
+      "variant": "ranges128",
+      "hands": 84,
+      "bb_per_100": 2182.285714285714,
+      "delta": -110.15476190476193,
+      "elapsed_seconds": 0.9130985420197248,
+      "decision_latency_ms": {
+        "p50": 0.002875225618481636,
+        "p95": 3.2136564841493964,
+        "max": 4.38712490722537
+      },
+      "range_diagnostics": {
+        "decisions": 144,
+        "mean_ess": 99.27583022550905,
+        "min_ess": 10.517277876250391,
+        "below_quarter_samples": 3
+      }
+    },
+    {
+      "pool": "scripted",
+      "seats": 7,
+      "trial": 2,
+      "variant": "combined128",
+      "hands": 84,
+      "bb_per_100": 1905.202380952381,
+      "delta": -387.2380952380952,
+      "elapsed_seconds": 0.77574870781973,
+      "decision_latency_ms": {
+        "p50": 0.0027497299015522003,
+        "p95": 3.043187991715967,
+        "max": 4.131500143557787
+      },
+      "range_diagnostics": {
+        "decisions": 118,
+        "mean_ess": 96.42613559849698,
+        "min_ess": 10.517277876250391,
+        "below_quarter_samples": 4
+      }
+    },
+    {
+      "pool": "scripted",
+      "seats": 7,
+      "trial": 3,
+      "variant": "original",
+      "hands": 84,
+      "bb_per_100": 1061.0714285714287,
+      "delta": 0.0,
+      "elapsed_seconds": 0.4617546251975,
+      "decision_latency_ms": {
+        "p50": 0.002709217369556427,
+        "p95": 0.7436786778271198,
+        "max": 0.8920421823859215
+      },
+      "range_diagnostics": {
+        "decisions": 0,
+        "mean_ess": null,
+        "min_ess": null,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "scripted",
+      "seats": 7,
+      "trial": 3,
+      "variant": "uniform128",
+      "hands": 84,
+      "bb_per_100": 439.5833333333333,
+      "delta": -621.4880952380954,
+      "elapsed_seconds": 0.7355989580973983,
+      "decision_latency_ms": {
+        "p50": 0.0027497299015522003,
+        "p95": 2.599358139559627,
+        "max": 3.3698342740535736
+      },
+      "range_diagnostics": {
+        "decisions": 0,
+        "mean_ess": null,
+        "min_ess": null,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "scripted",
+      "seats": 7,
+      "trial": 3,
+      "variant": "position128",
+      "hands": 84,
+      "bb_per_100": 654.4642857142857,
+      "delta": -406.607142857143,
+      "elapsed_seconds": 0.6704710409976542,
+      "decision_latency_ms": {
+        "p50": 0.0027497299015522003,
+        "p95": 2.603920362889765,
+        "max": 3.4115416929125786
+      },
+      "range_diagnostics": {
+        "decisions": 0,
+        "mean_ess": null,
+        "min_ess": null,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "scripted",
+      "seats": 7,
+      "trial": 3,
+      "variant": "ranges128",
+      "hands": 84,
+      "bb_per_100": 797.6190476190476,
+      "delta": -263.4523809523811,
+      "elapsed_seconds": 0.8257080842740834,
+      "decision_latency_ms": {
+        "p50": 0.002750195562839508,
+        "p95": 3.2141998177394266,
+        "max": 4.135499708354473
+      },
+      "range_diagnostics": {
+        "decisions": 140,
+        "mean_ess": 105.07296703485399,
+        "min_ess": 48.24256126471884,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "scripted",
+      "seats": 7,
+      "trial": 3,
+      "variant": "combined128",
+      "hands": 84,
+      "bb_per_100": 1013.3928571428571,
+      "delta": -47.67857142857156,
+      "elapsed_seconds": 0.744826499838382,
+      "decision_latency_ms": {
+        "p50": 0.0027497299015522003,
+        "p95": 3.056165762245655,
+        "max": 4.165334161370993
+      },
+      "range_diagnostics": {
+        "decisions": 117,
+        "mean_ess": 104.22440965086854,
+        "min_ess": 43.642668044376514,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "scripted",
+      "seats": 7,
+      "trial": 4,
+      "variant": "original",
+      "hands": 84,
+      "bb_per_100": 824.1190476190476,
+      "delta": 0.0,
+      "elapsed_seconds": 0.46886845771223307,
+      "decision_latency_ms": {
+        "p50": 0.002707820385694504,
+        "p95": 0.7471437798812985,
+        "max": 0.8988329209387302
+      },
+      "range_diagnostics": {
+        "decisions": 0,
+        "mean_ess": null,
+        "min_ess": null,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "scripted",
+      "seats": 7,
+      "trial": 4,
+      "variant": "uniform128",
+      "hands": 84,
+      "bb_per_100": -162.9404761904762,
+      "delta": -987.0595238095239,
+      "elapsed_seconds": 0.7535847499966621,
+      "decision_latency_ms": {
+        "p50": 0.002709217369556427,
+        "p95": 2.589249750599265,
+        "max": 3.3964579924941063
+      },
+      "range_diagnostics": {
+        "decisions": 0,
+        "mean_ess": null,
+        "min_ess": null,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "scripted",
+      "seats": 7,
+      "trial": 4,
+      "variant": "position128",
+      "hands": 84,
+      "bb_per_100": 313.98809523809524,
+      "delta": -510.13095238095235,
+      "elapsed_seconds": 0.657135957852006,
+      "decision_latency_ms": {
+        "p50": 0.002707820385694504,
+        "p95": 2.6202158536762,
+        "max": 3.4565413370728493
+      },
+      "range_diagnostics": {
+        "decisions": 0,
+        "mean_ess": null,
+        "min_ess": null,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "scripted",
+      "seats": 7,
+      "trial": 4,
+      "variant": "ranges128",
+      "hands": 84,
+      "bb_per_100": -14.726190476190482,
+      "delta": -838.8452380952381,
+      "elapsed_seconds": 0.8096806248649955,
+      "decision_latency_ms": {
+        "p50": 0.002750195562839508,
+        "p95": 3.1096108490601138,
+        "max": 3.9664586074650288
+      },
+      "range_diagnostics": {
+        "decisions": 134,
+        "mean_ess": 107.94818421621824,
+        "min_ess": 55.08802914812897,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "scripted",
+      "seats": 7,
+      "trial": 4,
+      "variant": "combined128",
+      "hands": 84,
+      "bb_per_100": 313.98809523809524,
+      "delta": -510.13095238095235,
+      "elapsed_seconds": 0.7159684998914599,
+      "decision_latency_ms": {
+        "p50": 0.002709217369556427,
+        "p95": 3.054704470559954,
+        "max": 4.001916386187077
+      },
+      "range_diagnostics": {
+        "decisions": 105,
+        "mean_ess": 108.79541915567921,
+        "min_ess": 51.03039637401065,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "scripted",
+      "seats": 7,
+      "trial": 5,
+      "variant": "original",
+      "hands": 84,
+      "bb_per_100": 304.4642857142857,
+      "delta": 0.0,
+      "elapsed_seconds": 0.476537249982357,
+      "decision_latency_ms": {
+        "p50": 0.002709217369556427,
+        "p95": 0.7463330402970314,
+        "max": 0.894750002771616
+      },
+      "range_diagnostics": {
+        "decisions": 0,
+        "mean_ess": null,
+        "min_ess": null,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "scripted",
+      "seats": 7,
+      "trial": 5,
+      "variant": "uniform128",
+      "hands": 84,
+      "bb_per_100": 767.1190476190476,
+      "delta": 462.65476190476187,
+      "elapsed_seconds": 0.7317728330381215,
+      "decision_latency_ms": {
+        "p50": 0.0027497299015522003,
+        "p95": 2.5204061530530453,
+        "max": 3.3366670832037926
+      },
+      "range_diagnostics": {
+        "decisions": 0,
+        "mean_ess": null,
+        "min_ess": null,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "scripted",
+      "seats": 7,
+      "trial": 5,
+      "variant": "position128",
+      "hands": 84,
+      "bb_per_100": 320.23809523809524,
+      "delta": 15.773809523809518,
+      "elapsed_seconds": 0.6783838332630694,
+      "decision_latency_ms": {
+        "p50": 0.002750195562839508,
+        "p95": 2.4999623885378335,
+        "max": 3.3335420303046703
+      },
+      "range_diagnostics": {
+        "decisions": 0,
+        "mean_ess": null,
+        "min_ess": null,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "scripted",
+      "seats": 7,
+      "trial": 5,
+      "variant": "ranges128",
+      "hands": 84,
+      "bb_per_100": 840.0357142857143,
+      "delta": 535.5714285714287,
+      "elapsed_seconds": 0.8265484161674976,
+      "decision_latency_ms": {
+        "p50": 0.002791173756122589,
+        "p95": 3.0398040777072315,
+        "max": 3.9268326945602894
+      },
+      "range_diagnostics": {
+        "decisions": 139,
+        "mean_ess": 100.79568846576574,
+        "min_ess": 26.74564746438188,
+        "below_quarter_samples": 1
+      }
+    },
+    {
+      "pool": "scripted",
+      "seats": 7,
+      "trial": 5,
+      "variant": "combined128",
+      "hands": 84,
+      "bb_per_100": 297.6190476190476,
+      "delta": -6.84523809523813,
+      "elapsed_seconds": 0.7631746660917997,
+      "decision_latency_ms": {
+        "p50": 0.0027907080948352814,
+        "p95": 3.0115852830931544,
+        "max": 3.943209070712328
+      },
+      "range_diagnostics": {
+        "decisions": 119,
+        "mean_ess": 100.90749096384657,
+        "min_ess": 54.35262357676619,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "scripted",
+      "seats": 7,
+      "trial": 6,
+      "variant": "original",
+      "hands": 84,
+      "bb_per_100": 912.5,
+      "delta": 0.0,
+      "elapsed_seconds": 0.4858899167738855,
+      "decision_latency_ms": {
+        "p50": 0.002709217369556427,
+        "p95": 0.7452745921909808,
+        "max": 0.8750418201088905
+      },
+      "range_diagnostics": {
+        "decisions": 0,
+        "mean_ess": null,
+        "min_ess": null,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "scripted",
+      "seats": 7,
+      "trial": 6,
+      "variant": "uniform128",
+      "hands": 84,
+      "bb_per_100": 469.3452380952381,
+      "delta": -443.1547619047619,
+      "elapsed_seconds": 0.7554219998419285,
+      "decision_latency_ms": {
+        "p50": 0.002750195562839508,
+        "p95": 2.594158193096516,
+        "max": 3.4006251953542233
+      },
+      "range_diagnostics": {
+        "decisions": 0,
+        "mean_ess": null,
+        "min_ess": null,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "scripted",
+      "seats": 7,
+      "trial": 6,
+      "variant": "position128",
+      "hands": 84,
+      "bb_per_100": -150.89285714285714,
+      "delta": -1063.392857142857,
+      "elapsed_seconds": 0.669829832855612,
+      "decision_latency_ms": {
+        "p50": 0.0027497299015522003,
+        "p95": 2.594712330028411,
+        "max": 3.396417014300823
+      },
+      "range_diagnostics": {
+        "decisions": 0,
+        "mean_ess": null,
+        "min_ess": null,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "scripted",
+      "seats": 7,
+      "trial": 6,
+      "variant": "ranges128",
+      "hands": 84,
+      "bb_per_100": 852.9761904761905,
+      "delta": -59.52380952380952,
+      "elapsed_seconds": 0.8528831247240305,
+      "decision_latency_ms": {
+        "p50": 0.0027921050786972046,
+        "p95": 3.165674977935847,
+        "max": 4.818374756723642
+      },
+      "range_diagnostics": {
+        "decisions": 143,
+        "mean_ess": 101.78790507548055,
+        "min_ess": 16.237831474985313,
+        "below_quarter_samples": 5
+      }
+    },
+    {
+      "pool": "scripted",
+      "seats": 7,
+      "trial": 6,
+      "variant": "combined128",
+      "hands": 84,
+      "bb_per_100": -150.89285714285714,
+      "delta": -1063.392857142857,
+      "elapsed_seconds": 0.7335014999844134,
+      "decision_latency_ms": {
+        "p50": 0.002709217369556427,
+        "p95": 3.075240785256028,
+        "max": 4.230041988193989
+      },
+      "range_diagnostics": {
+        "decisions": 108,
+        "mean_ess": 104.4443071932951,
+        "min_ess": 45.1479083249954,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "scripted",
+      "seats": 7,
+      "trial": 7,
+      "variant": "original",
+      "hands": 84,
+      "bb_per_100": 1500.595238095238,
+      "delta": 0.0,
+      "elapsed_seconds": 0.4607629170641303,
+      "decision_latency_ms": {
+        "p50": 0.0027082860469818115,
+        "p95": 0.7456416264176369,
+        "max": 0.8948338218033314
+      },
+      "range_diagnostics": {
+        "decisions": 0,
+        "mean_ess": null,
+        "min_ess": null,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "scripted",
+      "seats": 7,
+      "trial": 7,
+      "variant": "uniform128",
+      "hands": 84,
+      "bb_per_100": 1033.9285714285713,
+      "delta": -466.66666666666674,
+      "elapsed_seconds": 0.7123258751817048,
+      "decision_latency_ms": {
+        "p50": 0.0027497299015522003,
+        "p95": 2.582882926799357,
+        "max": 3.4776669926941395
+      },
+      "range_diagnostics": {
+        "decisions": 0,
+        "mean_ess": null,
+        "min_ess": null,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "scripted",
+      "seats": 7,
+      "trial": 7,
+      "variant": "position128",
+      "hands": 84,
+      "bb_per_100": 311.9047619047619,
+      "delta": -1188.6904761904761,
+      "elapsed_seconds": 0.6408705841749907,
+      "decision_latency_ms": {
+        "p50": 0.002750195562839508,
+        "p95": 2.3504437645897265,
+        "max": 3.4965421073138714
+      },
+      "range_diagnostics": {
+        "decisions": 0,
+        "mean_ess": null,
+        "min_ess": null,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "scripted",
+      "seats": 7,
+      "trial": 7,
+      "variant": "ranges128",
+      "hands": 84,
+      "bb_per_100": 795.8333333333334,
+      "delta": -704.7619047619047,
+      "elapsed_seconds": 0.7806740421801805,
+      "decision_latency_ms": {
+        "p50": 0.002750195562839508,
+        "p95": 3.0644603306427594,
+        "max": 4.16425010189414
+      },
+      "range_diagnostics": {
+        "decisions": 121,
+        "mean_ess": 104.08831107312504,
+        "min_ess": 63.6973979216103,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "scripted",
+      "seats": 7,
+      "trial": 7,
+      "variant": "combined128",
+      "hands": 84,
+      "bb_per_100": 326.48809523809524,
+      "delta": -1174.107142857143,
+      "elapsed_seconds": 0.6858396250754595,
+      "decision_latency_ms": {
+        "p50": 0.0027497299015522003,
+        "p95": 3.040968091227114,
+        "max": 4.147000145167112
+      },
+      "range_diagnostics": {
+        "decisions": 95,
+        "mean_ess": 108.37109114026416,
+        "min_ess": 62.25331724408858,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "scripted",
+      "seats": 8,
+      "trial": 0,
+      "variant": "original",
+      "hands": 96,
+      "bb_per_100": 705.46875,
+      "delta": 0.0,
+      "elapsed_seconds": 0.5679230829700828,
+      "decision_latency_ms": {
+        "p50": 0.002624932676553726,
+        "p95": 0.8343688910827041,
+        "max": 0.9909998625516891
+      },
+      "range_diagnostics": {
+        "decisions": 0,
+        "mean_ess": null,
+        "min_ess": null,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "scripted",
+      "seats": 8,
+      "trial": 0,
+      "variant": "uniform128",
+      "hands": 96,
+      "bb_per_100": 291.9270833333333,
+      "delta": -413.5416666666667,
+      "elapsed_seconds": 0.829623875208199,
+      "decision_latency_ms": {
+        "p50": 0.002666376531124115,
+        "p95": 2.9324755771085607,
+        "max": 3.846000414341688
+      },
+      "range_diagnostics": {
+        "decisions": 0,
+        "mean_ess": null,
+        "min_ess": null,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "scripted",
+      "seats": 8,
+      "trial": 0,
+      "variant": "position128",
+      "hands": 96,
+      "bb_per_100": 389.0625,
+      "delta": -316.40625,
+      "elapsed_seconds": 0.8133984161540866,
+      "decision_latency_ms": {
+        "p50": 0.002624932676553726,
+        "p95": 2.698542084544897,
+        "max": 3.7597501650452614
+      },
+      "range_diagnostics": {
+        "decisions": 0,
+        "mean_ess": null,
+        "min_ess": null,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "scripted",
+      "seats": 8,
+      "trial": 0,
+      "variant": "ranges128",
+      "hands": 96,
+      "bb_per_100": 291.9270833333333,
+      "delta": -413.5416666666667,
+      "elapsed_seconds": 0.9109174576587975,
+      "decision_latency_ms": {
+        "p50": 0.002625398337841034,
+        "p95": 3.6574082216247907,
+        "max": 5.063666962087154
+      },
+      "range_diagnostics": {
+        "decisions": 112,
+        "mean_ess": 99.09877083772905,
+        "min_ess": 24.697924863663445,
+        "below_quarter_samples": 1
+      }
+    },
+    {
+      "pool": "scripted",
+      "seats": 8,
+      "trial": 0,
+      "variant": "combined128",
+      "hands": 96,
+      "bb_per_100": 389.0625,
+      "delta": -316.40625,
+      "elapsed_seconds": 0.8893030001781881,
+      "decision_latency_ms": {
+        "p50": 0.002625398337841034,
+        "p95": 3.6376663483679295,
+        "max": 5.657958798110485
+      },
+      "range_diagnostics": {
+        "decisions": 106,
+        "mean_ess": 99.46004440780533,
+        "min_ess": 56.226721633369344,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "scripted",
+      "seats": 8,
+      "trial": 1,
+      "variant": "original",
+      "hands": 96,
+      "bb_per_100": 268.625,
+      "delta": 0.0,
+      "elapsed_seconds": 0.589267207775265,
+      "decision_latency_ms": {
+        "p50": 0.002750195562839508,
+        "p95": 0.892338017001748,
+        "max": 1.0389592498540878
+      },
+      "range_diagnostics": {
+        "decisions": 0,
+        "mean_ess": null,
+        "min_ess": null,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "scripted",
+      "seats": 8,
+      "trial": 1,
+      "variant": "uniform128",
+      "hands": 96,
+      "bb_per_100": 703.125,
+      "delta": 434.5,
+      "elapsed_seconds": 1.0711310002952814,
+      "decision_latency_ms": {
+        "p50": 0.0029169023036956787,
+        "p95": 3.115241415798664,
+        "max": 8.312166202813387
+      },
+      "range_diagnostics": {
+        "decisions": 0,
+        "mean_ess": null,
+        "min_ess": null,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "scripted",
+      "seats": 8,
+      "trial": 1,
+      "variant": "position128",
+      "hands": 96,
+      "bb_per_100": 378.8958333333333,
+      "delta": 110.27083333333331,
+      "elapsed_seconds": 0.8189845830202103,
+      "decision_latency_ms": {
+        "p50": 0.002707820385694504,
+        "p95": 2.882750146090984,
+        "max": 4.620791878551245
+      },
+      "range_diagnostics": {
+        "decisions": 0,
+        "mean_ess": null,
+        "min_ess": null,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "scripted",
+      "seats": 8,
+      "trial": 1,
+      "variant": "ranges128",
+      "hands": 96,
+      "bb_per_100": 706.5104166666666,
+      "delta": 437.88541666666663,
+      "elapsed_seconds": 0.9138298751786351,
+      "decision_latency_ms": {
+        "p50": 0.002624932676553726,
+        "p95": 3.6062662489712234,
+        "max": 4.633166361600161
+      },
+      "range_diagnostics": {
+        "decisions": 115,
+        "mean_ess": 98.07640477930191,
+        "min_ess": 59.97741392048464,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "scripted",
+      "seats": 8,
+      "trial": 1,
+      "variant": "combined128",
+      "hands": 96,
+      "bb_per_100": 378.8958333333333,
+      "delta": 110.27083333333331,
+      "elapsed_seconds": 0.8781315828673542,
+      "decision_latency_ms": {
+        "p50": 0.002624932676553726,
+        "p95": 3.578616958111522,
+        "max": 4.659917205572128
+      },
+      "range_diagnostics": {
+        "decisions": 104,
+        "mean_ess": 97.46962964293765,
+        "min_ess": 14.280681380179885,
+        "below_quarter_samples": 2
+      }
+    },
+    {
+      "pool": "scripted",
+      "seats": 8,
+      "trial": 2,
+      "variant": "original",
+      "hands": 96,
+      "bb_per_100": 481.25,
+      "delta": 0.0,
+      "elapsed_seconds": 0.5837972909212112,
+      "decision_latency_ms": {
+        "p50": 0.002624932676553726,
+        "p95": 0.8261773502454162,
+        "max": 1.0262499563395977
+      },
+      "range_diagnostics": {
+        "decisions": 0,
+        "mean_ess": null,
+        "min_ess": null,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "scripted",
+      "seats": 8,
+      "trial": 2,
+      "variant": "uniform128",
+      "hands": 96,
+      "bb_per_100": 497.9166666666667,
+      "delta": 16.666666666666686,
+      "elapsed_seconds": 0.8459891667589545,
+      "decision_latency_ms": {
+        "p50": 0.0026659108698368073,
+        "p95": 2.5872959522530437,
+        "max": 3.827165812253952
+      },
+      "range_diagnostics": {
+        "decisions": 0,
+        "mean_ess": null,
+        "min_ess": null,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "scripted",
+      "seats": 8,
+      "trial": 2,
+      "variant": "position128",
+      "hands": 96,
+      "bb_per_100": -341.40625,
+      "delta": -822.65625,
+      "elapsed_seconds": 0.8294548746198416,
+      "decision_latency_ms": {
+        "p50": 0.0026659108698368073,
+        "p95": 2.591321105137467,
+        "max": 3.956042230129242
+      },
+      "range_diagnostics": {
+        "decisions": 0,
+        "mean_ess": null,
+        "min_ess": null,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "scripted",
+      "seats": 8,
+      "trial": 2,
+      "variant": "ranges128",
+      "hands": 96,
+      "bb_per_100": 73.95833333333333,
+      "delta": -407.2916666666667,
+      "elapsed_seconds": 0.923182999715209,
+      "decision_latency_ms": {
+        "p50": 0.002624932676553726,
+        "p95": 3.4820627188310027,
+        "max": 9.116542059928179
+      },
+      "range_diagnostics": {
+        "decisions": 112,
+        "mean_ess": 97.42489495494658,
+        "min_ess": 20.854814105859422,
+        "below_quarter_samples": 2
+      }
+    },
+    {
+      "pool": "scripted",
+      "seats": 8,
+      "trial": 2,
+      "variant": "combined128",
+      "hands": 96,
+      "bb_per_100": -344.2708333333333,
+      "delta": -825.5208333333333,
+      "elapsed_seconds": 0.945029417052865,
+      "decision_latency_ms": {
+        "p50": 0.002791173756122589,
+        "p95": 3.5904501564800735,
+        "max": 5.879666190594435
+      },
+      "range_diagnostics": {
+        "decisions": 106,
+        "mean_ess": 97.54050975282529,
+        "min_ess": 23.38218112529177,
+        "below_quarter_samples": 1
+      }
+    },
+    {
+      "pool": "scripted",
+      "seats": 8,
+      "trial": 3,
+      "variant": "original",
+      "hands": 96,
+      "bb_per_100": -241.14583333333334,
+      "delta": 0.0,
+      "elapsed_seconds": 0.5859287497587502,
+      "decision_latency_ms": {
+        "p50": 0.002707820385694504,
+        "p95": 0.8441703859716653,
+        "max": 1.576041802763939
+      },
+      "range_diagnostics": {
+        "decisions": 0,
+        "mean_ess": null,
+        "min_ess": null,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "scripted",
+      "seats": 8,
+      "trial": 3,
+      "variant": "uniform128",
+      "hands": 96,
+      "bb_per_100": -25.0,
+      "delta": 216.14583333333334,
+      "elapsed_seconds": 0.8273666659370065,
+      "decision_latency_ms": {
+        "p50": 0.0026668421924114227,
+        "p95": 2.8551564319059253,
+        "max": 3.9932909421622753
+      },
+      "range_diagnostics": {
+        "decisions": 0,
+        "mean_ess": null,
+        "min_ess": null,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "scripted",
+      "seats": 8,
+      "trial": 3,
+      "variant": "position128",
+      "hands": 96,
+      "bb_per_100": -29.166666666666668,
+      "delta": 211.97916666666669,
+      "elapsed_seconds": 0.7979785827919841,
+      "decision_latency_ms": {
+        "p50": 0.002624932676553726,
+        "p95": 2.888467162847518,
+        "max": 3.6789169535040855
+      },
+      "range_diagnostics": {
+        "decisions": 0,
+        "mean_ess": null,
+        "min_ess": null,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "scripted",
+      "seats": 8,
+      "trial": 3,
+      "variant": "ranges128",
+      "hands": 96,
+      "bb_per_100": -33.333333333333336,
+      "delta": 207.8125,
+      "elapsed_seconds": 0.8955310001038015,
+      "decision_latency_ms": {
+        "p50": 0.002624932676553726,
+        "p95": 3.59769146889448,
+        "max": 4.645791836082935
+      },
+      "range_diagnostics": {
+        "decisions": 108,
+        "mean_ess": 97.1058589913171,
+        "min_ess": 8.94063547059813,
+        "below_quarter_samples": 1
+      }
+    },
+    {
+      "pool": "scripted",
+      "seats": 8,
+      "trial": 3,
+      "variant": "combined128",
+      "hands": 96,
+      "bb_per_100": -29.166666666666668,
+      "delta": 211.97916666666669,
+      "elapsed_seconds": 0.8960774168372154,
+      "decision_latency_ms": {
+        "p50": 0.0026668421924114227,
+        "p95": 3.616637503728268,
+        "max": 6.900125183165073
+      },
+      "range_diagnostics": {
+        "decisions": 102,
+        "mean_ess": 97.7828569827995,
+        "min_ess": 36.32987768864885,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "scripted",
+      "seats": 8,
+      "trial": 4,
+      "variant": "original",
+      "hands": 96,
+      "bb_per_100": 599.4791666666666,
+      "delta": 0.0,
+      "elapsed_seconds": 0.5833719163201749,
+      "decision_latency_ms": {
+        "p50": 0.002624932676553726,
+        "p95": 0.8369413204491138,
+        "max": 1.0070828720927238
+      },
+      "range_diagnostics": {
+        "decisions": 0,
+        "mean_ess": null,
+        "min_ess": null,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "scripted",
+      "seats": 8,
+      "trial": 4,
+      "variant": "uniform128",
+      "hands": 96,
+      "bb_per_100": -21.09375,
+      "delta": -620.5729166666666,
+      "elapsed_seconds": 0.8465489167720079,
+      "decision_latency_ms": {
+        "p50": 0.002666376531124115,
+        "p95": 2.9366108123213035,
+        "max": 3.83920781314373
+      },
+      "range_diagnostics": {
+        "decisions": 0,
+        "mean_ess": null,
+        "min_ess": null,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "scripted",
+      "seats": 8,
+      "trial": 4,
+      "variant": "position128",
+      "hands": 96,
+      "bb_per_100": 188.54166666666666,
+      "delta": -410.9375,
+      "elapsed_seconds": 0.819068165961653,
+      "decision_latency_ms": {
+        "p50": 0.0026659108698368073,
+        "p95": 2.699641976505518,
+        "max": 3.7322076968848705
+      },
+      "range_diagnostics": {
+        "decisions": 0,
+        "mean_ess": null,
+        "min_ess": null,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "scripted",
+      "seats": 8,
+      "trial": 4,
+      "variant": "ranges128",
+      "hands": 96,
+      "bb_per_100": -21.09375,
+      "delta": -620.5729166666666,
+      "elapsed_seconds": 0.9376114159822464,
+      "decision_latency_ms": {
+        "p50": 0.0026668421924114227,
+        "p95": 3.6202791612595315,
+        "max": 4.662708844989538
+      },
+      "range_diagnostics": {
+        "decisions": 114,
+        "mean_ess": 98.8911997337486,
+        "min_ess": 61.803095659671754,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "scripted",
+      "seats": 8,
+      "trial": 4,
+      "variant": "combined128",
+      "hands": 96,
+      "bb_per_100": 188.54166666666666,
+      "delta": -410.9375,
+      "elapsed_seconds": 0.8708950420841575,
+      "decision_latency_ms": {
+        "p50": 0.002624932676553726,
+        "p95": 3.4887752495706077,
+        "max": 4.647042136639357
+      },
+      "range_diagnostics": {
+        "decisions": 102,
+        "mean_ess": 99.51028428868254,
+        "min_ess": 43.50029993909797,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "scripted",
+      "seats": 8,
+      "trial": 5,
+      "variant": "original",
+      "hands": 96,
+      "bb_per_100": 1227.6041666666667,
+      "delta": 0.0,
+      "elapsed_seconds": 0.5667482079006732,
+      "decision_latency_ms": {
+        "p50": 0.002624932676553726,
+        "p95": 0.8284170180559158,
+        "max": 1.020166091620922
+      },
+      "range_diagnostics": {
+        "decisions": 0,
+        "mean_ess": null,
+        "min_ess": null,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "scripted",
+      "seats": 8,
+      "trial": 5,
+      "variant": "uniform128",
+      "hands": 96,
+      "bb_per_100": 1127.6041666666667,
+      "delta": -100.0,
+      "elapsed_seconds": 0.8398879580199718,
+      "decision_latency_ms": {
+        "p50": 0.002624932676553726,
+        "p95": 2.9041669331490993,
+        "max": 3.736166749149561
+      },
+      "range_diagnostics": {
+        "decisions": 0,
+        "mean_ess": null,
+        "min_ess": null,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "scripted",
+      "seats": 8,
+      "trial": 5,
+      "variant": "position128",
+      "hands": 96,
+      "bb_per_100": 1226.8229166666667,
+      "delta": -0.78125,
+      "elapsed_seconds": 0.8182770842686296,
+      "decision_latency_ms": {
+        "p50": 0.002624932676553726,
+        "p95": 2.813494438305466,
+        "max": 3.8123750127851963
+      },
+      "range_diagnostics": {
+        "decisions": 0,
+        "mean_ess": null,
+        "min_ess": null,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "scripted",
+      "seats": 8,
+      "trial": 5,
+      "variant": "ranges128",
+      "hands": 96,
+      "bb_per_100": 1127.6041666666667,
+      "delta": -100.0,
+      "elapsed_seconds": 0.9365619160234928,
+      "decision_latency_ms": {
+        "p50": 0.002625398337841034,
+        "p95": 3.7098787492141123,
+        "max": 4.854834172874689
+      },
+      "range_diagnostics": {
+        "decisions": 114,
+        "mean_ess": 96.91133663522794,
+        "min_ess": 35.86354099857235,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "scripted",
+      "seats": 8,
+      "trial": 5,
+      "variant": "combined128",
+      "hands": 96,
+      "bb_per_100": 1226.8229166666667,
+      "delta": -0.78125,
+      "elapsed_seconds": 0.9119782079942524,
+      "decision_latency_ms": {
+        "p50": 0.0026659108698368073,
+        "p95": 3.6916913930326682,
+        "max": 4.8699998296797276
+      },
+      "range_diagnostics": {
+        "decisions": 107,
+        "mean_ess": 97.0455117031309,
+        "min_ess": 35.86354099857235,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "scripted",
+      "seats": 8,
+      "trial": 6,
+      "variant": "original",
+      "hands": 96,
+      "bb_per_100": 476.3020833333333,
+      "delta": 0.0,
+      "elapsed_seconds": 0.6154575841501355,
+      "decision_latency_ms": {
+        "p50": 0.0026668421924114227,
+        "p95": 0.8396313525736331,
+        "max": 0.9813751094043255
+      },
+      "range_diagnostics": {
+        "decisions": 0,
+        "mean_ess": null,
+        "min_ess": null,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "scripted",
+      "seats": 8,
+      "trial": 6,
+      "variant": "uniform128",
+      "hands": 96,
+      "bb_per_100": 187.76041666666666,
+      "delta": -288.54166666666663,
+      "elapsed_seconds": 0.8631689590401947,
+      "decision_latency_ms": {
+        "p50": 0.002666376531124115,
+        "p95": 2.671030815690756,
+        "max": 3.7262081168591976
+      },
+      "range_diagnostics": {
+        "decisions": 0,
+        "mean_ess": null,
+        "min_ess": null,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "scripted",
+      "seats": 8,
+      "trial": 6,
+      "variant": "position128",
+      "hands": 96,
+      "bb_per_100": -130.20833333333334,
+      "delta": -606.5104166666666,
+      "elapsed_seconds": 0.8365974170155823,
+      "decision_latency_ms": {
+        "p50": 0.002625398337841034,
+        "p95": 2.677567396312951,
+        "max": 3.7337499670684338
+      },
+      "range_diagnostics": {
+        "decisions": 0,
+        "mean_ess": null,
+        "min_ess": null,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "scripted",
+      "seats": 8,
+      "trial": 6,
+      "variant": "ranges128",
+      "hands": 96,
+      "bb_per_100": 84.11458333333333,
+      "delta": -392.1875,
+      "elapsed_seconds": 0.9495446253567934,
+      "decision_latency_ms": {
+        "p50": 0.002707820385694504,
+        "p95": 3.643229487352073,
+        "max": 5.100958049297333
+      },
+      "range_diagnostics": {
+        "decisions": 110,
+        "mean_ess": 97.85834668247197,
+        "min_ess": 19.00118755637954,
+        "below_quarter_samples": 1
+      }
+    },
+    {
+      "pool": "scripted",
+      "seats": 8,
+      "trial": 6,
+      "variant": "combined128",
+      "hands": 96,
+      "bb_per_100": -130.20833333333334,
+      "delta": -606.5104166666666,
+      "elapsed_seconds": 0.9122631656937301,
+      "decision_latency_ms": {
+        "p50": 0.0026673078536987305,
+        "p95": 3.6080915480852123,
+        "max": 4.791750106960535
+      },
+      "range_diagnostics": {
+        "decisions": 101,
+        "mean_ess": 98.78258023344975,
+        "min_ess": 51.46727137769068,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "scripted",
+      "seats": 8,
+      "trial": 7,
+      "variant": "original",
+      "hands": 96,
+      "bb_per_100": 533.59375,
+      "delta": 0.0,
+      "elapsed_seconds": 0.6038577500730753,
+      "decision_latency_ms": {
+        "p50": 0.0026668421924114227,
+        "p95": 0.830687372945249,
+        "max": 0.9868750348687172
+      },
+      "range_diagnostics": {
+        "decisions": 0,
+        "mean_ess": null,
+        "min_ess": null,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "scripted",
+      "seats": 8,
+      "trial": 7,
+      "variant": "uniform128",
+      "hands": 96,
+      "bb_per_100": 659.8958333333334,
+      "delta": 126.30208333333337,
+      "elapsed_seconds": 0.8639415837824345,
+      "decision_latency_ms": {
+        "p50": 0.0026673078536987305,
+        "p95": 2.690779324620962,
+        "max": 3.7748748436570168
+      },
+      "range_diagnostics": {
+        "decisions": 0,
+        "mean_ess": null,
+        "min_ess": null,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "scripted",
+      "seats": 8,
+      "trial": 7,
+      "variant": "position128",
+      "hands": 96,
+      "bb_per_100": 445.3125,
+      "delta": -88.28125,
+      "elapsed_seconds": 0.8586714579723775,
+      "decision_latency_ms": {
+        "p50": 0.0026673078536987305,
+        "p95": 2.6291356189176436,
+        "max": 6.322208326309919
+      },
+      "range_diagnostics": {
+        "decisions": 0,
+        "mean_ess": null,
+        "min_ess": null,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "scripted",
+      "seats": 8,
+      "trial": 7,
+      "variant": "ranges128",
+      "hands": 96,
+      "bb_per_100": 760.4166666666666,
+      "delta": 226.82291666666663,
+      "elapsed_seconds": 0.9520867923274636,
+      "decision_latency_ms": {
+        "p50": 0.0027087517082691193,
+        "p95": 3.5814665257930756,
+        "max": 4.944833926856518
+      },
+      "range_diagnostics": {
+        "decisions": 113,
+        "mean_ess": 98.75843603376556,
+        "min_ess": 32.76805037390379,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "scripted",
+      "seats": 8,
+      "trial": 7,
+      "variant": "combined128",
+      "hands": 96,
+      "bb_per_100": 534.1145833333334,
+      "delta": 0.5208333333333712,
+      "elapsed_seconds": 0.9425438330508769,
+      "decision_latency_ms": {
+        "p50": 0.0026668421924114227,
+        "p95": 3.539561992511153,
+        "max": 5.893083289265633
+      },
+      "range_diagnostics": {
+        "decisions": 111,
+        "mean_ess": 96.93430165610745,
+        "min_ess": 20.265968828787344,
+        "below_quarter_samples": 3
+      }
+    },
+    {
+      "pool": "scripted",
+      "seats": 9,
+      "trial": 0,
+      "variant": "original",
+      "hands": 108,
+      "bb_per_100": 310.51851851851853,
+      "delta": 0.0,
+      "elapsed_seconds": 0.7649015421047807,
+      "decision_latency_ms": {
+        "p50": 0.002625398337841034,
+        "p95": 0.918916892260313,
+        "max": 1.3450421392917633
+      },
+      "range_diagnostics": {
+        "decisions": 0,
+        "mean_ess": null,
+        "min_ess": null,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "scripted",
+      "seats": 9,
+      "trial": 0,
+      "variant": "uniform128",
+      "hands": 108,
+      "bb_per_100": 257.8703703703704,
+      "delta": -52.64814814814815,
+      "elapsed_seconds": 1.087778416927904,
+      "decision_latency_ms": {
+        "p50": 0.0027082860469818115,
+        "p95": 2.68881656229496,
+        "max": 4.443584010004997
+      },
+      "range_diagnostics": {
+        "decisions": 0,
+        "mean_ess": null,
+        "min_ess": null,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "scripted",
+      "seats": 9,
+      "trial": 0,
+      "variant": "position128",
+      "hands": 108,
+      "bb_per_100": 249.30555555555554,
+      "delta": -61.21296296296299,
+      "elapsed_seconds": 1.0820284588262439,
+      "decision_latency_ms": {
+        "p50": 0.0027497299015522003,
+        "p95": 2.703708247281611,
+        "max": 4.15620906278491
+      },
+      "range_diagnostics": {
+        "decisions": 0,
+        "mean_ess": null,
+        "min_ess": null,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "scripted",
+      "seats": 9,
+      "trial": 0,
+      "variant": "ranges128",
+      "hands": 108,
+      "bb_per_100": 257.8703703703704,
+      "delta": -52.64814814814815,
+      "elapsed_seconds": 1.1919225831516087,
+      "decision_latency_ms": {
+        "p50": 0.0027497299015522003,
+        "p95": 3.6862913519144054,
+        "max": 5.013749934732914
+      },
+      "range_diagnostics": {
+        "decisions": 127,
+        "mean_ess": 97.84400497722854,
+        "min_ess": 20.141630762806354,
+        "below_quarter_samples": 2
+      }
+    },
+    {
+      "pool": "scripted",
+      "seats": 9,
+      "trial": 0,
+      "variant": "combined128",
+      "hands": 108,
+      "bb_per_100": 249.30555555555554,
+      "delta": -61.21296296296299,
+      "elapsed_seconds": 1.1561037502251565,
+      "decision_latency_ms": {
+        "p50": 0.002709217369556427,
+        "p95": 3.6446149460971355,
+        "max": 5.0546252168715
+      },
+      "range_diagnostics": {
+        "decisions": 119,
+        "mean_ess": 97.37442512541932,
+        "min_ess": 17.637317185834696,
+        "below_quarter_samples": 3
+      }
+    },
+    {
+      "pool": "scripted",
+      "seats": 9,
+      "trial": 1,
+      "variant": "original",
+      "hands": 108,
+      "bb_per_100": -486.80555555555554,
+      "delta": 0.0,
+      "elapsed_seconds": 0.7855330840684474,
+      "decision_latency_ms": {
+        "p50": 0.0026668421924114227,
+        "p95": 0.9100630413740873,
+        "max": 1.0375832207500935
+      },
+      "range_diagnostics": {
+        "decisions": 0,
+        "mean_ess": null,
+        "min_ess": null,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "scripted",
+      "seats": 9,
+      "trial": 1,
+      "variant": "uniform128",
+      "hands": 108,
+      "bb_per_100": 521.7592592592592,
+      "delta": 1008.5648148148148,
+      "elapsed_seconds": 1.1350202080793679,
+      "decision_latency_ms": {
+        "p50": 0.002707820385694504,
+        "p95": 2.873141784220934,
+        "max": 4.108832683414221
+      },
+      "range_diagnostics": {
+        "decisions": 0,
+        "mean_ess": null,
+        "min_ess": null,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "scripted",
+      "seats": 9,
+      "trial": 1,
+      "variant": "position128",
+      "hands": 108,
+      "bb_per_100": 234.02777777777777,
+      "delta": 720.8333333333333,
+      "elapsed_seconds": 1.1466251658275723,
+      "decision_latency_ms": {
+        "p50": 0.002832617610692978,
+        "p95": 2.8345247264951463,
+        "max": 6.716708652675152
+      },
+      "range_diagnostics": {
+        "decisions": 0,
+        "mean_ess": null,
+        "min_ess": null,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "scripted",
+      "seats": 9,
+      "trial": 1,
+      "variant": "ranges128",
+      "hands": 108,
+      "bb_per_100": 707.8703703703703,
+      "delta": 1194.6759259259259,
+      "elapsed_seconds": 1.2887640418484807,
+      "decision_latency_ms": {
+        "p50": 0.0028337817639112473,
+        "p95": 3.8158021634444594,
+        "max": 5.067999940365553
+      },
+      "range_diagnostics": {
+        "decisions": 141,
+        "mean_ess": 96.88557072494402,
+        "min_ess": 20.484699131054526,
+        "below_quarter_samples": 1
+      }
+    },
+    {
+      "pool": "scripted",
+      "seats": 9,
+      "trial": 1,
+      "variant": "combined128",
+      "hands": 108,
+      "bb_per_100": 234.02777777777777,
+      "delta": 720.8333333333333,
+      "elapsed_seconds": 1.1775000831112266,
+      "decision_latency_ms": {
+        "p50": 0.0027497299015522003,
+        "p95": 3.58729341533035,
+        "max": 5.085166543722153
+      },
+      "range_diagnostics": {
+        "decisions": 124,
+        "mean_ess": 97.7729856404257,
+        "min_ess": 1.2300485719294585,
+        "below_quarter_samples": 4
+      }
+    },
+    {
+      "pool": "scripted",
+      "seats": 9,
+      "trial": 2,
+      "variant": "original",
+      "hands": 108,
+      "bb_per_100": -153.12037037037038,
+      "delta": 0.0,
+      "elapsed_seconds": 0.7394929588772357,
+      "decision_latency_ms": {
+        "p50": 0.0026659108698368073,
+        "p95": 0.9065099293366075,
+        "max": 1.0190410539507866
+      },
+      "range_diagnostics": {
+        "decisions": 0,
+        "mean_ess": null,
+        "min_ess": null,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "scripted",
+      "seats": 9,
+      "trial": 2,
+      "variant": "uniform128",
+      "hands": 108,
+      "bb_per_100": -23.61111111111111,
+      "delta": 129.50925925925927,
+      "elapsed_seconds": 1.0412677922286093,
+      "decision_latency_ms": {
+        "p50": 0.002666376531124115,
+        "p95": 2.5726729072630383,
+        "max": 3.944207914173603
+      },
+      "range_diagnostics": {
+        "decisions": 0,
+        "mean_ess": null,
+        "min_ess": null,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "scripted",
+      "seats": 9,
+      "trial": 2,
+      "variant": "position128",
+      "hands": 108,
+      "bb_per_100": -39.120370370370374,
+      "delta": 114.0,
+      "elapsed_seconds": 1.014988916926086,
+      "decision_latency_ms": {
+        "p50": 0.0026668421924114227,
+        "p95": 2.550043724477291,
+        "max": 3.9131660014390945
+      },
+      "range_diagnostics": {
+        "decisions": 0,
+        "mean_ess": null,
+        "min_ess": null,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "scripted",
+      "seats": 9,
+      "trial": 2,
+      "variant": "ranges128",
+      "hands": 108,
+      "bb_per_100": -35.18518518518518,
+      "delta": 117.93518518518519,
+      "elapsed_seconds": 1.1384594580158591,
+      "decision_latency_ms": {
+        "p50": 0.0026668421924114227,
+        "p95": 3.540941700339317,
+        "max": 4.778374917805195
+      },
+      "range_diagnostics": {
+        "decisions": 129,
+        "mean_ess": 101.82439823383999,
+        "min_ess": 55.18263289728775,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "scripted",
+      "seats": 9,
+      "trial": 2,
+      "variant": "combined128",
+      "hands": 108,
+      "bb_per_100": -42.129629629629626,
+      "delta": 110.99074074074076,
+      "elapsed_seconds": 1.0991824171505868,
+      "decision_latency_ms": {
+        "p50": 0.0026659108698368073,
+        "p95": 3.5545649472624063,
+        "max": 5.077207926660776
+      },
+      "range_diagnostics": {
+        "decisions": 121,
+        "mean_ess": 100.61230074994101,
+        "min_ess": 53.360221956992554,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "scripted",
+      "seats": 9,
+      "trial": 3,
+      "variant": "original",
+      "hands": 108,
+      "bb_per_100": 131.0185185185185,
+      "delta": 0.0,
+      "elapsed_seconds": 0.7748109581880271,
+      "decision_latency_ms": {
+        "p50": 0.002625398337841034,
+        "p95": 0.9104353608563542,
+        "max": 1.014083158224821
+      },
+      "range_diagnostics": {
+        "decisions": 0,
+        "mean_ess": null,
+        "min_ess": null,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "scripted",
+      "seats": 9,
+      "trial": 3,
+      "variant": "uniform128",
+      "hands": 108,
+      "bb_per_100": 307.6388888888889,
+      "delta": 176.6203703703704,
+      "elapsed_seconds": 1.0823175408877432,
+      "decision_latency_ms": {
+        "p50": 0.0026659108698368073,
+        "p95": 2.869728673249482,
+        "max": 3.9487499743700027
+      },
+      "range_diagnostics": {
+        "decisions": 0,
+        "mean_ess": null,
+        "min_ess": null,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "scripted",
+      "seats": 9,
+      "trial": 3,
+      "variant": "position128",
+      "hands": 108,
+      "bb_per_100": 351.85185185185185,
+      "delta": 220.83333333333334,
+      "elapsed_seconds": 1.0465137083083391,
+      "decision_latency_ms": {
+        "p50": 0.0026659108698368073,
+        "p95": 2.87529150955379,
+        "max": 4.4968328438699245
+      },
+      "range_diagnostics": {
+        "decisions": 0,
+        "mean_ess": null,
+        "min_ess": null,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "scripted",
+      "seats": 9,
+      "trial": 3,
+      "variant": "ranges128",
+      "hands": 108,
+      "bb_per_100": 677.5462962962963,
+      "delta": 546.5277777777778,
+      "elapsed_seconds": 1.1964619578793645,
+      "decision_latency_ms": {
+        "p50": 0.0027082860469818115,
+        "p95": 3.6228785756975412,
+        "max": 5.16487518325448
+      },
+      "range_diagnostics": {
+        "decisions": 135,
+        "mean_ess": 98.31529143837365,
+        "min_ess": 40.51330717160098,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "scripted",
+      "seats": 9,
+      "trial": 3,
+      "variant": "combined128",
+      "hands": 108,
+      "bb_per_100": 719.675925925926,
+      "delta": 588.6574074074075,
+      "elapsed_seconds": 1.1309136673808098,
+      "decision_latency_ms": {
+        "p50": 0.002707820385694504,
+        "p95": 3.5424997797235847,
+        "max": 5.175375379621983
+      },
+      "range_diagnostics": {
+        "decisions": 120,
+        "mean_ess": 100.71149912857523,
+        "min_ess": 47.248671713737224,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "scripted",
+      "seats": 9,
+      "trial": 4,
+      "variant": "original",
+      "hands": 108,
+      "bb_per_100": 154.16666666666666,
+      "delta": 0.0,
+      "elapsed_seconds": 0.7594617083668709,
+      "decision_latency_ms": {
+        "p50": 0.0027082860469818115,
+        "p95": 0.9077077731490134,
+        "max": 1.0582078248262405
+      },
+      "range_diagnostics": {
+        "decisions": 0,
+        "mean_ess": null,
+        "min_ess": null,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "scripted",
+      "seats": 9,
+      "trial": 4,
+      "variant": "uniform128",
+      "hands": 108,
+      "bb_per_100": -23.14814814814815,
+      "delta": -177.3148148148148,
+      "elapsed_seconds": 1.0383174577727914,
+      "decision_latency_ms": {
+        "p50": 0.0027082860469818115,
+        "p95": 2.757312497124045,
+        "max": 4.021916072815657
+      },
+      "range_diagnostics": {
+        "decisions": 0,
+        "mean_ess": null,
+        "min_ess": null,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "scripted",
+      "seats": 9,
+      "trial": 4,
+      "variant": "position128",
+      "hands": 108,
+      "bb_per_100": -22.453703703703702,
+      "delta": -176.62037037037035,
+      "elapsed_seconds": 1.0233642077073455,
+      "decision_latency_ms": {
+        "p50": 0.002709217369556427,
+        "p95": 2.6422479655593634,
+        "max": 4.063332919031382
+      },
+      "range_diagnostics": {
+        "decisions": 0,
+        "mean_ess": null,
+        "min_ess": null,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "scripted",
+      "seats": 9,
+      "trial": 4,
+      "variant": "ranges128",
+      "hands": 108,
+      "bb_per_100": -26.38888888888889,
+      "delta": -180.55555555555554,
+      "elapsed_seconds": 1.1668356247246265,
+      "decision_latency_ms": {
+        "p50": 0.002874992787837982,
+        "p95": 3.6652043927460904,
+        "max": 4.960875026881695
+      },
+      "range_diagnostics": {
+        "decisions": 122,
+        "mean_ess": 102.08048351312311,
+        "min_ess": 25.66300190711555,
+        "below_quarter_samples": 1
+      }
+    },
+    {
+      "pool": "scripted",
+      "seats": 9,
+      "trial": 4,
+      "variant": "combined128",
+      "hands": 108,
+      "bb_per_100": -22.453703703703702,
+      "delta": -176.62037037037035,
+      "elapsed_seconds": 1.0863117091357708,
+      "decision_latency_ms": {
+        "p50": 0.002709217369556427,
+        "p95": 3.5110220545902844,
+        "max": 4.6793753281235695
+      },
+      "range_diagnostics": {
+        "decisions": 112,
+        "mean_ess": 103.00369653882576,
+        "min_ess": 55.186039312649584,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "scripted",
+      "seats": 9,
+      "trial": 5,
+      "variant": "original",
+      "hands": 108,
+      "bb_per_100": -28.703703703703702,
+      "delta": 0.0,
+      "elapsed_seconds": 0.8076462089084089,
+      "decision_latency_ms": {
+        "p50": 0.0027907080948352814,
+        "p95": 0.9717498905956745,
+        "max": 1.1481670662760735
+      },
+      "range_diagnostics": {
+        "decisions": 0,
+        "mean_ess": null,
+        "min_ess": null,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "scripted",
+      "seats": 9,
+      "trial": 5,
+      "variant": "uniform128",
+      "hands": 108,
+      "bb_per_100": 72.68518518518519,
+      "delta": 101.38888888888889,
+      "elapsed_seconds": 1.1281503750942647,
+      "decision_latency_ms": {
+        "p50": 0.002791173756122589,
+        "p95": 2.9207621235400434,
+        "max": 4.241832997649908
+      },
+      "range_diagnostics": {
+        "decisions": 0,
+        "mean_ess": null,
+        "min_ess": null,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "scripted",
+      "seats": 9,
+      "trial": 5,
+      "variant": "position128",
+      "hands": 108,
+      "bb_per_100": 87.26851851851852,
+      "delta": 115.97222222222223,
+      "elapsed_seconds": 1.0483492077328265,
+      "decision_latency_ms": {
+        "p50": 0.002707820385694504,
+        "p95": 2.837437321431935,
+        "max": 5.53866708651185
+      },
+      "range_diagnostics": {
+        "decisions": 0,
+        "mean_ess": null,
+        "min_ess": null,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "scripted",
+      "seats": 9,
+      "trial": 5,
+      "variant": "ranges128",
+      "hands": 108,
+      "bb_per_100": 73.61111111111111,
+      "delta": 102.31481481481481,
+      "elapsed_seconds": 1.1747053749859333,
+      "decision_latency_ms": {
+        "p50": 0.0027082860469818115,
+        "p95": 3.56035442091524,
+        "max": 4.747625440359116
+      },
+      "range_diagnostics": {
+        "decisions": 129,
+        "mean_ess": 100.30844338627666,
+        "min_ess": 31.262427881972148,
+        "below_quarter_samples": 1
+      }
+    },
+    {
+      "pool": "scripted",
+      "seats": 9,
+      "trial": 5,
+      "variant": "combined128",
+      "hands": 108,
+      "bb_per_100": 87.26851851851852,
+      "delta": 115.97222222222223,
+      "elapsed_seconds": 1.1214322918094695,
+      "decision_latency_ms": {
+        "p50": 0.002707820385694504,
+        "p95": 3.54637517593801,
+        "max": 4.902292042970657
+      },
+      "range_diagnostics": {
+        "decisions": 115,
+        "mean_ess": 100.5693778015601,
+        "min_ess": 31.262427881972148,
+        "below_quarter_samples": 1
+      }
+    },
+    {
+      "pool": "scripted",
+      "seats": 9,
+      "trial": 6,
+      "variant": "original",
+      "hands": 108,
+      "bb_per_100": 620.3703703703703,
+      "delta": 0.0,
+      "elapsed_seconds": 0.7907582498155534,
+      "decision_latency_ms": {
+        "p50": 0.002707820385694504,
+        "p95": 0.9044590406119823,
+        "max": 1.0471250861883163
+      },
+      "range_diagnostics": {
+        "decisions": 0,
+        "mean_ess": null,
+        "min_ess": null,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "scripted",
+      "seats": 9,
+      "trial": 6,
+      "variant": "uniform128",
+      "hands": 108,
+      "bb_per_100": 633.1018518518518,
+      "delta": 12.731481481481524,
+      "elapsed_seconds": 1.1461673751473427,
+      "decision_latency_ms": {
+        "p50": 0.002834014594554901,
+        "p95": 2.8216996230185027,
+        "max": 5.51512511447072
+      },
+      "range_diagnostics": {
+        "decisions": 0,
+        "mean_ess": null,
+        "min_ess": null,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "scripted",
+      "seats": 9,
+      "trial": 6,
+      "variant": "position128",
+      "hands": 108,
+      "bb_per_100": 728.2407407407408,
+      "delta": 107.87037037037044,
+      "elapsed_seconds": 1.0780155840329826,
+      "decision_latency_ms": {
+        "p50": 0.002707820385694504,
+        "p95": 2.699524909257875,
+        "max": 4.117708187550306
+      },
+      "range_diagnostics": {
+        "decisions": 0,
+        "mean_ess": null,
+        "min_ess": null,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "scripted",
+      "seats": 9,
+      "trial": 6,
+      "variant": "ranges128",
+      "hands": 108,
+      "bb_per_100": 816.4351851851852,
+      "delta": 196.0648148148149,
+      "elapsed_seconds": 1.4186848332174122,
+      "decision_latency_ms": {
+        "p50": 0.002874992787837982,
+        "p95": 3.6986124701797958,
+        "max": 13.168416917324066
+      },
+      "range_diagnostics": {
+        "decisions": 124,
+        "mean_ess": 100.69829480348686,
+        "min_ess": 32.012750046749744,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "scripted",
+      "seats": 9,
+      "trial": 6,
+      "variant": "combined128",
+      "hands": 108,
+      "bb_per_100": 817.824074074074,
+      "delta": 197.4537037037037,
+      "elapsed_seconds": 1.2124650827609003,
+      "decision_latency_ms": {
+        "p50": 0.002874992787837982,
+        "p95": 3.541458584368228,
+        "max": 5.466875154525042
+      },
+      "range_diagnostics": {
+        "decisions": 118,
+        "mean_ess": 101.57607190287503,
+        "min_ess": 32.012750046749744,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "scripted",
+      "seats": 9,
+      "trial": 7,
+      "variant": "original",
+      "hands": 108,
+      "bb_per_100": 1056.712962962963,
+      "delta": 0.0,
+      "elapsed_seconds": 0.7935778750106692,
+      "decision_latency_ms": {
+        "p50": 0.0027087517082691193,
+        "p95": 0.9272084571421146,
+        "max": 1.0357080027461052
+      },
+      "range_diagnostics": {
+        "decisions": 0,
+        "mean_ess": null,
+        "min_ess": null,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "scripted",
+      "seats": 9,
+      "trial": 7,
+      "variant": "uniform128",
+      "hands": 108,
+      "bb_per_100": 954.3981481481482,
+      "delta": -102.3148148148149,
+      "elapsed_seconds": 1.1247591669671237,
+      "decision_latency_ms": {
+        "p50": 0.0027497299015522003,
+        "p95": 2.8425497002899633,
+        "max": 4.050292074680328
+      },
+      "range_diagnostics": {
+        "decisions": 0,
+        "mean_ess": null,
+        "min_ess": null,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "scripted",
+      "seats": 9,
+      "trial": 7,
+      "variant": "position128",
+      "hands": 108,
+      "bb_per_100": -67.93981481481481,
+      "delta": -1124.6527777777778,
+      "elapsed_seconds": 1.084111750125885,
+      "decision_latency_ms": {
+        "p50": 0.0027082860469818115,
+        "p95": 2.6378918439149817,
+        "max": 18.133291974663734
+      },
+      "range_diagnostics": {
+        "decisions": 0,
+        "mean_ess": null,
+        "min_ess": null,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "scripted",
+      "seats": 9,
+      "trial": 7,
+      "variant": "ranges128",
+      "hands": 108,
+      "bb_per_100": 817.1296296296297,
+      "delta": -239.58333333333337,
+      "elapsed_seconds": 1.198348875157535,
+      "decision_latency_ms": {
+        "p50": 0.002707820385694504,
+        "p95": 3.60396709293127,
+        "max": 4.6690418384969234
+      },
+      "range_diagnostics": {
+        "decisions": 135,
+        "mean_ess": 97.46394323087553,
+        "min_ess": 10.704092091715438,
+        "below_quarter_samples": 4
+      }
+    },
+    {
+      "pool": "scripted",
+      "seats": 9,
+      "trial": 7,
+      "variant": "combined128",
+      "hands": 108,
+      "bb_per_100": 15.162037037037036,
+      "delta": -1041.550925925926,
+      "elapsed_seconds": 1.1750251250341535,
+      "decision_latency_ms": {
+        "p50": 0.0028330832719802856,
+        "p95": 3.62350190989673,
+        "max": 5.388458259403706
+      },
+      "range_diagnostics": {
+        "decisions": 120,
+        "mean_ess": 99.96299333579238,
+        "min_ess": 24.761091338751218,
+        "below_quarter_samples": 1
+      }
+    },
+    {
+      "pool": "card_aware",
+      "seats": 6,
+      "trial": 0,
+      "variant": "original",
+      "hands": 72,
+      "bb_per_100": 302.2638888888889,
+      "delta": 0.0,
+      "elapsed_seconds": 0.888772957958281,
+      "decision_latency_ms": {
+        "p50": 0.7802089676260948,
+        "p95": 2.276142220944166,
+        "max": 12.382583692669868
+      },
+      "range_diagnostics": {
+        "decisions": 0,
+        "mean_ess": null,
+        "min_ess": null,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "card_aware",
+      "seats": 6,
+      "trial": 0,
+      "variant": "uniform128",
+      "hands": 72,
+      "bb_per_100": -6.208333333333333,
+      "delta": -308.47222222222223,
+      "elapsed_seconds": 1.0063197910785675,
+      "decision_latency_ms": {
+        "p50": 1.5673749148845673,
+        "p95": 2.2702541667968035,
+        "max": 2.975374925881624
+      },
+      "range_diagnostics": {
+        "decisions": 0,
+        "mean_ess": null,
+        "min_ess": null,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "card_aware",
+      "seats": 6,
+      "trial": 0,
+      "variant": "position128",
+      "hands": 72,
+      "bb_per_100": 422.22222222222223,
+      "delta": 119.95833333333331,
+      "elapsed_seconds": 0.8877402921207249,
+      "decision_latency_ms": {
+        "p50": 1.593208871781826,
+        "p95": 2.302532829344273,
+        "max": 3.1235413625836372
+      },
+      "range_diagnostics": {
+        "decisions": 0,
+        "mean_ess": null,
+        "min_ess": null,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "card_aware",
+      "seats": 6,
+      "trial": 0,
+      "variant": "ranges128",
+      "hands": 72,
+      "bb_per_100": 128.58333333333334,
+      "delta": -173.68055555555557,
+      "elapsed_seconds": 1.0601197499781847,
+      "decision_latency_ms": {
+        "p50": 1.6401458997279406,
+        "p95": 2.3281353060156107,
+        "max": 3.056833054870367
+      },
+      "range_diagnostics": {
+        "decisions": 126,
+        "mean_ess": 119.15945812991833,
+        "min_ess": 80.08649689509184,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "card_aware",
+      "seats": 6,
+      "trial": 0,
+      "variant": "combined128",
+      "hands": 72,
+      "bb_per_100": 418.40277777777777,
+      "delta": 116.13888888888886,
+      "elapsed_seconds": 0.9049251251854002,
+      "decision_latency_ms": {
+        "p50": 1.6345204785466194,
+        "p95": 2.35625363420695,
+        "max": 3.0830418691039085
+      },
+      "range_diagnostics": {
+        "decisions": 77,
+        "mean_ess": 123.04570832715781,
+        "min_ess": 100.945208162198,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "card_aware",
+      "seats": 6,
+      "trial": 1,
+      "variant": "original",
+      "hands": 72,
+      "bb_per_100": -346.5416666666667,
+      "delta": 0.0,
+      "elapsed_seconds": 0.8680384578183293,
+      "decision_latency_ms": {
+        "p50": 0.7815412245690823,
+        "p95": 2.2853335831314325,
+        "max": 3.635125234723091
+      },
+      "range_diagnostics": {
+        "decisions": 0,
+        "mean_ess": null,
+        "min_ess": null,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "card_aware",
+      "seats": 6,
+      "trial": 1,
+      "variant": "uniform128",
+      "hands": 72,
+      "bb_per_100": -389.4444444444445,
+      "delta": -42.90277777777783,
+      "elapsed_seconds": 1.028219916857779,
+      "decision_latency_ms": {
+        "p50": 1.5259580686688423,
+        "p95": 2.294546365737915,
+        "max": 5.282249767333269
+      },
+      "range_diagnostics": {
+        "decisions": 0,
+        "mean_ess": null,
+        "min_ess": null,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "card_aware",
+      "seats": 6,
+      "trial": 1,
+      "variant": "position128",
+      "hands": 72,
+      "bb_per_100": 125.30555555555556,
+      "delta": 471.84722222222223,
+      "elapsed_seconds": 0.9014451666735113,
+      "decision_latency_ms": {
+        "p50": 1.6033332794904709,
+        "p95": 2.443683892488479,
+        "max": 3.0509578064084053
+      },
+      "range_diagnostics": {
+        "decisions": 0,
+        "mean_ess": null,
+        "min_ess": null,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "card_aware",
+      "seats": 6,
+      "trial": 1,
+      "variant": "ranges128",
+      "hands": 72,
+      "bb_per_100": -315.98611111111114,
+      "delta": 30.555555555555543,
+      "elapsed_seconds": 1.0676529170013964,
+      "decision_latency_ms": {
+        "p50": 1.6523331869393587,
+        "p95": 2.3225126089528203,
+        "max": 3.0156667344272137
+      },
+      "range_diagnostics": {
+        "decisions": 129,
+        "mean_ess": 119.83678055353981,
+        "min_ess": 98.19582314621961,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "card_aware",
+      "seats": 6,
+      "trial": 1,
+      "variant": "combined128",
+      "hands": 72,
+      "bb_per_100": 125.30555555555556,
+      "delta": 471.84722222222223,
+      "elapsed_seconds": 0.9043749999254942,
+      "decision_latency_ms": {
+        "p50": 1.6320832073688507,
+        "p95": 2.335572731681168,
+        "max": 3.0361246317625046
+      },
+      "range_diagnostics": {
+        "decisions": 72,
+        "mean_ess": 124.62554142464766,
+        "min_ess": 98.19582314621961,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "card_aware",
+      "seats": 6,
+      "trial": 2,
+      "variant": "original",
+      "hands": 72,
+      "bb_per_100": -132.18055555555554,
+      "delta": 0.0,
+      "elapsed_seconds": 0.8802245827391744,
+      "decision_latency_ms": {
+        "p50": 0.792291946709156,
+        "p95": 2.28848373517394,
+        "max": 2.5620837695896626
+      },
+      "range_diagnostics": {
+        "decisions": 0,
+        "mean_ess": null,
+        "min_ess": null,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "card_aware",
+      "seats": 6,
+      "trial": 2,
+      "variant": "uniform128",
+      "hands": 72,
+      "bb_per_100": 137.01388888888889,
+      "delta": 269.19444444444446,
+      "elapsed_seconds": 1.0534896249882877,
+      "decision_latency_ms": {
+        "p50": 1.6128327697515488,
+        "p95": 2.381833782419562,
+        "max": 3.0489997006952763
+      },
+      "range_diagnostics": {
+        "decisions": 0,
+        "mean_ess": null,
+        "min_ess": null,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "card_aware",
+      "seats": 6,
+      "trial": 2,
+      "variant": "position128",
+      "hands": 72,
+      "bb_per_100": 23.26388888888889,
+      "delta": 155.44444444444443,
+      "elapsed_seconds": 0.9087841659784317,
+      "decision_latency_ms": {
+        "p50": 1.6381251625716686,
+        "p95": 2.539591863751411,
+        "max": 3.130500204861164
+      },
+      "range_diagnostics": {
+        "decisions": 0,
+        "mean_ess": null,
+        "min_ess": null,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "card_aware",
+      "seats": 6,
+      "trial": 2,
+      "variant": "ranges128",
+      "hands": 72,
+      "bb_per_100": 222.66666666666666,
+      "delta": 354.8472222222222,
+      "elapsed_seconds": 1.05456000007689,
+      "decision_latency_ms": {
+        "p50": 1.60460383631289,
+        "p95": 2.42133354768157,
+        "max": 4.049874842166901
+      },
+      "range_diagnostics": {
+        "decisions": 119,
+        "mean_ess": 119.86852350526794,
+        "min_ess": 75.37891262114152,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "card_aware",
+      "seats": 6,
+      "trial": 2,
+      "variant": "combined128",
+      "hands": 72,
+      "bb_per_100": 9.375,
+      "delta": 141.55555555555554,
+      "elapsed_seconds": 0.8675089166499674,
+      "decision_latency_ms": {
+        "p50": 1.5460411086678505,
+        "p95": 2.2319666109979153,
+        "max": 2.910749986767769
+      },
+      "range_diagnostics": {
+        "decisions": 69,
+        "mean_ess": 124.62761706259744,
+        "min_ess": 93.24042452520797,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "card_aware",
+      "seats": 6,
+      "trial": 3,
+      "variant": "original",
+      "hands": 72,
+      "bb_per_100": -382.22222222222223,
+      "delta": 0.0,
+      "elapsed_seconds": 0.7798079163767397,
+      "decision_latency_ms": {
+        "p50": 0.7491454016417265,
+        "p95": 2.207241579890251,
+        "max": 2.308499999344349
+      },
+      "range_diagnostics": {
+        "decisions": 0,
+        "mean_ess": null,
+        "min_ess": null,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "card_aware",
+      "seats": 6,
+      "trial": 3,
+      "variant": "uniform128",
+      "hands": 72,
+      "bb_per_100": -368.2638888888889,
+      "delta": 13.958333333333314,
+      "elapsed_seconds": 0.9663979578763247,
+      "decision_latency_ms": {
+        "p50": 1.550458837300539,
+        "p95": 2.2418121341615915,
+        "max": 3.3141658641397953
+      },
+      "range_diagnostics": {
+        "decisions": 0,
+        "mean_ess": null,
+        "min_ess": null,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "card_aware",
+      "seats": 6,
+      "trial": 3,
+      "variant": "position128",
+      "hands": 72,
+      "bb_per_100": -138.19444444444446,
+      "delta": 244.02777777777777,
+      "elapsed_seconds": 0.8432642919942737,
+      "decision_latency_ms": {
+        "p50": 1.564584206789732,
+        "p95": 2.3013503290712825,
+        "max": 2.918042242527008
+      },
+      "range_diagnostics": {
+        "decisions": 0,
+        "mean_ess": null,
+        "min_ess": null,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "card_aware",
+      "seats": 6,
+      "trial": 3,
+      "variant": "ranges128",
+      "hands": 72,
+      "bb_per_100": -113.43055555555556,
+      "delta": 268.7916666666667,
+      "elapsed_seconds": 0.999878709204495,
+      "decision_latency_ms": {
+        "p50": 1.6717920079827309,
+        "p95": 2.4243896827101703,
+        "max": 4.915459081530571
+      },
+      "range_diagnostics": {
+        "decisions": 120,
+        "mean_ess": 117.44794371676683,
+        "min_ess": 92.12078737841335,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "card_aware",
+      "seats": 6,
+      "trial": 3,
+      "variant": "combined128",
+      "hands": 72,
+      "bb_per_100": -31.944444444444443,
+      "delta": 350.27777777777777,
+      "elapsed_seconds": 0.8717509168200195,
+      "decision_latency_ms": {
+        "p50": 1.624812837690115,
+        "p95": 2.380432980135083,
+        "max": 2.9654582031071186
+      },
+      "range_diagnostics": {
+        "decisions": 77,
+        "mean_ess": 121.64014464594804,
+        "min_ess": 92.12078737841335,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "card_aware",
+      "seats": 6,
+      "trial": 4,
+      "variant": "original",
+      "hands": 72,
+      "bb_per_100": -245.40277777777783,
+      "delta": 0.0,
+      "elapsed_seconds": 0.8098041247576475,
+      "decision_latency_ms": {
+        "p50": 0.7812913972884417,
+        "p95": 2.2672085324302316,
+        "max": 2.432791981846094
+      },
+      "range_diagnostics": {
+        "decisions": 0,
+        "mean_ess": null,
+        "min_ess": null,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "card_aware",
+      "seats": 6,
+      "trial": 4,
+      "variant": "uniform128",
+      "hands": 72,
+      "bb_per_100": -128.15277777777777,
+      "delta": 117.25000000000006,
+      "elapsed_seconds": 0.9945190418511629,
+      "decision_latency_ms": {
+        "p50": 1.5957080759108067,
+        "p95": 2.28114970959723,
+        "max": 2.947417087852955
+      },
+      "range_diagnostics": {
+        "decisions": 0,
+        "mean_ess": null,
+        "min_ess": null,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "card_aware",
+      "seats": 6,
+      "trial": 4,
+      "variant": "position128",
+      "hands": 72,
+      "bb_per_100": 1.3333333333333346,
+      "delta": 246.73611111111117,
+      "elapsed_seconds": 0.869146834127605,
+      "decision_latency_ms": {
+        "p50": 1.5532090328633785,
+        "p95": 2.22838269546628,
+        "max": 2.899458631873131
+      },
+      "range_diagnostics": {
+        "decisions": 0,
+        "mean_ess": null,
+        "min_ess": null,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "card_aware",
+      "seats": 6,
+      "trial": 4,
+      "variant": "ranges128",
+      "hands": 72,
+      "bb_per_100": -116.33333333333333,
+      "delta": 129.0694444444445,
+      "elapsed_seconds": 1.029691125266254,
+      "decision_latency_ms": {
+        "p50": 1.7009577713906765,
+        "p95": 2.3383876774460077,
+        "max": 3.081959206610918
+      },
+      "range_diagnostics": {
+        "decisions": 131,
+        "mean_ess": 121.20963222372048,
+        "min_ess": 100.11192358659363,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "card_aware",
+      "seats": 6,
+      "trial": 4,
+      "variant": "combined128",
+      "hands": 72,
+      "bb_per_100": 1.3333333333333346,
+      "delta": 246.73611111111117,
+      "elapsed_seconds": 0.9416090841405094,
+      "decision_latency_ms": {
+        "p50": 1.7224173061549664,
+        "p95": 2.409666683524847,
+        "max": 3.1474577262997627
+      },
+      "range_diagnostics": {
+        "decisions": 86,
+        "mean_ess": 122.00017040739631,
+        "min_ess": 100.33372380259357,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "card_aware",
+      "seats": 6,
+      "trial": 5,
+      "variant": "original",
+      "hands": 72,
+      "bb_per_100": -175.72222222222223,
+      "delta": 0.0,
+      "elapsed_seconds": 0.8491235002875328,
+      "decision_latency_ms": {
+        "p50": 0.8342498913407326,
+        "p95": 2.3493499495089054,
+        "max": 2.4609998799860477
+      },
+      "range_diagnostics": {
+        "decisions": 0,
+        "mean_ess": null,
+        "min_ess": null,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "card_aware",
+      "seats": 6,
+      "trial": 5,
+      "variant": "uniform128",
+      "hands": 72,
+      "bb_per_100": -321.9861111111111,
+      "delta": -146.26388888888886,
+      "elapsed_seconds": 1.0175671251490712,
+      "decision_latency_ms": {
+        "p50": 1.6779997386038303,
+        "p95": 2.410259190946817,
+        "max": 3.1954580917954445
+      },
+      "range_diagnostics": {
+        "decisions": 0,
+        "mean_ess": null,
+        "min_ess": null,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "card_aware",
+      "seats": 6,
+      "trial": 5,
+      "variant": "position128",
+      "hands": 72,
+      "bb_per_100": -284.02777777777777,
+      "delta": -108.30555555555554,
+      "elapsed_seconds": 0.9281426668167114,
+      "decision_latency_ms": {
+        "p50": 1.708937343209982,
+        "p95": 2.42713731713593,
+        "max": 3.146125003695488
+      },
+      "range_diagnostics": {
+        "decisions": 0,
+        "mean_ess": null,
+        "min_ess": null,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "card_aware",
+      "seats": 6,
+      "trial": 5,
+      "variant": "ranges128",
+      "hands": 72,
+      "bb_per_100": -291.3194444444445,
+      "delta": -115.59722222222229,
+      "elapsed_seconds": 1.071446041110903,
+      "decision_latency_ms": {
+        "p50": 1.7800000496208668,
+        "p95": 2.7415254153311253,
+        "max": 5.573041271418333
+      },
+      "range_diagnostics": {
+        "decisions": 103,
+        "mean_ess": 119.88691148670247,
+        "min_ess": 97.07910279854396,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "card_aware",
+      "seats": 6,
+      "trial": 5,
+      "variant": "combined128",
+      "hands": 72,
+      "bb_per_100": -284.02777777777777,
+      "delta": -108.30555555555554,
+      "elapsed_seconds": 0.9267162922769785,
+      "decision_latency_ms": {
+        "p50": 1.7390623688697815,
+        "p95": 2.611931064166128,
+        "max": 3.1814579851925373
+      },
+      "range_diagnostics": {
+        "decisions": 73,
+        "mean_ess": 121.88640059254881,
+        "min_ess": 97.07910279854396,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "card_aware",
+      "seats": 6,
+      "trial": 6,
+      "variant": "original",
+      "hands": 72,
+      "bb_per_100": 53.722222222222236,
+      "delta": 0.0,
+      "elapsed_seconds": 0.8565538330003619,
+      "decision_latency_ms": {
+        "p50": 0.7835002616047859,
+        "p95": 2.2646081633865833,
+        "max": 2.408042084425688
+      },
+      "range_diagnostics": {
+        "decisions": 0,
+        "mean_ess": null,
+        "min_ess": null,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "card_aware",
+      "seats": 6,
+      "trial": 6,
+      "variant": "uniform128",
+      "hands": 72,
+      "bb_per_100": -304.37499999999994,
+      "delta": -358.0972222222222,
+      "elapsed_seconds": 1.0504419161006808,
+      "decision_latency_ms": {
+        "p50": 1.5927497297525406,
+        "p95": 2.2766669280827045,
+        "max": 3.103790804743767
+      },
+      "range_diagnostics": {
+        "decisions": 0,
+        "mean_ess": null,
+        "min_ess": null,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "card_aware",
+      "seats": 6,
+      "trial": 6,
+      "variant": "position128",
+      "hands": 72,
+      "bb_per_100": 76.45833333333333,
+      "delta": 22.736111111111093,
+      "elapsed_seconds": 0.9332359158433974,
+      "decision_latency_ms": {
+        "p50": 1.5904789324849844,
+        "p95": 2.278422773815691,
+        "max": 4.210042301565409
+      },
+      "range_diagnostics": {
+        "decisions": 0,
+        "mean_ess": null,
+        "min_ess": null,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "card_aware",
+      "seats": 6,
+      "trial": 6,
+      "variant": "ranges128",
+      "hands": 72,
+      "bb_per_100": -294.79166666666663,
+      "delta": -348.51388888888886,
+      "elapsed_seconds": 1.0774520407430828,
+      "decision_latency_ms": {
+        "p50": 1.6210409812629223,
+        "p95": 2.3417500779032707,
+        "max": 3.011083696037531
+      },
+      "range_diagnostics": {
+        "decisions": 129,
+        "mean_ess": 118.2321965251616,
+        "min_ess": 75.08647973250234,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "card_aware",
+      "seats": 6,
+      "trial": 6,
+      "variant": "combined128",
+      "hands": 72,
+      "bb_per_100": 76.45833333333333,
+      "delta": 22.736111111111093,
+      "elapsed_seconds": 0.9455575002357364,
+      "decision_latency_ms": {
+        "p50": 1.6125417314469814,
+        "p95": 2.3734896443784232,
+        "max": 2.976458054035902
+      },
+      "range_diagnostics": {
+        "decisions": 87,
+        "mean_ess": 120.4578858436691,
+        "min_ess": 73.51062474284275,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "card_aware",
+      "seats": 6,
+      "trial": 7,
+      "variant": "original",
+      "hands": 72,
+      "bb_per_100": 345.37499999999994,
+      "delta": 0.0,
+      "elapsed_seconds": 0.8538329168222845,
+      "decision_latency_ms": {
+        "p50": 0.77066570520401,
+        "p95": 2.2571714594960213,
+        "max": 2.3092501796782017
+      },
+      "range_diagnostics": {
+        "decisions": 0,
+        "mean_ess": null,
+        "min_ess": null,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "card_aware",
+      "seats": 6,
+      "trial": 7,
+      "variant": "uniform128",
+      "hands": 72,
+      "bb_per_100": 152.48611111111111,
+      "delta": -192.88888888888883,
+      "elapsed_seconds": 1.0529560828581452,
+      "decision_latency_ms": {
+        "p50": 1.5834169462323189,
+        "p95": 2.278641518205404,
+        "max": 3.088375087827444
+      },
+      "range_diagnostics": {
+        "decisions": 0,
+        "mean_ess": null,
+        "min_ess": null,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "card_aware",
+      "seats": 6,
+      "trial": 7,
+      "variant": "position128",
+      "hands": 72,
+      "bb_per_100": 242.48611111111111,
+      "delta": -102.88888888888883,
+      "elapsed_seconds": 0.9084878750145435,
+      "decision_latency_ms": {
+        "p50": 1.5932079404592514,
+        "p95": 2.2899127565324298,
+        "max": 2.9612500220537186
+      },
+      "range_diagnostics": {
+        "decisions": 0,
+        "mean_ess": null,
+        "min_ess": null,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "card_aware",
+      "seats": 6,
+      "trial": 7,
+      "variant": "ranges128",
+      "hands": 72,
+      "bb_per_100": 127.43055555555553,
+      "delta": -217.9444444444444,
+      "elapsed_seconds": 1.0410794587805867,
+      "decision_latency_ms": {
+        "p50": 1.5759165398776531,
+        "p95": 2.259043953381478,
+        "max": 2.9399581253528595
+      },
+      "range_diagnostics": {
+        "decisions": 132,
+        "mean_ess": 122.42105593002623,
+        "min_ess": 100.5084295942043,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "card_aware",
+      "seats": 6,
+      "trial": 7,
+      "variant": "combined128",
+      "hands": 72,
+      "bb_per_100": 242.48611111111111,
+      "delta": -102.88888888888883,
+      "elapsed_seconds": 0.9247488332912326,
+      "decision_latency_ms": {
+        "p50": 1.6256668604910374,
+        "p95": 2.425108663737773,
+        "max": 5.0142500549554825
+      },
+      "range_diagnostics": {
+        "decisions": 87,
+        "mean_ess": 124.39377209844756,
+        "min_ess": 100.5084295942043,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "card_aware",
+      "seats": 7,
+      "trial": 0,
+      "variant": "original",
+      "hands": 84,
+      "bb_per_100": -220.51190476190476,
+      "delta": 0.0,
+      "elapsed_seconds": 1.2270509591326118,
+      "decision_latency_ms": {
+        "p50": 0.995374983176589,
+        "p95": 2.4182686116546392,
+        "max": 2.631083130836487
+      },
+      "range_diagnostics": {
+        "decisions": 0,
+        "mean_ess": null,
+        "min_ess": null,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "card_aware",
+      "seats": 7,
+      "trial": 0,
+      "variant": "uniform128",
+      "hands": 84,
+      "bb_per_100": -400.2738095238095,
+      "delta": -179.76190476190476,
+      "elapsed_seconds": 1.6544242920354009,
+      "decision_latency_ms": {
+        "p50": 1.6889795660972595,
+        "p95": 2.777049830183385,
+        "max": 140.6437079422176
+      },
+      "range_diagnostics": {
+        "decisions": 0,
+        "mean_ess": null,
+        "min_ess": null,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "card_aware",
+      "seats": 7,
+      "trial": 0,
+      "variant": "position128",
+      "hands": 84,
+      "bb_per_100": -262.39285714285717,
+      "delta": -41.88095238095241,
+      "elapsed_seconds": 1.2545047500170767,
+      "decision_latency_ms": {
+        "p50": 1.6202505212277174,
+        "p95": 2.4648251477628937,
+        "max": 3.222332801669836
+      },
+      "range_diagnostics": {
+        "decisions": 0,
+        "mean_ess": null,
+        "min_ess": null,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "card_aware",
+      "seats": 7,
+      "trial": 0,
+      "variant": "ranges128",
+      "hands": 84,
+      "bb_per_100": -397.89285714285717,
+      "delta": -177.3809523809524,
+      "elapsed_seconds": 1.4460555408149958,
+      "decision_latency_ms": {
+        "p50": 1.7635002732276917,
+        "p95": 2.472141478210687,
+        "max": 3.3310833387076855
+      },
+      "range_diagnostics": {
+        "decisions": 138,
+        "mean_ess": 117.68078296643498,
+        "min_ess": 64.13081823041877,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "card_aware",
+      "seats": 7,
+      "trial": 0,
+      "variant": "combined128",
+      "hands": 84,
+      "bb_per_100": -262.39285714285717,
+      "delta": -41.88095238095241,
+      "elapsed_seconds": 1.27375612501055,
+      "decision_latency_ms": {
+        "p50": 1.703042071312666,
+        "p95": 2.466249745339155,
+        "max": 3.396708983927965
+      },
+      "range_diagnostics": {
+        "decisions": 91,
+        "mean_ess": 121.44746244529534,
+        "min_ess": 64.13081823041877,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "card_aware",
+      "seats": 7,
+      "trial": 1,
+      "variant": "original",
+      "hands": 84,
+      "bb_per_100": 321.0,
+      "delta": 0.0,
+      "elapsed_seconds": 1.2179971667937934,
+      "decision_latency_ms": {
+        "p50": 0.8207499049603939,
+        "p95": 2.408762415871024,
+        "max": 2.705375198274851
+      },
+      "range_diagnostics": {
+        "decisions": 0,
+        "mean_ess": null,
+        "min_ess": null,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "card_aware",
+      "seats": 7,
+      "trial": 1,
+      "variant": "uniform128",
+      "hands": 84,
+      "bb_per_100": 430.54761904761904,
+      "delta": 109.54761904761904,
+      "elapsed_seconds": 1.5183914159424603,
+      "decision_latency_ms": {
+        "p50": 1.5856456011533737,
+        "p95": 2.5131768779829144,
+        "max": 3.504874650388956
+      },
+      "range_diagnostics": {
+        "decisions": 0,
+        "mean_ess": null,
+        "min_ess": null,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "card_aware",
+      "seats": 7,
+      "trial": 1,
+      "variant": "position128",
+      "hands": 84,
+      "bb_per_100": -45.82142857142857,
+      "delta": -366.82142857142856,
+      "elapsed_seconds": 1.2610701667144895,
+      "decision_latency_ms": {
+        "p50": 1.709166681393981,
+        "p95": 2.424108958803116,
+        "max": 3.263958264142275
+      },
+      "range_diagnostics": {
+        "decisions": 0,
+        "mean_ess": null,
+        "min_ess": null,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "card_aware",
+      "seats": 7,
+      "trial": 1,
+      "variant": "ranges128",
+      "hands": 84,
+      "bb_per_100": 502.52380952380946,
+      "delta": 181.52380952380946,
+      "elapsed_seconds": 1.4989984156563878,
+      "decision_latency_ms": {
+        "p50": 1.7224578186869621,
+        "p95": 2.4145744740962978,
+        "max": 3.2796673476696014
+      },
+      "range_diagnostics": {
+        "decisions": 168,
+        "mean_ess": 114.84175246113884,
+        "min_ess": 60.16805923178503,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "card_aware",
+      "seats": 7,
+      "trial": 1,
+      "variant": "combined128",
+      "hands": 84,
+      "bb_per_100": -75.60714285714285,
+      "delta": -396.60714285714283,
+      "elapsed_seconds": 1.30132529232651,
+      "decision_latency_ms": {
+        "p50": 1.7318124882876873,
+        "p95": 2.5493333581835023,
+        "max": 3.4466669894754887
+      },
+      "range_diagnostics": {
+        "decisions": 98,
+        "mean_ess": 120.91356751400491,
+        "min_ess": 95.84795434736058,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "card_aware",
+      "seats": 7,
+      "trial": 2,
+      "variant": "original",
+      "hands": 84,
+      "bb_per_100": 241.77380952380952,
+      "delta": 0.0,
+      "elapsed_seconds": 1.2415535836480558,
+      "decision_latency_ms": {
+        "p50": 0.8220826275646687,
+        "p95": 2.463500015437603,
+        "max": 2.5847088545560837
+      },
+      "range_diagnostics": {
+        "decisions": 0,
+        "mean_ess": null,
+        "min_ess": null,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "card_aware",
+      "seats": 7,
+      "trial": 2,
+      "variant": "uniform128",
+      "hands": 84,
+      "bb_per_100": 127.92857142857143,
+      "delta": -113.84523809523809,
+      "elapsed_seconds": 1.4873740831390023,
+      "decision_latency_ms": {
+        "p50": 1.656833104789257,
+        "p95": 2.5705035775899883,
+        "max": 3.5182912833988667
+      },
+      "range_diagnostics": {
+        "decisions": 0,
+        "mean_ess": null,
+        "min_ess": null,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "card_aware",
+      "seats": 7,
+      "trial": 2,
+      "variant": "position128",
+      "hands": 84,
+      "bb_per_100": 117.26190476190476,
+      "delta": -124.51190476190476,
+      "elapsed_seconds": 1.2845425843261182,
+      "decision_latency_ms": {
+        "p50": 1.7302501946687698,
+        "p95": 2.614416414871812,
+        "max": 3.795834258198738
+      },
+      "range_diagnostics": {
+        "decisions": 0,
+        "mean_ess": null,
+        "min_ess": null,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "card_aware",
+      "seats": 7,
+      "trial": 2,
+      "variant": "ranges128",
+      "hands": 84,
+      "bb_per_100": 344.15476190476187,
+      "delta": 102.38095238095235,
+      "elapsed_seconds": 1.4317847080528736,
+      "decision_latency_ms": {
+        "p50": 1.7450840678066015,
+        "p95": 2.4371874751523137,
+        "max": 3.3044996671378613
+      },
+      "range_diagnostics": {
+        "decisions": 147,
+        "mean_ess": 117.22850342803136,
+        "min_ess": 95.6210014665506,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "card_aware",
+      "seats": 7,
+      "trial": 2,
+      "variant": "combined128",
+      "hands": 84,
+      "bb_per_100": 117.26190476190476,
+      "delta": -124.51190476190476,
+      "elapsed_seconds": 1.2919590002857149,
+      "decision_latency_ms": {
+        "p50": 1.769188093021512,
+        "p95": 2.5890228338539596,
+        "max": 3.4483750350773335
+      },
+      "range_diagnostics": {
+        "decisions": 89,
+        "mean_ess": 122.02562556270277,
+        "min_ess": 95.6210014665506,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "card_aware",
+      "seats": 7,
+      "trial": 3,
+      "variant": "original",
+      "hands": 84,
+      "bb_per_100": 518.1547619047619,
+      "delta": 0.0,
+      "elapsed_seconds": 1.2751078750006855,
+      "decision_latency_ms": {
+        "p50": 0.8294791914522648,
+        "p95": 2.517957938835025,
+        "max": 2.597999759018421
+      },
+      "range_diagnostics": {
+        "decisions": 0,
+        "mean_ess": null,
+        "min_ess": null,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "card_aware",
+      "seats": 7,
+      "trial": 3,
+      "variant": "uniform128",
+      "hands": 84,
+      "bb_per_100": 514.2380952380952,
+      "delta": -3.9166666666667425,
+      "elapsed_seconds": 1.5456821667030454,
+      "decision_latency_ms": {
+        "p50": 1.6508749686181545,
+        "p95": 2.596566639840601,
+        "max": 10.719749610871077
+      },
+      "range_diagnostics": {
+        "decisions": 0,
+        "mean_ess": null,
+        "min_ess": null,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "card_aware",
+      "seats": 7,
+      "trial": 3,
+      "variant": "position128",
+      "hands": 84,
+      "bb_per_100": 137.01190476190476,
+      "delta": -381.14285714285717,
+      "elapsed_seconds": 1.3422658341005445,
+      "decision_latency_ms": {
+        "p50": 1.7224999610334635,
+        "p95": 2.6051143649965525,
+        "max": 3.4929998219013214
+      },
+      "range_diagnostics": {
+        "decisions": 0,
+        "mean_ess": null,
+        "min_ess": null,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "card_aware",
+      "seats": 7,
+      "trial": 3,
+      "variant": "ranges128",
+      "hands": 84,
+      "bb_per_100": 533.3571428571429,
+      "delta": 15.202380952380963,
+      "elapsed_seconds": 1.5459698340855539,
+      "decision_latency_ms": {
+        "p50": 1.81275000795722,
+        "p95": 2.584859053604305,
+        "max": 3.493750002235174
+      },
+      "range_diagnostics": {
+        "decisions": 155,
+        "mean_ess": 114.37427325570759,
+        "min_ess": 47.95581711529797,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "card_aware",
+      "seats": 7,
+      "trial": 3,
+      "variant": "combined128",
+      "hands": 84,
+      "bb_per_100": 137.01190476190476,
+      "delta": -381.14285714285717,
+      "elapsed_seconds": 1.3607567083090544,
+      "decision_latency_ms": {
+        "p50": 1.8226043321192265,
+        "p95": 2.63286498375237,
+        "max": 3.5288752987980843
+      },
+      "range_diagnostics": {
+        "decisions": 97,
+        "mean_ess": 117.74554575882206,
+        "min_ess": 34.79972290604014,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "card_aware",
+      "seats": 7,
+      "trial": 4,
+      "variant": "original",
+      "hands": 84,
+      "bb_per_100": -100.66666666666664,
+      "delta": 0.0,
+      "elapsed_seconds": 1.181399625260383,
+      "decision_latency_ms": {
+        "p50": 0.948458444327116,
+        "p95": 2.432306739501655,
+        "max": 2.6720832102000713
+      },
+      "range_diagnostics": {
+        "decisions": 0,
+        "mean_ess": null,
+        "min_ess": null,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "card_aware",
+      "seats": 7,
+      "trial": 4,
+      "variant": "uniform128",
+      "hands": 84,
+      "bb_per_100": -295.0238095238095,
+      "delta": -194.3571428571429,
+      "elapsed_seconds": 1.4123117909766734,
+      "decision_latency_ms": {
+        "p50": 1.559791387990117,
+        "p95": 2.4541623191907997,
+        "max": 12.945041991770267
+      },
+      "range_diagnostics": {
+        "decisions": 0,
+        "mean_ess": null,
+        "min_ess": null,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "card_aware",
+      "seats": 7,
+      "trial": 4,
+      "variant": "position128",
+      "hands": 84,
+      "bb_per_100": -140.4404761904762,
+      "delta": -39.77380952380956,
+      "elapsed_seconds": 1.2210209579207003,
+      "decision_latency_ms": {
+        "p50": 1.7491248436272144,
+        "p95": 2.5482100201770663,
+        "max": 3.2672081142663956
+      },
+      "range_diagnostics": {
+        "decisions": 0,
+        "mean_ess": null,
+        "min_ess": null,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "card_aware",
+      "seats": 7,
+      "trial": 4,
+      "variant": "ranges128",
+      "hands": 84,
+      "bb_per_100": -280.36904761904765,
+      "delta": -179.70238095238102,
+      "elapsed_seconds": 1.45818483363837,
+      "decision_latency_ms": {
+        "p50": 1.76693731918931,
+        "p95": 2.457131375558674,
+        "max": 3.320207819342613
+      },
+      "range_diagnostics": {
+        "decisions": 164,
+        "mean_ess": 117.2271044528297,
+        "min_ess": 56.62216038566607,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "card_aware",
+      "seats": 7,
+      "trial": 4,
+      "variant": "combined128",
+      "hands": 84,
+      "bb_per_100": -76.63095238095238,
+      "delta": 24.035714285714263,
+      "elapsed_seconds": 1.2576477089896798,
+      "decision_latency_ms": {
+        "p50": 1.7741669435054064,
+        "p95": 2.6068642036989327,
+        "max": 3.470333758741617
+      },
+      "range_diagnostics": {
+        "decisions": 97,
+        "mean_ess": 118.47240643692929,
+        "min_ess": 56.62216038566607,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "card_aware",
+      "seats": 7,
+      "trial": 5,
+      "variant": "original",
+      "hands": 84,
+      "bb_per_100": -203.8095238095238,
+      "delta": 0.0,
+      "elapsed_seconds": 1.2838600408285856,
+      "decision_latency_ms": {
+        "p50": 0.8380832150578499,
+        "p95": 2.5335660204291344,
+        "max": 2.6311250403523445
+      },
+      "range_diagnostics": {
+        "decisions": 0,
+        "mean_ess": null,
+        "min_ess": null,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "card_aware",
+      "seats": 7,
+      "trial": 5,
+      "variant": "uniform128",
+      "hands": 84,
+      "bb_per_100": -105.54761904761902,
+      "delta": 98.26190476190477,
+      "elapsed_seconds": 1.5303011671639979,
+      "decision_latency_ms": {
+        "p50": 1.7051876056939363,
+        "p95": 2.625396242365241,
+        "max": 3.523165825754404
+      },
+      "range_diagnostics": {
+        "decisions": 0,
+        "mean_ess": null,
+        "min_ess": null,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "card_aware",
+      "seats": 7,
+      "trial": 5,
+      "variant": "position128",
+      "hands": 84,
+      "bb_per_100": 25.297619047619047,
+      "delta": 229.10714285714283,
+      "elapsed_seconds": 1.3306733751669526,
+      "decision_latency_ms": {
+        "p50": 1.811792142689228,
+        "p95": 2.6276287622749805,
+        "max": 3.54862492531538
+      },
+      "range_diagnostics": {
+        "decisions": 0,
+        "mean_ess": null,
+        "min_ess": null,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "card_aware",
+      "seats": 7,
+      "trial": 5,
+      "variant": "ranges128",
+      "hands": 84,
+      "bb_per_100": -2.0952380952380674,
+      "delta": 201.71428571428572,
+      "elapsed_seconds": 1.5551772499457002,
+      "decision_latency_ms": {
+        "p50": 1.8796669319272041,
+        "p95": 2.6274919509887695,
+        "max": 3.556624986231327
+      },
+      "range_diagnostics": {
+        "decisions": 154,
+        "mean_ess": 116.57313866991568,
+        "min_ess": 72.06431401663271,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "card_aware",
+      "seats": 7,
+      "trial": 5,
+      "variant": "combined128",
+      "hands": 84,
+      "bb_per_100": 25.297619047619047,
+      "delta": 229.10714285714283,
+      "elapsed_seconds": 1.3519251672551036,
+      "decision_latency_ms": {
+        "p50": 1.8505407497286797,
+        "p95": 2.657937398180365,
+        "max": 3.5637919791042805
+      },
+      "range_diagnostics": {
+        "decisions": 92,
+        "mean_ess": 121.5931002766042,
+        "min_ess": 78.59028602472925,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "card_aware",
+      "seats": 7,
+      "trial": 6,
+      "variant": "original",
+      "hands": 84,
+      "bb_per_100": 140.8452380952381,
+      "delta": 0.0,
+      "elapsed_seconds": 1.2353872088715434,
+      "decision_latency_ms": {
+        "p50": 1.6179159283638,
+        "p95": 2.5569913908839226,
+        "max": 2.6940410025417805
+      },
+      "range_diagnostics": {
+        "decisions": 0,
+        "mean_ess": null,
+        "min_ess": null,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "card_aware",
+      "seats": 7,
+      "trial": 6,
+      "variant": "uniform128",
+      "hands": 84,
+      "bb_per_100": 268.8809523809524,
+      "delta": 128.0357142857143,
+      "elapsed_seconds": 1.4243490830995142,
+      "decision_latency_ms": {
+        "p50": 1.71233294531703,
+        "p95": 2.6305500883609056,
+        "max": 3.5072914324700832
+      },
+      "range_diagnostics": {
+        "decisions": 0,
+        "mean_ess": null,
+        "min_ess": null,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "card_aware",
+      "seats": 7,
+      "trial": 6,
+      "variant": "position128",
+      "hands": 84,
+      "bb_per_100": 72.5952380952381,
+      "delta": -68.25,
+      "elapsed_seconds": 1.3135306248441339,
+      "decision_latency_ms": {
+        "p50": 1.811437075957656,
+        "p95": 2.629229100421071,
+        "max": 3.586290869861841
+      },
+      "range_diagnostics": {
+        "decisions": 0,
+        "mean_ess": null,
+        "min_ess": null,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "card_aware",
+      "seats": 7,
+      "trial": 6,
+      "variant": "ranges128",
+      "hands": 84,
+      "bb_per_100": 271.0238095238095,
+      "delta": 130.17857142857142,
+      "elapsed_seconds": 1.4524387498386204,
+      "decision_latency_ms": {
+        "p50": 1.8452079966664314,
+        "p95": 2.633525198325515,
+        "max": 3.572584129869938
+      },
+      "range_diagnostics": {
+        "decisions": 115,
+        "mean_ess": 121.09498294424348,
+        "min_ess": 68.69504317457645,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "card_aware",
+      "seats": 7,
+      "trial": 6,
+      "variant": "combined128",
+      "hands": 84,
+      "bb_per_100": 72.5952380952381,
+      "delta": -68.25,
+      "elapsed_seconds": 1.3430999158881605,
+      "decision_latency_ms": {
+        "p50": 1.8832916393876076,
+        "p95": 2.6463752146810293,
+        "max": 3.5626660101115704
+      },
+      "range_diagnostics": {
+        "decisions": 84,
+        "mean_ess": 123.45745406321805,
+        "min_ess": 75.37255249665417,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "card_aware",
+      "seats": 7,
+      "trial": 7,
+      "variant": "original",
+      "hands": 84,
+      "bb_per_100": 54.000000000000014,
+      "delta": 0.0,
+      "elapsed_seconds": 1.222756499890238,
+      "decision_latency_ms": {
+        "p50": 0.8928959723562002,
+        "p95": 2.553618769161403,
+        "max": 2.6469998992979527
+      },
+      "range_diagnostics": {
+        "decisions": 0,
+        "mean_ess": null,
+        "min_ess": null,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "card_aware",
+      "seats": 7,
+      "trial": 7,
+      "variant": "uniform128",
+      "hands": 84,
+      "bb_per_100": 38.60714285714288,
+      "delta": -15.392857142857132,
+      "elapsed_seconds": 1.4917714172042906,
+      "decision_latency_ms": {
+        "p50": 1.7092907801270485,
+        "p95": 2.620783820748329,
+        "max": 3.5188752226531506
+      },
+      "range_diagnostics": {
+        "decisions": 0,
+        "mean_ess": null,
+        "min_ess": null,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "card_aware",
+      "seats": 7,
+      "trial": 7,
+      "variant": "position128",
+      "hands": 84,
+      "bb_per_100": 287.1309523809524,
+      "delta": 233.1309523809524,
+      "elapsed_seconds": 1.3217591252177954,
+      "decision_latency_ms": {
+        "p50": 1.885708887130022,
+        "p95": 2.703958284109829,
+        "max": 3.532084170728922
+      },
+      "range_diagnostics": {
+        "decisions": 0,
+        "mean_ess": null,
+        "min_ess": null,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "card_aware",
+      "seats": 7,
+      "trial": 7,
+      "variant": "ranges128",
+      "hands": 84,
+      "bb_per_100": 19.011904761904773,
+      "delta": -34.98809523809524,
+      "elapsed_seconds": 1.5219947500154376,
+      "decision_latency_ms": {
+        "p50": 1.882042270153761,
+        "p95": 2.61866245418787,
+        "max": 3.537875134497881
+      },
+      "range_diagnostics": {
+        "decisions": 153,
+        "mean_ess": 115.01391952467974,
+        "min_ess": 57.10803589821894,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "card_aware",
+      "seats": 7,
+      "trial": 7,
+      "variant": "combined128",
+      "hands": 84,
+      "bb_per_100": 243.46428571428572,
+      "delta": 189.46428571428572,
+      "elapsed_seconds": 1.2656397917307913,
+      "decision_latency_ms": {
+        "p50": 1.7975419759750366,
+        "p95": 2.6042247191071506,
+        "max": 3.442459274083376
+      },
+      "range_diagnostics": {
+        "decisions": 91,
+        "mean_ess": 120.94726863726744,
+        "min_ess": 72.2532326808539,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "card_aware",
+      "seats": 8,
+      "trial": 0,
+      "variant": "original",
+      "hands": 96,
+      "bb_per_100": -79.68750000000001,
+      "delta": 0.0,
+      "elapsed_seconds": 1.7017203751020133,
+      "decision_latency_ms": {
+        "p50": 1.70233310200274,
+        "p95": 2.737456397153437,
+        "max": 2.882624976336956
+      },
+      "range_diagnostics": {
+        "decisions": 0,
+        "mean_ess": null,
+        "min_ess": null,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "card_aware",
+      "seats": 8,
+      "trial": 0,
+      "variant": "uniform128",
+      "hands": 96,
+      "bb_per_100": 173.0625,
+      "delta": 252.75,
+      "elapsed_seconds": 1.9662472498603165,
+      "decision_latency_ms": {
+        "p50": 1.87345826998353,
+        "p95": 2.794862724840641,
+        "max": 3.910417202860117
+      },
+      "range_diagnostics": {
+        "decisions": 0,
+        "mean_ess": null,
+        "min_ess": null,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "card_aware",
+      "seats": 8,
+      "trial": 0,
+      "variant": "position128",
+      "hands": 96,
+      "bb_per_100": -57.65625,
+      "delta": 22.031250000000014,
+      "elapsed_seconds": 1.8069252092391253,
+      "decision_latency_ms": {
+        "p50": 1.8813335336744785,
+        "p95": 2.790139405988157,
+        "max": 3.9788750000298023
+      },
+      "range_diagnostics": {
+        "decisions": 0,
+        "mean_ess": null,
+        "min_ess": null,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "card_aware",
+      "seats": 8,
+      "trial": 0,
+      "variant": "ranges128",
+      "hands": 96,
+      "bb_per_100": 160.35416666666666,
+      "delta": 240.04166666666669,
+      "elapsed_seconds": 2.0140120410360396,
+      "decision_latency_ms": {
+        "p50": 1.8913543317466974,
+        "p95": 2.8044403064996004,
+        "max": 4.024708177894354
+      },
+      "range_diagnostics": {
+        "decisions": 153,
+        "mean_ess": 117.09305192310138,
+        "min_ess": 43.079213048959545,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "card_aware",
+      "seats": 8,
+      "trial": 0,
+      "variant": "combined128",
+      "hands": 96,
+      "bb_per_100": -73.28124999999999,
+      "delta": 6.406250000000028,
+      "elapsed_seconds": 1.8364042923785746,
+      "decision_latency_ms": {
+        "p50": 1.8907086923718452,
+        "p95": 2.8114311629906297,
+        "max": 3.929124679416418
+      },
+      "range_diagnostics": {
+        "decisions": 101,
+        "mean_ess": 121.62763365187188,
+        "min_ess": 67.86357754901653,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "card_aware",
+      "seats": 8,
+      "trial": 1,
+      "variant": "original",
+      "hands": 96,
+      "bb_per_100": 1.499999999999995,
+      "delta": 0.0,
+      "elapsed_seconds": 1.6271993340924382,
+      "decision_latency_ms": {
+        "p50": 1.586458645761013,
+        "p95": 2.6249997317790985,
+        "max": 2.90883332490921
+      },
+      "range_diagnostics": {
+        "decisions": 0,
+        "mean_ess": null,
+        "min_ess": null,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "card_aware",
+      "seats": 8,
+      "trial": 1,
+      "variant": "uniform128",
+      "hands": 96,
+      "bb_per_100": -53.50000000000002,
+      "delta": -55.000000000000014,
+      "elapsed_seconds": 1.83967070793733,
+      "decision_latency_ms": {
+        "p50": 1.721666194498539,
+        "p95": 2.666333597153425,
+        "max": 3.702459391206503
+      },
+      "range_diagnostics": {
+        "decisions": 0,
+        "mean_ess": null,
+        "min_ess": null,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "card_aware",
+      "seats": 8,
+      "trial": 1,
+      "variant": "position128",
+      "hands": 96,
+      "bb_per_100": 92.96875,
+      "delta": 91.46875,
+      "elapsed_seconds": 1.6966540003195405,
+      "decision_latency_ms": {
+        "p50": 1.7766249366104603,
+        "p95": 2.6738123036921024,
+        "max": 3.701500128954649
+      },
+      "range_diagnostics": {
+        "decisions": 0,
+        "mean_ess": null,
+        "min_ess": null,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "card_aware",
+      "seats": 8,
+      "trial": 1,
+      "variant": "ranges128",
+      "hands": 96,
+      "bb_per_100": -53.50000000000002,
+      "delta": -55.000000000000014,
+      "elapsed_seconds": 1.8756950837559998,
+      "decision_latency_ms": {
+        "p50": 1.7955000512301922,
+        "p95": 2.6735758408904076,
+        "max": 3.884541802108288
+      },
+      "range_diagnostics": {
+        "decisions": 154,
+        "mean_ess": 118.16665449008492,
+        "min_ess": 16.15513468569272,
+        "below_quarter_samples": 1
+      }
+    },
+    {
+      "pool": "card_aware",
+      "seats": 8,
+      "trial": 1,
+      "variant": "combined128",
+      "hands": 96,
+      "bb_per_100": 92.96875,
+      "delta": 91.46875,
+      "elapsed_seconds": 1.7146939169615507,
+      "decision_latency_ms": {
+        "p50": 1.7993748188018799,
+        "p95": 2.6797338388860226,
+        "max": 3.738583065569401
+      },
+      "range_diagnostics": {
+        "decisions": 99,
+        "mean_ess": 121.75725836156329,
+        "min_ess": 16.15513468569272,
+        "below_quarter_samples": 1
+      }
+    },
+    {
+      "pool": "card_aware",
+      "seats": 8,
+      "trial": 2,
+      "variant": "original",
+      "hands": 96,
+      "bb_per_100": -520.65625,
+      "delta": 0.0,
+      "elapsed_seconds": 1.6287883748300374,
+      "decision_latency_ms": {
+        "p50": 1.6088751144707203,
+        "p95": 2.6630759006366134,
+        "max": 2.8601251542568207
+      },
+      "range_diagnostics": {
+        "decisions": 0,
+        "mean_ess": null,
+        "min_ess": null,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "card_aware",
+      "seats": 8,
+      "trial": 2,
+      "variant": "uniform128",
+      "hands": 96,
+      "bb_per_100": -481.96874999999983,
+      "delta": 38.68750000000017,
+      "elapsed_seconds": 1.8940240000374615,
+      "decision_latency_ms": {
+        "p50": 1.724041998386383,
+        "p95": 2.68253730610013,
+        "max": 3.721499815583229
+      },
+      "range_diagnostics": {
+        "decisions": 0,
+        "mean_ess": null,
+        "min_ess": null,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "card_aware",
+      "seats": 8,
+      "trial": 2,
+      "variant": "position128",
+      "hands": 96,
+      "bb_per_100": -118.59375,
+      "delta": 402.0625,
+      "elapsed_seconds": 1.7407355420291424,
+      "decision_latency_ms": {
+        "p50": 1.8048335332423449,
+        "p95": 2.7103128377348185,
+        "max": 3.770750015974045
+      },
+      "range_diagnostics": {
+        "decisions": 0,
+        "mean_ess": null,
+        "min_ess": null,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "card_aware",
+      "seats": 8,
+      "trial": 2,
+      "variant": "ranges128",
+      "hands": 96,
+      "bb_per_100": -429.1145833333334,
+      "delta": 91.54166666666657,
+      "elapsed_seconds": 1.9349899999797344,
+      "decision_latency_ms": {
+        "p50": 1.8055001273751259,
+        "p95": 2.7054794132709503,
+        "max": 3.8585406728088856
+      },
+      "range_diagnostics": {
+        "decisions": 158,
+        "mean_ess": 120.26788563165049,
+        "min_ess": 75.96871019056677,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "card_aware",
+      "seats": 8,
+      "trial": 2,
+      "variant": "combined128",
+      "hands": 96,
+      "bb_per_100": -82.03125,
+      "delta": 438.625,
+      "elapsed_seconds": 1.7741395002231002,
+      "decision_latency_ms": {
+        "p50": 1.8491251394152641,
+        "p95": 2.732520690187812,
+        "max": 3.858165815472603
+      },
+      "range_diagnostics": {
+        "decisions": 100,
+        "mean_ess": 123.89453478114717,
+        "min_ess": 88.12768374009754,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "card_aware",
+      "seats": 8,
+      "trial": 3,
+      "variant": "original",
+      "hands": 96,
+      "bb_per_100": -222.42708333333334,
+      "delta": 0.0,
+      "elapsed_seconds": 1.7203569170087576,
+      "decision_latency_ms": {
+        "p50": 1.60287506878376,
+        "p95": 2.7014545630663633,
+        "max": 4.409249871969223
+      },
+      "range_diagnostics": {
+        "decisions": 0,
+        "mean_ess": null,
+        "min_ess": null,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "card_aware",
+      "seats": 8,
+      "trial": 3,
+      "variant": "uniform128",
+      "hands": 96,
+      "bb_per_100": -166.1770833333333,
+      "delta": 56.25000000000006,
+      "elapsed_seconds": 2.0627982076257467,
+      "decision_latency_ms": {
+        "p50": 1.7415420152246952,
+        "p95": 2.8252624906599517,
+        "max": 5.627958569675684
+      },
+      "range_diagnostics": {
+        "decisions": 0,
+        "mean_ess": null,
+        "min_ess": null,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "card_aware",
+      "seats": 8,
+      "trial": 3,
+      "variant": "position128",
+      "hands": 96,
+      "bb_per_100": -84.45833333333333,
+      "delta": 137.96875,
+      "elapsed_seconds": 1.8485320839099586,
+      "decision_latency_ms": {
+        "p50": 1.890396000817418,
+        "p95": 2.810718771070242,
+        "max": 3.998749889433384
+      },
+      "range_diagnostics": {
+        "decisions": 0,
+        "mean_ess": null,
+        "min_ess": null,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "card_aware",
+      "seats": 8,
+      "trial": 3,
+      "variant": "ranges128",
+      "hands": 96,
+      "bb_per_100": -64.53125,
+      "delta": 157.89583333333334,
+      "elapsed_seconds": 2.1034585419110954,
+      "decision_latency_ms": {
+        "p50": 1.9031250849366188,
+        "p95": 2.8284771600738168,
+        "max": 12.895999941974878
+      },
+      "range_diagnostics": {
+        "decisions": 177,
+        "mean_ess": 117.51972966974768,
+        "min_ess": 77.05137046952305,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "card_aware",
+      "seats": 8,
+      "trial": 3,
+      "variant": "combined128",
+      "hands": 96,
+      "bb_per_100": -84.45833333333333,
+      "delta": 137.96875,
+      "elapsed_seconds": 1.7876903330907226,
+      "decision_latency_ms": {
+        "p50": 1.8370002508163452,
+        "p95": 2.722499333322048,
+        "max": 3.832124639302492
+      },
+      "range_diagnostics": {
+        "decisions": 113,
+        "mean_ess": 123.02070571328524,
+        "min_ess": 96.54191360422521,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "card_aware",
+      "seats": 8,
+      "trial": 4,
+      "variant": "original",
+      "hands": 96,
+      "bb_per_100": -11.791666666666645,
+      "delta": 0.0,
+      "elapsed_seconds": 1.6261841668747365,
+      "decision_latency_ms": {
+        "p50": 1.6088960692286491,
+        "p95": 2.6250935159623623,
+        "max": 2.9398752376437187
+      },
+      "range_diagnostics": {
+        "decisions": 0,
+        "mean_ess": null,
+        "min_ess": null,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "card_aware",
+      "seats": 8,
+      "trial": 4,
+      "variant": "uniform128",
+      "hands": 96,
+      "bb_per_100": -19.89583333333331,
+      "delta": -8.104166666666666,
+      "elapsed_seconds": 1.9145191670395434,
+      "decision_latency_ms": {
+        "p50": 1.791541464626789,
+        "p95": 2.7243332006037235,
+        "max": 3.766875248402357
+      },
+      "range_diagnostics": {
+        "decisions": 0,
+        "mean_ess": null,
+        "min_ess": null,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "card_aware",
+      "seats": 8,
+      "trial": 4,
+      "variant": "position128",
+      "hands": 96,
+      "bb_per_100": 114.03125,
+      "delta": 125.82291666666664,
+      "elapsed_seconds": 1.7436805828474462,
+      "decision_latency_ms": {
+        "p50": 1.8730834126472473,
+        "p95": 2.7497811941429973,
+        "max": 3.8224998861551285
+      },
+      "range_diagnostics": {
+        "decisions": 0,
+        "mean_ess": null,
+        "min_ess": null,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "card_aware",
+      "seats": 8,
+      "trial": 4,
+      "variant": "ranges128",
+      "hands": 96,
+      "bb_per_100": -13.458333333333336,
+      "delta": -1.666666666666691,
+      "elapsed_seconds": 1.9710019589401782,
+      "decision_latency_ms": {
+        "p50": 1.88783323392272,
+        "p95": 2.7643618173897266,
+        "max": 3.880792297422886
+      },
+      "range_diagnostics": {
+        "decisions": 162,
+        "mean_ess": 115.15560003495924,
+        "min_ess": 48.19665560331949,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "card_aware",
+      "seats": 8,
+      "trial": 4,
+      "variant": "combined128",
+      "hands": 96,
+      "bb_per_100": 114.03125,
+      "delta": 125.82291666666664,
+      "elapsed_seconds": 1.7630083332769573,
+      "decision_latency_ms": {
+        "p50": 1.8956244457513094,
+        "p95": 2.7701586484909053,
+        "max": 3.8451659493148327
+      },
+      "range_diagnostics": {
+        "decisions": 100,
+        "mean_ess": 122.54929551538798,
+        "min_ess": 83.82455807412323,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "card_aware",
+      "seats": 8,
+      "trial": 5,
+      "variant": "original",
+      "hands": 96,
+      "bb_per_100": -142.65625000000003,
+      "delta": 0.0,
+      "elapsed_seconds": 1.5641412916593254,
+      "decision_latency_ms": {
+        "p50": 1.6900422051548958,
+        "p95": 2.716803550720215,
+        "max": 2.8546657413244247
+      },
+      "range_diagnostics": {
+        "decisions": 0,
+        "mean_ess": null,
+        "min_ess": null,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "card_aware",
+      "seats": 8,
+      "trial": 5,
+      "variant": "uniform128",
+      "hands": 96,
+      "bb_per_100": 78.63541666666666,
+      "delta": 221.29166666666669,
+      "elapsed_seconds": 1.842982375063002,
+      "decision_latency_ms": {
+        "p50": 1.8886248581111431,
+        "p95": 2.8092999942600727,
+        "max": 3.886791877448559
+      },
+      "range_diagnostics": {
+        "decisions": 0,
+        "mean_ess": null,
+        "min_ess": null,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "card_aware",
+      "seats": 8,
+      "trial": 5,
+      "variant": "position128",
+      "hands": 96,
+      "bb_per_100": -90.83333333333331,
+      "delta": 51.822916666666714,
+      "elapsed_seconds": 1.6989594581536949,
+      "decision_latency_ms": {
+        "p50": 2.039333339780569,
+        "p95": 2.803031587973237,
+        "max": 3.988665994256735
+      },
+      "range_diagnostics": {
+        "decisions": 0,
+        "mean_ess": null,
+        "min_ess": null,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "card_aware",
+      "seats": 8,
+      "trial": 5,
+      "variant": "ranges128",
+      "hands": 96,
+      "bb_per_100": 0.23958333333333748,
+      "delta": 142.89583333333337,
+      "elapsed_seconds": 1.8749426659196615,
+      "decision_latency_ms": {
+        "p50": 2.0205420441925526,
+        "p95": 2.833608351647854,
+        "max": 4.056124947965145
+      },
+      "range_diagnostics": {
+        "decisions": 147,
+        "mean_ess": 117.51511939374842,
+        "min_ess": 28.574419217258406,
+        "below_quarter_samples": 1
+      }
+    },
+    {
+      "pool": "card_aware",
+      "seats": 8,
+      "trial": 5,
+      "variant": "combined128",
+      "hands": 96,
+      "bb_per_100": -90.83333333333331,
+      "delta": 51.822916666666714,
+      "elapsed_seconds": 1.7185774580575526,
+      "decision_latency_ms": {
+        "p50": 2.0512707997113466,
+        "p95": 2.8573438758030534,
+        "max": 3.943041432648897
+      },
+      "range_diagnostics": {
+        "decisions": 101,
+        "mean_ess": 121.80583365145885,
+        "min_ess": 28.574419217258406,
+        "below_quarter_samples": 1
+      }
+    },
+    {
+      "pool": "card_aware",
+      "seats": 8,
+      "trial": 6,
+      "variant": "original",
+      "hands": 96,
+      "bb_per_100": 204.3854166666667,
+      "delta": 0.0,
+      "elapsed_seconds": 1.6933092498220503,
+      "decision_latency_ms": {
+        "p50": 1.7069163732230663,
+        "p95": 2.792316162958741,
+        "max": 2.898917067795992
+      },
+      "range_diagnostics": {
+        "decisions": 0,
+        "mean_ess": null,
+        "min_ess": null,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "card_aware",
+      "seats": 8,
+      "trial": 6,
+      "variant": "uniform128",
+      "hands": 96,
+      "bb_per_100": 473.71875000000006,
+      "delta": 269.33333333333337,
+      "elapsed_seconds": 1.9323520828038454,
+      "decision_latency_ms": {
+        "p50": 1.8751248717308044,
+        "p95": 2.7992372401058674,
+        "max": 3.8792500272393227
+      },
+      "range_diagnostics": {
+        "decisions": 0,
+        "mean_ess": null,
+        "min_ess": null,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "card_aware",
+      "seats": 8,
+      "trial": 6,
+      "variant": "position128",
+      "hands": 96,
+      "bb_per_100": 202.60416666666666,
+      "delta": -1.7812500000000568,
+      "elapsed_seconds": 1.7801025002263486,
+      "decision_latency_ms": {
+        "p50": 1.893729204311967,
+        "p95": 2.8081712778657675,
+        "max": 4.017208237200975
+      },
+      "range_diagnostics": {
+        "decisions": 0,
+        "mean_ess": null,
+        "min_ess": null,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "card_aware",
+      "seats": 8,
+      "trial": 6,
+      "variant": "ranges128",
+      "hands": 96,
+      "bb_per_100": 85.88541666666667,
+      "delta": -118.50000000000004,
+      "elapsed_seconds": 1.9597699167206883,
+      "decision_latency_ms": {
+        "p50": 1.9037500023841858,
+        "p95": 2.8172998689115047,
+        "max": 3.928542137145996
+      },
+      "range_diagnostics": {
+        "decisions": 137,
+        "mean_ess": 120.66681205899582,
+        "min_ess": 100.80871971827074,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "card_aware",
+      "seats": 8,
+      "trial": 6,
+      "variant": "combined128",
+      "hands": 96,
+      "bb_per_100": -6.25,
+      "delta": -210.6354166666667,
+      "elapsed_seconds": 1.791480083949864,
+      "decision_latency_ms": {
+        "p50": 1.9049160182476044,
+        "p95": 2.8377252165228124,
+        "max": 3.9303330704569817
+      },
+      "range_diagnostics": {
+        "decisions": 90,
+        "mean_ess": 124.52200823145235,
+        "min_ess": 100.80871971827074,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "card_aware",
+      "seats": 8,
+      "trial": 7,
+      "variant": "original",
+      "hands": 96,
+      "bb_per_100": 225.28125000000003,
+      "delta": 0.0,
+      "elapsed_seconds": 1.7281527910381556,
+      "decision_latency_ms": {
+        "p50": 1.697874628007412,
+        "p95": 2.8001580387353897,
+        "max": 2.908125054091215
+      },
+      "range_diagnostics": {
+        "decisions": 0,
+        "mean_ess": null,
+        "min_ess": null,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "card_aware",
+      "seats": 8,
+      "trial": 7,
+      "variant": "uniform128",
+      "hands": 96,
+      "bb_per_100": 179.8125,
+      "delta": -45.46875000000003,
+      "elapsed_seconds": 1.9743509590625763,
+      "decision_latency_ms": {
+        "p50": 1.7446873243898153,
+        "p95": 2.8087187092751265,
+        "max": 4.015000071376562
+      },
+      "range_diagnostics": {
+        "decisions": 0,
+        "mean_ess": null,
+        "min_ess": null,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "card_aware",
+      "seats": 8,
+      "trial": 7,
+      "variant": "position128",
+      "hands": 96,
+      "bb_per_100": -0.78125,
+      "delta": -226.06250000000003,
+      "elapsed_seconds": 1.713687791954726,
+      "decision_latency_ms": {
+        "p50": 1.7564790323376656,
+        "p95": 2.6900520315393806,
+        "max": 3.7469579838216305
+      },
+      "range_diagnostics": {
+        "decisions": 0,
+        "mean_ess": null,
+        "min_ess": null,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "card_aware",
+      "seats": 8,
+      "trial": 7,
+      "variant": "ranges128",
+      "hands": 96,
+      "bb_per_100": 212.84375,
+      "delta": -12.437500000000028,
+      "elapsed_seconds": 1.9546285406686366,
+      "decision_latency_ms": {
+        "p50": 1.856124959886074,
+        "p95": 2.764116413891315,
+        "max": 3.8737920112907887
+      },
+      "range_diagnostics": {
+        "decisions": 154,
+        "mean_ess": 119.62657982806847,
+        "min_ess": 10.951739584856135,
+        "below_quarter_samples": 2
+      }
+    },
+    {
+      "pool": "card_aware",
+      "seats": 8,
+      "trial": 7,
+      "variant": "combined128",
+      "hands": 96,
+      "bb_per_100": -0.78125,
+      "delta": -226.06250000000003,
+      "elapsed_seconds": 1.7649655840359628,
+      "decision_latency_ms": {
+        "p50": 1.8419998232275248,
+        "p95": 2.7572503313422203,
+        "max": 3.8525830022990704
+      },
+      "range_diagnostics": {
+        "decisions": 99,
+        "mean_ess": 122.36049751691695,
+        "min_ess": 10.951739584856135,
+        "below_quarter_samples": 2
+      }
+    },
+    {
+      "pool": "card_aware",
+      "seats": 9,
+      "trial": 0,
+      "variant": "original",
+      "hands": 108,
+      "bb_per_100": -292.98148148148147,
+      "delta": 0.0,
+      "elapsed_seconds": 1.995734583120793,
+      "decision_latency_ms": {
+        "p50": 1.0718535631895065,
+        "p95": 2.886764402501285,
+        "max": 2.9868329875171185
+      },
+      "range_diagnostics": {
+        "decisions": 0,
+        "mean_ess": null,
+        "min_ess": null,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "card_aware",
+      "seats": 9,
+      "trial": 0,
+      "variant": "uniform128",
+      "hands": 108,
+      "bb_per_100": -429.5,
+      "delta": -136.51851851851853,
+      "elapsed_seconds": 2.374604874756187,
+      "decision_latency_ms": {
+        "p50": 1.724208239465952,
+        "p95": 3.002970409579575,
+        "max": 4.444082733243704
+      },
+      "range_diagnostics": {
+        "decisions": 0,
+        "mean_ess": null,
+        "min_ess": null,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "card_aware",
+      "seats": 9,
+      "trial": 0,
+      "variant": "position128",
+      "hands": 108,
+      "bb_per_100": -209.9537037037037,
+      "delta": 83.02777777777777,
+      "elapsed_seconds": 2.1934391669929028,
+      "decision_latency_ms": {
+        "p50": 1.8004165031015873,
+        "p95": 2.971864165738225,
+        "max": 4.223082680255175
+      },
+      "range_diagnostics": {
+        "decisions": 0,
+        "mean_ess": null,
+        "min_ess": null,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "card_aware",
+      "seats": 9,
+      "trial": 0,
+      "variant": "ranges128",
+      "hands": 108,
+      "bb_per_100": -370.35185185185185,
+      "delta": -77.37037037037038,
+      "elapsed_seconds": 2.3410586253739893,
+      "decision_latency_ms": {
+        "p50": 1.8465407192707062,
+        "p95": 2.9637659899890423,
+        "max": 4.351874813437462
+      },
+      "range_diagnostics": {
+        "decisions": 183,
+        "mean_ess": 119.49534267925578,
+        "min_ess": 51.656093411331604,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "card_aware",
+      "seats": 9,
+      "trial": 0,
+      "variant": "combined128",
+      "hands": 108,
+      "bb_per_100": -272.9166666666667,
+      "delta": 20.06481481481478,
+      "elapsed_seconds": 2.2053843340836465,
+      "decision_latency_ms": {
+        "p50": 1.8613331485539675,
+        "p95": 2.9504167614504695,
+        "max": 4.209874663501978
+      },
+      "range_diagnostics": {
+        "decisions": 139,
+        "mean_ess": 122.85582666387987,
+        "min_ess": 91.44526522974859,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "card_aware",
+      "seats": 9,
+      "trial": 1,
+      "variant": "original",
+      "hands": 108,
+      "bb_per_100": -168.11111111111111,
+      "delta": 0.0,
+      "elapsed_seconds": 2.018701750319451,
+      "decision_latency_ms": {
+        "p50": 1.6198749653995037,
+        "p95": 2.870304649695754,
+        "max": 3.0573750846087933
+      },
+      "range_diagnostics": {
+        "decisions": 0,
+        "mean_ess": null,
+        "min_ess": null,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "card_aware",
+      "seats": 9,
+      "trial": 1,
+      "variant": "uniform128",
+      "hands": 108,
+      "bb_per_100": -104.27777777777776,
+      "delta": 63.83333333333336,
+      "elapsed_seconds": 2.335118082817644,
+      "decision_latency_ms": {
+        "p50": 1.6851667314767838,
+        "p95": 2.9474748764187098,
+        "max": 4.2017921805381775
+      },
+      "range_diagnostics": {
+        "decisions": 0,
+        "mean_ess": null,
+        "min_ess": null,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "card_aware",
+      "seats": 9,
+      "trial": 1,
+      "variant": "position128",
+      "hands": 108,
+      "bb_per_100": -9.037037037037042,
+      "delta": 159.07407407407408,
+      "elapsed_seconds": 2.212983625009656,
+      "decision_latency_ms": {
+        "p50": 1.8291249871253967,
+        "p95": 2.9658921062946324,
+        "max": 4.2168754152953625
+      },
+      "range_diagnostics": {
+        "decisions": 0,
+        "mean_ess": null,
+        "min_ess": null,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "card_aware",
+      "seats": 9,
+      "trial": 1,
+      "variant": "ranges128",
+      "hands": 108,
+      "bb_per_100": -179.52777777777777,
+      "delta": -11.416666666666657,
+      "elapsed_seconds": 2.410403040703386,
+      "decision_latency_ms": {
+        "p50": 1.8862495198845863,
+        "p95": 2.9842914547771215,
+        "max": 4.273916129022837
+      },
+      "range_diagnostics": {
+        "decisions": 179,
+        "mean_ess": 120.37072492305346,
+        "min_ess": 64.85112311370342,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "card_aware",
+      "seats": 9,
+      "trial": 1,
+      "variant": "combined128",
+      "hands": 108,
+      "bb_per_100": -11.583333333333337,
+      "delta": 156.52777777777777,
+      "elapsed_seconds": 2.2468309169635177,
+      "decision_latency_ms": {
+        "p50": 1.8837503157556057,
+        "p95": 2.9870206490159035,
+        "max": 4.388332832604647
+      },
+      "range_diagnostics": {
+        "decisions": 131,
+        "mean_ess": 121.14886880488838,
+        "min_ess": 64.85112311370342,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "card_aware",
+      "seats": 9,
+      "trial": 2,
+      "variant": "original",
+      "hands": 108,
+      "bb_per_100": -474.10185185185185,
+      "delta": 0.0,
+      "elapsed_seconds": 2.0841702087782323,
+      "decision_latency_ms": {
+        "p50": 0.9906874038279057,
+        "p95": 2.862106473185122,
+        "max": 3.1052078120410442
+      },
+      "range_diagnostics": {
+        "decisions": 0,
+        "mean_ess": null,
+        "min_ess": null,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "card_aware",
+      "seats": 9,
+      "trial": 2,
+      "variant": "uniform128",
+      "hands": 108,
+      "bb_per_100": -516.7777777777778,
+      "delta": -42.67592592592598,
+      "elapsed_seconds": 2.3747735833749175,
+      "decision_latency_ms": {
+        "p50": 1.6325418837368488,
+        "p95": 2.883657906204462,
+        "max": 4.143125377595425
+      },
+      "range_diagnostics": {
+        "decisions": 0,
+        "mean_ess": null,
+        "min_ess": null,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "card_aware",
+      "seats": 9,
+      "trial": 2,
+      "variant": "position128",
+      "hands": 108,
+      "bb_per_100": -221.21296296296296,
+      "delta": 252.88888888888889,
+      "elapsed_seconds": 2.2420525830239058,
+      "decision_latency_ms": {
+        "p50": 1.7984998412430286,
+        "p95": 2.9605210293084383,
+        "max": 4.217125009745359
+      },
+      "range_diagnostics": {
+        "decisions": 0,
+        "mean_ess": null,
+        "min_ess": null,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "card_aware",
+      "seats": 9,
+      "trial": 2,
+      "variant": "ranges128",
+      "hands": 108,
+      "bb_per_100": -580.6018518518517,
+      "delta": -106.49999999999989,
+      "elapsed_seconds": 2.534960791002959,
+      "decision_latency_ms": {
+        "p50": 1.8803335260599852,
+        "p95": 2.9864600161090493,
+        "max": 4.355750046670437
+      },
+      "range_diagnostics": {
+        "decisions": 210,
+        "mean_ess": 115.94315331637598,
+        "min_ess": 32.79582362094046,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "card_aware",
+      "seats": 9,
+      "trial": 2,
+      "variant": "combined128",
+      "hands": 108,
+      "bb_per_100": -221.21296296296296,
+      "delta": 252.88888888888889,
+      "elapsed_seconds": 2.2880707909353077,
+      "decision_latency_ms": {
+        "p50": 1.860958058387041,
+        "p95": 2.9786666855216026,
+        "max": 4.291167017072439
+      },
+      "range_diagnostics": {
+        "decisions": 132,
+        "mean_ess": 120.77317417891524,
+        "min_ess": 58.62954232173927,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "card_aware",
+      "seats": 9,
+      "trial": 3,
+      "variant": "original",
+      "hands": 108,
+      "bb_per_100": 118.23148148148148,
+      "delta": 0.0,
+      "elapsed_seconds": 2.0987264588475227,
+      "decision_latency_ms": {
+        "p50": 1.07466708868742,
+        "p95": 2.9668376315385103,
+        "max": 3.1197918578982353
+      },
+      "range_diagnostics": {
+        "decisions": 0,
+        "mean_ess": null,
+        "min_ess": null,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "card_aware",
+      "seats": 9,
+      "trial": 3,
+      "variant": "uniform128",
+      "hands": 108,
+      "bb_per_100": 26.453703703703695,
+      "delta": -91.77777777777779,
+      "elapsed_seconds": 2.47244945820421,
+      "decision_latency_ms": {
+        "p50": 1.7373748123645782,
+        "p95": 3.03787044249475,
+        "max": 4.652833100408316
+      },
+      "range_diagnostics": {
+        "decisions": 0,
+        "mean_ess": null,
+        "min_ess": null,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "card_aware",
+      "seats": 9,
+      "trial": 3,
+      "variant": "position128",
+      "hands": 108,
+      "bb_per_100": 96.99074074074075,
+      "delta": -21.240740740740733,
+      "elapsed_seconds": 2.250217374879867,
+      "decision_latency_ms": {
+        "p50": 1.8257084302604198,
+        "p95": 2.9833669774234295,
+        "max": 4.341916646808386
+      },
+      "range_diagnostics": {
+        "decisions": 0,
+        "mean_ess": null,
+        "min_ess": null,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "card_aware",
+      "seats": 9,
+      "trial": 3,
+      "variant": "ranges128",
+      "hands": 108,
+      "bb_per_100": 45.23148148148148,
+      "delta": -73.0,
+      "elapsed_seconds": 2.4535380830056965,
+      "decision_latency_ms": {
+        "p50": 1.8842918798327446,
+        "p95": 2.988562546670437,
+        "max": 4.290374927222729
+      },
+      "range_diagnostics": {
+        "decisions": 192,
+        "mean_ess": 117.42820621716554,
+        "min_ess": 6.885829602993249,
+        "below_quarter_samples": 3
+      }
+    },
+    {
+      "pool": "card_aware",
+      "seats": 9,
+      "trial": 3,
+      "variant": "combined128",
+      "hands": 108,
+      "bb_per_100": 159.9537037037037,
+      "delta": 41.722222222222214,
+      "elapsed_seconds": 2.2616160409525037,
+      "decision_latency_ms": {
+        "p50": 1.8722079694271088,
+        "p95": 2.9740502126514907,
+        "max": 4.347166977822781
+      },
+      "range_diagnostics": {
+        "decisions": 136,
+        "mean_ess": 120.25555154872552,
+        "min_ess": 15.279483835141226,
+        "below_quarter_samples": 2
+      }
+    },
+    {
+      "pool": "card_aware",
+      "seats": 9,
+      "trial": 4,
+      "variant": "original",
+      "hands": 108,
+      "bb_per_100": 462.4166666666667,
+      "delta": 0.0,
+      "elapsed_seconds": 2.1641709161922336,
+      "decision_latency_ms": {
+        "p50": 0.9726248681545258,
+        "p95": 2.844362240284681,
+        "max": 3.0081248842179775
+      },
+      "range_diagnostics": {
+        "decisions": 0,
+        "mean_ess": null,
+        "min_ess": null,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "card_aware",
+      "seats": 9,
+      "trial": 4,
+      "variant": "uniform128",
+      "hands": 108,
+      "bb_per_100": -4.574074074074066,
+      "delta": -466.99074074074076,
+      "elapsed_seconds": 2.462995749898255,
+      "decision_latency_ms": {
+        "p50": 1.6724159941077232,
+        "p95": 2.945875283330679,
+        "max": 4.3312907218933105
+      },
+      "range_diagnostics": {
+        "decisions": 0,
+        "mean_ess": null,
+        "min_ess": null,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "card_aware",
+      "seats": 9,
+      "trial": 4,
+      "variant": "position128",
+      "hands": 108,
+      "bb_per_100": 180.78703703703704,
+      "delta": -281.6296296296297,
+      "elapsed_seconds": 2.3576712920330465,
+      "decision_latency_ms": {
+        "p50": 1.714771380648017,
+        "p95": 2.990767010487616,
+        "max": 4.297666251659393
+      },
+      "range_diagnostics": {
+        "decisions": 0,
+        "mean_ess": null,
+        "min_ess": null,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "card_aware",
+      "seats": 9,
+      "trial": 4,
+      "variant": "ranges128",
+      "hands": 108,
+      "bb_per_100": -2.7222222222222143,
+      "delta": -465.1388888888889,
+      "elapsed_seconds": 2.509831542149186,
+      "decision_latency_ms": {
+        "p50": 1.854458823800087,
+        "p95": 2.9616665560752153,
+        "max": 4.3570417910814285
+      },
+      "range_diagnostics": {
+        "decisions": 186,
+        "mean_ess": 120.70169461883354,
+        "min_ess": 15.131514654066919,
+        "below_quarter_samples": 1
+      }
+    },
+    {
+      "pool": "card_aware",
+      "seats": 9,
+      "trial": 4,
+      "variant": "combined128",
+      "hands": 108,
+      "bb_per_100": 182.63888888888889,
+      "delta": -279.7777777777778,
+      "elapsed_seconds": 2.4020743328146636,
+      "decision_latency_ms": {
+        "p50": 1.8671881407499313,
+        "p95": 3.003981127403676,
+        "max": 4.401041194796562
+      },
+      "range_diagnostics": {
+        "decisions": 146,
+        "mean_ess": 121.11582347160255,
+        "min_ess": 15.131514654066919,
+        "below_quarter_samples": 1
+      }
+    },
+    {
+      "pool": "card_aware",
+      "seats": 9,
+      "trial": 5,
+      "variant": "original",
+      "hands": 108,
+      "bb_per_100": -111.48148148148148,
+      "delta": 0.0,
+      "elapsed_seconds": 2.0590432919561863,
+      "decision_latency_ms": {
+        "p50": 1.6661249101161957,
+        "p95": 2.9194249771535397,
+        "max": 3.1172498129308224
+      },
+      "range_diagnostics": {
+        "decisions": 0,
+        "mean_ess": null,
+        "min_ess": null,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "card_aware",
+      "seats": 9,
+      "trial": 5,
+      "variant": "uniform128",
+      "hands": 108,
+      "bb_per_100": -94.63888888888889,
+      "delta": 16.842592592592595,
+      "elapsed_seconds": 2.3633425002917647,
+      "decision_latency_ms": {
+        "p50": 1.6842503100633621,
+        "p95": 2.9535419307649136,
+        "max": 4.19933395460248
+      },
+      "range_diagnostics": {
+        "decisions": 0,
+        "mean_ess": null,
+        "min_ess": null,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "card_aware",
+      "seats": 9,
+      "trial": 5,
+      "variant": "position128",
+      "hands": 108,
+      "bb_per_100": -27.916666666666668,
+      "delta": 83.56481481481481,
+      "elapsed_seconds": 2.2331767906434834,
+      "decision_latency_ms": {
+        "p50": 1.8139583989977837,
+        "p95": 2.9594273772090673,
+        "max": 4.206083714962006
+      },
+      "range_diagnostics": {
+        "decisions": 0,
+        "mean_ess": null,
+        "min_ess": null,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "card_aware",
+      "seats": 9,
+      "trial": 5,
+      "variant": "ranges128",
+      "hands": 108,
+      "bb_per_100": -40.12037037037039,
+      "delta": 71.36111111111109,
+      "elapsed_seconds": 2.4465138749219477,
+      "decision_latency_ms": {
+        "p50": 1.8671045545488596,
+        "p95": 2.9755942756310105,
+        "max": 4.312166944146156
+      },
+      "range_diagnostics": {
+        "decisions": 193,
+        "mean_ess": 113.07461746948042,
+        "min_ess": 17.743905052049254,
+        "below_quarter_samples": 3
+      }
+    },
+    {
+      "pool": "card_aware",
+      "seats": 9,
+      "trial": 5,
+      "variant": "combined128",
+      "hands": 108,
+      "bb_per_100": 24.39814814814815,
+      "delta": 135.87962962962962,
+      "elapsed_seconds": 2.219023333862424,
+      "decision_latency_ms": {
+        "p50": 1.8170829862356186,
+        "p95": 2.9062084387987857,
+        "max": 4.172750283032656
+      },
+      "range_diagnostics": {
+        "decisions": 135,
+        "mean_ess": 119.13898468684947,
+        "min_ess": 43.19936411727958,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "card_aware",
+      "seats": 9,
+      "trial": 6,
+      "variant": "original",
+      "hands": 108,
+      "bb_per_100": -141.35185185185188,
+      "delta": 0.0,
+      "elapsed_seconds": 1.9985005417838693,
+      "decision_latency_ms": {
+        "p50": 1.6610834281891584,
+        "p95": 2.8976650442928076,
+        "max": 3.0345418490469456
+      },
+      "range_diagnostics": {
+        "decisions": 0,
+        "mean_ess": null,
+        "min_ess": null,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "card_aware",
+      "seats": 9,
+      "trial": 6,
+      "variant": "uniform128",
+      "hands": 108,
+      "bb_per_100": -144.1111111111111,
+      "delta": -2.75925925925921,
+      "elapsed_seconds": 2.2867417079396546,
+      "decision_latency_ms": {
+        "p50": 1.8537500873208046,
+        "p95": 2.9722167644649744,
+        "max": 4.230082966387272
+      },
+      "range_diagnostics": {
+        "decisions": 0,
+        "mean_ess": null,
+        "min_ess": null,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "card_aware",
+      "seats": 9,
+      "trial": 6,
+      "variant": "position128",
+      "hands": 108,
+      "bb_per_100": 98.12962962962963,
+      "delta": 239.48148148148152,
+      "elapsed_seconds": 2.209616625215858,
+      "decision_latency_ms": {
+        "p50": 1.8764170818030834,
+        "p95": 2.988741640001535,
+        "max": 4.285125061869621
+      },
+      "range_diagnostics": {
+        "decisions": 0,
+        "mean_ess": null,
+        "min_ess": null,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "card_aware",
+      "seats": 9,
+      "trial": 6,
+      "variant": "ranges128",
+      "hands": 108,
+      "bb_per_100": -103.73148148148148,
+      "delta": 37.620370370370395,
+      "elapsed_seconds": 2.3263972913846374,
+      "decision_latency_ms": {
+        "p50": 1.9063749350607395,
+        "p95": 2.9919161461293697,
+        "max": 4.433499649167061
+      },
+      "range_diagnostics": {
+        "decisions": 173,
+        "mean_ess": 120.8499623934252,
+        "min_ess": 92.48727583126643,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "card_aware",
+      "seats": 9,
+      "trial": 6,
+      "variant": "combined128",
+      "hands": 108,
+      "bb_per_100": 98.12962962962963,
+      "delta": 239.48148148148152,
+      "elapsed_seconds": 2.2369563751854002,
+      "decision_latency_ms": {
+        "p50": 1.8956665880978107,
+        "p95": 2.996843936853111,
+        "max": 4.2827497236430645
+      },
+      "range_diagnostics": {
+        "decisions": 141,
+        "mean_ess": 122.65662246027267,
+        "min_ess": 92.48727583126643,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "card_aware",
+      "seats": 9,
+      "trial": 7,
+      "variant": "original",
+      "hands": 108,
+      "bb_per_100": -306.74074074074076,
+      "delta": 0.0,
+      "elapsed_seconds": 2.079689500387758,
+      "decision_latency_ms": {
+        "p50": 1.0702915024012327,
+        "p95": 2.950123231858014,
+        "max": 6.047124974429607
+      },
+      "range_diagnostics": {
+        "decisions": 0,
+        "mean_ess": null,
+        "min_ess": null,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "card_aware",
+      "seats": 9,
+      "trial": 7,
+      "variant": "uniform128",
+      "hands": 108,
+      "bb_per_100": -209.4351851851852,
+      "delta": 97.30555555555557,
+      "elapsed_seconds": 2.3647979581728578,
+      "decision_latency_ms": {
+        "p50": 1.7041657119989395,
+        "p95": 2.9768250882625575,
+        "max": 4.241625312715769
+      },
+      "range_diagnostics": {
+        "decisions": 0,
+        "mean_ess": null,
+        "min_ess": null,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "card_aware",
+      "seats": 9,
+      "trial": 7,
+      "variant": "position128",
+      "hands": 108,
+      "bb_per_100": -80.0925925925926,
+      "delta": 226.64814814814815,
+      "elapsed_seconds": 2.2430456671863794,
+      "decision_latency_ms": {
+        "p50": 1.8505421467125416,
+        "p95": 2.9865377582609653,
+        "max": 4.293958190828562
+      },
+      "range_diagnostics": {
+        "decisions": 0,
+        "mean_ess": null,
+        "min_ess": null,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "card_aware",
+      "seats": 9,
+      "trial": 7,
+      "variant": "ranges128",
+      "hands": 108,
+      "bb_per_100": -213.13888888888889,
+      "delta": 93.60185185185188,
+      "elapsed_seconds": 2.4226775839924812,
+      "decision_latency_ms": {
+        "p50": 1.8880842253565788,
+        "p95": 2.9971000738441944,
+        "max": 4.286541603505611
+      },
+      "range_diagnostics": {
+        "decisions": 181,
+        "mean_ess": 120.13812573565387,
+        "min_ess": 89.43867248807204,
+        "below_quarter_samples": 0
+      }
+    },
+    {
+      "pool": "card_aware",
+      "seats": 9,
+      "trial": 7,
+      "variant": "combined128",
+      "hands": 108,
+      "bb_per_100": -83.79629629629629,
+      "delta": 222.94444444444446,
+      "elapsed_seconds": 2.236865666229278,
+      "decision_latency_ms": {
+        "p50": 1.8186671659350395,
+        "p95": 2.998562203720212,
+        "max": 5.979625042527914
+      },
+      "range_diagnostics": {
+        "decisions": 135,
+        "mean_ess": 123.52071874792269,
+        "min_ess": 89.43867248807204,
+        "below_quarter_samples": 0
+      }
+    }
+  ],
+  "peak_rss_native_units": 124125184,
+  "rss_unit": "bytes on macOS; KiB on Linux",
+  "experiment_manifest": {
+    "kind": "development only; range-screen-v1 fresh seeds",
+    "trials": 8,
+    "rotations": 12,
+    "seats": [
+      6,
+      7,
+      8,
+      9
+    ],
+    "variants": {
+      "original": {
+        "samples": 32,
+        "call_margin": 0.02,
+        "raise_margin": 0.12,
+        "bet_fraction": 0.5,
+        "adaptive": false,
+        "use_position": false,
+        "use_ranges": false,
+        "conditioning": 0.5,
+        "uniform_mix": 0.25
+      },
+      "uniform128": {
+        "samples": 128,
+        "call_margin": 0.02,
+        "raise_margin": 0.12,
+        "bet_fraction": 0.5,
+        "adaptive": false,
+        "use_position": false,
+        "use_ranges": false,
+        "conditioning": 0.5,
+        "uniform_mix": 0.25
+      },
+      "position128": {
+        "samples": 128,
+        "call_margin": 0.02,
+        "raise_margin": 0.12,
+        "bet_fraction": 0.5,
+        "adaptive": false,
+        "use_position": true,
+        "use_ranges": false,
+        "conditioning": 0.5,
+        "uniform_mix": 0.25
+      },
+      "ranges128": {
+        "samples": 128,
+        "call_margin": 0.02,
+        "raise_margin": 0.12,
+        "bet_fraction": 0.5,
+        "adaptive": false,
+        "use_position": false,
+        "use_ranges": true,
+        "conditioning": 0.5,
+        "uniform_mix": 0.25
+      },
+      "combined128": {
+        "samples": 128,
+        "call_margin": 0.02,
+        "raise_margin": 0.12,
+        "bet_fraction": 0.5,
+        "adaptive": false,
+        "use_position": true,
+        "use_ranges": true,
+        "conditioning": 0.5,
+        "uniform_mix": 0.25
+      }
+    },
+    "pools": {
+      "scripted": [
+        "caller",
+        "tight",
+        "aggressive",
+        "equity"
+      ],
+      "card_aware": [
+        "card_tight",
+        "card_loose",
+        "card_pressure",
+        "equity"
+      ]
+    },
+    "contrasts": {
+      "position_minus_uniform": [
+        "position128",
+        "uniform128"
+      ],
+      "ranges_minus_uniform": [
+        "ranges128",
+        "uniform128"
+      ],
+      "combined_minus_position": [
+        "combined128",
+        "position128"
+      ],
+      "combined_minus_ranges": [
+        "combined128",
+        "ranges128"
+      ]
+    },
+    "provenance": {
+      "git_commit": "2e01b4ab4ba617fe590d37d15d91ee01a0124532",
+      "git_status": "M pokerbot/policies.py\n M pokerbot/runner.py\n?? pokerbot/range_policy.py\n?? pokerbot/ranges.py\n?? research/range_screen.py\n?? tests/test_ranges.py",
+      "source_sha256": {
+        "pokerbot/__init__.py": "9d25d92bccf3d24419aa67731462554dde88a919ba4e0b6a6c8bb8b236a4bf8b",
+        "pokerbot/__main__.py": "557a4d834582bae8a50728538fad9aa92d68af8e8a07f718a7ae97a4cb768cb1",
+        "pokerbot/adapters.py": "d5b6c209c9b7c18413ce950cd0ed6ef720d4a0131bec6b926fd347d7861f4bfd",
+        "pokerbot/baseline_v1.py": "a0496890a106b3704613f044099adac9e1d13296b8bafe5fd64d85068f686020",
+        "pokerbot/benchmark.py": "cbef6ab41a1caa3344a3200a6e9e31898d4efbc9071b6f60c941e836a34fad63",
+        "pokerbot/card_controls.py": "389961c2cba94fae22fcb43a4fff063dbfc9a6b72acfca3a58eb998729d1bb35",
+        "pokerbot/engine.py": "df82a739c17fa382c0312e5341d5da561eaf721dd39856773cc1f456130eec2b",
+        "pokerbot/equity.py": "0473e0dfdf3f7eb8ae0909145e94e50470011b78e44b277d0e59d0a105178f0e",
+        "pokerbot/policies.py": "9e5d65bef841cbcb0e0a3c263023ff0178be6cf41fca17a53ffe916802ac3632",
+        "pokerbot/profiles.py": "bdc6d4137ae754a00ff6faaf48d8b791d5031ffed6830cfbf441ebfb3152ab44",
+        "pokerbot/range_policy.py": "3dc512eb480b5065a6cd1048ae148c30898815872b2ac07ff11621fe2c2c5c82",
+        "pokerbot/ranges.py": "7fc939a84b81733a49f68d40b6c7faea1e980c0145d6ba94b63a329a9c1e44c4",
+        "pokerbot/runner.py": "f89cb4d20c19360d9ceab7fc8d88272bf0c087f1c36a2de0c1e5065dfd5e6973"
+      },
+      "python": "3.14.7",
+      "platform": "macOS-15.6.1-arm64-arm-64bit-Mach-O",
+      "open_spiel": "2.0.2",
+      "rules_engine": "pokerkit",
+      "pokerkit": "0.7.5",
+      "payout_rule": "fractional",
+      "numpy": "2.5.3",
+      "scipy": "1.18.1"
+    },
+    "script_sha256": "0e90ec6a7cee7efefbd4e5341ed47fa97324d59fc0d5ff81ea422d2ce2775210"
+  },
+  "hypotheses": [
+    "Position-aware preflop rules improve equal-sample uniform equity play",
+    "Public preflop actions provide useful holding-range evidence",
+    "Position and range conditioning combine usefully"
+  ],
+  "limitations": "Unadjusted exploratory intervals; heuristic likelihoods; no postflop action inference, learned player models, folded-card model or future betting search; shared equity evaluator; no trained opponent"
+}

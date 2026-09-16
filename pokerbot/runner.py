@@ -49,14 +49,16 @@ def interval(values, alpha=.05):
 
 def session(*, seats, hands, seed, config, pool, log_path=None,
             profile_path=":memory:", session_id="trial", learning="off", stack_bb=100,
-            frozen_hero=False):
+            frozen_hero=False, hero_policy="equity"):
     if not 2 <= seats <= 9 or hands < 1 or not pool or learning not in ("off", "learned", "oracle"):
         raise ValueError("Invalid session configuration")
     if learning == "oracle" and any(style not in ("caller", "tight", "aggressive") for style in pool):
         raise ValueError("Oracle trials support only caller, tight and aggressive controls")
     names = ["hero"] + [f"opponent-{i}" for i in range(seats - 1)]
     styles = {name: pool[i % len(pool)] for i, name in enumerate(names[1:])}
-    policies = {"hero": FrozenEquityV1() if frozen_hero else make_policy("equity", config)}
+    if frozen_hero and hero_policy != "equity":
+        raise ValueError("Frozen hero must use the original equity policy")
+    policies = {"hero": FrozenEquityV1() if frozen_hero else make_policy(hero_policy, config)}
     policies.update({name: FrozenEquityV1() if style == "equity" else make_policy(style)
                      for name, style in styles.items()})
     profiles = Profiles(profile_path, session_id)

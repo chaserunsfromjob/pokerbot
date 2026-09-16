@@ -88,6 +88,9 @@ class EquityPolicy:
 
 
 def make_policy(name, config=None):
+    if name == "range":
+        from .range_policy import RangePolicy
+        return RangePolicy(config)
     if name.startswith("card_"):
         from .card_controls import CardControl
         return CardControl(name)

@@ -62,6 +62,20 @@ three-card Kuhn poker only**; it does not train the no-limit hold'em bot.
 See `research/patches/README.md` for isolated equity/ranking repairs for the
 dickreuter candidate. Its complete decision-policy bridge is still unfinished.
 
+Position and preflop-action range candidates have a separate development sweep:
+
+```sh
+.venv/bin/python research/range_screen.py --out runs/my-range-screen
+```
+
+It compares the frozen original, an equal-sample uniform reference, position
+alone, range conditioning alone, and both. The range estimator samples joint
+legal card assignments and reports importance-sampling effective sample sizes.
+Its action likelihoods are experimental assumptions, not learned player
+profiles. It does not yet infer ranges from postflop bets or evaluate future
+betting. All-in participants remain in the sampled field. Existing rules,
+hand-ranking code and the frozen original strategy are unchanged.
+
 What the borrowed poker engine is, how to run it, and what it would cost to move
 it from its 20-card deck to a normal 52-card one: `REFERENCE_NOTES.md`.
 

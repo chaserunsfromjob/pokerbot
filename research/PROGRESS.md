@@ -1,4 +1,4 @@
-# Research checkpoint — September 16, 2026, card-aware opponents and component research
+# Research checkpoint — September 16, 2026, position and range ablations
 
 ## Current state
 
@@ -47,7 +47,7 @@ select the legacy backend, and old replay verification still passes.
 
 ## Validation
 
-- **82 root tests passed; no expected failures in the root suite.**
+- **97 root tests passed; no expected failures in the root suite.**
 - **53 vendor tests passed, 2 existing expected failures.** The three historical
   CLI tests still do not assert command success.
 - All **680 design arithmetic checks passed**.
@@ -167,25 +167,94 @@ regrets and are not resumable training states. Recorded results are in
 policy-export plumbing only. It is not no-limit hold'em, multiway evidence,
 or a pass of the project's strength benchmark.
 
+## Position and preflop-action ranges: 28,800 hands
+
+`runs/range-screen-001` completed all 320 sessions: five arms, two development
+pools, four table sizes, eight independent sessions per cell, and twelve full
+seat rotations per session. The arms isolate position-aware preflop rules,
+preflop-action range weighting, both, a uniform 128-sample reference and the
+untouched original 32-sample baseline. The new seed namespace is independent of
+earlier development screens and does not consume confirmation deals.
+
+No candidate had a positive lower interval against the frozen original in any
+cell. Position-only and combined rules had negative descriptive intervals in
+the scripted seven-seat cell. Against the card-aware pool, gains versus the
+original were:
+
+| Variant | 6 seats | 7 seats | 8 seats | 9 seats |
+| --- | ---: | ---: | ---: | ---: |
+| Uniform 128 | -81.03 | -21.43 | +91.22 | -70.34 |
+| Position only | +131.19 | -70.02 | +75.42 | +92.73 |
+| Ranges only | -9.06 | +29.87 | +55.60 | -66.36 |
+| Position and ranges | +142.26 | -71.22 | +51.93 | +98.72 |
+
+Units are paired bb/100. Every interval in that table includes zero. Matched
+128-sample comparisons did show positive descriptive intervals for position
+versus uniform at six seats (+212.22, interval [31.96, 392.48]) and nine seats
+(+163.07, [91.64, 234.49]) in the card-aware pool. These are selected,
+unadjusted exploratory comparisons; they do not establish broad improvement or
+pass the project's benchmark. The ranges-only effect remains inconclusive at
+every size and pool.
+
+The estimator uses only public preflop actions and deterministic engine-derived
+hand strength ordering. It samples all still-active opponents jointly, including
+all-ins, and enforces card blockers. It does not yet infer from postflop actions,
+learn named-player tendencies, model folded-card distributions or simulate
+future betting. See `research/RANGE_EXPERIMENT.md` for the exact method and limits.
+
+Weighted samples were usually usable but occasionally concentrated: mean
+effective sample sizes were 101.09/128 in the scripted pool and 119.64/128 in the
+card-aware pool. Respectively 62/7,514 and 18/8,187 range decisions fell below 32;
+the minimum was 1.23. This is a sampling limitation to investigate before relying
+on individual range estimates, especially in large pots.
+
+The run consumed **383.5 simulation seconds**, **118.38 MiB peak RSS**, with
+maximum per-session p95 policy latency **3.82 ms** (across all acting policies,
+excluding host adapter work). Exact replay verified an additional 108 completed
+nine-seat combined-policy hands. Completed-session resume reproduced every
+recorded outcome, comparison and manifest; the resumed process's RSS is a
+separate invocation measurement. The tracked report preserves the original
+complete run's resource measurement.
+
+All package source hashes match the completed experiment. Frozen original and
+equity sampler hashes remain unchanged. Results and paired trial values are in
+`research/results/2026-09-16-range-screen-001.json`. Cumulative strategy-evaluation
+hands are now **62,388**, excluding mechanics tests and toy CFR. No policy was
+promoted and no held-out confirmation attempt was allocated.
+
+## Broader trained-policy research
+
+Source review added another Deep CFR implementation at pinned commit
+`e75405928bdcf8f80dc35b463f706b8ef45d1b3b`. Its hold'em encoder is limited to six
+seats, its documented models are not included in a fresh checkout, and its
+reported initial hold'em training has no demonstrated strength. It remains a
+training/component candidate, not an installed opponent. Dependencies and model
+execution were not attempted. See `research/TRAINED_CANDIDATES_REVIEW.md` for
+primary sources, evidence, PokerRL/Deep CFR and RLCard compatibility findings.
+
 ## Next bounded work
 
-1. Move beyond sample-count and margin tuning: test position/preflop decisions
-   and equity conditioned on opponents' observed betting. Preserve the frozen
-   baseline and both development pools. Shared uniform-range assumptions remain
-   a plausible weakness to investigate, not a demonstrated cause of losses.
-2. Prototype bounded action search or a trained candidate. Search must sample
-   hidden cards from public information and preserve actual multiway pots;
-   training must explicitly address full-game abstraction and model artifacts.
-3. Improve named-player modeling beyond one pooled fold rate. Compare exactly
-   the same policy with no model, a known scripted model and a learned model;
-   include sparse, deliberately wrong and changing histories.
-4. Build a native candidate bridge and reproducible local checkpoint/config.
-   NoRegrets supports only 2–6 seats upstream; dickreuter now has tested equity
-   component patches but still needs local configuration and a policy bridge.
-   Continue broader training and search research through the same backlog.
+1. Prototype explicit river action values before extending search to turn/flop:
+   folding, calling and a small legal raise menu; model opponents' responses and
+   settle actual multiway/side pots with the existing engine. Validate known
+   response fixtures independently, then compare against the same policy with
+   search disabled. Keep candidate public inputs separate from privileged logs.
+2. Calibrate action likelihoods and inspect low-effective-sample decisions.
+   Distinguish card-independent aggression from strength-dependent action using
+   named public histories. Compare off/oracle/learned versions of the same
+   candidate and sparse, wrong and changing models. Do not simply increase
+   confidence in the current hand-authored range assumptions.
+3. Replicate promising position effects on fresh development sessions with more
+   independent trials and a prespecified precision target. Preserve regressions
+   against the scripted pool; do not use its poor cells to retune confirmation.
+4. Build one native policy/component bridge or a bounded hold'em training pilot
+   with real saved artifacts and independent seeds. NoRegrets is limited to
+   2–6 seats upstream; dickreuter needs local strategy config and a policy bridge;
+   the newly reviewed Deep CFR project needs artifacts and six-seat compatibility
+   work. Do not disguise missing models with randomly initialized networks.
 5. Freeze a promising candidate and execute the existing 6–9-seat confirmation
-   protocol. No confirmation attempt has yet been allocated. On passage,
-   preserve the result and start the next prespecified harder benchmark.
+   protocol. On passage, preserve the result and specify the next harder stage
+   before looking at its results.
 
 ## Continuing task
 
