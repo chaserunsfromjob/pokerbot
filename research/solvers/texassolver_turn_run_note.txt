@@ -1,0 +1,18 @@
+Run note for texassolver_turn_run.log (TexasSolver v0.2.0 macOS, command file
+texassolver_turn_full_ranges.txt copied in beside console_solver as
+turn_input.txt).
+
+The solver prints its own timer but not the clock time of the whole process,
+and it prints nothing about how busy the machine was, so both are recorded
+here instead:
+
+  wall clock, whole process:  5.45 s  (tree build, solve, 360 KB JSON dump)
+  solver's own timer:         0.561 s (last line of the log, at iteration 51)
+  exploitability reached:     0.7382398 % of pot at iteration 51
+  1-minute load average at start: 3.40
+
+Taken with the run that produced texassolver_turn_run.log, while applying
+review round 2. The wall figure is `time` on the `./console_solver -i
+turn_input.txt` invocation; the load figure is the first of the three numbers
+from `uptime` immediately before it. An earlier run of the same command on a
+busier machine took about 8 s of wall clock, and that load was not recorded.

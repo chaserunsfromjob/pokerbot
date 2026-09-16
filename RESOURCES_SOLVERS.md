@@ -45,13 +45,16 @@ Four findings drive the recommendation:
    of players on macOS: **MonkerSolver** (EUR 499 one-time, native macOS,
    "any street with any number of players" per its own vendor page) and
    **Holdem Solver** (free beta, macOS Apple Silicon, 2 to 9 players). Both
-   are driven by hand, take RAM and hours on multiway postflop trees, and
-   neither documents a way for one program to ask another for an answer — an
-   **application programming interface**, or **API** — nor any scripting
-   interface; MonkerSolver's own
-   community drives it with keyboard macros, which is the clearest possible
-   sign there is no programmatic route in. The rest are narrower: 3-way
-   postflop in the browser (GTO Wizard, price UNVERIFIED, no API) or on
+   are driven by hand, and neither vendor page documents a way for one program
+   to ask another for an answer — an **application programming interface**, or
+   **API** — nor any scripting interface. That is what keeps them off the
+   decision path; the timing is a separate question, and for Holdem Solver it
+   is **UNVERIFIED**: what a multiway postflop tree costs in memory and hours
+   there has no vendor figure behind it and was not measured here. The
+   MonkerSolver vendor page does say that tree size scales with available RAM
+   and solving time with CPU speed. The rest are narrower: 3-way
+   postflop in the browser (GTO Wizard, $229 to $359 a month for the tier that
+   has it, from the vendor's own patch notes; no API) or on
    Windows (Simple 3-way), and preflop-only multiway (Simple Preflop Holdem,
    HRC, GTOpen's Preflop Lab, GTO Wizard's multiway preflop).
 2. **Heads-up postflop solving in under a second on this laptop is solved
@@ -66,7 +69,7 @@ Four findings drive the recommendation:
    records that load beside every figure re-taken this round, because other
    work shares this laptop. A full three-street flop tree
    with two bet sizes per street is a different animal: stopped at seven
-   minutes, TexasSolver had completed four iterations of it and was still
+   minutes, TexasSolver had printed no iteration past 3 and was still
    222% of the pot away from the accuracy asked for. So decision-time use
    means small trees (one bet size per street, or turn and river only), never
    full flop solves.
@@ -192,17 +195,32 @@ reference implementation, not a product).
     file and runner published at
     `research/solvers/texassolver_flop_full_ranges.txt` and
     `research/solvers/run_texassolver_flop.py`, so this number can be checked
-    rather than believed. 10 threads, four runs on this machine (three mine,
-    one an independent re-run during review), each started at a 1-minute load
-    average below 4.0 on a laptop other work also shares:
-    **421 to 423 s wall, 462 to 700 s CPU (1.1 to 1.7 cores busy on average),
-    3.4 to 5.8 GiB peak memory, iterations 0 to 3 completed, exploitability
-    still 222% of pot when it was stopped** — against the 1% the command file
-    asks for. The most recent run, the one the page-fault figures below come
-    from, was 422.5 s wall, 462.2 s CPU, 5.41 GiB peak, started at load 3.75.
-    Read the spread, not any single run: the wall time is fixed by the
-    deadline, and everything else moves by a factor of nearly two with what
-    else the machine is doing. It is
+    rather than believed. 10 threads, **three runs to the 420-second
+    deadline** on this laptop, which other work also shares. The runner's
+    stdout for each is published beside the command file, one file per run, so
+    the three can be told apart:
+
+    | Run | Wall | CPU | Cores busy | Peak memory | Iterations printed | 1-minute load at the start | Runner stdout |
+    | --- | --- | --- | --- | --- | --- | --- | --- |
+    | 1 | 423.1 s | 699.8 s | 1.65 | 5.79 GiB | 0, 2, 3 | not recorded | `texassolver_flop_run1_423s.log` |
+    | 2 | 421.4 s | 493.4 s | 1.17 | 4.95 GiB | 0, 2 | 3.29 | `texassolver_flop_run2_421s.log` |
+    | 3 | 422.5 s | 462.2 s | 1.09 | 5.41 GiB | 0, 2, 3 | 3.75 | `texassolver_flop_run3_422s_instrumented.log` |
+
+    All three printed the same two exploitability figures: **226.39% of pot at
+    iteration 0 and 221.72% at iteration 2** — against the 1% the command file
+    asks for. Run 3 is the instrumented one the page-fault figures below come
+    from. Read the spread, not any single run: the wall time is fixed by the
+    deadline, and the CPU time moves by a factor of nearly two with what else
+    the machine is doing.
+
+    Two shorter probes of the same command file were also run, stopped well
+    before the 420-second deadline, and they are **not** part of the three
+    above: 181.5 s wall / 302.4 s CPU / 1.67 cores / 3.44 GiB, and 151.6 s
+    wall / 343.5 s CPU / 2.27 cores / 4.43 GiB. Both printed iterations 0 and
+    2 but only the iteration-0 exploitability, 226.39%, before they were
+    stopped; neither recorded its start load. They are why the memory floor
+    quoted in an earlier draft was 3.4 GiB — that figure came from the 181 s
+    probe, while the three full runs used 4.95 to 5.79 GiB. It is
     the tree shape study tools use; it is not a decision-time solve on a
     laptop, and the gap is more than two orders of magnitude (222% against a
     1% target is a factor of 222), not a near miss.
@@ -607,10 +625,15 @@ second above.
   Price, platform and the multiway claim were re-read off the vendor page
   itself today: "€499", "Solve Omaha and Hold'em from any street with any
   number of players", "Windows 64-bit or Mac OS X with atleast 8 GB RAM".
-- Platform: native Windows 64-bit or macOS, 8 GB RAM minimum. No scripting
-  or API documented; the community drives it with AutoHotkey macros, which
-  is a sign there is no programmatic interface. Solutions export as .mkr and
-  .txt range files.
+- Platform: native Windows 64-bit or macOS, 8 GB RAM minimum. The vendor page
+  was re-read today: it documents a tree builder, a solution viewer, a GUI,
+  abstraction and the export formats, and **no API and no scripting
+  interface** — there is nothing on it that offers a way for one program to
+  drive the solver. An earlier draft of this file rested that conclusion on a
+  claim that the product's community drives it with AutoHotkey macros; no
+  source or date was ever cited for it, the vendor page says nothing about
+  AutoHotkey, and the sentence is dropped. The conclusion rests on the vendor
+  page alone. Solutions export as .mkr and .txt range files.
 - Multiway: yes, preflop **and postflop, on any street**, which is what the
   vendor page claims in as many words. It is emphatically **not** a
   preflop-only tool, and an earlier draft of this file said so in its summary;
@@ -646,21 +669,26 @@ second above.
   - **Beyond 3-way: roadmap, not shipped.** Same Feb 2026 page, under "Ultra
     Roadmap ... We've got major upgrades in development": "Multiway Postflop
     Expansion – Scaling postflop multiway solving up to 9 players."
-- Price: **UNVERIFIED — quoted from the press, not from the vendor.** The
-  figures previously carried here (Starter $49/mo, Premium $99/mo, Elite
-  $169/mo, Ultra $279/mo, $229/mo annual, $359/$289 after early-bird) come
-  from a PokerNews article dated 31 March 2026, not from GTO Wizard. The
-  vendor's own pricing page was fetched again today and returns a 518-byte
-  page that builds its prices in the browser, so no price could be read from
-  it. Two figures did turn up on the vendor's side while the capability claims
-  above were being checked, on the Feb 2026 patch note rather than the pricing
-  page: for the Ultra tier, "Annual Plan: $229/month" and "Monthly Plan:
-  $279/month", described there as a "limited-time Early Bird discount". Those
-  two agree with the press article; the rest of its numbers are still
-  unconfirmed. Treat them as a press report that may be
-  stale, and confirm on the site before any money is spent. What is safe to
-  say without the numbers: the multiway and custom-solve features sit in the
-  top tier and this is a monthly subscription, not a purchase.
+- Price: **every Ultra figure is vendor-confirmed; the other three tiers are
+  not.** The vendor's own pricing page was fetched again today and returns a
+  518-byte page that builds its prices in the browser, so nothing could be
+  read from it. The patch notes carry the Ultra prices in plain text instead,
+  and all four were read off them today:
+  - The **February 03, 2026** patch note, under "Pricing", gives the
+    introductory rate — it calls it an "Early Bird discount" — as "Annual
+    Plan: $229/month" and "Monthly Plan: $279/month".
+  - The same page gives the rate after it: "After Early Bird, standard Ultra
+    pricing will be: Annual: $289/month Monthly: $359/month".
+  - The **September 15, 2026** patch note says when the introductory rate
+    stops: "Early Bird pricing ends October 15, 2026 at 1:00 PM CEST."
+  So $229, $279, $289 and $359 a month for Ultra, and the date the first two
+  become the last two, all come from the vendor. What does **not** come from
+  the vendor is the rest of the ladder: Starter $49/mo, Premium $99/mo and
+  Elite $169/mo are still **UNVERIFIED**, taken from a PokerNews article dated
+  31 March 2026 whose Ultra figures the patch notes now confirm. Treat those
+  three as a press report that may be stale, and confirm on the site before
+  any money is spent. Either way this is a monthly subscription, not a
+  purchase, and the multiway and custom-solve features sit in the top tier.
 - Opponent modelling: **Profiles** and **Nodelocking 2.0**, both quoted from
   the vendor. Patch note "Custom Profiles Go Live", **November 12, 2025**:
   "you can now model any player type you want. You can create your own from
@@ -727,8 +755,19 @@ second above.
   multiway, running on your own hardware with results stored locally.
 - Price: **free during open beta (v0.79), pricing TBA**.
 - Platform: **Windows x64 and macOS Apple Silicon**.
-- Speed, **quoted**: a 63-entry PKO multiway spot converged after 20 million
-  iterations in 9 min 05 s (hardware unstated).
+- Speed, **quoted from the vendor's own front page**, re-read today, with the
+  caption it carries there. Under a strategy grid the page prints the run's
+  own readout, "20,050,063 iterations · 9m 05s  Δ 0.0010 · precision low", and
+  captions it "Real solver output": "LJ's opening strategy in a 63-entry PKO,
+  53 players left. Full-field ICM with bounties and antes, running locally: 20
+  million iterations in and still converging. AKs currently raises 90.8% and
+  jams 9.2%." Read what that says: after 9 min 05 s the spot had **not**
+  converged, and the vendor says so. An earlier draft of this file reported
+  the same figures as a spot that "converged after 20 million iterations in
+  9 min 05 s"; that reversed the vendor's own words and is corrected here.
+  Hardware unstated.
+- Time and memory on a multiway postflop tree: **UNVERIFIED**. The vendor
+  publishes no such figure, and nothing was measured here.
 - API/scripting: none mentioned. Licence: unstated. Vendor and origin:
   UNVERIFIED beyond the site itself.
 - Ratings: (a) 3 — (b) 3 — (c) 0 (nothing documented) — (d) 2 (runs on this
@@ -813,7 +852,7 @@ and cheap. Sources checked today:
 | MonkerGuy https://www.monkerguy.com/ | 6-max and 9-max NLHE 20 to 200bb, 8-max MTT packs; MonkerSolver output | .mkr, MonkerViewer, **.txt ranges (Pio/PPT compatible)** | $69 (6-max 100bb) to $499 |
 | GTO Sims https://gtosims.com/ | Spin&Go, 6-max, MTT from Simple Preflop Holdem | Simple Preflop files, Pio charts, PNG | per solution, price not shown |
 | TexasSolver release bundle | 6-max 100bb ranges (BTN/CO/MP/SB/UTG opens, 3-bet, call trees) as plain text | text, already on this Mac | free |
-| GTO Wizard | 9-max multiway preflop, custom antes/straddles | copy as UPI text by hand | top tier, monthly; price UNVERIFIED (see entry 17) |
+| GTO Wizard | 9-max multiway preflop, custom antes/straddles | copy as UPI text by hand | top tier, monthly; $229 to $359 a month, vendor-confirmed (see entry 17) |
 
 A gumroad pack of 576 tournament ranges in .txt (mkosmis) came up in search
 but the page returned 404: UNVERIFIED.
@@ -841,9 +880,10 @@ was run here; everything below it was read about.
 2. **phevaluator** — plain `pip install phevaluator`, 0.9 to 2.6 M 7-card
    hands/s from Python, no build step and no cap on the number of players.
    Promoted above OMPEval because it is the only thing on this list that is
-   working five seconds after the install finishes. Where a runtime path needs
-   an evaluator, this is the one to use; `treys` is not a competitor for that
-   slot, because `CLAUDE.md:17` already keeps it to tests only.
+   working five seconds after the install finishes. Whether anything ranks
+   hands at decision time, and if so what, is not this file's to say; see the
+   recommendation. `treys` is not the comparison for that question in any
+   case, because `CLAUDE.md:17` already keeps it to tests only.
 3. **OMPEval** — 160 to 312 M hands/s of multiway Monte-Carlo equity, which is
    free speed compared with anything in Python, but **hard-capped at six
    players** (`omp/Constants.h:6`) and it needs a C++ patch and a wrapper you
@@ -870,13 +910,17 @@ was run here; everything below it was read about.
 8. **Holdem Solver** (free beta, macOS, 2 to 9 players) — the other Mac tool
    that solves multiway postflop, and free while the beta lasts, but the
    vendor, licence and terms are all UNVERIFIED and there is no scripting.
-   Offline study of specific multiway spots, not decision time.
+   That last point is what keeps it off the decision path; how long its
+   multiway trees take is UNVERIFIED too, and the one run the vendor shows was
+   still converging after 9 min 05 s. Offline study of specific multiway
+   spots, not decision time.
 9. **Pokerai API** — instant 6-max GTO answers over HTTP with a free tier;
    good for testing the bot's judgment against a reference, barred from live
    real-money use by its terms.
 10. **GTO Wizard** top tier — best opponent modelling anywhere (Profiles,
-    Nodelocking 2.0) and 9-player preflop, but a monthly subscription (price
-    UNVERIFIED, see entry 17) with no API; a study tool only.
+    Nodelocking 2.0) and 9-player preflop, but a monthly subscription
+    ($229/month annual or $279/month monthly until 15 October 2026, $289 and
+    $359 after it; see entry 17) with no API; a study tool only.
 11. **HRC Pro** — tournament preflop/ICM with JavaScript tree scripting, if
     the bot ever plays tournaments.
 
@@ -904,18 +948,16 @@ and the open parts left open.
 
 **Settled by measurement, and safe to adopt now.**
 
-- **Hand ranking and equity: phevaluator now, OMPEval when the loop is hot.**
-  `CLAUDE.md:17` already keeps `treys` off the bot's decision path — it is the
-  ground-truth oracle for tests and nothing else — so there is no `treys` to
-  displace at runtime and this file is not proposing to displace one. The
-  measured statement is narrower: **where a runtime path needs an evaluator,
-  use phevaluator**, because it is 5 to 15 times faster than `treys` from the
-  same Python and installs with one command. Note what that still leaves open:
-  *nominating* the runtime evaluator is the same class of decision as the rule
-  set below — it is a choice about what the bot calls when it has to act, and
-  it belongs to the reconciliation rather than to a tool survey. OMPEval is the
-  faster option once a Monte-Carlo loop is hot, with its 6-player cap recorded:
-  at 7, 8 or 9 seats it cannot be handed every live range at once.
+- **Hand ranking and equity: what the stopwatch says.** Three things were
+  timed on this machine, and this is all of it. `phevaluator` ranks 7-card
+  hands **5 to 15 times faster than `treys`** from the same Python, and
+  installs with one command. OMPEval is faster again once a Monte-Carlo loop
+  is hot, and carries a **hard cap of 6 players** (`omp/Constants.h:6`): at 7,
+  8 or 9 seats it cannot be handed every live range at once. `CLAUDE.md:17`
+  already keeps `treys` off the bot's decision path — it is the ground-truth
+  oracle for tests and nothing else — so nothing at runtime is being displaced
+  by any of that. These are speeds, not a nomination; which evaluator the bot
+  calls when it has to act is in the open list below.
 - **Preflop: buy or transcribe ranges** for 2 to 9 seats rather than solving
   preflop at all. This is the cheapest well-covered part of the problem.
 
@@ -948,6 +990,17 @@ and the open parts left open.
     input; **it is withdrawn.** Who produces the opponent range, and whether
     writing that code needs a carve-out, goes to the same reconciliation as
     the rule set below.
+- **Which evaluator the bot calls at decision time.** Naming one is the same
+  class of decision as naming the heads-up engine above: it is a choice about
+  what the bot calls when it has to act, and no project file records such a
+  choice today. An earlier draft of this file put "where a runtime path needs
+  an evaluator, use phevaluator" in the settled list and repeated it in the
+  shortlist. **That is a nomination, not a measurement, and this file had no
+  authority to make it.** The measurement is in the settled list above and
+  stands: phevaluator is 5 to 15 times faster than `treys` from Python, and
+  OMPEval is faster than either below 7 seats. What that does not say is
+  whether anything ranks hands on the decision path at all, or which thing
+  does it. That is for the reconciliation.
 - **What plays multiway postflop.** The obvious fit with the tools above is an
   equity-driven rule set biased by the opponent model. Say plainly what that
   is: **code we would write that picks the action**, with the opponent model
@@ -1002,7 +1055,7 @@ the honest figure.
 | --- | --- | --- | --- |
 | TexasSolver 0.2.0 | turn+river, 93 vs 95 hand classes (606 combinations each), one 66% bet, 60% raise, all-in | 0.74% exploitability, iter 51 | 0.56 to 0.71 s solve, 5.5 to 8 s wall (load 3.40 on the fresh run) |
 | TexasSolver 0.2.0 | bundled 3-street sample, 2 vs 2 hand classes | 0.44%, iter 71 | 10.5 s solve, 16.4 s wall |
-| TexasSolver 0.2.0 | flop+turn+river, same full ranges, 33/75% bets, 10 threads | iterations 0-3 only; 222% of pot, still falling | stopped at 421 to 423 s wall / 462 to 700 s CPU / 3.4 to 5.8 GiB over four runs (load 3.29 to 3.96) |
+| TexasSolver 0.2.0 | flop+turn+river, same full ranges, 33/75% bets, 10 threads | iterations 0, 2 and 3 printed; 226.39% of pot at iteration 0 and 221.72% at iteration 2 on all three runs | stopped at 421.4 / 422.5 / 423.1 s wall, 493.4 / 462.2 / 699.8 s CPU, 4.95 / 5.41 / 5.79 GiB over three runs (loads 3.29, 3.75, and not recorded on the third) |
 | postflop-solver | turn+river, ~40% vs ~40% ranges, 60%/geo/all-in, 2.5x raises | 0.46% of pot (0.91 chips of 200), iter 100 | 0.19 to 0.23 s wall, 1.53 to 1.59 s CPU over five runs (load 3.40) |
 | GTOpen solve-cli | `bench_spot.json` flop, 3 streets, 1.35M nodes, CPU-only | 1.233% of pot, iter 100 | 76.0 and 79.3 s wall, 1.4 GB (load 3.96 and 3.58) |
 | GTOpen | `cargo build --release -p server`, clean target dir | binary | 1 min 53 s to 3 min 20 s |
@@ -1016,15 +1069,33 @@ the honest figure.
 on hardest. Command file `research/solvers/texassolver_flop_full_ranges.txt`,
 runner `research/solvers/run_texassolver_flop.py`, `set_thread_num 10`,
 `set_accuracy 1.0` (that is, stop at 1% of pot), stopped by the runner at
-420 s. Reached, across four runs started at 1-minute loads of 3.29 to 3.96:
-**421 to 423 s wall, 462 to 700 s CPU — 1.1 to 1.7 cores busy out of 10 —
-3.4 to 5.8 GiB peak memory, four iterations (0 to 3), exploitability 226.4% of
-pot at iteration 0 and 221.7% at iteration 2 on every run.** A solve that
+420 s. Three runs went to that deadline, and each one's stdout is published
+beside the command file:
+
+| Run | Wall | CPU | Cores busy of 10 | Peak memory | Iterations printed | 1-minute load at the start | Runner stdout |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| 1 | 423.1 s | 699.8 s | 1.65 | 5.79 GiB | 0, 2, 3 | not recorded | `texassolver_flop_run1_423s.log` |
+| 2 | 421.4 s | 493.4 s | 1.17 | 4.95 GiB | 0, 2 | 3.29 | `texassolver_flop_run2_421s.log` |
+| 3 | 422.5 s | 462.2 s | 1.09 | 5.41 GiB | 0, 2, 3 | 3.75 | `texassolver_flop_run3_422s_instrumented.log` |
+
+All three printed **exploitability 226.39% of pot at iteration 0 and 221.72%
+at iteration 2**, and none printed anything past iteration 3. A solve that
 needs 1% and is at 222% after seven minutes is not slow, it is not started.
+
+Two shorter probes of the same command file are recorded separately and are
+not part of that population: 181.5 s wall / 302.4 s CPU / 1.67 cores /
+3.44 GiB, and 151.6 s wall / 343.5 s CPU / 2.27 cores / 4.43 GiB. Each printed
+iterations 0 and 2 and the iteration-0 exploitability of 226.39% before being
+stopped; neither recorded a start load, so read them as looser still. The
+3.4 GiB memory floor an earlier draft of this file quoted across "four runs"
+is the 181 s probe's figure, not a full run's; the three full runs used 4.95
+to 5.79 GiB. That draft also described the population as three runs of mine
+and one independent re-run during review; the run outputs do not record who
+started them, so no attribution is claimed here.
 
 Why only one or two cores are busy is **not** answered here, and an earlier
 draft of this file answered it anyway, with "the memory ceiling, not idle
-threads". The last of the four runs was instrumented to check that: over
+threads". Run 3 of the three was instrumented to check that: over
 422.5 s the solver process took **1,653 major page faults** (the kind served
 from disk), about four a second. It is not stalling on its own pages coming
 back off disk, so that explanation is withdrawn rather than restated. The
@@ -1052,8 +1123,9 @@ river trees are under a second.
 # evaluators (clean venv, Python 3.13.15)
 pip install phevaluator                  # plain install, 0.6.0 arm64 wheel, no flags
 pip install treys                        # eval7 and pyrust-poker failed to build
-python bench_treys.py                    # 165,275 hands/s
-python bench_phe.py                      # 2,550,203 hands/s idle, 0.89-1.44 M/s under
+# Both benchmark scripts are published under research/solvers/.
+python research/solvers/bench_treys.py   # 165,275 hands/s
+python research/solvers/bench_phe.py     # 2,550,203 hands/s idle, 0.89-1.44 M/s under
                                          # load (ints); 800,485 (strings)
 
 # OMPEval (clang 16, needs constexpr patch in omp/Random.h)
@@ -1070,10 +1142,25 @@ make CXXFLAGS="-O3 -std=c++17 -Wall -pthread"
 cp research/solvers/texassolver_turn_full_ranges.txt <release-dir>/turn_input.txt
 ./console_solver -i turn_input.txt   # 5.45 s wall at load 3.40 (earlier: 8 s);
     # 0.74% of pot at iteration 51, 0.561 s solver time.  Raw stdout of this
-    # exact run: research/solvers/texassolver_turn_run.log
+    # exact run: research/solvers/texassolver_turn_run.log; the wall time and
+    # the load, which the solver does not print, are recorded beside it in
+    # research/solvers/texassolver_turn_run_note.txt
 python3 research/solvers/run_texassolver_flop.py <release-dir> 420
-    # 421-423 s wall, 462-700 s CPU, 3.4-5.8 GiB, iterations 0-3, 222% of pot,
-    # over four runs each started at a 1-minute load average below 4.0
+    # Three runs to the deadline; the runner's stdout for each is published,
+    # one file per run:
+    #   research/solvers/texassolver_flop_run1_423s.log
+    #     423.1 s wall, 699.8 s CPU, 1.65 cores, 5.79 GiB, iters 0/2/3, start
+    #     load not recorded
+    #   research/solvers/texassolver_flop_run2_421s.log
+    #     421.4 s wall, 493.4 s CPU, 1.17 cores, 4.95 GiB, iters 0/2, load 3.29
+    #   research/solvers/texassolver_flop_run3_422s_instrumented.log
+    #     422.5 s wall, 462.2 s CPU, 1.09 cores, 5.41 GiB, iters 0/2/3, load
+    #     3.75; this is the run carrying the page-fault and swap sampling
+    # All three: 226.39% of pot at iteration 0, 221.72% at iteration 2.
+    # Two shorter probes of the same command file, not part of that three:
+    # 181.5 s / 302.4 s CPU / 1.67 cores / 3.44 GiB and 151.6 s / 343.5 s CPU /
+    # 2.27 cores / 4.43 GiB, each printing 226.39% at iteration 0 only, start
+    # loads not recorded
 
 # Rust toolchain: NOT installed on this Mac.  No cargo, rustc, rustup or
 # Homebrew is on the command path.  Both Rust projects below were built with a
