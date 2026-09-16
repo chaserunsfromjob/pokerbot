@@ -22,7 +22,14 @@ says so. A load average is roughly "how many programs were queued for a
 processor core"; this machine has 10 cores, and above about 4 the timings stop
 meaning anything.
 
-Usage:  python paired_session.py [repeats] [seconds_per_speed_row]
+Every banner also carries the time of day, and the end banner says if the
+machine went to sleep during the run, which silently wrecks a timing (the
+programs' own clock stops during a sleep, so they never notice). Run the
+session under `caffeinate -i` so that a laptop lid or an idle timer cannot put
+the machine to sleep part way through; if a banner still reports a sleep, the
+figures under it are discarded.
+
+Usage:  caffeinate -i python paired_session.py [repeats] [seconds_per_speed_row]
 
 Research artefact. Not the bot, not on the bot's import path.
 """
@@ -64,19 +71,35 @@ def wait_for_quiet():
     return load
 
 
+def clock():
+    """The wall-clock time of day, for the banners."""
+    return time.strftime("%H:%M:%S")
+
+
 def run(args, label):
-    """Run one measuring program, with the load average recorded beside it."""
+    """Run one measuring program, with the load average recorded beside it.
+
+    The banners also carry the time of day, and the end banner says if the
+    machine slept during the run: the wall clock keeps going through a sleep
+    but the clock the measuring programs time themselves with does not, so a
+    run the machine slept through looks fine to the program and is wrong. Any
+    figure under a banner that reports a sleep is to be discarded.
+    """
     load = wait_for_quiet()
-    print(f"--- {label} [1-minute load average at start: {load:.2f}] ---",
-          flush=True)
+    print(f"--- {label} [1-minute load average at start: {load:.2f}, "
+          f"{clock()}] ---", flush=True)
+    wall0, mono0 = time.time(), time.monotonic()
     out = subprocess.run([PYTHON] + args, cwd=HERE, capture_output=True,
                          text=True)
+    slept = (time.time() - wall0) - (time.monotonic() - mono0)
     sys.stdout.write(out.stdout)
     if out.returncode != 0:
         sys.stdout.write(out.stderr)
         raise SystemExit(f"{label} failed with exit code {out.returncode}")
-    print(f"--- end {label} [load at end: {load_average():.2f}] ---",
-          flush=True)
+    note = (f", MACHINE SLEPT about {slept:.0f}s during this run - discard it"
+            if slept > 5 else "")
+    print(f"--- end {label} [load at end: {load_average():.2f}, "
+          f"{clock()}{note}] ---", flush=True)
     return out.stdout, load
 
 

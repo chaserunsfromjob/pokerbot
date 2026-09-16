@@ -1,3 +1,4 @@
-# 1-minute load average at start: 2.83
-# uptime: 22:39  up 43 days,  4:55, 2 users, load averages: 2.83 5.64 6.02
-# command: ../../.venv-engines/bin/python bench_play.py headtohead 900
+# 1-minute load average at start: 2.52
+# uptime: 23:01  up 43 days,  5:17, 2 users, load averages: 2.52 3.14 4.23
+# wall clock at start: 23:01:04
+# command: caffeinate -i ../../.venv-engines/bin/python bench_play.py headtohead 900   (caffeinate keeps the machine from sleeping during the run)

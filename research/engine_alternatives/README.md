@@ -52,16 +52,24 @@ counts, the engine speeds and the redraw rates, and it produces them in an order
 that makes them comparable with each other:
 
     cd research/engine_alternatives
-    ../../.venv-engines/bin/python paired_session.py 6 10   # -> raw/paired_session.txt
+    caffeinate -i ../../.venv-engines/bin/python paired_session.py 6 10   # -> raw/paired_session.txt
+
+`caffeinate -i` is a program that ships with macOS and does one thing: it stops
+the machine going to sleep while the command after it is running. Without it a
+closed lid or an idle timer can put the laptop to sleep part way through a
+timing, and the timing programs cannot tell - their clock stops with the
+machine. The session's end banners now say if that happened anyway, and any
+figure under such a banner is discarded.
 
 The rest are run on their own, because nothing else is compared against them.
-Each was still run only once the load average was under 4, and the `#` lines
-at the top and bottom of its raw file record the load and the exact command:
+Each was still run only once the load average was under 4, under `caffeinate`
+for the long one, and the `#` lines at the top and bottom of its raw file
+record the load, the wall clock and the exact command:
 
     ../../.venv-engines/bin/python bench_cfr.py 45          # -> raw/cfr.txt
     ../../.venv-engines/bin/python bench_requirements.py    # -> raw/requirements.txt
     ../../.venv-engines/bin/python bench_play.py variance 100000   # -> raw/variance.txt
-    ../../.venv-engines/bin/python bench_play.py headtohead 900    # -> raw/headtohead.txt
+    caffeinate -i ../../.venv-engines/bin/python bench_play.py headtohead 900   # -> raw/headtohead.txt
 
 `raw/pokerrl_install.txt` is the one file that is not a measurement: it is the
 output of `pip install PokerRL` into a throwaway environment, kept because the
