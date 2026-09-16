@@ -60,9 +60,10 @@ compared fairly, and a stated arithmetic rule for deciding whether a change
 helped — replacing "the win rate looks higher now". It also does the sum that
 turns all of that into hours on the laptop, because the version of this harness
 that tests everything against everything would take about ten days per change,
-and the version that fits in a night is a deliberately smaller one. **Roughly
-113,000 hands, about four hours, is the shape of a run that decides whether a
-change is kept.**
+and the version that fits in a night is a deliberately smaller one. **About
+141,000 hands, a little under five hours, is the shape of a run that decides
+whether a change is kept** (141,280 hands and 4.9 hours exactly,
+[§3.6](#36-the-run-budget-turning-hands-into-hours)).
 
 **Part 3** covers the operator's firm requirement that the bot work at every
 table size from two to nine players and with real no-limit bet sizes, and what
@@ -722,7 +723,7 @@ because a later coding task should implement it literally.
    band does, and the report prints whatever split was in force.
 
    **Every seat count is still evaluated and every seat count still gates a
-   release — on a four-night cadence.** The nightly acceptance run always plays
+   release.** The nightly acceptance run always plays
    seats **6, 8, 9 and 2**: the operator's two priority bands, plus heads-up,
    which is not a light seat count but a structurally different game — with two
    players a no-lose strategy exists and with three or more it does not
@@ -730,9 +731,35 @@ because a later coding task should implement it literally.
    **one** of **{3, 4, 5, 7}**, rotating in the fixed cycle 3 → 4 → 5 → 7.
    **Nothing leaves on a rotation night**: the four fixed seats always run and
    the rotating seat is the fifth, which is why the nightly grid is five seat
-   counts and not four. **A release requires every seat count from 2 to 9 to
-   have passed within the last four nightly runs** — a rolling four-night
-   window. So a collapse at three-handed still blocks the change, on the night
+   counts and not four.
+
+   **The release gate. This is the whole of it, and it appears in these same
+   words everywhere else in this document:**
+
+   > **A release requires every seat count from 2 to 9 to have passed within the
+   > last four nightly acceptance runs. The window counts runs, not bot
+   > versions: an earlier run's pass still counts when the bot SHA has changed
+   > since, and the report prints the date and bot SHA of every last pass beside
+   > it. A seat count whose last pass falls outside that window prints as NOT
+   > GATED and blocks the release exactly as a failure would.**
+
+   **The cadence that sets is nightly, not four-nightly**: the four fixed seat
+   counts run every night and the rotating seat completes its 3 → 4 → 5 → 7
+   cycle every four nights, so an unbroken sequence of nightly acceptance runs
+   keeps all eight seat counts inside the window permanently, and a change that
+   passes tonight is released tonight. Four nights are needed only to refill the
+   window after a break in the cycle, or after a seat count fails on the night
+   it ran.
+
+   The pass a seat count carries from an earlier run was earned by a different
+   build of the bot, and that is a real weakness rather than a technicality: it
+   is written down as one of the ways this harness lies
+   ([§6](#6-how-this-harness-lies-to-you)), and the printed SHA is what makes it
+   visible. Requiring a matching SHA instead would mean four consecutive nights
+   before *any* release, which is days rather than hours and is not what this
+   document asks for.
+
+   So a collapse at three-handed still blocks the change, on the night
    three-handed runs, even though it carries 10% of that night's headline; the
    window, not any single night, is what makes the gate cover all eight seat
    counts. The non-inferiority and per-table-size rules below apply
@@ -823,8 +850,10 @@ arena report  bot A=<sha> B=<sha>  engine=<sha>  seed=<n>  2026-XX-XX
 tier: nightly acceptance   cells: 20   budget: 10h   elapsed: 4h51m
 seats: 6 8 9 2 fixed + 3 rotating (cycle 3>4>5>7; night 1 of 4)
 weights: n6=0.50  n8=0.15 n9=0.15  n2=0.10 n3=0.10   (config, operator 2026-09-15)
-window: all 8 seat counts must have passed within the last 4 nightly runs; 5 have
-        (2,3,6,8,9); 4,5,7 last passed too long ago -> NOT GATED, RELEASE BLOCKED
+window: all 8 seat counts must have passed within the last 4 nightly runs; 7 have
+        (2,3,4,5,6,8,9, some against an earlier bot sha, which the table prints);
+        n=7 ran 1 run ago and FAILED, so its last pass is 5 runs ago, outside the
+        window -> NOT GATED, RELEASE BLOCKED
         (the per-seat window table, with last-pass date and bot sha, prints in full)
 primary  (weighted pool, paired, baseline-adjusted)  +34.2 mbb/hand  [ +11.8, +56.9 ]  ACCEPT
   powered to detect: 28.1 mbb/hand pooled, 100 mbb/hand per cell
@@ -954,8 +983,22 @@ the aspirational tier so that nobody re-derives it from scratch.
   3 → 4 → 5 → 7, one per night, in that fixed cycle. **Nothing is dropped to make
   room for the rotating seat**; it is an addition, which is what takes the grid
   from four seat counts to five. Over four consecutive nights all eight seat
-  counts have run, and a release needs all eight to have passed inside that
-  rolling window.
+  counts have run, and the release gate, in the words
+  [§3.5](#35-the-decision-rule-is-this-change-an-improvement) point 2 sets, is:
+
+  > **A release requires every seat count from 2 to 9 to have passed within the
+  > last four nightly acceptance runs. The window counts runs, not bot
+  > versions: an earlier run's pass still counts when the bot SHA has changed
+  > since, and the report prints the date and bot SHA of every last pass beside
+  > it. A seat count whose last pass falls outside that window prints as NOT
+  > GATED and blocks the release exactly as a failure would.**
+
+  **The cadence that sets is nightly, not four-nightly**: the four fixed seat
+  counts run every night and the rotating seat completes its 3 → 4 → 5 → 7 cycle
+  every four nights, so an unbroken sequence of nightly acceptance runs keeps
+  all eight seat counts inside the window permanently, and a change that passes
+  tonight is released tonight. Four nights are needed only to refill the window
+  after a break in the cycle, or after a seat count fails on the night it ran.
 - **Compositions: 4** — one mixed table plus three homogeneous personas drawn
   from the *evaluation* half of the set ([§3.2](#32-the-persona-set)), rotating
   across runs so every persona is seen over a handful of nights.
@@ -1008,11 +1051,17 @@ the same (z₀.₉₇₅ + z₀.₈₀)² = 7.8489 that
 [§2.5](#25-win-rate-with-honest-statistics) uses, Δ = √(2 × 1,500² × 7.8489 ÷
 44,851) = **28.1 mbb/hand**. **The headline is identical on all four nights**,
 which is the point of a fixed cycle: the release criterion does not move
-depending on which night a change lands on. *(For comparison, a four-seat night —
-6 = .50, 9 = .30, and two others at .10 — has Σwᵢ² = 0.36, n_eff = 39,244 and
-Δ = 30.0. The fifth seat spreads the weight further, which lowers Σwᵢ² from 0.36
-to 0.315, so the extra hour buys 1.9 mbb/hand of headline power as well as a
-wider night.)* *(Allocating hands in proportion to the weights
+depending on which night a change lands on. *(For comparison, take the rotating seat away and the four fixed seat counts
+2, 6, 8 and 9 are what is left. The banding of
+[§3.5](#35-the-decision-rule-is-this-change-an-improvement) point 2 then gives
+6 = .50, 8 = .15, 9 = .15 and 2 = .20 — the last band's whole 0.20 goes to the
+one other seat count present — so Σwᵢ² = 0.50² + 0.15² + 0.15² + 0.20² = 0.335,
+n_eff = 14,128 ÷ 0.335 = 42,173 per arm and Δ = 28.94, against Δ = 28.06 on the
+five-seat night, which is the 28.1 in the table above before rounding. The fifth
+seat splits that last band across two seat counts instead of one, which lowers
+Σwᵢ² from 0.335 to 0.315, so the extra hour buys **0.9 mbb/hand** of headline
+power as well as a wider night. The gain is small; the wider night, not the
+power, is the reason for the fifth seat.)* *(Allocating hands in proportion to the weights
 instead of equally would raise the effective size to the full 70,640 and the
 headline to Δ = 22.4, at the cost of the light seat counts' per-cell power. That is
 a config switch; the default is equal, because a per-cell regression screen that
@@ -1089,10 +1138,24 @@ eight seat counts, crossed with per-persona compositions and stack depths, is 24
 cells and about 9.8 days of laptop time, which the operator has ruled out. The
 affordable form of this rule is the one §3.6 settles on: **five seat counts every
 nightly acceptance run — 2, 6, 8 and 9 always, plus one of 3, 4, 5, 7 rotating in
-the fixed cycle 3 → 4 → 5 → 7** — with a release gated on every seat count from
-2 to 9 having passed **within the last four nightly runs**. No seat count goes
-unmeasured for longer than four nights, no seat count stops gating, and no single
-run is a one-table-size run. Read this section's rule through that budget, not
+the fixed cycle 3 → 4 → 5 → 7** — with the release gated as
+[§3.5](#35-the-decision-rule-is-this-change-an-improvement) point 2 sets it:
+
+> **A release requires every seat count from 2 to 9 to have passed within the
+> last four nightly acceptance runs. The window counts runs, not bot versions:
+> an earlier run's pass still counts when the bot SHA has changed since, and the
+> report prints the date and bot SHA of every last pass beside it. A seat count
+> whose last pass falls outside that window prints as NOT GATED and blocks the
+> release exactly as a failure would.**
+
+**The cadence that sets is nightly, not four-nightly**: the four fixed seat
+counts run every night and the rotating seat completes its 3 → 4 → 5 → 7 cycle
+every four nights, so an unbroken sequence of nightly acceptance runs keeps all
+eight seat counts inside the window permanently, and a change that passes
+tonight is released tonight. Four nights are needed only to refill the window
+after a break in the cycle, or after a seat count fails on the night it ran. No
+seat count goes unmeasured for longer than four nights, no seat count stops
+gating, and no single run is a one-table-size run. Read this section's rule through that budget, not
 around it.
 
 **Why this is not paranoia.** Poker changes shape with the number of players in
@@ -1362,22 +1425,36 @@ not have to rediscover them.
   evidence it stands on may be three nights old and describe a different bot.
   Mitigation, and it is a requirement on the report, not advice: **the report
   prints all eight seat counts every night, never only the five that ran**, and
-  gives each one the date and bot SHA of the run it last *passed* on. A seat
-  count whose last pass is older than four nightly runs, or is against a
-  different bot SHA than the one under test, prints as **NOT GATED** and
-  **blocks the release** exactly as a failure would. The four-night window of
-  [§3.5](#35-the-decision-rule-is-this-change-an-improvement) point 2 is a claim
-  about the last four runs, so a report that cannot show those four runs cannot
-  support it:
+  gives each one the date and bot SHA of the run it last *passed* on. The gate
+  itself is the one [§3.5](#35-the-decision-rule-is-this-change-an-improvement)
+  point 2 sets, in those words:
+
+  > **A release requires every seat count from 2 to 9 to have passed within the
+  > last four nightly acceptance runs. The window counts runs, not bot
+  > versions: an earlier run's pass still counts when the bot SHA has changed
+  > since, and the report prints the date and bot SHA of every last pass beside
+  > it. A seat count whose last pass falls outside that window prints as NOT
+  > GATED and blocks the release exactly as a failure would.**
+
+  **So the SHA is printed and not gated on, and that is exactly where this
+  particular lie survives the mitigation.** Three of tonight's eight rows stand
+  on a different build of the bot, and nothing in the gate stops that; gating on
+  the SHA instead would force four consecutive nightly runs before any release
+  at all, days instead of hours, which the document does not ask for. What the
+  reader gets is the means to see it: an out-of-date SHA beside a PASS is a
+  standing invitation to re-run that seat count before releasing anything that
+  touches it. The window is a claim about the last four runs, so a report that
+  cannot show those four runs cannot support it:
 
   ```
   seat-count window (release needs all eight passed within the last 4 nightly runs)
     n=2  ran tonight   PASS
     n=3  ran tonight   PASS
-    n=4  last passed 2026-XX-XX (1 run ago, bot=<sha>)   PASS
+    n=4  last passed 2026-XX-XX (3 runs ago, bot=<sha>)  PASS
     n=5  last passed 2026-XX-XX (2 runs ago, bot=<sha>)  PASS
     n=6  ran tonight   PASS
     n=7  last passed 2026-XX-XX (5 runs ago, bot=<sha>)  NOT GATED  <- blocks
+         (it ran 1 run ago and failed, so its last pass is outside the window)
     n=8  ran tonight   PASS
     n=9  ran tonight   PASS
   ```
@@ -1406,11 +1483,61 @@ not have to rediscover them.
 
 ## Engine requirements
 
-What the harness needs from the vendored engine. **A separate task is assessing
-the engine; nothing here should be assumed.** Each is stated so it can be
-answered yes or no. Note that `CLAUDE.md` records the engine currently defaults
-to a 20-card short deck, so every requirement below is gated on the 52-card
-conversion landing first.
+What the harness needs from the vendored engine. Each is stated so it can be
+answered yes or no. Three of them are answered already, on `main`, by
+`REFERENCE_NOTES.md`, which read the engine's source and ran it; this section
+reconciles with that file rather than restating it.
+
+**What runs on today's engine.** The vendored engine deals a cut-down deck of
+**20 cards**, which physically caps it at **seven seats** — seven players need
+7 × 2 + 5 = 19 cards and eight need 21 — so eight- and nine-handed tables do
+not deal at all. Its betting is **fixed-limit**: a raise is always one fixed
+amount and at most three are allowed a street, so there is no bet-size
+dimension anywhere in it. Inside those two limits it is real multiway poker —
+three to seven seats, with blinds and acting order derived from the seat count
+and side pots paid per pot — and it comes with 50 working automated checks of
+the rules, hand ranking and payouts. (All of that is `REFERENCE_NOTES.md` on
+`main`: its summary, and its sections at :438-503 and :523-554.)
+
+**What that means for the requirements below.**
+
+- **X1: partly yes, no at the top.** Seats 2 to 7 configure and play today.
+  Seats 8 and 9 cannot run on the 20-card deck at all — and they are the
+  operator's second priority and carry 0.30 of the headline
+  ([§3.5](#35-the-decision-rule-is-this-change-an-improvement) point 2).
+- **X2: no.** Fixed-limit has no chosen bet amount to give the bot or to ask of
+  it, so [§4.3](#43-true-no-limit-sizing-and-the-biggest-measured-weakness-in-published-bots)
+  — off-grid bet sizes, the `sizing_tell` persona, the largest measured
+  weakness in published bots — has nothing to run against on today's engine.
+- **X6: yes.** Side pots are implemented, and each is paid to the best-ranked
+  group still eligible for it; a seat sweep recorded on `main` plays 50
+  complete random hands at every seat count and asserts that chips are
+  conserved.
+- **X3, X4, X5, X7 and X8: still open.** Nothing on `main` answers them.
+
+**What waits on an engine decision, and whose decision that is.** Getting
+8- and 9-handed play or a chosen bet size out of *this* engine means moving it
+to the normal 52-card deck, and `REFERENCE_NOTES.md` costs that at **at least
+18.4 days of computing and 146.5 GiB of memory claimed in one piece**, against
+a budget of hours; it is ruled out there. Which engine the project runs on
+instead is a live question that four surveys now under way will settle between
+them, and **this document does not answer it and must not be read as
+answering it.** What it does is split the work in two, so that either outcome
+is usable:
+
+- **Buildable now, on the engine on `main`:** everything that needs only 2 to 7
+  seats and fixed-size bets — the harness skeleton of
+  [§3.1](#31-architecture-and-module-boundaries), the personas, the deal
+  controller, the estimators and statistics, the invariants, and nightly cells
+  at n = 2, 3, 4, 5, 6 and 7.
+- **Waits on the engine decision:** every cell at **n = 8 and n = 9**, the
+  whole of [§4.3](#43-true-no-limit-sizing-and-the-biggest-measured-weakness-in-published-bots),
+  X2, and the 8- and 9-handed part of X1. The nightly grid of
+  [§3.6](#36-the-run-budget-turning-hands-into-hours) is specified in full
+  below and is correct once an engine can deal those seats; until one can, the
+  two seats it cannot play are recorded as **not run**, never as passed, and a
+  release gated on all eight seat counts ([§3.5](#35-the-decision-rule-is-this-change-an-improvement)
+  point 2) cannot be reached on today's engine at all.
 
 | # | Requirement | Needed by |
 | --- | --- | --- |
@@ -1445,7 +1572,7 @@ later session can see what was decided and does not reopen it.
 | Was | Question | Decided | Written into |
 | --- | --- | --- | --- |
 | Q1 | Which hand evaluator may the fake opponents use? | Method call, delegated. Made-hand strength goes to **the engine's own evaluator**; preflop ranking uses a **static 169-class table from a named published source**; draw detection is a **small, explicitly test-only heuristic**. All three live under `tests/`, outside the bot's import graph, labelled test-only. | [§3.3](#33-the-forefront-rule-and-the-personas) |
-| Q2 | What mix of table sizes should the headline number weight? | **The operator's own answer**, 2026-09-15: mostly 6-handed, then 8/9 treated as one band. Headline weights 0.50 / 0.30 / 0.20, the last split equally over whichever other seat counts ran. Every seat count still gates a release, on a **rolling four-night window**: nightly runs always play 2, 6, 8, 9 and rotate one of 3/4/5/7. | [§3.5](#35-the-decision-rule-is-this-change-an-improvement), point 2 |
+| Q2 | What mix of table sizes should the headline number weight? | **The operator's own answer**, 2026-09-15: mostly 6-handed, then 8/9 treated as one band. Headline weights 0.50 / 0.30 / 0.20, the last split equally over whichever other seat counts ran. Nightly runs always play 2, 6, 8 and 9 and rotate one of 3/4/5/7, and every seat count still gates a release, under the rule §3.5 point 2 states in these words: **A release requires every seat count from 2 to 9 to have passed within the last four nightly acceptance runs. The window counts runs, not bot versions: an earlier run's pass still counts when the bot SHA has changed since, and the report prints the date and bot SHA of every last pass beside it. A seat count whose last pass falls outside that window prints as NOT GATED and blocks the release exactly as a failure would.** **The cadence that sets is nightly, not four-nightly**: an unbroken sequence of nightly acceptance runs keeps all eight seat counts inside the window permanently, and a change that passes tonight is released tonight. | [§3.5](#35-the-decision-rule-is-this-change-an-improvement), point 2 |
 | Q3 | How much may a change lose against one persona while winning overall? | Method call, delegated. The document's own operating rule stands: **any per-persona regression blocks the change** unless a written override names the persona and the reason. **No numeric tolerance**; loosening waits for data. | [§3.5](#35-the-decision-rule-is-this-change-an-improvement), "Non-inferiority, per persona" |
 | Q4 | How long may an evaluation run take? | **The operator's position**, recorded 2026-09-15, is *"no multi-day computing; hours on one laptop"* — that, and no numbers. The **10-hour** acceptance ceiling and the **1-hour** routine bound are **design choices made here** to turn that position into arithmetic, on the same footing as the 0.50/0.30/0.20 weights. | [§3.6](#36-the-run-budget-turning-hands-into-hours) |
 
