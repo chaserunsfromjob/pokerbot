@@ -1,0 +1,7 @@
+{
+  "samples": 32,
+  "call_margin": 0.04,
+  "raise_margin": 0.16,
+  "bet_fraction": 0.5,
+  "adaptive": false
+}

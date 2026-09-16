@@ -1,0 +1,14 @@
+{
+  "version": "original-equity-v0.1",
+  "source_sha256": {
+    "pokerbot/baseline_v1.py": "a0496890a106b3704613f044099adac9e1d13296b8bafe5fd64d85068f686020",
+    "pokerbot/equity.py": "0473e0dfdf3f7eb8ae0909145e94e50470011b78e44b277d0e59d0a105178f0e"
+  },
+  "parameters": {
+    "samples": 32,
+    "call_margin": 0.02,
+    "raise_margin": 0.12,
+    "bet_fraction": 0.5,
+    "adaptive": false
+  }
+}

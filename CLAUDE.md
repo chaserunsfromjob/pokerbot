@@ -1,52 +1,44 @@
-# pokerbot
+# Poker strategy research
 
-A multiway no-limit hold'em poker bot for a class project. Goal: consistently
-beat real human players at a table of 3 or more, not chase a theoretical
-optimum that does not exist at that table size.
+Build a durable standard 52-card no-limit hold'em research environment for a
+class competition using play chips. Support 2–9 seats; emphasize 6–9-player
+strategy evaluation. Player names are stable identifiers.
 
-Built on `fedden/poker_ai` (vendored into this repo) rather than from scratch,
-for speed and because its MCCFR solver is real, tested code no one here would
-beat by hand-rolling it in a few weeks.
+## Scope authorized by the operator, September 16, 2026
 
-## The forefront rule
+- Original coded strategies, trained policies, opponent exploitation and
+  combinations of them are allowed. The former ban on AI-authored strategy
+  code is superseded. Live LLM move selection remains outside the project.
+- Existing engines implement poker rules and hand ranking. OpenSpiel is the
+  initial referee, subject to independent mechanics tests. `treys` remains a
+  test oracle, never the runtime evaluator.
+- Treat `vendor/poker_ai` as a historical 20-card fixed-limit reference. Do
+  not describe it as an implemented standard-deck no-limit strategy.
+- Remove the former hours-on-one-laptop ceiling. Measure latency, memory and
+  compute requirements. Paid compute still needs separate authorization.
+- Strategy code receives only its own cards, public state, legal actions and
+  optional opponent observations. Never pass simulator state or a future deck
+  into a policy. Privileged replay records are separate from observations.
+- Simplified multiway play reduces candidate decisions/search effort, not the
+  number of actual participants or their contributions and pot eligibility.
+- Keep named-player data separate from policies. Preserve it within a session
+  and reset it between independent experimental trials.
 
-- Never let an AI model decide a poker action, evaluate a hand, or read a board; call real engine code for that.
-- Only use AI-written code for integration, tooling, table-state capture (screen to structured data), and card combinatorics, never for poker judgment itself.
-- Reject a change that adds hand-rolled hand-strength or decision logic in place of the vendored engine; adapt the engine instead.
-- Write card-combinatorics bookkeeping ourselves - enumerating the 169 preflop hand classes, suit isomorphisms, deck enumeration - but leave anything that ranks or values a hand, or chooses an action, to the engine.
-- Ground-truth hand ranking against a named external evaluator (currently `treys`), the reference for standard 52-card ranking, and keep it out of the bot's decision path; it validates tests only, never runtime play.
-- Keep opponent-modelling code to the left column of this boundary, and leave every right-column job to the engine.
+## Research and contribution loop
 
-| Allowed to AI-written opponent-model code | Reserved to the engine |
-| --- | --- |
-| Counting observed actions | Evaluating hand strength |
-| Computing a single rate from its own counts | Choosing an action |
-| Shrinking a rate toward a baseline | Assigning a range to an opponent |
-| Sorting an opponent into a bucket | Reading board texture |
-| Selecting *which* engine strategy to load | Producing the strategy itself |
-| Substituting an opponent model into the engine's own solver | Solving |
-| Reporting several rates side by side | Combining live-field rates into a quantity that drives a poker decision — multiplying the fold rates of the opponents in the current hand to gate a bluff, for one |
+Use primary papers and runnable code to propose hypotheses; record expected
+benefit, readiness, risks, and falsifiable criteria. Screen on development deals,
+then confirm on fresh held-out configurations. Keep baseline and candidate
+versions frozen during a run. Report uncertainty and inconclusive outcomes.
+Passing a benchmark starts a harder stage while preserving earlier results.
+See `research/BENCHMARKS.md`, `research/BACKLOG.md`, and `research/PROGRESS.md`.
 
-- Allow AI-written code to combine rates across the **observed population** — the whole database, seated players' stored rows included, with being seated never the criterion for inclusion — into a baseline, a classification split, or an archetype, and hand that result to the engine, which still chooses the action.
-- Derive any opponent archetype fed to the solver from measured action frequencies alone; never hand-write one, and never let it reference hole cards, board cards, or hand strength.
+The class-app connection follows validated simulation. Do not connect to live
+tables, publish messages, merge main, change visibility, or acquire paid compute
+without separate authorization. Pushing verified work to `codex/tonight` is
+authorized. Preserve third-party notices and record source provenance for reused
+code; repository visibility is not evidence that licensing has been reviewed.
 
-## Plan
-
-1. Vendor `fedden/poker_ai`, get it running, and find out what it takes to move
-   it off the default 20-card short deck onto standard 52-card hold'em.
-2. Layer in opponent modeling: track each player's tendencies and adjust
-   against them specifically. This is the part that actually beats humans.
-3. Only if time remains: refine with a trained model on top of stages 1-2.
-
-## Compute budget
-
-- Keep every computation reachable in hours on one laptop; reject any approach that needs multi-day compute to reach a playable bot.
-
-## Licence
-
-- Keep pokerbot private: never publish it, give it to a classmate, or sell it.
-- Treat the vendored engine's GPL-3.0 terms as imposing nothing while pokerbot stays private, since they attach only on distribution.
-- Reopen this licence decision with the operator before handing the code to anyone.
-
-Rules in `~/.claude/CLAUDE.md` (deployed machine-wide from the `heater` fleet
-repository) apply on top of this file.
+The old opponent-model design and resource surveys are historical inputs, not
+requirements that override this scope. Do not silently treat their constraints
+or feasibility exclusions as current decisions.

@@ -1,0 +1,77 @@
+{
+  "status": "diagnostic only; mechanics blocker and inconclusive strength",
+  "screening_hands": 324,
+  "learning_ablation_hands": 1944,
+  "screening_by_seats_bb_per_100": {
+    "6": {
+      "mean": 1139.5833333333333,
+      "low": -1596.1039498945863,
+      "high": 3875.2706165612526,
+      "trials": 3
+    },
+    "8": {
+      "mean": 2018.0555555555554,
+      "low": -1459.8386401272785,
+      "high": 5495.94975123839,
+      "trials": 3
+    },
+    "9": {
+      "mean": 58.333333333333336,
+      "low": -1063.201741499081,
+      "high": 1179.8684081657475,
+      "trials": 3
+    }
+  },
+  "learning_gain_bb_per_100": {
+    "6": {
+      "oracle": {
+        "mean": 7.175925925925905,
+        "low": -11.90439084539575,
+        "high": 26.25624269724756,
+        "trials": 3
+      },
+      "learned": {
+        "mean": 7.175925925925905,
+        "low": -11.90439084539575,
+        "high": 26.25624269724756,
+        "trials": 3
+      }
+    },
+    "8": {
+      "oracle": {
+        "mean": -1.620370370370362,
+        "low": -8.592261367649547,
+        "high": 5.3515206269088225,
+        "trials": 3
+      },
+      "learned": {
+        "mean": -1.620370370370362,
+        "low": -8.592261367649547,
+        "high": 5.3515206269088225,
+        "trials": 3
+      }
+    },
+    "9": {
+      "oracle": {
+        "mean": -44.56018518518516,
+        "low": -236.28718761036365,
+        "high": 147.16681723999332,
+        "trials": 3
+      },
+      "learned": {
+        "mean": -44.56018518518516,
+        "low": -236.28718761036365,
+        "high": 147.16681723999332,
+        "trials": 3
+      }
+    }
+  },
+  "peak_rss_bytes": 105988096,
+  "promotion_blockers": [
+    "OpenSpiel 2.0.2 short-all-in reopening defect independently confirmed against PokerKit 0.7.5",
+    "No successful held-out strength confirmation"
+  ],
+  "root_tests": "59 passed, 1 expected failure (promotion blocker)",
+  "vendor_tests": "53 passed, 2 expected failures; CLI tests do not assert command success",
+  "arithmetic_checks": 680
+}

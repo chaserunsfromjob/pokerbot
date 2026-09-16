@@ -3,6 +3,35 @@
 A multiway no-limit hold'em poker bot for a class project. `CLAUDE.md` holds the
 goal, the rules this project works under, and the plan.
 
+## New strategy research environment
+
+The standard-deck no-limit harness lives in `pokerbot/`; the vendored engine
+below remains a historical fixed-limit reference. Original coded strategies
+and trained models are now in scope. Read `research/PROGRESS.md` for results
+and known failures, `research/BENCHMARKS.md` for fixed acceptance criteria,
+and `research/BACKLOG.md` for ranked experiments.
+
+After creating the root environment, install and run:
+
+```sh
+.venv/bin/python -m pip install -r requirements-research.txt -r tests/ground_truth/requirements.txt
+.venv/bin/python -m pokerbot tournament --out runs/my-screen --seats 6 7 8 9 --hands 36
+.venv/bin/python -m pokerbot replay runs/my-screen/n6-seed11.jsonl
+.venv/bin/python -m pokerbot candidates
+.venv/bin/python -m pytest tests -q
+```
+
+Use a new output directory for each screening run. Full simulated decks in
+replay logs are privileged host data; the policy interface receives only its
+own cards and public state. Profiles are stored separately and isolated by
+session. Runs record parameters, source hashes, versions, seeds and latency.
+
+**Not yet validated for strength:** a demonstrated OpenSpiel short-all-in
+reopening defect blocks confirmation (`python -m pokerbot check-gates`). The
+smoke tournament runs for diagnosis, and its returns must not be promoted as
+evidence of a correct or strong bot. Generic process adapters are implemented;
+native NoRegrets/dickreuter policy bridges and trained artifacts are not.
+
 What the borrowed poker engine is, how to run it, and what it would cost to move
 it from its 20-card deck to a normal 52-card one: `REFERENCE_NOTES.md`.
 

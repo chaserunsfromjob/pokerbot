@@ -281,9 +281,9 @@ EXAMPLE_STREET_CEILING = {
 
 DEFAULT_DOC = Path(__file__).resolve().parent.parent / "OPPONENT_MODEL_DESIGN.md"
 
-# Section 1 reproduces this file's forefront-rule table verbatim, so the copy is
-# compared against the authority rather than trusted.
-FOREFRONT_SOURCE = "CLAUDE.md"
+# Section 1 reproduces the former guidance. Preserve that historical source
+# while current CLAUDE.md follows the operator's expanded research scope.
+FOREFRONT_SOURCE = "research/LEGACY_GUIDANCE.md"
 FOREFRONT_HEADER = "| Allowed to AI-written opponent-model code | Reserved to the engine |"
 
 # ---------------------------------------------------------------------------

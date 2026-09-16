@@ -10,13 +10,11 @@ setup, `REFERENCE_NOTES.md` for the current engine's limitations, and
 - `vendor/poker_ai/` is a source copy of the reference engine, not a submodule.
   It currently uses a 20-card deck and fixed-limit betting. Do not describe it
   as a finished standard 52-card no-limit bot.
-- Opponent-model modules described under `pokerbot/opponent/` are a design,
-  not implemented modules. Engine alternatives are still under evaluation;
-  check current branches and documentation before choosing an engine.
-- AI-written integration, capture, bookkeeping, and opponent statistics must
-  respect the boundary in `CLAUDE.md`. Poker evaluation and action selection
-  stay with engine code. `treys` is a test reference only.
-- Keep computation within hours on one laptop, as required by `CLAUDE.md`.
+- `pokerbot/` is the new OpenSpiel simulation path. Check
+  `research/PROGRESS.md` for implemented features and unvalidated claims.
+- Original coded strategies and trained models are authorized. Engines retain
+  rules and hand ranking; `treys` remains a test oracle.
+- There is no laptop compute ceiling. Record actual resource requirements.
 
 ## Setup and checks
 
@@ -33,6 +31,7 @@ From the repository root:
 (cd vendor/poker_ai && ../../.venv/bin/python -m pytest test -q)
 ```
 
+Install `requirements-research.txt` for the research harness.
 Run the arithmetic checker whenever `OPPONENT_MODEL_DESIGN.md` changes. When
 changing the engine or its integration, run the vendor suite as well. Three
 vendor CLI tests do not assert command success; passing them does not prove
@@ -59,6 +58,5 @@ Use the documented single-process training path for bounded smoke runs.
   `REFERENCE_NOTES.md` when applicable.
 - Do not commit environments, generated training files, credentials, or local
   caches. Existing `.gitignore` rules cover common generated files.
-- `CLAUDE.md` says the project should remain private. Check actual repository
-  visibility before proposing publication; do not treat cloning or contributor
-  access as authorization to change visibility or distribute the project.
+- Preserve source notices and provenance. Contributor authorization covers
+  verified pushes to `codex/tonight`, not merges to main or visibility changes.

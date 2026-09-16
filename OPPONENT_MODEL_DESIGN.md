@@ -1,5 +1,11 @@
 # Opponent modelling design
 
+> Historical design: September 16 scope now permits original coded strategies
+> and trained models and removes the laptop compute ceiling. References below
+> to restrictive CLAUDE.md rules refer to `research/LEGACY_GUIDANCE.md`, retained
+> for arithmetic/provenance checks. Current work is tracked in
+> `research/PROGRESS.md`; this document does not describe implemented modules.
+
 How the bot learns what each human at the table does wrong, and changes its own
 play to take money off that specific person.
 
