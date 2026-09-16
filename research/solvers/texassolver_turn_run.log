@@ -1,0 +1,38 @@
+EXEC FROM FILE
+[##################################################] 100%
+<<<START SOLVING>>>
+Using 10 threads
+Iter: 0
+player 0 exploitability 14.818872
+player 1 exploitability 13.220049
+Total exploitability 107.842 precent
+-------------------
+Iter: 11
+player 0 exploitability 2.3560247
+player 1 exploitability 1.421111
+Total exploitability 14.527446 precent
+time used: 0.112
+-------------------
+Iter: 21
+player 0 exploitability 1.1927775
+player 1 exploitability 0.15155694
+Total exploitability 5.1705174 precent
+time used: 0.219
+-------------------
+Iter: 31
+player 0 exploitability 0.83722794
+player 1 exploitability -0.19760035
+Total exploitability 2.4601061 precent
+time used: 0.328
+-------------------
+Iter: 41
+player 0 exploitability 0.66156006
+player 1 exploitability -0.34894794
+Total exploitability 1.2023543 precent
+time used: 0.451
+-------------------
+Iter: 51
+player 0 exploitability 0.60631984
+player 1 exploitability -0.41437748
+Total exploitability 0.7382398 precent
+time used: 0.561

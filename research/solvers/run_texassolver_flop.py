@@ -44,7 +44,11 @@ def main() -> int:
     log_path = os.path.join(solver_dir, "flop_run.log")
 
     before = resource.getrusage(resource.RUSAGE_CHILDREN)
-    started = time.monotonic()
+    # Wall-clock, not time.monotonic(): on macOS the monotonic clock stops
+    # while the machine is asleep, so a run interrupted by a system sleep was
+    # reported as 421 s when 1,314 s of clock time had passed, and the
+    # "stop at 420 seconds" bound was not the bound it claimed to be.
+    started = time.time()
     with open(log_path, "wb") as log:
         proc = subprocess.Popen(
             [binary, "-i", "flop_full_ranges.txt"],
@@ -52,13 +56,13 @@ def main() -> int:
             stdout=log,
             stderr=subprocess.STDOUT,
         )
-        while proc.poll() is None and time.monotonic() - started < deadline:
+        while proc.poll() is None and time.time() - started < deadline:
             time.sleep(1.0)
         killed = proc.poll() is None
         if killed:
             os.kill(proc.pid, signal.SIGKILL)
         status = proc.wait()
-    wall = time.monotonic() - started
+    wall = time.time() - started
     after = resource.getrusage(resource.RUSAGE_CHILDREN)
 
     with open(log_path, "rb") as log:
