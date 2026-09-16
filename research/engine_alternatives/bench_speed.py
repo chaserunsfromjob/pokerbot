@@ -8,6 +8,10 @@ OpenSpiel is measured twice, once per betting abstraction:
   fcpa     - fold / call / pot-sized bet / all-in (a four-item menu)
   fullgame - every whole-chip raise-to amount is its own legal action
 
+The Python engines get the same two jobs: a four-move menu, and a raise-to
+amount drawn uniformly across their whole legal range. PyPokerEngine is driven
+through its `Emulator` API, the one `pypoker_playouts.py` shows can be searched.
+
 Usage:  python bench_speed.py [seconds_per_engine]
 """
 
@@ -156,6 +160,39 @@ def bench_pokerkit(seconds, menu=False):
     return hands / dt, actions / hands, hands
 
 
+def bench_pypokerengine(seconds, menu=False):
+    """Complete hands through the Emulator API, which is the searchable one.
+
+    `pypoker_playouts.py` is where that API is set out; this reuses its random
+    player so the four-move menu is literally the same code as there.
+    """
+    from pypokerengine.api.emulator import Emulator
+
+    from pypoker_playouts import RandomPlayer
+
+    rng = random.Random(SEED)
+    emulator = Emulator()
+    emulator.set_game_rule(player_num=PLAYERS, max_round=10 ** 9,
+                           small_blind_amount=SB, ante_amount=0)
+    players_info, seated = {}, []
+    for seat in range(PLAYERS):
+        uuid = f"p{seat}"
+        players_info[uuid] = {"name": uuid, "stack": STACK}
+        player = RandomPlayer(rng, menu=menu)
+        seated.append(player)
+        emulator.register_player(uuid, player)
+    hands = 0
+    t0 = time.perf_counter()
+    while time.perf_counter() - t0 < seconds:
+        state = emulator.generate_initial_game_state(players_info)
+        state, _ = emulator.start_new_round(state)
+        emulator.run_until_round_finish(state)
+        hands += 1
+    dt = time.perf_counter() - t0
+    actions = sum(p.decisions for p in seated)
+    return hands / dt, actions / hands, hands
+
+
 def main():
     rows = [
         ("OpenSpiel universal_poker fcpa menu", lambda: bench_openspiel("fcpa", SECONDS)),
@@ -164,6 +201,8 @@ def main():
         ("texasholdem 0.11.0 real sizing", lambda: bench_texasholdem(SECONDS)),
         ("PokerKit 0.7.5 menu", lambda: bench_pokerkit(SECONDS, menu=True)),
         ("PokerKit 0.7.5 real sizing", lambda: bench_pokerkit(SECONDS)),
+        ("PyPokerEngine 1.0.1 menu", lambda: bench_pypokerengine(SECONDS, menu=True)),
+        ("PyPokerEngine 1.0.1 real sizing", lambda: bench_pypokerengine(SECONDS)),
     ]
     print(f"seed={SEED} seconds per engine={SECONDS} players={PLAYERS} "
           f"stack={STACK} blinds={SB}/{BB}")

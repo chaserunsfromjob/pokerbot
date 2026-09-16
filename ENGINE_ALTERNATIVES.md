@@ -11,11 +11,17 @@ closely turned up two mismatches with what `CLAUDE.md` says we are building:
   never an amount the player chooses.
 
 And a third problem, which is the one that actually decides this document:
-getting it to 52 cards **the way `poker_ai` itself goes about it** needs about
-**18 days of the laptop running flat out**, plus more memory than the laptop
-has. There is no budget for that. (That is the measured cost of its own
-`clustering/card_combos.py` at 52 cards, not a law about every possible
-approach; the distinction is drawn out later.)
+getting it to 52 cards **the way `poker_ai` itself goes about it** needs at
+least **18 days of the laptop running flat out**, plus more memory than the
+laptop has. There is no budget for that.
+
+That 18 days is **not a stopwatch reading and nobody has sat through it**. It is
+a **floor worked out by scaling up** a 20-card clustering run that did finish:
+the arithmetic, and the reasons it is a floor rather than an estimate, are at
+`REFERENCE_NOTES.md:399-430`, which also records that the job dies at its memory
+allocation before any of those days could begin. It is the cost of that one
+implementation's own `clustering/card_combos.py` at 52 cards, not a law about
+every possible approach; the distinction is drawn out later.
 
 This file asks whether some *other* freely available poker engine already does
 what we need, inside the time we actually have.
@@ -50,12 +56,28 @@ driven through real hands. Where a claim could only come from reading the
 source, the file and line number is given. Timings are wall-clock on this
 machine.
 
-The programs behind every measured number in this file, and the raw output of
-the runs quoted, are committed under **`research/engine_alternatives/`**, with
-a README saying what each one does and how to re-run it. They are research
-artefacts. **They are not the bot**, they are not on the bot's import path, and
-whether code of that shape may become the bot at all is the open rule question
-set out at the end of this document.
+Every **measured** number in this file comes from a program committed under
+**`research/engine_alternatives/`**, and the raw output of the run quoted is
+committed beside it under `raw/`, with a README saying what each program does
+and how to re-run it. That includes the pass/fail checks in the candidate
+sections below - how many bet sizes an engine really offers, how many seats it
+really takes, whether chips are conserved over a pile of random hands - which
+`bench_requirements.py` re-runs in one go.
+
+Three kinds of statement here are **not** measurements and have no program
+behind them, and they are marked as such wherever they appear:
+
+- a line quoted from an engine's own source code, given with its file and line
+  number so that it can be read rather than believed;
+- the star counts and last-push dates taken off each project's GitHub page, read
+  by eye (the release dates, which carry more weight, were asked of the Python
+  Package Index and the answer is in `raw/release_dates.txt`);
+- the claim that PokerRL will not install at all, which is by nature not a
+  measurement - the raw output of the attempt is in `raw/pokerrl_install.txt`.
+
+These programs are research artefacts. **They are not the bot**, they are not on
+the bot's import path, and whether code of that shape may become the bot at all
+is the open rule question set out at the end of this document.
 
 Two conditions decide whether a poker measurement means anything, and both are
 stated with every number below. First, the **betting abstraction**: whether the
@@ -94,11 +116,20 @@ advance - subject to two things this document cannot settle by itself:**
 What this document *can* settle, and does: training in advance **without a card
 abstraction** does not converge on this laptop, and decision-time computing
 needs no abstraction and produces a bot that plays better than random inside
-the time budget, measured with an interval. Whether an hours-sized abstraction
-exists is untested and is **not** ruled out here.
+the time budget, measured with an interval - **on a four-move menu. Acting with
+real bet sizing needs a translation between the two ways of loading the game,
+and nobody has built it.** Whether an hours-sized abstraction exists is untested
+and is **not** ruled out here.
 
-Keep `fedden/poker_ai` in the repository for reference only. Do not spend
-another hour adapting it.
+Keep `fedden/poker_ai` in the repository for reference only, and spend no more
+time adapting it - but that sentence is an edit to `CLAUDE.md`, not a finding,
+and it is flagged here rather than slipped through. `CLAUDE.md:7-9` makes
+`fedden/poker_ai` the stated basis of the whole project, and `CLAUDE.md:35-37`
+makes "find out what it takes to move it off the default 20-card short deck"
+stage 1 of the plan. Stopping work on it reverses both. **This document does not
+make that edit.** It is made, or refused, by the operator at the same
+reconciliation of `ENGINE_ALTERNATIVES.md`, `RESOURCES_BOTS.md` and
+`RESOURCES_SOLVERS.md` that decides the rule question above.
 
 ## Why - the measurement that carries the recommendation
 
@@ -110,7 +141,26 @@ guesses what the opponents are holding, plays the rest of the hand out at
 random many times for each, and picks the move with the best average chip
 result.
 
-Everything that has to be pinned down for that sentence to mean anything:
+Four pieces of arithmetic run through the table below and through the rest of
+this document. Each is written out in plain words here, before it is used, and
+its usual name is given last:
+
+- **How widely the individual results scatter.** Take one hand's chip result,
+  and ask how far a typical hand lands from the average of all of them. In
+  poker that distance is enormous, which is why nothing below can be skipped.
+  Its name is the **standard deviation**.
+- **How far the average itself might be wrong.** An average of many tries is
+  not the truth; run the whole exercise again and it would come out somewhere
+  else. How far it would typically move is a plus-or-minus attached to the
+  average, and gets smaller the more tries there are. Its name is the
+  **standard error**.
+- **A range instead of a single number.** Widen that plus-or-minus until the
+  true answer would fall inside the range in about 95 tries out of 100. Its
+  name is a **95% confidence interval**.
+- **The plus-or-minus itself**, half the width of that range, is called its
+  **half-width**.
+
+Everything that has to be pinned down for the paragraph above to mean anything:
 
 | Setting | What it was |
 | --- | --- |
@@ -135,28 +185,32 @@ the smallest legal raise, that raise doubled repeatedly, and all-in. The
 250 ms is then split round-robin across those candidates.
 
 That has a consequence worth stating in the same breath as the speed. Under
-`fullgame`, 242 play-outs across 8 candidates is about **30 play-outs each**,
-and one hand of this game swings by a standard deviation of 223 big blinds
-(measured below), so each candidate's average carries a standard error of
-roughly **±50 big blinds**. At a quarter of a second, in real-sizing mode, the
-ranking the bot produces is **mostly noise**. Under `fcpa`, the same budget
-gives about 3,280 play-outs per candidate and a standard error near ±5 big
-blinds, which is a real comparison. This is the strongest practical argument in
-the document for searching the menu game rather than the real-sizing game, and
-it was invisible while the betting abstraction went unstated.
+`fullgame`, 242 play-outs across 8 candidates is about **30 play-outs each**.
+A typical single hand of this game lands 223 big blinds away from the average
+(measured below), so an average taken over only 30 of them could easily be out
+by roughly **±50 big blinds** - that plus-or-minus is the **standard error**
+described above. At a quarter of a second, in real-sizing mode, the ranking the
+bot produces is therefore **mostly noise**. Under `fcpa`, the same budget gives
+about 3,280 play-outs per candidate, and the same plus-or-minus falls to near
+±5 big blinds, which is a real comparison. This is the strongest practical
+argument in the document for searching the menu game rather than the
+real-sizing game, and it was invisible while the betting abstraction went
+unstated.
 
-Set that against the road we are on: **18 days of computing and more memory
-than the machine has, to reach a bot that still cannot choose a bet size.**
+Set that against the road we are on: **at least 18 days of computing and more
+memory than the machine has, to reach a bot that still cannot choose a bet
+size.**
 
 ## What the play-strength test says, and what it cannot
 
 First, what a single hand of this game is worth: at 200 big blinds deep,
-6-handed, one seat's result for one hand has a **standard deviation of 223 big
-blinds** (measured over n = 100,000 random hands;
-`bench_play.py variance 100000`). That is the number that governs every claim
-about how well anything plays. It means a result measured over 300 hands is
-uncertain by about **±25 big blinds a hand**, which is many times larger than
-any plausible edge. An earlier draft of this document reported **+3.87 big
+6-handed, one seat's result for one hand scatters enormously. A typical hand
+lands about **223 big blinds** away from the average of all of them - that
+distance is the **standard deviation** described above - measured over
+n = 100,000 random hands, `bench_play.py variance 100000`. That is the number
+that governs every claim about how well anything plays. It means a result
+measured over 300 hands could easily be wrong by about **±25 big blinds a
+hand**, which is many times larger than any plausible edge. An earlier draft of this document reported **+3.87 big
 blinds a hand over 300 hands**. That figure is **withdrawn**: at that sample
 size it was indistinguishable from zero, and quoting it without its interval
 made noise look like evidence.
@@ -165,11 +219,11 @@ Rerun properly, with the interval:
 
 | | |
 | --- | --- |
-| Set-up | chooser in seat 0, 250 ms a decision, menu mode (`fcpa`); five opponents choosing uniformly at random from the same menu |
+| Set-up | chooser in seat 0, 250 ms a decision, menu mode (`fcpa`); five opponents choosing uniformly at random from the same menu the chooser's own play-outs assume they use |
 | Hands | **n = 3,412** (3,550 chooser decisions, 900 seconds, seed 20260915) |
 | Result | **+22.80 big blinds a hand** |
-| 95% confidence interval | **+15.07 to +30.53** big blinds a hand |
-| Spread | standard deviation 230.4 big blinds a hand |
+| The range the true figure is 95-times-in-100 inside (its 95% confidence interval) | **+15.07 to +30.53** big blinds a hand |
+| How far a typical single hand landed from that average (its standard deviation) | 230.4 big blinds a hand |
 
 The interval stays clear of zero, so this **is** a real result: the machinery
 works end to end, inside the time budget, and it beats random play.
@@ -177,20 +231,34 @@ works end to end, inside the time budget, and it beats random play.
 **What it is not.** Beating opponents who move at random is a very low bar -
 random opponents fold good hands, call anything and never punish a mistake. It
 says nothing about whether the bot beats a person, and that test has not been
-run. It is also a **menu-mode** result: the real-sizing chooser, at 250 ms and
-about 30 play-outs a candidate, was not worth measuring against anything,
-because its own candidate rankings are inside their own noise.
+run.
 
-**What it costs to answer the real question.** At a spread of 223 big blinds a
-hand, bounding a result to ±10 big blinds takes about **1,900 hands** and to
-±1 big blind about **190,000**. Against a slow opponent the hands come slower
+**It is also the most favourable case the chooser could have been given, and
+that is a separate limitation from the low bar.** Inside every play-out the
+chooser assumes the other five seats pick uniformly from the eight-item menu it
+builds; in this test they really do pick uniformly from that same menu. Its
+picture of its opponents is therefore exactly right, which it never would be
+against anyone real. Being wrong about how opponents behave is the single
+largest error a bot of this shape can make, and this test is constructed so
+that the error is zero. Read **+22.80 big blinds a hand as a best case**, not
+as a typical one.
+
+It is also a **menu-mode** result: the real-sizing chooser, at 250 ms and about
+30 play-outs a candidate, was not worth measuring against anything, because its
+own candidate rankings are inside their own noise.
+
+**What it costs to answer the real question.** With a typical hand landing 223
+big blinds from the average, bounding a result to ±10 big blinds takes about
+**1,900 hands** and to ±1 big blind about **190,000**. Against a slow opponent the hands come slower
 too. Any future strength claim in this project should carry its hand count and
 its interval, or it is not a claim.
 
 What this establishes, and only this: **a playable 52-card no-limit bot for 2 to
 9 players on one laptop is reachable in hours by computing at decision time,
-and it plays better than random.** Whether that is the right road still depends
-on the rule question at the end of this document.
+and it plays better than random on a four-move menu. Acting with real bet
+sizing needs a translation between the two ways of loading the game, and nobody
+has built it.** Whether that is the right road still depends on the rule
+question at the end of this document.
 
 ## What the training measurements show, and what they do not
 
@@ -325,13 +393,28 @@ the door on training something in advance if the schedule ever allows.
 
 ## What to do with PokerKit
 
-Adopt it too, but for a different job: **checking our work, not playing.**
+**Proposed, not adopted here:** keep it for a different job - **checking our
+work, not playing.**
 
-PokerKit is the most rules-correct engine in this survey and the only one still
-actively released. It is too slow to think with, but it is ideal for replaying a
-hand we captured off a screen and confirming the rules were applied exactly
-right. That is the same role `treys` already plays for hand ranking under
-`CLAUDE.md` - a reference, kept out of the decision path.
+PokerKit is the most rules-correct engine in this survey, and one of the two
+still actively released - an earlier draft said it was the only one, which is
+wrong. Asked of the Python Package Index directly
+(`research/engine_alternatives/raw/release_dates.txt`): PokerKit 0.7.5 was
+published on 2026-08-22 and `open_spiel` 2.0.2 on 2026-08-12, three weeks
+apart, and OpenSpiel's repository was last pushed on 2026-08-31. Every other
+candidate's newest release is from 2024 or earlier. PokerKit is too
+slow to think with, but it is well suited to replaying a hand we captured off a
+screen and confirming the rules were applied exactly right.
+
+That is the same role `treys` plays for hand ranking, and the bullet that puts
+`treys` there is **`CLAUDE.md:17`**: it names one external evaluator -
+"currently `treys`" - as the ground-truth reference and requires that it stay
+out of the bot's decision path. Adding a second borrowed engine as a reference
+is the same kind of choice, about a different job, and `CLAUDE.md:17` does not
+currently record it. **This document does not make that choice.** It goes to the
+same reconciliation of `ENGINE_ALTERNATIVES.md`, `RESOURCES_BOTS.md` and
+`RESOURCES_SOLVERS.md` as the rule question at the end, where the operator
+decides whether to record it and in which words.
 
 ---
 
@@ -376,10 +459,13 @@ exploitability measurement. Checked these are not secretly heads-up only:
 tabular CFR ran 50 rounds on a **3-player** game, and sampled CFR ran 3,000
 rounds on a **3-player no-limit** game and returned usable recommendations.
 
-**One real defect found.** The standard look-ahead search method bundled with
-OpenSpiel (ISMCTS) **crashes the whole program** - a hard segmentation fault,
-exit code 139, not a catchable error - the moment there are more than two
-players. Isolated to one line:
+**One real defect found.** OpenSpiel bundles a ready-made way of thinking ahead
+in games where you cannot see your opponents' cards: it invents a plausible set
+of hidden cards, plays forward from there many times, and spends most of its
+effort on the lines that look best. Its name is **information-set Monte Carlo
+tree search**, usually shortened to **ISMCTS**. It **crashes the whole
+program** - a hard segmentation fault, exit code 139, not a catchable error -
+the moment there are more than two players. Isolated to one line:
 
 ```
 open_spiel/games/universal_poker/universal_poker.cc:1111
@@ -424,9 +510,10 @@ where weaker engines get payouts wrong.
 is **37 to 117 times slower than OpenSpiel on the same menu**; with real
 sizing, 67 to 273 a second (median 177), 4.5 to 15 times slower than OpenSpiel
 there. A 250 ms decision buys of the order of 50 play-outs, which cannot choose
-between four actions: at a per-hand spread of 223 big blinds, 50 play-outs
-leave each candidate's average uncertain by about ±60 big blinds. It ships no
-pre-trained strategy, so it offers no other route to a playable bot.
+between four actions: with a typical hand landing 223 big blinds from the
+average, an average over 50 of them could easily be out by about ±60 big blinds
+- that plus-or-minus is its standard error. It ships no pre-trained strategy,
+so it offers no other route to a playable bot.
 
 **Solver capability: none.** Verified by listing everything the package exposes:
 no CFR, no search, no agents.
@@ -488,10 +575,22 @@ cleanly. **Requirement 3: no.** Its one pre-trained poker model is
 `leduc-holdem-cfr` (`rlcard/models/__init__.py:6`) - **Leduc is a 6-card toy
 game**, not hold'em. Nothing here shortens the road.
 
+**Only half of it imports on this Python, and the half that matters is the
+broken half.** The game code runs: `import rlcard` and
+`import rlcard.games.nolimitholdem` both succeed, which is how the action-list
+count above was taken. But `import rlcard.agents` and `import rlcard.models`
+both fail outright with `ModuleNotFoundError: No module named 'distutils'`
+(`rlcard/agents/__init__.py:3` does `from distutils.version import
+LooseVersion`, and `distutils` was deleted from Python in 3.12). Every agent and
+every pre-trained model is therefore unreachable here without patching RLCard
+first. Re-run by `bench_requirements.py rlcard`; raw output in
+`raw/requirements.txt`.
+
 **Solver capability:** a CFR agent exists (`rlcard/agents/cfr_agent.py`), written
-generically over player count, but it walks the entire game tree and needs the
-engine's rewind feature, so it is usable only on toy games - which is what
-RLCard's own documentation demonstrates it on.
+generically over player count, but it is behind the failing import above, and in
+any case it walks the entire game tree and needs the engine's rewind feature, so
+it is usable only on toy games - which is what RLCard's own documentation
+demonstrates it on.
 
 ### 5. PyPokerEngine - **passes 1 and 2**, wrong shape, fails 3
 
@@ -586,9 +685,11 @@ ability to ask for a recommended action.
 3. **Rewrite `clustering/card_combos.py` completely.** It builds every
    hole-cards-plus-board combination in memory at once. At 52 cards that is
    2,809,475,760 rows on the river and **147 gibibytes just for the list of
-   pointers**, before a single card object exists. Re-measured clustering cost:
-   **about 18 days of continuous computing** - and only if the memory existed,
-   which it does not.
+   pointers**, before a single card object exists. Clustering cost, scaled up
+   from the 20-card run that did finish and stated as a floor rather than an
+   estimate (`REFERENCE_NOTES.md:399-430`): **at least 18 days of continuous
+   computing** - and only if the memory existed, which it does not, so the
+   18 days has never been run and could not be.
 4. **Then, still ahead and not yet costed: add bet sizing.** The engine has no
    concept of choosing an amount. Adding one means rebuilding the betting round
    and enlarging the tree the solver searches.
@@ -771,10 +872,14 @@ Checked and discarded as not-real-code before reaching the table above:
 
 - **Whether the recommended bot beats anything that defends itself.** It has
   only ever been played against opponents moving at random, which is a very low
-  bar, and even that result is reported with its interval above. The next test
-  should be against a simple rule-following opponent, then a human. Budget it
-  from the spread: one hand of this game has a standard deviation of 223 big
-  blinds, so pinning a result down to ±1 big blind per hand takes about
+  bar, and even that result is reported with its interval above. **Worse, those
+  random opponents drew from exactly the menu of moves the bot's own play-outs
+  assume they draw from, so its picture of them was perfectly accurate - the
+  most favourable condition it could be given, and one no real opponent will
+  reproduce.** The next test should be against a simple rule-following opponent
+  whose behaviour the bot does *not* already assume, then a human. Budget it
+  from the scatter: a typical single hand of this game lands 223 big blinds from
+  the average, so pinning a result down to ±1 big blind per hand takes about
   **190,000 hands**, and to ±10 big blinds about **1,900 hands**. Any strength
   claim that does not say how many hands it rests on is not a claim.
 - **Whether searching the four-move menu and acting with real sizing can

@@ -12,6 +12,8 @@ So each repeat runs, back to back and in this order:
     chooser.py fullgame   - the same, every whole-chip raise-to amount legal
     bench_speed.py        - complete hands per second, every engine
     resample_opponents.py - opponent hole-card redraws per second
+    pypoker_playouts.py   - PyPokerEngine play-outs per second, so that its
+                            rejection rests on a figure taken beside the others
 
 Before every one of those, the machine's one-minute load average is read and
 recorded beside the figures it produced. If the load is above `MAX_LOAD` the
@@ -38,6 +40,7 @@ MAX_LOAD = 4.0
 MAX_WAIT_S = 1800
 DECISIONS = 20
 BUDGET_S = 0.25
+PYPOKER_POSITION = "first decision after the deal"
 
 
 def load_average():
@@ -83,6 +86,8 @@ CHOOSER_LINE = re.compile(
 SPEED_LINE = re.compile(r"^(\S.*?)\s{2,}(\d+)\s+([\d.]+)\s+(\d+)$")
 RESAMPLE_LINE = re.compile(
     r"resample_opponents, (.+?): n=(\d+) draws in [\d.]+s = (\d+) per second")
+PYPOKER_LINE = re.compile(
+    r"pypokerengine play-outs, (.+?): n=(\d+) play-outs in [\d.]+s = (\d+) per second")
 
 
 def parse_chooser(text):
@@ -102,6 +107,10 @@ def parse_speed(text):
 
 def parse_resample(text):
     return {m.group(1): int(m.group(3)) for m in RESAMPLE_LINE.finditer(text)}
+
+
+def parse_pypoker(text):
+    return {m.group(1): int(m.group(3)) for m in PYPOKER_LINE.finditer(text)}
 
 
 def spread(xs):
@@ -132,11 +141,15 @@ def main():
         res_out, res_load = run(
             ["resample_opponents.py", str(speed_seconds)],
             f"repeat {r}: resample_opponents")
+        pyp_out, pyp_load = run(
+            ["pypoker_playouts.py", str(speed_seconds)],
+            f"repeat {r}: pypoker_playouts")
         rows.append({
             "fcpa": parse_chooser(fcpa_out), "fcpa_load": fcpa_load,
             "fullgame": parse_chooser(full_out), "fullgame_load": full_load,
             "speed": parse_speed(speed_out), "speed_load": speed_load,
             "resample": parse_resample(res_out), "resample_load": res_load,
+            "pypoker": parse_pypoker(pyp_out), "pypoker_load": pyp_load,
         })
 
     print("\n=== summary over the repeats above, computed from them ===")
@@ -173,6 +186,11 @@ def main():
         print(f"{('resample_opponents, ' + position):52s} n={len(rows)} repeats  "
               f"{spread([row['resample'][position] for row in rows])}")
 
+    for position in rows[0]["pypoker"]:
+        print(f"{('pypokerengine play-outs/s, ' + position):52s} "
+              f"n={len(rows)} repeats  "
+              f"{spread([row['pypoker'][position] for row in rows])}")
+
     pairs = [
         ("OpenSpiel fcpa / texasholdem, both menu",
          "OpenSpiel universal_poker fcpa menu", "texasholdem 0.11.0 menu"),
@@ -182,6 +200,11 @@ def main():
          "OpenSpiel universal_poker fcpa menu", "PokerKit 0.7.5 menu"),
         ("OpenSpiel fullgame / PokerKit, both real sizing",
          "OpenSpiel universal_poker fullgame", "PokerKit 0.7.5 real sizing"),
+        ("OpenSpiel fcpa / PyPokerEngine, both menu",
+         "OpenSpiel universal_poker fcpa menu", "PyPokerEngine 1.0.1 menu"),
+        ("OpenSpiel fullgame / PyPokerEngine, both real sizing",
+         "OpenSpiel universal_poker fullgame",
+         "PyPokerEngine 1.0.1 real sizing"),
         ("OpenSpiel fcpa / OpenSpiel fullgame",
          "OpenSpiel universal_poker fcpa menu",
          "OpenSpiel universal_poker fullgame"),
@@ -198,6 +221,11 @@ def main():
     print(f"{'chooser fcpa / chooser fullgame play-outs':52s} "
           f"per-repeat ratio min={min(fr):6.2f} "
           f"median={statistics.median(fr):6.2f} max={max(fr):6.2f}")
+    pp = [row["fcpa"]["mean"] / (row["pypoker"][PYPOKER_POSITION] * BUDGET_S)
+          for row in rows]
+    print(f"{'chooser fcpa play-outs / PyPokerEngine play-outs':52s} "
+          f"per-repeat ratio min={min(pp):6.2f} "
+          f"median={statistics.median(pp):6.2f} max={max(pp):6.2f}")
 
 
 if __name__ == "__main__":

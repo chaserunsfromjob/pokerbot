@@ -57,6 +57,22 @@ def build(players, ranks, stack, rounds):
     })
 
 
+def growth(marks, found, rounds, upto=None):
+    """New situations per round over the last quarter, at or before `upto`.
+
+    With `upto` set, this reads the run as if it had been stopped at that round
+    count, which is what makes two configurations comparable: a configuration
+    that runs faster gets more rounds in the same seconds, and more rounds by
+    itself means more situations.
+    """
+    usable = [m for m in marks if upto is None or m[0] <= upto]
+    if len(usable) < 2:
+        return float("nan"), float("nan"), float("nan")
+    end_rounds, end_found = (rounds, found) if upto is None else usable[-1]
+    r0, f0 = usable[len(usable) // 4 * 3]
+    return (end_found - f0) / max(end_rounds - r0, 1), end_rounds, end_found
+
+
 def run(label, players, ranks, stack, rounds_cfg, seconds):
     np.random.seed(SEED)
     game = build(players, ranks, stack, rounds_cfg)
@@ -71,21 +87,29 @@ def run(label, players, ranks, stack, rounds_cfg, seconds):
             marks.append((rounds, len(solver._infostates)))
     dt = time.perf_counter() - t0
     found = len(solver._infostates)
-    if len(marks) >= 2:
-        # growth over the last quarter of the run
-        i = len(marks) // 4 * 3
-        r0, f0 = marks[i]
-        new_per_round = (found - f0) / max(rounds - r0, 1)
-    else:
-        new_per_round = float("nan")
-    print(f"{label:28s} rounds={rounds:7d} situations={found:9d} "
+    new_per_round, _, _ = growth(marks, found, rounds)
+    print(f"{label:40s} rounds={rounds:7d} situations={found:9d} "
           f"still-new per round (last quarter)={new_per_round:6.1f} "
           f"[{dt:.0f}s]")
-    return rounds, found, new_per_round
+    return {"label": label, "rounds": rounds, "found": found,
+            "new_per_round": new_per_round, "marks": marks}
 
 
 if __name__ == "__main__":
     print(f"external-sampling MCCFR, no card abstraction, bettingAbstraction=fcpa, "
           f"numpy seed={SEED}, {SECONDS:.0f}s per configuration")
-    for label, players, ranks, stack, rounds_cfg in CONFIGS:
-        run(label, players, ranks, stack, rounds_cfg, SECONDS)
+    results = [run(label, players, ranks, stack, rounds_cfg, SECONDS)
+               for label, players, ranks, stack, rounds_cfg in CONFIGS]
+
+    matched = min(r["marks"][-1][0] for r in results if r["marks"])
+    print()
+    print(f"the same table read at a matched round count of {matched:,} rounds "
+          f"- the most every configuration above")
+    print("reached - so that a configuration is not credited with more "
+          "situations merely for running more rounds:")
+    for r in results:
+        rate, end_rounds, end_found = growth(r["marks"], r["found"],
+                                             r["rounds"], upto=matched)
+        print(f"{r['label']:40s} rounds={end_rounds:7.0f} "
+              f"situations={end_found:9.0f} "
+              f"still-new per round (last quarter)={rate:6.1f}")
