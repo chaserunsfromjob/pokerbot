@@ -8,8 +8,9 @@ strategy, or already read a table off a screen.
 Every URL below was visited on 2026-09-15. Stars, last-activity dates,
 licences and repository file listings come from the service GitHub runs for
 other programs to ask it questions — its *application programming interface*,
-or **API** — on that date unless marked otherwise. Anything I could not confirm is marked **UNVERIFIED**,
-and a rating that would have rested on it is marked **?** rather than guessed.
+or **API** — on that date unless marked otherwise. Anything I could not
+confirm is marked **UNVERIFIED**, and a rating that would have rested on it is
+marked **?** rather than guessed.
 
 ## 1. Summary for a non-programmer
 
@@ -131,11 +132,18 @@ Two rules about the marks themselves:
   https://github.com/openholdem-next/openholdembot
 - What: the long-running open-source bot *framework*. It reads a Windows poker
   client's window, exposes everything as symbols, and runs whatever logic you
-  write in its OpenPPL rule language. It ships no strategy ("it does not come
-  with a strategy, and it never will").
+  write in its rule language, OpenPPL — an open re-implementation of the
+  language Shanky Technologies wrote for its own bots (3.12) and called
+  *Poker Programming Language*, or **PPL**, in which a strategy is a list of
+  lines like "when you hold this in this spot, do that". It ships no strategy
+  ("it does not come with a strategy, and it never will").
 - Last activity: original pushed 2025-04-14, last release 14.0.2 on 2021-12-26;
   fork pushed 2026-09-12 with releases v14.1.0.0 (2026-08-22) and v14.1.1.0
-  (2026-09-12). Stars: 255 (original), 1 (fork). Licence: GPLv3.
+  (2026-09-12). Stars: 255 (original), 1 (fork). Licence: GPLv3 by the licence
+  file in each repository — the original's is `License_GPLv3.htm`, the GPL
+  version 3 text itself. GitHub's own licence field for the original is unset,
+  though: the API answers `NOASSERTION`, name "Other", because it does not
+  recognise a licence at that filename. The fork's field does read `GPL-3.0`.
 - Runs on macOS / Python? No. C++, Windows 7+ 32-bit desktop clients only,
   Visual Studio 2017+ to build. Would need a Windows virtual machine on the Mac.
 - Plays today? Yes on Windows desktop clients it has a table map for, any
@@ -193,7 +201,9 @@ Two rules about the marks themselves:
 - URLs: https://www.slumbot.com/ (API documented at
   https://slumbot.com/sample_api.py), https://github.com/ericgjackson/slumbot2019
 - What: Eric Jackson's ACPC-champion heads-up no-limit bot, playable for free
-  through three HTTP endpoints (`/slumbot/api/login`, `/new_hand`, `/act`).
+  through three web addresses its server answers requests on — the same kind
+  of request a web browser makes, over the web's own protocol, HTTP
+  (`/slumbot/api/login`, `/new_hand`, `/act`).
   Blinds 50/100, 200 big-blind stacks, stacks reset each hand.
 - Verified live: a `POST /slumbot/api/new_hand` during this survey returned
   `{"action": "b200", "client_pos": 0, "hole_cards": ["6c","3d"], ...}`.
@@ -237,9 +247,12 @@ Two rules about the marks themselves:
   Darwin 25.5.0)" and, later, "16-core Apple Silicon, 128GB". So the project
   already builds and trains on a Mac. What it needs is memory this laptop does
   not have:
-  - the published blueprint, `blueprint.bin` from `train --iters 200000000`,
-    is **4,343,417,226 bytes** (4.34 GB) on disk, holding 101 million stored
-    decisions across 128.5 million distinct situations;
+  - the reference blueprint the repository records (`BASELINES.md:20`),
+    `blueprint.bin` from `train --iters 200000000`, is **4,343,417,226 bytes**
+    (4.34 GB) on disk, holding 101 million stored decisions across 128.5
+    million distinct situations. The file itself is not published — see the
+    licence note above; what is published is its size, its checksum and the
+    command that produced it;
   - `BASELINES.md` records training runs at comparable size holding **36 to
     45 GB** of live memory ("150-210M infosets, 36-45 GB RSS: memory-bound"),
     and one variant at "~50GB RSS" with 142.4M situations. What those runs
@@ -251,6 +264,15 @@ Two rules about the marks themselves:
     no run in `BASELINES.md` reports a resident set size under ~36 GB, so the
     smallest footprint the published recipe can reach is **unknown**, not
     small.
+  - One figure that looks like a memory figure and is not: the 400-million-pass
+    6-max run is reported as "521.7M infosets, 391M exported strategies,
+    **16GB**, 1h56m" (`README.md:668`, `BASELINES.md:470`). That 16GB is the
+    size of the file that run wrote, not the memory it held — it sits in a list
+    of outputs beside the counts and the wall-clock time, and it works out at
+    about 43 bytes per exported strategy, the same rate as the 200M run's
+    4.34 GB for 101 million. It happens to equal this laptop's total memory,
+    which makes it easy to misread as "it fits"; nothing in the repository says
+    what that run held in memory while it ran.
 - The knobs that would shrink it, and what the repo says they cost: `--iters`
   (fewer training passes: a 25M-pass checkpoint holds 60.5M situations against
   121.1M at 200M, so on the order of half the memory; at the ratio those runs
@@ -265,11 +287,16 @@ Two rules about the marks themselves:
   12 by default, and **the wrong direction anyway**: their 36-bucket
   run at equal iterations came out *worse* (−1128.2 against −719.0 mbb/hand vs
   Slumbot, `BASELINES.md:303-312`), while the 24-bucket run — bundled with
-  OCHS features and a wider bet menu, so not a clean test of buckets — came
-  out at best slightly *better* and their own verdict on it is "modernization
-  is a SMALL, NON-SIGNIFICANT improvement" (`BASELINES.md:514-530`). More
+  a wider bet menu and a second way of describing a hand (how it fares against
+  each of eight kinds of opponent holding, which its author calls *opponent
+  cluster hand strength*, **OCHS**, `README.md:496`), so not a clean test of
+  buckets — came
+  out at best slightly *better*, and their own verdict on it is the heading
+  "modernization is a SMALL, NON-SIGNIFICANT improvement" over the section that
+  argues it (`BASELINES.md:513-530`). More
   important here: 24 buckets pushed that run to **521.7M situations, which
-  their own note calls five times the baseline's count** (`BASELINES.md:469`),
+  their own note calls five times the baseline's count**
+  (`BASELINES.md:469-470`),
   with "heavy visit dilution" as the cost, so raising the bucket count
   costs memory rather than saving it, and lowering it below 12 is untested);
   `--menu pluribus` (the coarse bet menu, already the default,
@@ -334,14 +361,18 @@ Two rules about the marks themselves:
 
 - URLs: https://github.com/datamllab/rlcard,
   https://github.com/datamllab/rlcard-showdown
-- What: the RL toolkit (see `ENGINE_ALTERNATIVES.md` for the engine view).
-  Checked here only for *pre-trained* no-limit hold'em players.
+- What: a toolkit for the other way of teaching a program to play — let it
+  play, reward it when it wins, and let it work the rest out, which is called
+  *reinforcement learning*, or **RL** (see `ENGINE_ALTERNATIVES.md` for the
+  engine view). Checked here only for *pre-trained* no-limit hold'em players.
 - Finding: **there is no pre-trained no-limit hold'em model.** The registry in
   `rlcard/models/__init__.py` lists `leduc-holdem-cfr`, `leduc-holdem-rule-v1/2`,
   `limit-holdem-rule-v1`, plus UNO, Dou Dizhu and Gin Rummy rule models.
   rlcard-showdown's downloadable "pretrained" bundle covers Leduc and Dou Dizhu
-  only. DMC on no-limit hold'em is a training *example*, trained "for hours",
-  with no published weights.
+  only. Their one no-limit hold'em recipe — playing hands out at random to the
+  end and learning from the averages, which RLCard's own algorithm table calls
+  "Deep Monte-Carlo (**DMC**)" (`README.md:224`) — is a training *example*,
+  trained "for hours", with no published weights.
 - The environment itself: `DEFAULT_GAME_CONFIG = {'game_num_players': 2, ...}`
   and the player count is configurable; no-limit with raise amounts in chips.
 - Last activity: rlcard pushed 2024-06-26 (3,546 stars, MIT); showdown pushed
@@ -375,7 +406,9 @@ Two rules about the marks themselves:
 - Trained blueprint: **yes, downloadable**, but only from Baidu Netdisk
   (https://pan.baidu.com/s/157n-H1ECjEryAx0Z03p2_w, size unstated; access from
   outside China is often awkward: UNVERIFIED that the link still serves).
-  Trained on a Xeon Gold with 512 GB RAM.
+  Trained on a Xeon Gold with 512 GB of the fast working memory a program holds
+  its data in while it runs — *random-access memory*, or **RAM**. It is the
+  same quantity as the "16 GB" this laptop is measured by throughout.
 - Last activity: pushed 2024-05-29. Stars: 100. Licence: AGPL-3.0.
 - Runs on macOS / Python? Linux `.so` binaries; Mac build UNVERIFIED.
 - Ratings: a ✗ (2 only) · b ~ (its README: "hand abstraction technique and
@@ -414,10 +447,17 @@ Two rules about the marks themselves:
   for me, so full-ring on desktop is second-hand).
 - API: none. A reviewer notes it closes itself if a poker client is running.
 - Per-opponent adjustment: none by design; it teaches "non-exploitable" play.
-- Ratings: a ~ (heads-up and 6-max confirmed on the vendor's own pages; full
-  ring is reviewer-sourced only) · b ? (no-limit, but whether it advises from
-  a fixed set of sizes is not documented and the software is closed) · c ✗ ·
-  d ✗ (cannot be called by a program) · e ~ (affordable, closed).
+- Ratings: a ~ (the only seat facts on the vendor's own pages are on the price
+  page, https://www.pokersnowie.com/pricing, whose feature-table footnote reads
+  "Optimized for HU and 5-seated" of the phone apps; that the desktop product
+  also covers 6-max and full ring is second-hand, from the Cardmates review,
+  because the vendor's feature page did not render for me. So the ~ rests on
+  heads-up and small tables from the vendor, and 7 to 9 seats is unconfirmed
+  by anything) · b ? (no-limit, but whether it advises from a fixed set of
+  sizes is not documented and the software is closed) · c ✗ (the vendor's own
+  description is that it teaches balanced play; there is nothing to adapt) ·
+  d ✗ (cannot be called by a program) · e ~ ($29.90 a month, or $16.66 a month
+  billed annually, from the same price page; closed).
 
 ### 3.11 PokerBotAI (pokerbotai.com)
 
@@ -428,18 +468,24 @@ Two rules about the marks themselves:
   PPPoker, ClubGG, PokerBros, KKPoker, X-Poker, Pokerrrr 2, and others).
   Claims a neural network trained on 7 billion hands plus "GTO strategy +
   exploiting leaks + opponent profiling" over "hundreds of parameters".
-- Price (their own 2026 pricing page): one-time licence "from $700" (the
-  home page says about $1,000) plus "fuel", a per-hand charge, first top-up
-  from $150; a worked example is "$2,000 one-time + $700/mo". Also a
-  managed-farm revenue-share offer. Structured data says the company was
-  founded 2021-06-04 and has 51 to 200 staff; the site says "since 2016".
+- Price (their own cost page,
+  https://pokerbotai.com/docs/how-much-do-poker-bots-cost/): one-time licence
+  "from $700 (one-time fee)" for their class of bot, with the home page and
+  their return-on-investment page both saying "from $1,000+", plus "Fuel", a
+  per-hand charge, minimum top-up "from $150". Their worked example, on
+  https://pokerbotai.com/docs/poker-bot-roi-realistic-expectations/, is
+  "Software: $1,200 (one-time) Fuel: $300/mo". Also a managed-farm
+  revenue-share offer. Structured data says the company was founded 2021-06-04
+  and has 51 to 200 staff; the site says "since 2016".
 - Platforms: Android phones and emulators, Windows. **Not macOS.** No API.
 - Per-opponent adjustment: claimed (per-opponent profiling); **UNVERIFIED**,
   the software is closed and I could not inspect it.
-- Ratings: a ? · b ? · c ? — every one of these rests on the vendor's own
-  marketing, and the software is closed, so none can be marked · d ✗ (closed,
-  Android/Windows, cannot be integrated) · e ~ (buyable, but per-hand fees and
-  no way to read its decisions).
+- Ratings: a ? · b ? · c ? — there is no technical reference here, only claims
+  about how well it plays, how many hands trained it and whom it profiles, and
+  those are exactly the kind of vendor statement section 2 refuses a mark to ·
+  d ✗ (closed, Android/Windows, cannot be integrated) · e ~ (buyable at the
+  prices on the cost page named above, but per-hand fees and no way to read its
+  decisions).
 
 ### 3.12 Shanky Technologies Holdem Bot (bonusbots.com)
 
@@ -501,8 +547,9 @@ Two rules about the marks themselves:
   (e.g. a free "Snowball 6max cash" profile on the forum).
 - Price: about $150/year per third-party guides. **UNVERIFIED** directly.
 - Ratings: a ? · b ? · c ? · d ✗ (Windows, closed, by every third-party
-  account) · e ?. Nothing beyond its existence could be verified, so nothing
-  beyond the platform gets a mark.
+  account) · e ?. The vendor's own pages are unreachable, so there is neither a
+  technical reference nor a price page to read; on section 2's standard nothing
+  beyond the platform can be marked.
 
 ### 3.14 aipoker-bot/ppl-interpreter (Python runner for Shanky/OpenPPL profiles)
 
@@ -531,18 +578,40 @@ Two rules about the marks themselves:
   free profile exists that this parses is still open.
 - Per-opponent adjustment: whatever the profile's rules test; PPL has no
   by-name stats unless the host supplies them as symbols.
-- Ratings: a ✓ (the caller states the number of seats; nothing in the
-  interpreter caps it) · b ✓ (it returns an amount, clamped between the legal
-  minimum and maximum raise the caller declares) · c ~ · d ✓ · e ✓. Immature:
-  one day old, 0 stars, unproven at the table.
+- Ratings: a ~ (**the caller states the number of seats, but the interpreter is
+  written for 2 and 6, and I ran it to check.** `ppl_interpreter/state.py:39`
+  is `POSITIONS = {2: ["SB", "BB"], 6: ["SB", "BB", "UTG", "MP", "CO",
+  "BTN"]}`, and `SimpleState.__post_init__` (`state.py:58`) looks the seat
+  count up in that table, so building a 9-seat state raises `KeyError: 9`
+  unless the caller passes a list of nine position names of its own —
+  reproduced on 2026-09-15 against the repository as it stood that day.
+  Supplying the names does get past it, but two things underneath are still
+  sized for six: `symbols.py:142-147`'s `_lastpos_scale` maps seats 0 to 5 onto
+  Shanky's rough 1-to-10 position scale (`scale = {0: 1, 1: 3, 2: 5, 3: 6,
+  4: 8, 5: 10}`) and its fall-back, `scale.get(seat, 5)`, returns the middle
+  value 5 for **every** seat numbered 6 or higher — seats are numbered from 0,
+  so that is the seventh seat onward, and at a nine-handed table three of them
+  are indistinguishable to any rule that reads position; and `state.py:4`'s own
+  docstring fixes the vocabulary at the same six names — `position(seat)`
+  "returns one of SB, BB, UTG, MP, CO, BTN". It is not a cap, and the rest of
+  the interpreter is seat-count-agnostic, but 7-to-9-seat play needs work here,
+  which is why this is ~ and not ✓) ·
+  b ✓ (it returns an amount, clamped between the legal minimum and maximum raise
+  the caller declares: a profile rule `raise 37% force` on a pot of 113, with
+  2 to call, came back as `('raise', 44)` — a raise *by* 37% of the pot, given
+  as the total to put in, an arbitrary number rather than one off a menu;
+  reproduced the same day) · c ~ · d ✓ · e ✓. Immature: one day old, 0 stars,
+  unproven at the table.
 
 ### 3.15 poker-gto-rt (fabienpierret): **no code — an advertisement**
 
 - URL: https://github.com/fabienpierret/poker-gto-rt
 - What it claims: a real-time analysis pipeline "optimized for < 400ms latency
   on Apple Silicon" — YOLO table and card detection, SAM2 segmentation,
-  calibrated OCR for pot/bets/stacks, CoreML acceleration, then a
-  CFR/Monte-Carlo recommendation, advisory only, on an M4 Max with 36 GB.
+  calibrated reading of the pot, bet and stack numbers out of the picture —
+  turning an image of printed text back into text is *optical character
+  recognition*, **OCR** — CoreML acceleration, then a CFR/Monte-Carlo
+  recommendation, advisory only, on an M4 Max with 36 GB.
 - **What it contains: two files.** The full repository tree is `README.md`
   (3,503 bytes) and `LICENSE` (1,070 bytes). No source, no models, no tests,
   no packaging; GitHub reports the repository size as 3 KB and detects no
@@ -582,7 +651,9 @@ Two rules about the marks themselves:
   platform: screenshots + template matching + OCR + a local vision model,
   equity via `treys`, and "profilazione avversari" that tracks VPIP/PFR/AF per
   player and feeds them into the decision. Explicitly 6-max and 9-max.
-  Decisions are made partly by a local LLM through LM Studio.
+  Decisions are made partly by an AI model of the write-the-next-words kind,
+  running on the user's own machine through LM Studio — a *large language
+  model*, or **LLM**, the same class of thing as the GPT-4 in 3.16.
 - Last activity: pushed 2026-09-05. Stars: 1. Licence: MIT. Italian docs.
 - Runs on macOS / Python? Python; capture calibrated by an external tool
   (PokerTableScope); macOS UNVERIFIED.
@@ -613,8 +684,12 @@ Two rules about the marks themselves:
 
 ### 3.19 fedden/poker_ai (the vendored engine) and its forks
 
-- URL: https://github.com/fedden/poker_ai (1,585 stars, GPLv3, **archived**;
-  the API reports `archived: true` with `archived_at: null`, so GitHub does
+- URL: https://github.com/fedden/poker_ai (1,585 stars; its `LICENSE` file is
+  the GPL version 3 text, which is what `CLAUDE.md`'s licence section treats it
+  as, but GitHub's own licence field for it is unset — the API answers
+  `NOASSERTION`, name "Other" — so the file is the only thing that states the
+  licence; **archived**, with
+  the API reporting `archived: true` and `archived_at: null`, so GitHub does
   not expose the date it was archived and this survey states none. Its last
   push was 2023-04-03.) keithlee96/pluribus-poker-AI (355 stars, pushed
   2023-10-22) is an earlier snapshot; zanussbaum/pluribus (109 stars, 2020) is
@@ -753,9 +828,11 @@ Mac-native capture project turned out to contain no code.
    fetched by screen name and exposed to the rule language as ordinary
    quantities. Windows C++, so what crosses over is the design.
 3. **aipoker-bot/ppl-interpreter** (3.14): pure Python, installs in minutes
-   here, takes any seat count and any table state we hand it, returns an
-   action *and an amount*, and now ships two working profiles. Immature: one
-   day old, 0 stars, and its profiles are teaching examples, not winners.
+   here, takes the table state we hand it and returns an action *and an
+   amount*, and now ships two working profiles. Immature: one day old, 0
+   stars, its profiles are teaching examples rather than winners, and its
+   position handling is written for 2 and 6 seats (3.14's (a)), so it does not
+   arrive ready for 7 to 9 either.
    **Unresolved, and it decides whether this entry is usable at all:** a PPL
    profile *is* a hand-written rule for what to do with each holding, so
    running one puts hand-rolled decision logic where `CLAUDE.md`'s forefront
@@ -773,7 +850,9 @@ Mac-native capture project turned out to contain no code.
    own buttons, so nothing about *sizing* is worth taking from it.
 5. **NoRegrets** (3.4): the best multi-player no-limit strategy source on the
    list, and it does not fit — 36 to 50 GB while training against this
-   laptop's 16 GB. Its engine-side exploit dial (`--rnr-*`) is the most useful
+   laptop's 16 GB. Its engine-side exploit dial — the restricted-Nash-response
+   settings, `--rnr-*`, which tell the trainer to attack a described opponent
+   while staying on a leash (3.4) — is the most useful
    idea here. Revisit only with a measured small-memory configuration.
 6. **Texas Hold'em AI Lab** (3.18): the only project that actually *ships*
    trained 6-max artefacts. In-browser TypeScript, and its own tournament
@@ -809,24 +888,58 @@ Mac-native capture project turned out to contain no code.
 **The 7-to-9-seat gap, stated plainly.** No resource in this survey plays 7,
 8 or 9 seats with true no-limit sizing. OpenHoldem's source is the one place
 the seats are confirmed (ten chairs), and it is a Windows C++ rule framework
-that ships no strategy; Shanky's seat range is a vendor claim about closed
-software, and it ships no strategy of its own either, only rule profiles;
-PokerBotAgent names 9-max but is an unproven one-star project with a language
-model in the decision path; PokerSnowie's full-ring support is second-hand and
-uncallable; every open trained-strategy project stops at 6. The operator's
+that ships no strategy; Shanky's user guide shows its *language* coding for
+eight seats or more, but the product is closed, and it ships no strategy of its
+own either, only rule profiles; **ppl-interpreter (3.14), the one thing here
+that runs on this laptop and returns a bet size, is written for 2 and 6 seats
+in its position handling — a 9-seat state raises `KeyError: 9` unless the
+caller names the positions itself, and every seat past the sixth is flattened
+to one position value — so it does not reach 7 to 9 without work either, and it
+carries no strategy in any case**; PokerBotAgent names 9-max but is an unproven
+one-star project with a language model in the decision path; PokerSnowie's
+full-ring support is second-hand and uncallable; every open trained-strategy
+project stops at 6. The operator's
 second priority — 8 and 9 handed — is an **open gap this survey cannot
 close**, and combining a 6-max bot with a per-name memory does not close it
 either. It needs its own piece of work.
 
 ## 5. Recommendation
 
-**This survey does not choose the strategy road, and must not.** Recommending
-that we train a blueprint in advance would contradict `ENGINE_ALTERNATIVES.md`,
-which recommends the opposite in as many
-words — "abandon the train-in-advance approach entirely in favour of computing
-the decision at the moment we need it" — on the strength of a bot it actually
-built and measured on this laptop (6-player, 52-card, no-limit, 250 ms per
-decision, no training at all). It would also set aside the opening of
+**Do one thing on the strength of this survey: start measuring against Slumbot
+now, before anything else is built.** It is the only resource here that
+actually ran on this laptop during the survey — free, live, callable from
+Python, a hand dealt and verified (3.3, and first on the shortlist) — which
+makes it the only way to tell whether what we build is getting stronger instead
+of merely getting finished. It is a two-player opponent, so it bounds one seat
+count and no more; that is still one more than we can bound today. Everything
+else this section has to say is a refusal, a constraint, or a question for
+somebody else to settle.
+
+**Above all, this survey does not choose the strategy road, and must not.**
+Recommending that we train a blueprint in advance would cut across
+`ENGINE_ALTERNATIVES.md`, the companion survey of engines — which is itself
+under revision on a separate branch, so it is a position in motion, not a
+settled one. Its "The recommendation, first" section calls **unconditionally**
+for switching the engine to OpenSpiel's `universal_poker`, and then, **subject
+to two things it says it cannot settle by itself**, for computing the decision
+during the hand rather than training a strategy in advance. Its two conditions,
+in its own numbering: a **ruling on the forefront rule**, because the thing
+choosing the action would be code we wrote, which is what that rule exists to
+prevent; and a **comparison against adopting an existing bot** that chooses the
+action with its own code and needs no such ruling — for which it points at this
+survey, under review, and at the one candidate here that covers 2 to 6 players.
+Its evidence is a bot it built and measured on this laptop — 6 players, 52
+cards, no-limit, 250 ms a decision, no training at all — which beat five
+opponents moving at random by +22.80 big blinds a hand, 95% confidence interval
++15.07 to +30.53, over 3,412 hands. That measurement was taken in **menu mode**:
+its "What the play-strength test says, and what it cannot" section states that
+it was run with a four-move betting menu, not real bet sizing, and that the
+real-sizing version "was not worth measuring against anything" at that time
+budget. And its "What the training measurements show, and what they do not"
+section records that **no abstraction sized to a few hours was attempted
+there**, so it does not close the train-in-advance road either; it reports that
+road unstarted, not disproved. Recommending a blueprint would also set aside
+the opening of
 `CLAUDE.md`, which names `fedden/poker_ai` as the engine this project is built
 on, and its Plan, whose stage 1 is moving that engine to the 52-card game.
 Choosing between a strategy trained in advance and one computed while the hand
@@ -854,25 +967,37 @@ What this survey *does* settle, and hands to that reconciliation:
   code as inputs. Whatever engine road wins, the memory of "who this player
   is" is ours to write, because nobody ships it in a form we can run.
 - **Per-opponent adjustment must enter through the engine, never through code
-  of ours that picks actions.** `CLAUDE.md` lines 13-15 forbid hand-rolled
-  decision logic, and "shift the call, bluff and value thresholds for this
-  named player" is precisely that, as is any layer of ours that turns an
-  equity number into a bet. Two shapes are legitimate: (i) **a biased strategy
-  the engine itself produces** — NoRegrets' `--rnr-model` / `--rnr-opponent`
-  with the `--rnr-p` dial, fed an opponent that its own `clone` command builds
-  from logged hands; or (ii) **an opponent input to engine-side search** —
-  giving the engine a per-player range or behaviour to play the rest of the
-  hand out with, which is the hook `ENGINE_ALTERNATIVES.md` argues a
-  decision-time bot has and a fixed blueprint does not. Our code supplies the
-  observations and picks which input to pass; the engine chooses the action.
-  Anything outside those two shapes needs a recorded carve-out in `CLAUDE.md`
+  of ours that picks actions.** The boundary is already drawn, in the table in
+  `CLAUDE.md`'s forefront rule, and this survey neither widens nor narrows it.
+  The engine's side of that table is evaluating hand strength, choosing an
+  action, assigning a range to an opponent, reading board texture, producing
+  the strategy itself, and solving — so "shift the call, bluff and value
+  thresholds for this named player" is out, as is any layer of ours that turns
+  an equity number into a bet. Our side of it is the observation work: counting
+  observed actions, computing a single rate from those counts, shrinking a rate
+  toward a baseline, sorting an opponent into a bucket, reporting several rates
+  side by side, combining rates across the observed population into a baseline,
+  a classification split or an archetype, selecting *which* engine strategy to
+  load, and substituting an opponent model into the engine's own solver. The
+  last of those categories is the one with shipped examples in this survey,
+  which is why two of them are worth naming here: **a biased strategy the
+  engine itself produces** —
+  NoRegrets' `--rnr-model` / `--rnr-opponent` with the `--rnr-p` dial, fed an
+  opponent that its own `clone` command builds from logged hands (3.4) — and
+  **an opponent input to engine-side search**, giving the engine a per-player
+  behaviour to play the rest of the hand out with, which is the hook
+  `ENGINE_ALTERNATIVES.md` argues a decision-time bot has and a fixed blueprint
+  does not. They are examples of the table's categories, not a shorter list
+  than the table. Our code supplies the observations and picks which input to
+  pass; the engine chooses the action. Anything that would put one of the
+  engine's own jobs into our code needs a recorded carve-out in `CLAUDE.md`
   before it is written, not after.
 - **A rule profile is hand-written decision logic, and the survey does not
   settle whether we may run one.** PPL and OpenPPL profiles — the shipped
   strategies behind 3.1, 3.12 and 3.14, and the reason two of them rank in the
   top ten — are lists of "with this hand in this spot, do this", written by a
-  person. `CLAUDE.md` lines 13-15 reject "hand-rolled ... decision logic in
-  place of the vendored engine", and this survey applies exactly that test to
+  person. `CLAUDE.md`'s forefront rule rejects "hand-rolled ... decision logic
+  in place of the vendored engine", and this survey applies exactly that test to
   PokerGPT (3.16) and PokerBotAgent (3.17), so it must apply it to its own
   picks. Two uses are plainly safe because our code does not choose the
   action: a profile driving a *scripted opponent* to develop and test against,
@@ -918,7 +1043,9 @@ What this survey *does* settle, and hands to that reconciliation:
   ship with it.)
 - Whether PokerBotAgent keys its per-player statistics on the seat or on the
   screen name.
-- How many seats the Shanky bot actually plays. Its PPL guide codes for
-  full-ring positions, so the language reaches nine, but the product is closed
-  and the site advertises game types and table counts, never seat counts.
+- How many seats the Shanky bot actually plays. Its user guide codes for
+  full-ring positions — "StillToAct >=7", eight seats at the least — so the
+  language reaches past six, which is what its (a) ~ rests on; but the product
+  is closed, and the marketing pages advertise game types and how many tables
+  at once, never seat counts, so the bot's own range stays unknown.
 - TexasSolver multiway support.
