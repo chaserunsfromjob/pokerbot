@@ -49,12 +49,12 @@ Two words recur and are worth fixing now:
 
 ## How these claims were checked
 
-Everything below was **run**, not read off a website. Each candidate was
+Everything below was **run**, not read off a website. Every candidate was
 downloaded from the Python Package Index (the standard place Python code is
-published, "PyPI"), installed into its own clean, separate set of packages, and
-driven through real hands. Where a claim could only come from reading the
-source, the file and line number is given. Timings are wall-clock on this
-machine.
+published, "PyPI") into one throwaway set of packages kept well away from the
+project's own - `.venv-engines/`, which git ignores - and driven through real
+hands there. Where a claim could only come from reading the source, the file and
+line number is given. Timings are wall-clock on this machine.
 
 Every **measured** number in this file comes from a program committed under
 **`research/engine_alternatives/`**, and the raw output of the run quoted is
@@ -112,8 +112,12 @@ speed comparisons are taken as ratios within a repeat.
 # The recommendation, first
 
 **Switch the engine to OpenSpiel's `universal_poker`.** That part is
-unconditional: it is the only candidate that gives 52-card no-limit hold'em at
-2 to 9 players, with real bet sizing, with no offline training, today.
+unconditional. Four of the seven candidates give 52-card no-limit hold'em at 2
+to 9 players, with real bet sizing, with no offline training, today - OpenSpiel,
+PokerKit, `texasholdem` and PyPokerEngine. Of those four, OpenSpiel is **five
+and a half times faster than the next one** at the job this architecture
+actually does, and the only one that also ships a solver that works with more
+than two players, so it keeps a door open that the others close.
 
 **Then compute the decision during the hand rather than training a strategy in
 advance - subject to two things this document cannot settle by itself:**
@@ -135,8 +139,8 @@ and nobody has built it.** Whether an hours-sized abstraction exists is untested
 and is **not** ruled out here.
 
 Keep `fedden/poker_ai` in the repository for reference only, and spend no more
-time adapting it - but that sentence is an edit to `CLAUDE.md`, not a finding,
-and it is flagged here rather than slipped through. `CLAUDE.md:7-9` makes
+time adapting it - but that sentence is an edit to `CLAUDE.md`, and it is
+flagged here rather than slipped past. `CLAUDE.md:7-9` makes
 `fedden/poker_ai` the stated basis of the whole project, and `CLAUDE.md:35-37`
 makes "find out what it takes to move it off the default 20-card short deck"
 stage 1 of the plan. Stopping work on it reverses both. **This document does not
