@@ -17,6 +17,13 @@ marked **?** rather than guessed.
 The question was: can we adopt a finished poker bot, or a finished strategy,
 instead of building one? The short answer:
 
+- **The one thing to do on the strength of this survey: start measuring against
+  Slumbot now, before anything else is built.** It is the only resource here
+  that actually ran on this laptop during the survey — free, live, callable
+  from Python — which makes it the only way to tell whether what we build is
+  getting stronger rather than merely getting finished. It is a two-player
+  opponent, so it bounds one seat count and no more. Section 5 gives the
+  reasoning.
 - **No single finished thing does what we want.** Nothing open or paid that I
   could verify plays no-limit hold'em at every size from 2 to 9 players, adjusts
   to named opponents, runs on this machine (an Apple M4 laptop with 16 GB of
@@ -40,9 +47,13 @@ instead of building one? The short answer:
   as Mac-native, poker-gto-rt, **contains no code at all**: its repository is a
   README file and a licence, 4,573 bytes together. It is an advertisement for
   work that was never published.
-- **Nothing surveyed plays 7, 8 or 9 seats with real bet sizing.** Everything
-  with a trained strategy stops at six. The operator's second priority, 8 and
-  9 handed, is an open gap this survey cannot close.
+- **Nothing surveyed brings a strategy that plays 7, 8 or 9 seats with real
+  bet sizing.** Two things reach those seats with real bet sizing, and neither
+  carries a strategy of its own: OpenHoldem is a Windows rule framework that
+  ships none, and the Shanky bot's rule language codes for eight seats and more
+  but ships only hand-written rule profiles. Everything with a trained strategy
+  stops at six. The operator's second priority, 8 and 9 handed, is an open gap
+  this survey cannot close.
 - **This survey does not decide how the bot thinks.** Whether the strategy is
   worked out in advance or worked out during the hand is a question
   `ENGINE_ALTERNATIVES.md` answers differently, and settling it needs those
@@ -73,6 +84,12 @@ Plain-words glossary for terms used below:
   turning the picture into numbers (cards, stacks, bets, whose turn).
 - *Heads-up (HU)*: two players only. *6-max*: up to six seats. *Full ring*:
   nine or ten seats.
+- *Seat names*: the standard short names for where a player sits relative to
+  the dealer, which is what decides who acts first. The two forced bets are the
+  *small blind* (**SB**) and the *big blind* (**BB**); first to act before the
+  flop is *under the gun* (**UTG**), then the *middle position* seats (**MP**),
+  then the *cutoff* (**CO**), one seat before the dealer, and the dealer
+  himself, the *button* (**BTN**), who acts last after the flop.
 - *GTO*: a balanced strategy that cannot be beaten long-term but does not
   punish weak opponents as hard as a tailored ("exploitative") one.
 - *Equity*: the share of the pot a hand is worth on average if the hand were
@@ -96,7 +113,7 @@ Each resource gets a mark on five criteria:
 | a | Plays 2 to 9 players | full range | part of the range | one size only |
 | b | True no-limit bet sizing | yes | abstracted / few sizes | limit or not stated |
 | c | Exploits a specific opponent by identity | built in, keyed by name | some opponent modelling, not by name | none |
-| d | Reachable in hours on **this** laptop (Apple M4, 16 GB memory), Python preferred | yes | possible with real work (other language, VM) | days of compute, more memory than the machine has, or a dead platform |
+| d | Reachable in hours on **this** laptop (Apple M4, 16 GB memory), Python preferred | yes | possible with real work (other language, or a whole second computer simulated in software inside this one so that Windows programs will run — a *virtual machine*, or **VM**) | days of compute, more memory than the machine has, or a dead platform |
 | e | Fits private use (licence and price) | free and open, or affordable | paid but affordable, or copyleft that is fine for private use | closed with no purchase path |
 
 "Runs on macOS / Python?" is answered literally. GPL/AGPL is fine for us
@@ -117,6 +134,21 @@ Two rules about the marks themselves:
     well, that it profiles opponents, that it was trained on so many hands —
     *may not* carry a mark at all. Those get **?**, because they are the
     vendor's assessment of its own product and nothing here can test them.
+
+  Two things sit outside that pair and are allowed, because the reason for
+  distrusting a vendor's boast does not apply to either:
+
+  - a vendor's statement that its product **does not** do something — that it
+    does not adjust to opponents, that it refuses to run beside a poker client
+    — *may* carry a **✗**. A seller has no reason to talk its own product down,
+    so the admission can be taken at its word where the boast cannot.
+    PokerSnowie's c ✗ (3.10) rests on the vendor saying it teaches balanced
+    play and adapts to nobody.
+  - **third-party evidence**, where independent accounts agree, *may* carry a
+    mark on a plain checkable matter of fact — above all which operating system
+    a product runs on — and never on strength, adaptivity or results. The mark
+    must say that it rests on third-party accounts, not on the vendor. Warbot's
+    d ✗ (3.13) rests on that, its own site being unreachable.
 
   Every criterion in a row is held to that one standard; no row may score one
   criterion on a technical reference and refuse another the same source.
@@ -200,14 +232,18 @@ Two rules about the marks themselves:
 
 - URLs: https://www.slumbot.com/ (API documented at
   https://slumbot.com/sample_api.py), https://github.com/ericgjackson/slumbot2019
-- What: Eric Jackson's ACPC-champion heads-up no-limit bot, playable for free
+- What: Eric Jackson's heads-up no-limit bot, winner of the yearly contest in
+  which research groups enter their poker programs against each other — the
+  *Annual Computer Poker Competition*, or **ACPC** — playable for free
   through three web addresses its server answers requests on — the same kind
   of request a web browser makes, over the web's own protocol, HTTP
   (`/slumbot/api/login`, `/new_hand`, `/act`).
   Blinds 50/100, 200 big-blind stacks, stacks reset each hand.
 - Verified live: a `POST /slumbot/api/new_hand` during this survey returned
   `{"action": "b200", "client_pos": 0, "hole_cards": ["6c","3d"], ...}`.
-- What is released: the C++ solver code (CFR+, MCCFR, subgame resolving,
+- What is released: the C++ solver code (CFR+, and the variant that samples
+  only part of the game each pass instead of walking all of it — *Monte Carlo
+  CFR*, or **MCCFR** — plus subgame resolving and
   abstractions; MIT; 177 stars; last push 2023-09-18). **The trained strategy
   files are not released**, and the API does not let you ask "what would you
   do with these cards on this board": the server deals the hand, so you can
@@ -254,12 +290,14 @@ Two rules about the marks themselves:
     licence note above; what is published is its size, its checksum and the
     command that produced it;
   - `BASELINES.md` records training runs at comparable size holding **36 to
-    45 GB** of live memory ("150-210M infosets, 36-45 GB RSS: memory-bound"),
-    and one variant at "~50GB RSS" with 142.4M situations. What those runs
-    report is how much memory the program is actually holding while it runs,
-    as against how big the file it finally writes is; the name for it is
-    resident set size, which those quotations shorten to RSS. The machine has
-    **16 GB** in total, some of it already spoken for.
+    45 GB** of live memory. What those runs report is how much memory the
+    program is actually holding while it runs, as against how big the file it
+    finally writes; the name for that quantity is *resident set size*, which
+    the repository shortens to **RSS**. Its note on where the training rate
+    collapses reads "(map at 150-210M infosets, 36-45 GB RSS): memory-bound"
+    (`BASELINES.md:1183-1184`), and one variant is logged as "142.4M infosets,
+    ~50GB RSS" (`BASELINES.md:575`). The machine has **16 GB** in total, some
+    of it already spoken for.
   - There is no statement of a memory requirement anywhere in the README, and
     no run in `BASELINES.md` reports a resident set size under ~36 GB, so the
     smallest footprint the published recipe can reach is **unknown**, not
@@ -333,7 +371,7 @@ Two rules about the marks themselves:
   · e ✓ (code) /
   ~ (their blueprints are paid).
 
-### 3.5 Deep CFR for 6-player NLHE (dberweger2017)
+### 3.5 Deep CFR for 6-player no-limit hold'em — NLHE (dberweger2017)
 
 - URL: https://github.com/dberweger2017/deepcfr-texas-no-limit-holdem-6-players
 - What: a Python 3.11 Deep CFR research project for six-handed no-limit, with
@@ -492,8 +530,11 @@ Two rules about the marks themselves:
 - URLs: https://bonusbots.com/, https://bonusbots.com/pricing.htm
 - What: "the original autoplay Texas Holdem Poker Bot since 2007". Version
   12.7.8 posted 2026-08-12. Ships "pre-loaded with 6 good profiles" written in
-  PPL (its rule language; OpenPPL was derived from it). Cash, MTT, SNG, HU,
-  up to 6 tables at once.
+  PPL (its rule language; OpenPPL was derived from it). It advertises cash
+  games; tournaments across many tables that merge as players are knocked out
+  — *multi-table tournaments*, or **MTTs**; one-table tournaments that begin
+  the moment the seats fill — *sit-and-go*, or **SNG**; and heads-up. Up to 6
+  tables at once.
 - Price: free demo (stops after 200 hands), $129 for one year, $79 renewal.
 - Platforms: Windows desktop clients (licence "can be moved to any PC"). No
   API, no Mac.
@@ -522,7 +563,10 @@ Two rules about the marks themselves:
   *bot* is sold as playing, which is why this is ~ and not ✓; the marketing
   pages are no help, because "Cash Games, MTTs, SNGs, DONs, Speed, HU" and
   "Multi-table up to 6 simultaneous tables" are game types and how many tables
-  at once, never how many seats. The open question stays recorded in section 6)
+  at once, never how many seats. (The one term in that list not already
+  explained above is the sit-and-go in which everyone who outlasts the bottom
+  half of the field wins the same amount, win or lose at the end — a *double or
+  nothing*, or **DON**.) The open question stays recorded in section 6)
   · b ✓ (the same guide, p. 15: "Bet 5 force (bets 5 big blinds, note that Bet
   is never available preflop)", "Raise 5 force (raises by 5 big blinds, note
   that Raise is always raise by, not raise to)", "Bet 70% force (bets 70% of
@@ -946,7 +990,10 @@ Choosing between a strategy trained in advance and one computed while the hand
 is being played is a decision for the **reconciliation of `ENGINE_ALTERNATIVES.md`,
 `RESOURCES_BOTS.md`, `RESOURCES_SOLVERS.md` and `RESOURCES_EXPLOITATION.md`**,
 and whatever it decides needs a recorded carve-out or rule change in
-`CLAUDE.md`. Not a line in a survey of other people's bots.
+`CLAUDE.md`. None of those four is on the main line of the project yet: this
+file and its three companions are surveys still being written and reviewed on
+separate branches, so the reconciliation has nothing settled to read until they
+land. Not a line in a survey of other people's bots.
 
 What this survey *does* settle, and hands to that reconciliation:
 
@@ -962,34 +1009,64 @@ What this survey *does* settle, and hands to that reconciliation:
   measurement to make, not a fact to look up.
 - **Measure against Slumbot from day one.** Free, live, verified, callable
   from Python today. It is heads-up, so it bounds one seat count only.
-- **Identity-keyed exploitation has exactly one shipped design** — OpenHoldem's
-  per-seat statistics, looked up by screen name and handed to the decision
-  code as inputs. Whatever engine road wins, the memory of "who this player
-  is" is ours to write, because nobody ships it in a form we can run.
+- **Exactly one shipped design measures the player it is keyed to** —
+  OpenHoldem's per-seat statistics, looked up by screen name and handed to the
+  decision code as inputs (3.1). Shanky's `Opponent =` branches by screen name
+  too (3.12), but it is the other half of the job only: OpenHoldem fetches the
+  statistics itself, while Shanky matches against a list of names the user has
+  written out by hand and gathers nothing. Whatever engine road wins, the
+  memory of "who this player is" is ours to write, because nobody ships it in
+  a form we can run.
 - **Per-opponent adjustment must enter through the engine, never through code
   of ours that picks actions.** The boundary is already drawn, in the table in
   `CLAUDE.md`'s forefront rule, and this survey neither widens nor narrows it.
   The engine's side of that table is evaluating hand strength, choosing an
   action, assigning a range to an opponent, reading board texture, producing
-  the strategy itself, and solving — so "shift the call, bluff and value
-  thresholds for this named player" is out, as is any layer of ours that turns
-  an equity number into a bet. Our side of it is the observation work: counting
+  the strategy itself, solving, and **combining live-field rates into a
+  quantity that drives a poker decision** — the table's own example of that
+  last one is multiplying the fold rates of the opponents in the current hand
+  to gate a bluff — so "shift the
+  call, bluff and value thresholds for this named player" is out, as is any
+  layer of ours that turns an equity number into a bet. Our side of it is the
+  observation work: counting
   observed actions, computing a single rate from those counts, shrinking a rate
   toward a baseline, sorting an opponent into a bucket, reporting several rates
   side by side, combining rates across the observed population into a baseline,
   a classification split or an archetype, selecting *which* engine strategy to
   load, and substituting an opponent model into the engine's own solver. The
-  last of those categories is the one with shipped examples in this survey,
-  which is why two of them are worth naming here: **a biased strategy the
-  engine itself produces** —
+  combining entry in our column and the combining row on the engine's are a
+  matched pair, and the pairing is the whole limit: combining rates across the
+  **observed population** — the standing database — into a baseline, a
+  classification split or an archetype is ours, while combining the rates of
+  the players **in the hand being played** into a number that then drives a
+  decision is the engine's.
+
+  Of the categories allowed to us, "substituting an opponent model into the
+  engine's own solver" has exactly **one** shipped example in this survey, and
+  it is worth naming: **a biased strategy the engine itself produces** —
   NoRegrets' `--rnr-model` / `--rnr-opponent` with the `--rnr-p` dial, fed an
-  opponent that its own `clone` command builds from logged hands (3.4) — and
-  **an opponent input to engine-side search**, giving the engine a per-player
-  behaviour to play the rest of the hand out with, which is the hook
-  `ENGINE_ALTERNATIVES.md` argues a decision-time bot has and a fixed blueprint
-  does not. They are examples of the table's categories, not a shorter list
-  than the table. Our code supplies the observations and picks which input to
-  pass; the engine chooses the action. Anything that would put one of the
+  opponent that its own `clone` command builds from logged hands (3.4). All of
+  that happens before a hand is dealt: our code supplies the observations and
+  picks which opponent to train against; the engine produces the strategy and
+  chooses the action. It is an example of one of the table's categories, not a
+  shorter list than the table.
+
+  A second hook is often named beside it, and it is **not** a shipped example
+  of anything here. `ENGINE_ALTERNATIVES.md` calls it "Hook A - the rollout
+  policy, per seat": inside a play-out, each opponent's sampled actions are
+  drawn from that opponent's own measured tendencies rather than uniformly.
+  Three things have to be said about it plainly. It is **unbuilt** — nothing
+  surveyed here ships an opponent input to search during the hand; NoRegrets'
+  restricted-Nash switches are training-time (3.4), and robopoker (3.9) and
+  DecisionHoldem (3.8) both score c ✗. It is **not engine-side** — in that
+  document the hook sits inside `research/engine_alternatives/chooser.py`, a
+  decision-time chooser of our own, under the column heading "Written by us
+  (the chooser)", and that section states "The engine never picks". And it is
+  **unruled** — the same document says adopting the architecture it belongs to
+  "requires a recorded carve-out to the forefront rule", and expressly declines
+  to grant one. So it is an unbuilt design borrowed from the companion survey
+  and waiting on a ruling; this survey does not give that ruling and does not
+  treat the hook as already permitted. Anything that would put one of the
   engine's own jobs into our code needs a recorded carve-out in `CLAUDE.md`
   before it is written, not after.
 - **A rule profile is hand-written decision logic, and the survey does not
