@@ -6,8 +6,9 @@ This file covers the other side: things that already *play*, already carry a
 strategy, or already read a table off a screen.
 
 Every URL below was visited on 2026-09-15. Stars, last-activity dates,
-licences and repository file listings come from the GitHub API on that date
-unless marked otherwise. Anything I could not confirm is marked **UNVERIFIED**,
+licences and repository file listings come from the service GitHub runs for
+other programs to ask it questions — its *application programming interface*,
+or **API** — on that date unless marked otherwise. Anything I could not confirm is marked **UNVERIFIED**,
 and a rating that would have rested on it is marked **?** rather than guessed.
 
 ## 1. Summary for a non-programmer
@@ -47,10 +48,15 @@ instead of building one? The short answer:
   documents read together, not a line here. Section 5 below says so at length.
 - **The famous bots are not on the table.** Pluribus, Libratus, DeepStack and
   Supremus were never released. The open re-creations either ship no trained
-  strategy (DeepHoldem, Deep CFR 6-player), are heads-up only (DecisionHoldem,
-  Slumbot), or sell the trained strategy commercially (NoRegrets).
+  strategy (DeepHoldem, Deep CFR 6-player — the method almost every project
+  here works out its strategy with is to play the game against itself millions
+  of times and adjust wherever another choice would have paid better, which is
+  called *counterfactual regret minimisation*, or **CFR**; "Deep CFR" is the
+  version that stores those adjustments in a neural network), are heads-up only
+  (DecisionHoldem, Slumbot), or sell the trained strategy commercially
+  (NoRegrets).
 - **Paid products are Windows or Android, not Mac,** and none exposes an
-  interface a program can call. PokerSnowie ($29.90/month) is a study tool
+  interface a program can call — none has an API. PokerSnowie ($29.90/month) is a study tool
   that refuses to run beside a poker client and does not adapt to opponents.
   PokerBotAI (from $700 plus per-hand fees) claims per-opponent profiling on
   mobile poker apps but is closed and runs on Android/Windows.
@@ -68,6 +74,13 @@ Plain-words glossary for terms used below:
   nine or ten seats.
 - *GTO*: a balanced strategy that cannot be beaten long-term but does not
   punish weak opponents as hard as a tailored ("exploitative") one.
+- *Equity*: the share of the pot a hand is worth on average if the hand were
+  played to the end from here — "this hand wins 62% of the time against what
+  the others could be holding" is an equity figure. It says how strong a
+  holding is; it does not say what to do with it.
+- *Monte Carlo*: working an answer out by dealing the rest of the hand at
+  random many thousands of times and averaging what happened, instead of
+  calculating it exactly. It is how equity is usually estimated.
 - *VPIP / PFR / AF*: standard per-player statistics (how often a player puts
   money in before the flop, how often they raise, how aggressive they are).
   These are what "exploiting a named opponent" is built from.
@@ -90,9 +103,22 @@ because the project is never distributed.
 
 Two rules about the marks themselves:
 
-- **A mark rests only on a fact I checked.** Where the fact a criterion turns
-  on could not be verified, the criterion gets **?** and says what is missing.
-  A ✓ or ~ never stands on a vendor's claim or on a guess.
+- **A mark rests only on a fact I checked, and never on a guess.** Where the
+  fact a criterion turns on could not be verified, the criterion gets **?** and
+  says what is missing. For closed products, where reading the source is not an
+  option, the line runs between two kinds of vendor document:
+  - a vendor's own **technical reference** — the manual that documents how the
+    software is programmed, or the price page that states what it costs — *may*
+    carry a ✓ or a ~, provided the mark names the document and the page it
+    rests on. Such a document describes the product's mechanics or its terms,
+    and it is the vendor's own instructions to its own customers;
+  - a vendor's **claim about strength, adaptivity or results** — that it plays
+    well, that it profiles opponents, that it was trained on so many hands —
+    *may not* carry a mark at all. Those get **?**, because they are the
+    vendor's assessment of its own product and nothing here can test them.
+
+  Every criterion in a row is held to that one standard; no row may score one
+  criterion on a technical reference and refuse another the same source.
 - **The operator's table sizes are 2 to 9, mostly 6-handed, with 8 and 9 as
   the second priority.** Criterion (a) is scored against that, so "6-max only"
   is a real gap, not a detail.
@@ -426,22 +452,45 @@ Two rules about the marks themselves:
 - Platforms: Windows desktop clients (licence "can be moved to any PC"). No
   API, no Mac.
 - Per-opponent adjustment: PPL profiles can branch on what an opponent has
-  done in the current hand. Whether the product tracks players across hands by
-  name is not documented.
-- Ratings: a **?** — no seat fact could be checked. The site's own wording,
-  "Cash Games, MTTs, SNGs, DONs, Speed, HU" and "Multi-table up to 6
-  simultaneous tables", is game types and how many tables at once, not how
-  many seats; its PPL guide does code for full-ring positions ("StillToAct
-  >=7 ... full ring games with 7+ live opponents behind you",
-  https://bonusbots.com/PPLguide.pdf p. 22), which implies nine seats, but
-  that is the vendor describing closed software nobody here can run, and the
-  rule at the top of section 2 says a mark never stands on a vendor's claim ·
-  b ✓ (PPL carries the amount in the command: the same guide, p. 15, "Bet 5
-  force (bets 5 big blinds)", "Raise 5 force (raises by 5 big blinds, note
+  done in the current hand, **and on an opponent's screen name** — the guide's
+  section 3.2.6, "Opponent Name Variable" (p. 18-19), documents `Opponent =`,
+  "true if there is a match for your value with any opponent screen name in the
+  current hand who still has cards in front of them", with worked rules like
+  "when (opponent = egor or opponent = Mad_Scientist) fold force". What the
+  product does *not* do is gather the statistics behind those names: the guide
+  says the variable "provides a way for you to utilize stats gathered on
+  opponents from tracking software such as Poker Tracker, Holdem Manager,
+  etc.", or names "you have personally observed" — the list of names is
+  hand-written by the user, and the bot only matches against it. The guide also
+  restricts the feature to certain poker rooms ("as of December 2016 this only
+  works at the WPN sites, America's Cardroom, etc.").
+- Ratings, all of them on the same standard — the vendor's own technical
+  reference counts, the vendor's marketing does not: a ~ (the vendor's user
+  guide, https://bonusbots.com/PPLguide.pdf p. 22, worked example for coding
+  the under-the-gun seat: "When raises = 0 and calls = 0 and folds = 0 and
+  StillToAct >=7 ... The above statement will tell the bot to only play the
+  specific listed hands when under the gun in full ring games with 7+ live
+  opponents behind you." Seven opponents still to act plus the bot is eight
+  seats at the least, and full ring is nine or ten, so the language the product
+  ships reaches past six. What the guide does not state is the seat range the
+  *bot* is sold as playing, which is why this is ~ and not ✓; the marketing
+  pages are no help, because "Cash Games, MTTs, SNGs, DONs, Speed, HU" and
+  "Multi-table up to 6 simultaneous tables" are game types and how many tables
+  at once, never how many seats. The open question stays recorded in section 6)
+  · b ✓ (the same guide, p. 15: "Bet 5 force (bets 5 big blinds, note that Bet
+  is never available preflop)", "Raise 5 force (raises by 5 big blinds, note
   that Raise is always raise by, not raise to)", "Bet 70% force (bets 70% of
-  the pot)", "Raise 150% force" — any number of big blinds or any percentage
-  of the pot, not a menu) · c ~ (branching on in-hand behaviour only; by-name
-  tracking is **?**) · d ✗ (Windows-only, closed) · e ~.
+  the pot, note that Bet is never available preflop)", "Raise 150% force", and
+  the mechanism: "Our bots execute the custom bet sizing commands by typing the
+  bet size specified into the bet amount window at the poker table and then
+  clicking on the Bet button" — any number of big blinds or any percentage of
+  the pot, typed in, not a menu) · c ~ (the guide documents branching by screen
+  name, but nothing that measures a player: the statistics are gathered
+  elsewhere and pasted in as a hand-written list of names, which is not the
+  "built in, keyed by name" that (c)'s ✓ asks for, and the feature works only
+  at some poker rooms) · d ✗ (Windows-only, closed) · e ~ ($129 for a year, $79
+  to renew, free demo, from the vendor's own price page
+  https://bonusbots.com/pricing.htm).
 
 ### 3.13 Warbot (warbotpoker.com)
 
