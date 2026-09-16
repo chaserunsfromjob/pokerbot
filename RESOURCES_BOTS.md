@@ -168,8 +168,9 @@ Two rules about the marks themselves:
   write in its rule language, OpenPPL — an open re-implementation of the
   language Shanky Technologies wrote for its own bots (3.12) and called
   *Poker Programming Language*, or **PPL**, in which a strategy is a list of
-  lines like "when you hold this in this spot, do that". It ships no strategy
-  ("it does not come with a strategy, and it never will").
+  lines like "when you hold this in this spot, do that". It ships no strategy:
+  the fork's README says "It does not come with a strategy, and it never will"
+  (`README.md:14`); the original repository has no README.
 - Last activity: original pushed 2025-04-14, last release 14.0.2 on 2021-12-26;
   fork pushed 2026-09-12 with releases v14.1.0.0 (2026-08-22) and v14.1.1.0
   (2026-09-12). Stars: 255 (original), 1 (fork). Licence: GPLv3 by the licence
@@ -182,16 +183,18 @@ Two rules about the marks themselves:
 - Plays today? Yes on Windows desktop clients it has a table map for, any
   table size the map covers, limit and no-limit, with OpenPPL profiles.
 - Per-opponent adjustment: **yes, by name.** The source contains
-  `CSymbolEnginePokerTracker.cpp`, which fills per-chair `pt_` symbols (VPIP,
-  PFR and so on) looked up from a PokerTracker database by the player's screen
-  name (`pt_name`, `ClearAllStatsOfChangedPlayers`). Profiles then branch on
-  those symbols. This is the reference design for what the operator asked for.
+  `OpenHoldem/CSymbolEnginePokerTracker.cpp`, which fills per-chair `pt_`
+  symbols (VPIP, PFR and so on) looked up from a PokerTracker database by the
+  player's screen name (`pt_name`, `ClearAllStatsOfChangedPlayers`). Profiles
+  then branch on those symbols. This is the reference design for what the
+  operator asked for.
 - Ratings: a ✓ (checked in the source, not taken on trust:
   `Shared/MagicNumbers/MagicNumbers.h:67-76` sets `kMaxNumberOfPlayers = 10`
   with chairs 0 to 9, so 2 to 9 seats are inside the range it maps) · b ✓
-  (`CAutoplayer.cpp:500-518` reads whatever number the `f$betsize` formula
-  evaluates to and types it into the bet box; `SwagAdjustment.cpp` clamps it
-  with `MinimumBetsizeDueToPreviousRaise` and
+  (`OpenHoldem/CAutoplayer.cpp:500-518` reads whatever number the `f$betsize`
+  formula evaluates to and types it into the bet box;
+  `OpenHoldem/SwagAdjustment.cpp` clamps it with
+  `MinimumBetsizeDueToPreviousRaise` and
   `MaximumPossibleBetsizeBecauseOfBalance`, i.e. an arbitrary amount between
   the legal minimum and maximum) · c ✓ · d ✗ (Windows-only, C++, needs a VM
   and a paid tracker database) · e ✓.
@@ -465,11 +468,13 @@ Two rules about the marks themselves:
 - Last activity: pushed 2026-09-10. Stars: 221. Licence: MIT.
 - Trained blueprint: **not shipped as a download**; you train it (README's
   resource line: 16 vCPU / 120 GB; river abstraction alone is 3.02 GB).
-- Strength: "-13.1 bb/100 against live Slumbot over 86K hands" (loses,
-  narrowly). Heads-up as evaluated.
+- Strength: its README's feature table reads "**−13.1 bb/100** against live
+  [Slumbot](https://www.slumbot.com) over 86 K hands" (`README.md:25`) — it
+  loses, narrowly. Heads-up as evaluated.
 - Ratings: a ? (evaluated heads-up; whether it plays multiway at all is not
-  stated) · b ~ (its own table: "Action translation: pseudo-harmonic mapping
-  over finite lattices" — a fixed menu, with arbitrary opponent bets mapped
+  stated) · b ~ (a row of that same table,
+  `| **Action translation⁷,⁸** | Pseudo-harmonic mapping over finite lattices |`
+  (`README.md:23`) — a fixed menu, with arbitrary opponent bets mapped
   onto it) · c ✗ · d ✗ (120 GB against this laptop's 16 GB) · e ✓.
 
 ### 3.10 PokerSnowie (Snowie Games Ltd, Malta)
@@ -605,8 +610,9 @@ Two rules about the marks themselves:
 - What: a Python interpreter for PPL profiles (Shanky dialect, OpenPPL as
   tie-break). `decide_ppl` takes any `GameState` you supply (n players,
   street, board, pot, per-seat hole/stack/bet/position/alive, legal actions)
-  and returns the action plus a trace of which rule fired. Claims 100% rule
-  coverage on 16 commercial cash profiles.
+  and returns the action as what to do and for how much, appending the trace of
+  which rule fired to a list on the bot object, `PPLBot.thoughts`, rather than
+  returning it. Claims 100% rule coverage on 16 commercial cash profiles.
 - Last activity: created and pushed 2026-09-14. Stars: 0. Licence: MIT. The
   GitHub organisation `aipoker-bot` was also created on 2026-09-14 and holds
   only this and `slumbot-adapter` (a Python Slumbot API client, MIT, 0 stars).
@@ -679,8 +685,10 @@ Two rules about the marks themselves:
   picture-sorting networks naming the cards, *ResNet18* and *MobileNetV2*; a
   Python toolkit for serving requests over the web, *FastAPI*, and Telegram
   front ends; spin-and-go solver database. Pushed 2025-06-28, 0 stars, no
-  licence, and "trained models and solver databases are excluded
-  intentionally". Infrastructure only.
+  licence, and its README says "The **trained models** (`models/` folder) and
+  the **solver database** (`solver_db/` folder) are **not included** in this
+  public repository" and that "this is intentional, to protect proprietary
+  data" (`README.md:74-75`). Infrastructure only.
 - PokerGPT, https://github.com/HarperJonesGPT/PokerGPT: Windows 11 PokerStars
   6-max bot that reads the table with Tesseract OCR and asks GPT-4 what to do.
   238 stars, MIT, last push 2023-12-26. A language model deciding actions is
