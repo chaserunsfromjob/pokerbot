@@ -1913,3 +1913,51 @@ PyPokerEngine 1.0.1 menu                        954           7.9     9542
 PyPokerEngine 1.0.1 real sizing                 886          12.3     8862
 --- end repeat 6: bench_speed [load at end: 4.57] ---
     [load 4.57 > 4.0, waiting 60s (0s waited so far)]
+--- repeat 6: resample_opponents [1-minute load average at start: 3.42] ---
+resample_opponents, first decision after the deal: n=1048103 draws in 10.00s = 104810 per second (history 12 long)
+resample_opponents, a later decision in the same hand: n=978597 draws in 10.00s = 97860 per second (history 17 long)
+6 players, 52 cards, fcpa; hidden positions and card positions computed once per decision, not once per draw; seed=20260915
+--- end repeat 6: resample_opponents [load at end: 3.46] ---
+--- repeat 6: pypoker_playouts [1-minute load average at start: 3.46] ---
+pypokerengine 1.0.1, Emulator API, 6 players, 52 cards, blinds 50/100, 20000 chips a seat (200bb), seed=20260915, 10s of play-outs
+play-out policy: uniform over fold / call / pot-sized raise / all-in, the same four-move menu bench_speed.py gives the other Python engines
+per-seat stacks asked for      : [100, 500, 20000, 20000, 20000, 20000]
+per-seat stacks the table took : [100, 450, 19900, 20000, 20000, 20000]
+generate_possible_actions here : ['fold', 'call', 'raise'], raise-to range {'min': 150, 'max': 20000} (19851 distinct whole-chip amounts)
+pypokerengine play-outs, first decision after the deal: n=11358 play-outs in 10.00s = 1136 per second (284 in a 0.25s decision); 3 action kinds legal at the position
+--- end repeat 6: pypoker_playouts [load at end: 3.61] ---
+
+=== summary over the repeats above, computed from them ===
+repeat  load  fcpa play-outs/250ms  load  fullgame play-outs/250ms  load  OpenSpiel fcpa hands/s  fcpa play-outs / hands in 250ms
+     1  3.65                 12798  3.83                       246  3.85                   46745                             1.10
+     2  3.71                 13285  3.65                       243  3.60                   48073                             1.11
+     3  3.96                 11774  3.84                       248  3.69                   47326                             1.00
+     4  3.27                 13187  3.09                       250  3.08                   47499                             1.11
+     5  3.29                  7370  3.18                       117  3.73                   47630                             0.62
+     6  3.75                 11948  3.69                       183  3.64                   48410                             0.99
+
+chooser fcpa play-outs per 250 ms decision           n=6 repeats x 20 decisions  min=    7370  median=   12373  max=   13285  (single decisions 4848-13414)
+chooser fullgame play-outs per 250 ms                n=6 repeats x 20 decisions  min=     117  median=     244  max=     250  (single decisions 31-269)
+OpenSpiel universal_poker fcpa menu                  n=6 repeats  min=   46745  median=   47564  max=   48410
+OpenSpiel universal_poker fullgame                   n=6 repeats  min=    4251  median=    4438  max=    4628
+texasholdem 0.11.0 menu                              n=6 repeats  min=    6311  median=    8526  max=    9095
+texasholdem 0.11.0 real sizing                       n=6 repeats  min=    3986  median=    8336  max=    8394
+PokerKit 0.7.5 menu                                  n=6 repeats  min=     354  median=     746  max=     765
+PokerKit 0.7.5 real sizing                           n=6 repeats  min=     404  median=     848  max=     873
+PyPokerEngine 1.0.1 menu                             n=6 repeats  min=     457  median=     926  max=     959
+PyPokerEngine 1.0.1 real sizing                      n=6 repeats  min=     429  median=     896  max=     946
+resample_opponents, first decision after the deal    n=6 repeats  min=  102384  median=  105119  max=  105504
+resample_opponents, a later decision in the same hand n=6 repeats  min=   91486  median=   98074  max=   98916
+pypokerengine play-outs/s, first decision after the deal n=6 repeats  min=     895  median=    1053  max=    1136
+
+OpenSpiel fcpa / texasholdem, both menu              per-repeat ratio min=  5.32 median=  5.53 max=  7.50
+OpenSpiel fullgame / texasholdem, both real sizing   per-repeat ratio min=  0.51 median=  0.54 max=  1.16
+OpenSpiel fcpa / PokerKit, both menu                 per-repeat ratio min= 61.10 median= 64.51 max=133.69
+OpenSpiel fullgame / PokerKit, both real sizing      per-repeat ratio min=  4.91 median=  5.23 max= 11.46
+OpenSpiel fcpa / PyPokerEngine, both menu            per-repeat ratio min= 49.67 median= 51.10 max=103.56
+OpenSpiel fullgame / PyPokerEngine, both real sizing per-repeat ratio min=  4.51 median=  4.95 max= 10.79
+OpenSpiel fcpa / OpenSpiel fullgame                  per-repeat ratio min= 10.23 median= 10.71 max= 11.31
+chooser fcpa play-outs / complete fcpa hands, same 250 ms per-repeat ratio min=  0.62 median=  1.05 max=  1.11
+chooser fcpa / chooser fullgame play-outs            per-repeat ratio min= 47.48 median= 53.71 max= 65.29
+chooser fcpa play-outs / PyPokerEngine play-outs     per-repeat ratio min= 28.99 median= 46.71 max= 58.94
+# uptime at session end: 21:26  up 43 days,  3:42, 2 users, load averages: 3.61 4.38 5.03
