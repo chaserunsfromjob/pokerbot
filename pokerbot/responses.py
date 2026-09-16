@@ -28,8 +28,8 @@ def probabilities(street, facing_bet, raise_available, profile=None):
         parts = cell.split(":")
         if len(parts) != 3 or parts[0] not in ("0", "1", "2", "3") or any(p not in ("0", "1") for p in parts[1:]):
             raise ValueError("Invalid response context")
-        if len(raw) != 3 or any(type(x) is not int or x < 0 for x in raw):
-            raise ValueError("Response counts must be nonnegative integers")
+        if len(raw) != 3 or any(type(x) not in (int, float) or not math.isfinite(x) or x < 0 for x in raw):
+            raise ValueError("Response counts must be finite nonnegative numbers")
         if (parts[1] == "0" and raw[0]) or (parts[2] == "0" and raw[2]):
             raise ValueError("Counts contain an unavailable action")
         if parts[1:] == key.split(":")[1:]:

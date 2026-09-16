@@ -6,6 +6,7 @@ No live Hand, simulator deck, opponent private observation or host seed enters.
 """
 from copy import deepcopy
 from dataclasses import asdict, dataclass
+import math
 import random
 from statistics import mean, stdev
 
@@ -93,6 +94,7 @@ class RiverConfig:
     response_model: str = "equity"
     se_penalty: float = 1.96
     min_gain_bb: float = .25
+    response_half_life: float | None = None
 
     def __post_init__(self):
         if type(self.worlds) is not int or self.worlds < 2:
@@ -101,6 +103,10 @@ class RiverConfig:
             raise ValueError("Unknown river response model")
         if not 0 <= self.se_penalty <= 10 or not 0 <= self.min_gain_bb <= 100:
             raise ValueError("Invalid action-selection regularization")
+        if self.response_half_life is not None:
+            if (self.response_model != "named" or type(self.response_half_life) not in (int, float)
+                    or not math.isfinite(self.response_half_life) or self.response_half_life <= 0):
+                raise ValueError("Response half-life requires named responses and a finite positive value")
 
 
 class RiverPolicy:

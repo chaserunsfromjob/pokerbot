@@ -64,7 +64,8 @@ def session(*, seats, hands, seed, config, pool, log_path=None,
                      for name, style in styles.items()})
     profiles = Profiles(profile_path, session_id)
     use_responses = hero_policy == "river" and getattr(config, "response_model", None) == "named"
-    responses = ResponseProfiles(profile_path, session_id) if use_responses else None
+    responses = (ResponseProfiles(profile_path, session_id, half_life=config.response_half_life)
+                 if use_responses else None)
     total = 0.0
     latency = []
     hand_log = Path(log_path).open("x") if log_path else None

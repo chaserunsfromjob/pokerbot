@@ -49,6 +49,16 @@ These controls are limited and mostly card-independent; random-player wins
 alone cannot pass. No trained opponent is currently integrated. Consequently a
 first-stage pass only establishes improvement against this restricted pool.
 
+Implementation limitation found during the recency work: the current
+`create_confirmation`/`run_confirmation` path serializes and reconstructs
+`EquityConfig` only. River/named-response, future turn-search and external-policy
+candidates cannot yet be submitted through this entry point. Before their
+confirmation, add a versioned policy/configuration discriminator and preserve
+legacy manifests, the frozen original, source/checkpoint hashes, profile resets,
+holdout configurations and the existing shared attempt ledger/error budget.
+Reject unsupported configurations before allocating an attempt. Passing the
+mechanics gate does not imply this candidate integration is implemented.
+
 Before confirmation, run the full test suites and record results. A known
 failure remains a blocker even if pytest calls it an expected failure.
 `check-gates` checks the active referee. A test also verifies that substituting

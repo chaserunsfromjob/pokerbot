@@ -1,0 +1,5744 @@
+{
+  "status": "development only; no promotion decision",
+  "hands": 11520,
+  "paired_comparisons_bb_per_100": {
+    "mixed_controls": {
+      "discounted_minus_raw": {
+        "6": {
+          "mean": 0.0,
+          "low": 0.0,
+          "high": 0.0,
+          "trials": 6
+        },
+        "7": {
+          "mean": 0.0,
+          "low": 0.0,
+          "high": 0.0,
+          "trials": 6
+        },
+        "8": {
+          "mean": 0.0,
+          "low": 0.0,
+          "high": 0.0,
+          "trials": 6
+        },
+        "9": {
+          "mean": 0.0,
+          "low": 0.0,
+          "high": 0.0,
+          "trials": 6
+        }
+      },
+      "discounted_minus_prior": {
+        "6": {
+          "mean": -160.9375,
+          "low": -423.17955224699915,
+          "high": 101.30455224699915,
+          "trials": 6
+        },
+        "7": {
+          "mean": 0.0,
+          "low": 0.0,
+          "high": 0.0,
+          "trials": 6
+        },
+        "8": {
+          "mean": 0.0,
+          "low": 0.0,
+          "high": 0.0,
+          "trials": 6
+        },
+        "9": {
+          "mean": 0.0,
+          "low": 0.0,
+          "high": 0.0,
+          "trials": 6
+        }
+      },
+      "raw_minus_prior": {
+        "6": {
+          "mean": -160.9375,
+          "low": -423.17955224699915,
+          "high": 101.30455224699915,
+          "trials": 6
+        },
+        "7": {
+          "mean": 0.0,
+          "low": 0.0,
+          "high": 0.0,
+          "trials": 6
+        },
+        "8": {
+          "mean": 0.0,
+          "low": 0.0,
+          "high": 0.0,
+          "trials": 6
+        },
+        "9": {
+          "mean": 0.0,
+          "low": 0.0,
+          "high": 0.0,
+          "trials": 6
+        }
+      },
+      "discounted_minus_original": {
+        "6": {
+          "mean": 7.8125,
+          "low": -12.270170590908709,
+          "high": 27.89517059090871,
+          "trials": 6
+        },
+        "7": {
+          "mean": 0.0,
+          "low": 0.0,
+          "high": 0.0,
+          "trials": 6
+        },
+        "8": {
+          "mean": 0.0,
+          "low": 0.0,
+          "high": 0.0,
+          "trials": 6
+        },
+        "9": {
+          "mean": 0.0,
+          "low": 0.0,
+          "high": 0.0,
+          "trials": 6
+        }
+      },
+      "prior_minus_original": {
+        "6": {
+          "mean": 168.75,
+          "low": -107.60000141961967,
+          "high": 445.1000014196197,
+          "trials": 6
+        },
+        "7": {
+          "mean": 0.0,
+          "low": 0.0,
+          "high": 0.0,
+          "trials": 6
+        },
+        "8": {
+          "mean": 0.0,
+          "low": 0.0,
+          "high": 0.0,
+          "trials": 6
+        },
+        "9": {
+          "mean": 0.0,
+          "low": 0.0,
+          "high": 0.0,
+          "trials": 6
+        }
+      }
+    },
+    "passive_controls": {
+      "discounted_minus_raw": {
+        "6": {
+          "mean": -93.27777777777779,
+          "low": -235.3720880661022,
+          "high": 48.81653251054662,
+          "trials": 6
+        },
+        "7": {
+          "mean": -128.98511904761904,
+          "low": -376.69005538799354,
+          "high": 118.71981729275547,
+          "trials": 6
+        },
+        "8": {
+          "mean": -86.9140625,
+          "low": -168.98716085960632,
+          "high": -4.8409641403936945,
+          "trials": 6
+        },
+        "9": {
+          "mean": -216.2615740740741,
+          "low": -396.69175215632765,
+          "high": -35.83139599182053,
+          "trials": 6
+        }
+      },
+      "discounted_minus_prior": {
+        "6": {
+          "mean": -85.02430555555561,
+          "low": -611.8587397573617,
+          "high": 441.81012864625046,
+          "trials": 6
+        },
+        "7": {
+          "mean": 35.05059523809522,
+          "low": -246.10585059046312,
+          "high": 316.2070410666536,
+          "trials": 6
+        },
+        "8": {
+          "mean": 119.72656250000007,
+          "low": -221.1397977326377,
+          "high": 460.5929227326378,
+          "trials": 6
+        },
+        "9": {
+          "mean": -45.34490740740741,
+          "low": -249.43274038884968,
+          "high": 158.74292557403484,
+          "trials": 6
+        }
+      },
+      "raw_minus_prior": {
+        "6": {
+          "mean": 8.253472222222163,
+          "low": -548.0692389783625,
+          "high": 564.5761834228068,
+          "trials": 6
+        },
+        "7": {
+          "mean": 164.03571428571428,
+          "low": 2.9112259529011055,
+          "high": 325.1602026185275,
+          "trials": 6
+        },
+        "8": {
+          "mean": 206.64062500000009,
+          "low": -147.414066664807,
+          "high": 560.6953166648071,
+          "trials": 6
+        },
+        "9": {
+          "mean": 170.91666666666666,
+          "low": -123.70229783480798,
+          "high": 465.5356311681413,
+          "trials": 6
+        }
+      },
+      "discounted_minus_original": {
+        "6": {
+          "mean": 651.0121527777779,
+          "low": 49.57352230359788,
+          "high": 1252.450783251958,
+          "trials": 6
+        },
+        "7": {
+          "mean": 724.7961309523811,
+          "low": 435.20283668303233,
+          "high": 1014.3894252217299,
+          "trials": 6
+        },
+        "8": {
+          "mean": 863.671875,
+          "low": -7.8112901453934,
+          "high": 1735.1550401453933,
+          "trials": 6
+        },
+        "9": {
+          "mean": 464.6666666666666,
+          "low": 28.963640758910685,
+          "high": 900.3696925744225,
+          "trials": 6
+        }
+      },
+      "prior_minus_original": {
+        "6": {
+          "mean": 736.0364583333331,
+          "low": 48.097212714631155,
+          "high": 1423.975703952035,
+          "trials": 6
+        },
+        "7": {
+          "mean": 689.7455357142857,
+          "low": 309.7382322015057,
+          "high": 1069.7528392270656,
+          "trials": 6
+        },
+        "8": {
+          "mean": 743.9453125,
+          "low": 97.22470869263043,
+          "high": 1390.6659163073696,
+          "trials": 6
+        },
+        "9": {
+          "mean": 510.0115740740741,
+          "low": -26.27263638004962,
+          "high": 1046.2957845281978,
+          "trials": 6
+        }
+      }
+    }
+  },
+  "rows": [
+    {
+      "pool": "mixed_controls",
+      "seats": 6,
+      "trial": 0,
+      "variant": "original",
+      "hands": 48,
+      "bb_per_100": 1653.125,
+      "delta": 0.0,
+      "elapsed_seconds": 0.21196791622787714,
+      "decision_latency_ms": {
+        "p50": 0.002624932676553726,
+        "p95": 0.651137507520616,
+        "max": 1.5695826150476933
+      },
+      "search_diagnostics": {
+        "searched_decisions": 0,
+        "changed_actions": 0,
+        "counterfactual_branches": 0,
+        "mean_selected_predicted_gain_bb": null
+      },
+      "prediction_metrics": {
+        "half_life": null,
+        "public_opponent_decisions": 0,
+        "mean_excess_brier": null,
+        "mean_log_loss": null
+      },
+      "process_peak_rss_native_units": 122650624
+    },
+    {
+      "pool": "mixed_controls",
+      "seats": 6,
+      "trial": 0,
+      "variant": "prior",
+      "hands": 48,
+      "bb_per_100": 1653.125,
+      "delta": 0.0,
+      "elapsed_seconds": 0.9481483749113977,
+      "decision_latency_ms": {
+        "p50": 0.0026673078536987305,
+        "p95": 0.6577560445293784,
+        "max": 226.4437908306718
+      },
+      "search_diagnostics": {
+        "searched_decisions": 4,
+        "changed_actions": 0,
+        "counterfactual_branches": 272,
+        "mean_selected_predicted_gain_bb": 0.0
+      },
+      "prediction_metrics": {
+        "half_life": null,
+        "public_opponent_decisions": 711,
+        "mean_excess_brier": 0.2616340365682138,
+        "mean_log_loss": 0.7255636251014049
+      },
+      "process_peak_rss_native_units": 122945536
+    },
+    {
+      "pool": "mixed_controls",
+      "seats": 6,
+      "trial": 0,
+      "variant": "raw",
+      "hands": 48,
+      "bb_per_100": 1653.125,
+      "delta": 0.0,
+      "elapsed_seconds": 1.156248833052814,
+      "decision_latency_ms": {
+        "p50": 0.002750195562839508,
+        "p95": 0.6625734735280275,
+        "max": 286.0676250420511
+      },
+      "search_diagnostics": {
+        "searched_decisions": 4,
+        "changed_actions": 0,
+        "counterfactual_branches": 272,
+        "mean_selected_predicted_gain_bb": 0.0
+      },
+      "prediction_metrics": {
+        "half_life": null,
+        "public_opponent_decisions": 711,
+        "mean_excess_brier": 0.03269662840648542,
+        "mean_log_loss": 0.3520747847881218
+      },
+      "process_peak_rss_native_units": 123076608
+    },
+    {
+      "pool": "mixed_controls",
+      "seats": 6,
+      "trial": 0,
+      "variant": "discounted",
+      "hands": 48,
+      "bb_per_100": 1653.125,
+      "delta": 0.0,
+      "elapsed_seconds": 1.1486486252397299,
+      "decision_latency_ms": {
+        "p50": 0.002791173756122589,
+        "p95": 0.6644002627581358,
+        "max": 282.1817076765001
+      },
+      "search_diagnostics": {
+        "searched_decisions": 4,
+        "changed_actions": 0,
+        "counterfactual_branches": 272,
+        "mean_selected_predicted_gain_bb": 0.0
+      },
+      "prediction_metrics": {
+        "half_life": 64,
+        "public_opponent_decisions": 711,
+        "mean_excess_brier": 0.039549268574323386,
+        "mean_log_loss": 0.37676572083865956
+      },
+      "process_peak_rss_native_units": 123076608
+    },
+    {
+      "pool": "mixed_controls",
+      "seats": 6,
+      "trial": 1,
+      "variant": "original",
+      "hands": 48,
+      "bb_per_100": 832.8125,
+      "delta": 0.0,
+      "elapsed_seconds": 0.19906724989414215,
+      "decision_latency_ms": {
+        "p50": 0.0026668421924114227,
+        "p95": 0.6654961965978146,
+        "max": 0.7879580371081829
+      },
+      "search_diagnostics": {
+        "searched_decisions": 0,
+        "changed_actions": 0,
+        "counterfactual_branches": 0,
+        "mean_selected_predicted_gain_bb": null
+      },
+      "prediction_metrics": {
+        "half_life": null,
+        "public_opponent_decisions": 0,
+        "mean_excess_brier": null,
+        "mean_log_loss": null
+      },
+      "process_peak_rss_native_units": 123076608
+    },
+    {
+      "pool": "mixed_controls",
+      "seats": 6,
+      "trial": 1,
+      "variant": "prior",
+      "hands": 48,
+      "bb_per_100": 832.8125,
+      "delta": 0.0,
+      "elapsed_seconds": 0.915589083917439,
+      "decision_latency_ms": {
+        "p50": 0.0026659108698368073,
+        "p95": 0.6637267768383026,
+        "max": 293.2377499528229
+      },
+      "search_diagnostics": {
+        "searched_decisions": 3,
+        "changed_actions": 0,
+        "counterfactual_branches": 240,
+        "mean_selected_predicted_gain_bb": 0.0
+      },
+      "prediction_metrics": {
+        "half_life": null,
+        "public_opponent_decisions": 653,
+        "mean_excess_brier": 0.2622278713629403,
+        "mean_log_loss": 0.7385508319261694
+      },
+      "process_peak_rss_native_units": 123355136
+    },
+    {
+      "pool": "mixed_controls",
+      "seats": 6,
+      "trial": 1,
+      "variant": "raw",
+      "hands": 48,
+      "bb_per_100": 832.8125,
+      "delta": 0.0,
+      "elapsed_seconds": 1.0973135838285089,
+      "decision_latency_ms": {
+        "p50": 0.002709217369556427,
+        "p95": 0.6668936694040895,
+        "max": 350.05441680550575
+      },
+      "search_diagnostics": {
+        "searched_decisions": 3,
+        "changed_actions": 0,
+        "counterfactual_branches": 240,
+        "mean_selected_predicted_gain_bb": 0.0
+      },
+      "prediction_metrics": {
+        "half_life": null,
+        "public_opponent_decisions": 653,
+        "mean_excess_brier": 0.03991697759285234,
+        "mean_log_loss": 0.35950452627310975
+      },
+      "process_peak_rss_native_units": 123994112
+    },
+    {
+      "pool": "mixed_controls",
+      "seats": 6,
+      "trial": 1,
+      "variant": "discounted",
+      "hands": 48,
+      "bb_per_100": 832.8125,
+      "delta": 0.0,
+      "elapsed_seconds": 1.091506540775299,
+      "decision_latency_ms": {
+        "p50": 0.0027704518288373947,
+        "p95": 0.6659252336248755,
+        "max": 341.83033276349306
+      },
+      "search_diagnostics": {
+        "searched_decisions": 3,
+        "changed_actions": 0,
+        "counterfactual_branches": 240,
+        "mean_selected_predicted_gain_bb": 0.0
+      },
+      "prediction_metrics": {
+        "half_life": 64,
+        "public_opponent_decisions": 653,
+        "mean_excess_brier": 0.046076551988914326,
+        "mean_log_loss": 0.3830375085931938
+      },
+      "process_peak_rss_native_units": 124157952
+    },
+    {
+      "pool": "mixed_controls",
+      "seats": 6,
+      "trial": 2,
+      "variant": "original",
+      "hands": 48,
+      "bb_per_100": 1144.7916666666667,
+      "delta": 0.0,
+      "elapsed_seconds": 0.20016504218801856,
+      "decision_latency_ms": {
+        "p50": 0.0026044435799121857,
+        "p95": 0.6580601213499903,
+        "max": 0.7475409656763077
+      },
+      "search_diagnostics": {
+        "searched_decisions": 0,
+        "changed_actions": 0,
+        "counterfactual_branches": 0,
+        "mean_selected_predicted_gain_bb": null
+      },
+      "prediction_metrics": {
+        "half_life": null,
+        "public_opponent_decisions": 0,
+        "mean_excess_brier": null,
+        "mean_log_loss": null
+      },
+      "process_peak_rss_native_units": 124157952
+    },
+    {
+      "pool": "mixed_controls",
+      "seats": 6,
+      "trial": 2,
+      "variant": "prior",
+      "hands": 48,
+      "bb_per_100": 1601.0416666666667,
+      "delta": 456.25,
+      "elapsed_seconds": 1.5745509578846395,
+      "decision_latency_ms": {
+        "p50": 0.002624932676553726,
+        "p95": 0.661968463100493,
+        "max": 287.1785000897944
+      },
+      "search_diagnostics": {
+        "searched_decisions": 7,
+        "changed_actions": 1,
+        "counterfactual_branches": 464,
+        "mean_selected_predicted_gain_bb": 9.928571428571429
+      },
+      "prediction_metrics": {
+        "half_life": null,
+        "public_opponent_decisions": 676,
+        "mean_excess_brier": 0.25333875739644973,
+        "mean_log_loss": 0.7039873150451766
+      },
+      "process_peak_rss_native_units": 124157952
+    },
+    {
+      "pool": "mixed_controls",
+      "seats": 6,
+      "trial": 2,
+      "variant": "raw",
+      "hands": 48,
+      "bb_per_100": 1144.7916666666667,
+      "delta": 0.0,
+      "elapsed_seconds": 1.8971469160169363,
+      "decision_latency_ms": {
+        "p50": 0.0027082860469818115,
+        "p95": 0.6691773189231753,
+        "max": 313.552999868989
+      },
+      "search_diagnostics": {
+        "searched_decisions": 7,
+        "changed_actions": 0,
+        "counterfactual_branches": 464,
+        "mean_selected_predicted_gain_bb": 0.0
+      },
+      "prediction_metrics": {
+        "half_life": null,
+        "public_opponent_decisions": 676,
+        "mean_excess_brier": 0.03826389543101862,
+        "mean_log_loss": 0.356949864360013
+      },
+      "process_peak_rss_native_units": 124157952
+    },
+    {
+      "pool": "mixed_controls",
+      "seats": 6,
+      "trial": 2,
+      "variant": "discounted",
+      "hands": 48,
+      "bb_per_100": 1144.7916666666667,
+      "delta": 0.0,
+      "elapsed_seconds": 1.8476254590786994,
+      "decision_latency_ms": {
+        "p50": 0.002707820385694504,
+        "p95": 0.6598792504519224,
+        "max": 308.84179193526506
+      },
+      "search_diagnostics": {
+        "searched_decisions": 7,
+        "changed_actions": 0,
+        "counterfactual_branches": 464,
+        "mean_selected_predicted_gain_bb": 0.0
+      },
+      "prediction_metrics": {
+        "half_life": 64,
+        "public_opponent_decisions": 676,
+        "mean_excess_brier": 0.044845183004135966,
+        "mean_log_loss": 0.3804250896993064
+      },
+      "process_peak_rss_native_units": 124157952
+    },
+    {
+      "pool": "mixed_controls",
+      "seats": 6,
+      "trial": 3,
+      "variant": "original",
+      "hands": 48,
+      "bb_per_100": 1352.0833333333333,
+      "delta": 0.0,
+      "elapsed_seconds": 0.2055353750474751,
+      "decision_latency_ms": {
+        "p50": 0.002624932676553726,
+        "p95": 0.6675422191619873,
+        "max": 0.7880828343331814
+      },
+      "search_diagnostics": {
+        "searched_decisions": 0,
+        "changed_actions": 0,
+        "counterfactual_branches": 0,
+        "mean_selected_predicted_gain_bb": null
+      },
+      "prediction_metrics": {
+        "half_life": null,
+        "public_opponent_decisions": 0,
+        "mean_excess_brier": null,
+        "mean_log_loss": null
+      },
+      "process_peak_rss_native_units": 124157952
+    },
+    {
+      "pool": "mixed_controls",
+      "seats": 6,
+      "trial": 3,
+      "variant": "prior",
+      "hands": 48,
+      "bb_per_100": 1908.3333333333333,
+      "delta": 556.25,
+      "elapsed_seconds": 0.9515963746234775,
+      "decision_latency_ms": {
+        "p50": 0.002625398337841034,
+        "p95": 0.6661252118647099,
+        "max": 211.77729219198227
+      },
+      "search_diagnostics": {
+        "searched_decisions": 4,
+        "changed_actions": 1,
+        "counterfactual_branches": 272,
+        "mean_selected_predicted_gain_bb": 19.37890625
+      },
+      "prediction_metrics": {
+        "half_life": null,
+        "public_opponent_decisions": 662,
+        "mean_excess_brier": 0.262168580060423,
+        "mean_log_loss": 0.7301024946424861
+      },
+      "process_peak_rss_native_units": 124157952
+    },
+    {
+      "pool": "mixed_controls",
+      "seats": 6,
+      "trial": 3,
+      "variant": "raw",
+      "hands": 48,
+      "bb_per_100": 1398.9583333333333,
+      "delta": 46.875,
+      "elapsed_seconds": 1.1084755002520978,
+      "decision_latency_ms": {
+        "p50": 0.0027087517082691193,
+        "p95": 0.6667911075055599,
+        "max": 252.99370801076293
+      },
+      "search_diagnostics": {
+        "searched_decisions": 4,
+        "changed_actions": 1,
+        "counterfactual_branches": 272,
+        "mean_selected_predicted_gain_bb": 3.515625
+      },
+      "prediction_metrics": {
+        "half_life": null,
+        "public_opponent_decisions": 662,
+        "mean_excess_brier": 0.04065833098450617,
+        "mean_log_loss": 0.37682761803333614
+      },
+      "process_peak_rss_native_units": 124157952
+    },
+    {
+      "pool": "mixed_controls",
+      "seats": 6,
+      "trial": 3,
+      "variant": "discounted",
+      "hands": 48,
+      "bb_per_100": 1398.9583333333333,
+      "delta": 46.875,
+      "elapsed_seconds": 1.096328167244792,
+      "decision_latency_ms": {
+        "p50": 0.0027082860469818115,
+        "p95": 0.6604157388210297,
+        "max": 248.65816673263907
+      },
+      "search_diagnostics": {
+        "searched_decisions": 4,
+        "changed_actions": 1,
+        "counterfactual_branches": 272,
+        "mean_selected_predicted_gain_bb": 3.75
+      },
+      "prediction_metrics": {
+        "half_life": 64,
+        "public_opponent_decisions": 662,
+        "mean_excess_brier": 0.048240067053091085,
+        "mean_log_loss": 0.40000060628027373
+      },
+      "process_peak_rss_native_units": 124157952
+    },
+    {
+      "pool": "mixed_controls",
+      "seats": 6,
+      "trial": 4,
+      "variant": "original",
+      "hands": 48,
+      "bb_per_100": 963.0208333333334,
+      "delta": 0.0,
+      "elapsed_seconds": 0.1966472500935197,
+      "decision_latency_ms": {
+        "p50": 0.002624932676553726,
+        "p95": 0.659909239038825,
+        "max": 0.7817079313099384
+      },
+      "search_diagnostics": {
+        "searched_decisions": 0,
+        "changed_actions": 0,
+        "counterfactual_branches": 0,
+        "mean_selected_predicted_gain_bb": null
+      },
+      "prediction_metrics": {
+        "half_life": null,
+        "public_opponent_decisions": 0,
+        "mean_excess_brier": null,
+        "mean_log_loss": null
+      },
+      "process_peak_rss_native_units": 124157952
+    },
+    {
+      "pool": "mixed_controls",
+      "seats": 6,
+      "trial": 4,
+      "variant": "prior",
+      "hands": 48,
+      "bb_per_100": 963.0208333333334,
+      "delta": 0.0,
+      "elapsed_seconds": 0.6717412080615759,
+      "decision_latency_ms": {
+        "p50": 0.002624932676553726,
+        "p95": 0.6599749671295285,
+        "max": 261.0407080501318
+      },
+      "search_diagnostics": {
+        "searched_decisions": 2,
+        "changed_actions": 0,
+        "counterfactual_branches": 160,
+        "mean_selected_predicted_gain_bb": 0.0
+      },
+      "prediction_metrics": {
+        "half_life": null,
+        "public_opponent_decisions": 678,
+        "mean_excess_brier": 0.248805604719764,
+        "mean_log_loss": 0.6937674759551362
+      },
+      "process_peak_rss_native_units": 124157952
+    },
+    {
+      "pool": "mixed_controls",
+      "seats": 6,
+      "trial": 4,
+      "variant": "raw",
+      "hands": 48,
+      "bb_per_100": 963.0208333333334,
+      "delta": 0.0,
+      "elapsed_seconds": 0.7678459999151528,
+      "decision_latency_ms": {
+        "p50": 0.0027082860469818115,
+        "p95": 0.665710959583521,
+        "max": 297.580084297806
+      },
+      "search_diagnostics": {
+        "searched_decisions": 2,
+        "changed_actions": 0,
+        "counterfactual_branches": 160,
+        "mean_selected_predicted_gain_bb": 0.0
+      },
+      "prediction_metrics": {
+        "half_life": null,
+        "public_opponent_decisions": 678,
+        "mean_excess_brier": 0.03807996591146067,
+        "mean_log_loss": 0.3610369215577455
+      },
+      "process_peak_rss_native_units": 124157952
+    },
+    {
+      "pool": "mixed_controls",
+      "seats": 6,
+      "trial": 4,
+      "variant": "discounted",
+      "hands": 48,
+      "bb_per_100": 963.0208333333334,
+      "delta": 0.0,
+      "elapsed_seconds": 0.7736147921532393,
+      "decision_latency_ms": {
+        "p50": 0.002707820385694504,
+        "p95": 0.6644224282354116,
+        "max": 299.50866661965847
+      },
+      "search_diagnostics": {
+        "searched_decisions": 2,
+        "changed_actions": 0,
+        "counterfactual_branches": 160,
+        "mean_selected_predicted_gain_bb": 0.0
+      },
+      "prediction_metrics": {
+        "half_life": 64,
+        "public_opponent_decisions": 678,
+        "mean_excess_brier": 0.04585816075890511,
+        "mean_log_loss": 0.38365464709095487
+      },
+      "process_peak_rss_native_units": 124157952
+    },
+    {
+      "pool": "mixed_controls",
+      "seats": 6,
+      "trial": 5,
+      "variant": "original",
+      "hands": 48,
+      "bb_per_100": 1248.4375,
+      "delta": 0.0,
+      "elapsed_seconds": 0.2043105410411954,
+      "decision_latency_ms": {
+        "p50": 0.0025830231606960297,
+        "p95": 0.6581667810678482,
+        "max": 0.7641669362783432
+      },
+      "search_diagnostics": {
+        "searched_decisions": 0,
+        "changed_actions": 0,
+        "counterfactual_branches": 0,
+        "mean_selected_predicted_gain_bb": null
+      },
+      "prediction_metrics": {
+        "half_life": null,
+        "public_opponent_decisions": 0,
+        "mean_excess_brier": null,
+        "mean_log_loss": null
+      },
+      "process_peak_rss_native_units": 124157952
+    },
+    {
+      "pool": "mixed_controls",
+      "seats": 6,
+      "trial": 5,
+      "variant": "prior",
+      "hands": 48,
+      "bb_per_100": 1248.4375,
+      "delta": 0.0,
+      "elapsed_seconds": 0.35120537504553795,
+      "decision_latency_ms": {
+        "p50": 0.002583954483270645,
+        "p95": 0.6576918065547943,
+        "max": 144.95262503623962
+      },
+      "search_diagnostics": {
+        "searched_decisions": 1,
+        "changed_actions": 0,
+        "counterfactual_branches": 48,
+        "mean_selected_predicted_gain_bb": 0.0
+      },
+      "prediction_metrics": {
+        "half_life": null,
+        "public_opponent_decisions": 698,
+        "mean_excess_brier": 0.26023209169054445,
+        "mean_log_loss": 0.7200586768846169
+      },
+      "process_peak_rss_native_units": 124157952
+    },
+    {
+      "pool": "mixed_controls",
+      "seats": 6,
+      "trial": 5,
+      "variant": "raw",
+      "hands": 48,
+      "bb_per_100": 1248.4375,
+      "delta": 0.0,
+      "elapsed_seconds": 0.40240137465298176,
+      "decision_latency_ms": {
+        "p50": 0.002707820385694504,
+        "p95": 0.6593749858438969,
+        "max": 162.96179220080376
+      },
+      "search_diagnostics": {
+        "searched_decisions": 1,
+        "changed_actions": 0,
+        "counterfactual_branches": 48,
+        "mean_selected_predicted_gain_bb": 0.0
+      },
+      "prediction_metrics": {
+        "half_life": null,
+        "public_opponent_decisions": 698,
+        "mean_excess_brier": 0.03808990865136957,
+        "mean_log_loss": 0.3524978323787154
+      },
+      "process_peak_rss_native_units": 124157952
+    },
+    {
+      "pool": "mixed_controls",
+      "seats": 6,
+      "trial": 5,
+      "variant": "discounted",
+      "hands": 48,
+      "bb_per_100": 1248.4375,
+      "delta": 0.0,
+      "elapsed_seconds": 0.4072655411437154,
+      "decision_latency_ms": {
+        "p50": 0.0027087517082691193,
+        "p95": 0.6582839414477348,
+        "max": 163.50916679948568
+      },
+      "search_diagnostics": {
+        "searched_decisions": 1,
+        "changed_actions": 0,
+        "counterfactual_branches": 48,
+        "mean_selected_predicted_gain_bb": 0.0
+      },
+      "prediction_metrics": {
+        "half_life": 64,
+        "public_opponent_decisions": 698,
+        "mean_excess_brier": 0.04379913682448604,
+        "mean_log_loss": 0.37448654866872844
+      },
+      "process_peak_rss_native_units": 124157952
+    },
+    {
+      "pool": "mixed_controls",
+      "seats": 7,
+      "trial": 0,
+      "variant": "original",
+      "hands": 56,
+      "bb_per_100": -235.26785714285714,
+      "delta": 0.0,
+      "elapsed_seconds": 0.28325487533584237,
+      "decision_latency_ms": {
+        "p50": 0.0025420449674129486,
+        "p95": 0.7360662333667277,
+        "max": 0.941375270485878
+      },
+      "search_diagnostics": {
+        "searched_decisions": 0,
+        "changed_actions": 0,
+        "counterfactual_branches": 0,
+        "mean_selected_predicted_gain_bb": null
+      },
+      "prediction_metrics": {
+        "half_life": null,
+        "public_opponent_decisions": 0,
+        "mean_excess_brier": null,
+        "mean_log_loss": null
+      },
+      "process_peak_rss_native_units": 124157952
+    },
+    {
+      "pool": "mixed_controls",
+      "seats": 7,
+      "trial": 0,
+      "variant": "prior",
+      "hands": 56,
+      "bb_per_100": -235.26785714285714,
+      "delta": 0.0,
+      "elapsed_seconds": 0.574751625303179,
+      "decision_latency_ms": {
+        "p50": 0.0025420449674129486,
+        "p95": 0.7400921080261469,
+        "max": 288.08858431875706
+      },
+      "search_diagnostics": {
+        "searched_decisions": 1,
+        "changed_actions": 0,
+        "counterfactual_branches": 80,
+        "mean_selected_predicted_gain_bb": 0.0
+      },
+      "prediction_metrics": {
+        "half_life": null,
+        "public_opponent_decisions": 927,
+        "mean_excess_brier": 0.27886623516720604,
+        "mean_log_loss": 0.8180518409276843
+      },
+      "process_peak_rss_native_units": 124157952
+    },
+    {
+      "pool": "mixed_controls",
+      "seats": 7,
+      "trial": 0,
+      "variant": "raw",
+      "hands": 56,
+      "bb_per_100": -235.26785714285714,
+      "delta": 0.0,
+      "elapsed_seconds": 0.6939696245826781,
+      "decision_latency_ms": {
+        "p50": 0.002583954483270645,
+        "p95": 0.7327830418944358,
+        "max": 367.0986667275429
+      },
+      "search_diagnostics": {
+        "searched_decisions": 1,
+        "changed_actions": 0,
+        "counterfactual_branches": 80,
+        "mean_selected_predicted_gain_bb": 0.0
+      },
+      "prediction_metrics": {
+        "half_life": null,
+        "public_opponent_decisions": 927,
+        "mean_excess_brier": 0.03795487011367715,
+        "mean_log_loss": 0.4335907707147602
+      },
+      "process_peak_rss_native_units": 124157952
+    },
+    {
+      "pool": "mixed_controls",
+      "seats": 7,
+      "trial": 0,
+      "variant": "discounted",
+      "hands": 56,
+      "bb_per_100": -235.26785714285714,
+      "delta": 0.0,
+      "elapsed_seconds": 0.6906302920542657,
+      "decision_latency_ms": {
+        "p50": 0.0025830231606960297,
+        "p95": 0.7353577297180891,
+        "max": 362.7962921746075
+      },
+      "search_diagnostics": {
+        "searched_decisions": 1,
+        "changed_actions": 0,
+        "counterfactual_branches": 80,
+        "mean_selected_predicted_gain_bb": 0.0
+      },
+      "prediction_metrics": {
+        "half_life": 64,
+        "public_opponent_decisions": 927,
+        "mean_excess_brier": 0.045960668610472696,
+        "mean_log_loss": 0.45680329579468565
+      },
+      "process_peak_rss_native_units": 124157952
+    },
+    {
+      "pool": "mixed_controls",
+      "seats": 7,
+      "trial": 1,
+      "variant": "original",
+      "hands": 56,
+      "bb_per_100": -408.25,
+      "delta": 0.0,
+      "elapsed_seconds": 0.28840833296999335,
+      "decision_latency_ms": {
+        "p50": 0.002582557499408722,
+        "p95": 0.7377217290922997,
+        "max": 0.9521250613033772
+      },
+      "search_diagnostics": {
+        "searched_decisions": 0,
+        "changed_actions": 0,
+        "counterfactual_branches": 0,
+        "mean_selected_predicted_gain_bb": null
+      },
+      "prediction_metrics": {
+        "half_life": null,
+        "public_opponent_decisions": 0,
+        "mean_excess_brier": null,
+        "mean_log_loss": null
+      },
+      "process_peak_rss_native_units": 124157952
+    },
+    {
+      "pool": "mixed_controls",
+      "seats": 7,
+      "trial": 1,
+      "variant": "prior",
+      "hands": 56,
+      "bb_per_100": -408.25,
+      "delta": 0.0,
+      "elapsed_seconds": 0.5833386247977614,
+      "decision_latency_ms": {
+        "p50": 0.0026668421924114227,
+        "p95": 0.7518596714362499,
+        "max": 286.3314999267459
+      },
+      "search_diagnostics": {
+        "searched_decisions": 1,
+        "changed_actions": 0,
+        "counterfactual_branches": 96,
+        "mean_selected_predicted_gain_bb": 0.0
+      },
+      "prediction_metrics": {
+        "half_life": null,
+        "public_opponent_decisions": 953,
+        "mean_excess_brier": 0.28115341028331586,
+        "mean_log_loss": 0.8339896061880533
+      },
+      "process_peak_rss_native_units": 124157952
+    },
+    {
+      "pool": "mixed_controls",
+      "seats": 7,
+      "trial": 1,
+      "variant": "raw",
+      "hands": 56,
+      "bb_per_100": -408.25,
+      "delta": 0.0,
+      "elapsed_seconds": 0.7311040838249028,
+      "decision_latency_ms": {
+        "p50": 0.002666143700480461,
+        "p95": 0.7443294627591966,
+        "max": 391.77595917135477
+      },
+      "search_diagnostics": {
+        "searched_decisions": 1,
+        "changed_actions": 0,
+        "counterfactual_branches": 96,
+        "mean_selected_predicted_gain_bb": 0.0
+      },
+      "prediction_metrics": {
+        "half_life": null,
+        "public_opponent_decisions": 953,
+        "mean_excess_brier": 0.037134331214763776,
+        "mean_log_loss": 0.4297921668484652
+      },
+      "process_peak_rss_native_units": 124157952
+    },
+    {
+      "pool": "mixed_controls",
+      "seats": 7,
+      "trial": 1,
+      "variant": "discounted",
+      "hands": 56,
+      "bb_per_100": -408.25,
+      "delta": 0.0,
+      "elapsed_seconds": 0.725880665704608,
+      "decision_latency_ms": {
+        "p50": 0.0026673078536987305,
+        "p95": 0.7484626257792114,
+        "max": 383.28441604971886
+      },
+      "search_diagnostics": {
+        "searched_decisions": 1,
+        "changed_actions": 0,
+        "counterfactual_branches": 96,
+        "mean_selected_predicted_gain_bb": 0.0
+      },
+      "prediction_metrics": {
+        "half_life": 64,
+        "public_opponent_decisions": 953,
+        "mean_excess_brier": 0.04401670298502935,
+        "mean_log_loss": 0.45593991013384105
+      },
+      "process_peak_rss_native_units": 124157952
+    },
+    {
+      "pool": "mixed_controls",
+      "seats": 7,
+      "trial": 2,
+      "variant": "original",
+      "hands": 56,
+      "bb_per_100": -224.10714285714286,
+      "delta": 0.0,
+      "elapsed_seconds": 0.2675827918574214,
+      "decision_latency_ms": {
+        "p50": 0.002459157258272171,
+        "p95": 0.7353496737778186,
+        "max": 0.8477498777210712
+      },
+      "search_diagnostics": {
+        "searched_decisions": 0,
+        "changed_actions": 0,
+        "counterfactual_branches": 0,
+        "mean_selected_predicted_gain_bb": null
+      },
+      "prediction_metrics": {
+        "half_life": null,
+        "public_opponent_decisions": 0,
+        "mean_excess_brier": null,
+        "mean_log_loss": null
+      },
+      "process_peak_rss_native_units": 124157952
+    },
+    {
+      "pool": "mixed_controls",
+      "seats": 7,
+      "trial": 2,
+      "variant": "prior",
+      "hands": 56,
+      "bb_per_100": -224.10714285714286,
+      "delta": 0.0,
+      "elapsed_seconds": 0.27114287531003356,
+      "decision_latency_ms": {
+        "p50": 0.0024996697902679443,
+        "p95": 0.7368586026132105,
+        "max": 0.9455829858779907
+      },
+      "search_diagnostics": {
+        "searched_decisions": 0,
+        "changed_actions": 0,
+        "counterfactual_branches": 0,
+        "mean_selected_predicted_gain_bb": null
+      },
+      "prediction_metrics": {
+        "half_life": null,
+        "public_opponent_decisions": 907,
+        "mean_excess_brier": 0.28190297684674753,
+        "mean_log_loss": 0.8428493961205341
+      },
+      "process_peak_rss_native_units": 124157952
+    },
+    {
+      "pool": "mixed_controls",
+      "seats": 7,
+      "trial": 2,
+      "variant": "raw",
+      "hands": 56,
+      "bb_per_100": -224.10714285714286,
+      "delta": 0.0,
+      "elapsed_seconds": 0.3160291248932481,
+      "decision_latency_ms": {
+        "p50": 0.0025830231606960297,
+        "p95": 0.7303748279809952,
+        "max": 0.8455412462353706
+      },
+      "search_diagnostics": {
+        "searched_decisions": 0,
+        "changed_actions": 0,
+        "counterfactual_branches": 0,
+        "mean_selected_predicted_gain_bb": null
+      },
+      "prediction_metrics": {
+        "half_life": null,
+        "public_opponent_decisions": 907,
+        "mean_excess_brier": 0.03671171896894374,
+        "mean_log_loss": 0.4239259450984548
+      },
+      "process_peak_rss_native_units": 124157952
+    },
+    {
+      "pool": "mixed_controls",
+      "seats": 7,
+      "trial": 2,
+      "variant": "discounted",
+      "hands": 56,
+      "bb_per_100": -224.10714285714286,
+      "delta": 0.0,
+      "elapsed_seconds": 0.31812179228290915,
+      "decision_latency_ms": {
+        "p50": 0.0025830231606960297,
+        "p95": 0.7285417988896369,
+        "max": 0.932624563574791
+      },
+      "search_diagnostics": {
+        "searched_decisions": 0,
+        "changed_actions": 0,
+        "counterfactual_branches": 0,
+        "mean_selected_predicted_gain_bb": null
+      },
+      "prediction_metrics": {
+        "half_life": 64,
+        "public_opponent_decisions": 907,
+        "mean_excess_brier": 0.04386445083191167,
+        "mean_log_loss": 0.44892661313853466
+      },
+      "process_peak_rss_native_units": 124157952
+    },
+    {
+      "pool": "mixed_controls",
+      "seats": 7,
+      "trial": 3,
+      "variant": "original",
+      "hands": 56,
+      "bb_per_100": 129.91071428571428,
+      "delta": 0.0,
+      "elapsed_seconds": 0.2806982919573784,
+      "decision_latency_ms": {
+        "p50": 0.0024996697902679443,
+        "p95": 0.6901647662743922,
+        "max": 0.8825003169476986
+      },
+      "search_diagnostics": {
+        "searched_decisions": 0,
+        "changed_actions": 0,
+        "counterfactual_branches": 0,
+        "mean_selected_predicted_gain_bb": null
+      },
+      "prediction_metrics": {
+        "half_life": null,
+        "public_opponent_decisions": 0,
+        "mean_excess_brier": null,
+        "mean_log_loss": null
+      },
+      "process_peak_rss_native_units": 124157952
+    },
+    {
+      "pool": "mixed_controls",
+      "seats": 7,
+      "trial": 3,
+      "variant": "prior",
+      "hands": 56,
+      "bb_per_100": 129.91071428571428,
+      "delta": 0.0,
+      "elapsed_seconds": 0.29028704203665257,
+      "decision_latency_ms": {
+        "p50": 0.0025420449674129486,
+        "p95": 0.705449725501238,
+        "max": 0.9951670654118061
+      },
+      "search_diagnostics": {
+        "searched_decisions": 0,
+        "changed_actions": 0,
+        "counterfactual_branches": 0,
+        "mean_selected_predicted_gain_bb": null
+      },
+      "prediction_metrics": {
+        "half_life": null,
+        "public_opponent_decisions": 957,
+        "mean_excess_brier": 0.2833885057471265,
+        "mean_log_loss": 0.8493651591801138
+      },
+      "process_peak_rss_native_units": 124157952
+    },
+    {
+      "pool": "mixed_controls",
+      "seats": 7,
+      "trial": 3,
+      "variant": "raw",
+      "hands": 56,
+      "bb_per_100": 129.91071428571428,
+      "delta": 0.0,
+      "elapsed_seconds": 0.33562625013291836,
+      "decision_latency_ms": {
+        "p50": 0.002624932676553726,
+        "p95": 0.6707856664434074,
+        "max": 0.8539999835193157
+      },
+      "search_diagnostics": {
+        "searched_decisions": 0,
+        "changed_actions": 0,
+        "counterfactual_branches": 0,
+        "mean_selected_predicted_gain_bb": null
+      },
+      "prediction_metrics": {
+        "half_life": null,
+        "public_opponent_decisions": 957,
+        "mean_excess_brier": 0.036115687593890965,
+        "mean_log_loss": 0.4334476879491798
+      },
+      "process_peak_rss_native_units": 124157952
+    },
+    {
+      "pool": "mixed_controls",
+      "seats": 7,
+      "trial": 3,
+      "variant": "discounted",
+      "hands": 56,
+      "bb_per_100": 129.91071428571428,
+      "delta": 0.0,
+      "elapsed_seconds": 0.33780929213389754,
+      "decision_latency_ms": {
+        "p50": 0.002624932676553726,
+        "p95": 0.6674543954432011,
+        "max": 0.874833669513464
+      },
+      "search_diagnostics": {
+        "searched_decisions": 0,
+        "changed_actions": 0,
+        "counterfactual_branches": 0,
+        "mean_selected_predicted_gain_bb": null
+      },
+      "prediction_metrics": {
+        "half_life": 64,
+        "public_opponent_decisions": 957,
+        "mean_excess_brier": 0.04385911611899248,
+        "mean_log_loss": 0.4601291162054202
+      },
+      "process_peak_rss_native_units": 124157952
+    },
+    {
+      "pool": "mixed_controls",
+      "seats": 7,
+      "trial": 4,
+      "variant": "original",
+      "hands": 56,
+      "bb_per_100": 311.60714285714283,
+      "delta": 0.0,
+      "elapsed_seconds": 0.27965033426880836,
+      "decision_latency_ms": {
+        "p50": 0.002500135451555252,
+        "p95": 0.7337669841945168,
+        "max": 0.8650841191411018
+      },
+      "search_diagnostics": {
+        "searched_decisions": 0,
+        "changed_actions": 0,
+        "counterfactual_branches": 0,
+        "mean_selected_predicted_gain_bb": null
+      },
+      "prediction_metrics": {
+        "half_life": null,
+        "public_opponent_decisions": 0,
+        "mean_excess_brier": null,
+        "mean_log_loss": null
+      },
+      "process_peak_rss_native_units": 124157952
+    },
+    {
+      "pool": "mixed_controls",
+      "seats": 7,
+      "trial": 4,
+      "variant": "prior",
+      "hands": 56,
+      "bb_per_100": 311.60714285714283,
+      "delta": 0.0,
+      "elapsed_seconds": 0.282558707986027,
+      "decision_latency_ms": {
+        "p50": 0.002500135451555252,
+        "p95": 0.7296413183212278,
+        "max": 0.848749652504921
+      },
+      "search_diagnostics": {
+        "searched_decisions": 0,
+        "changed_actions": 0,
+        "counterfactual_branches": 0,
+        "mean_selected_predicted_gain_bb": null
+      },
+      "prediction_metrics": {
+        "half_life": null,
+        "public_opponent_decisions": 960,
+        "mean_excess_brier": 0.2798583333333333,
+        "mean_log_loss": 0.8219477361332082
+      },
+      "process_peak_rss_native_units": 124157952
+    },
+    {
+      "pool": "mixed_controls",
+      "seats": 7,
+      "trial": 4,
+      "variant": "raw",
+      "hands": 56,
+      "bb_per_100": 311.60714285714283,
+      "delta": 0.0,
+      "elapsed_seconds": 0.3311990420334041,
+      "decision_latency_ms": {
+        "p50": 0.002583954483270645,
+        "p95": 0.7299349876120687,
+        "max": 0.8490830659866333
+      },
+      "search_diagnostics": {
+        "searched_decisions": 0,
+        "changed_actions": 0,
+        "counterfactual_branches": 0,
+        "mean_selected_predicted_gain_bb": null
+      },
+      "prediction_metrics": {
+        "half_life": null,
+        "public_opponent_decisions": 960,
+        "mean_excess_brier": 0.03627159013742249,
+        "mean_log_loss": 0.4228125027839177
+      },
+      "process_peak_rss_native_units": 124157952
+    },
+    {
+      "pool": "mixed_controls",
+      "seats": 7,
+      "trial": 4,
+      "variant": "discounted",
+      "hands": 56,
+      "bb_per_100": 311.60714285714283,
+      "delta": 0.0,
+      "elapsed_seconds": 0.338017082773149,
+      "decision_latency_ms": {
+        "p50": 0.002624932676553726,
+        "p95": 0.7306336658075451,
+        "max": 0.883917324244976
+      },
+      "search_diagnostics": {
+        "searched_decisions": 0,
+        "changed_actions": 0,
+        "counterfactual_branches": 0,
+        "mean_selected_predicted_gain_bb": null
+      },
+      "prediction_metrics": {
+        "half_life": 64,
+        "public_opponent_decisions": 960,
+        "mean_excess_brier": 0.04390112754404097,
+        "mean_log_loss": 0.44681264334487997
+      },
+      "process_peak_rss_native_units": 124157952
+    },
+    {
+      "pool": "mixed_controls",
+      "seats": 7,
+      "trial": 5,
+      "variant": "original",
+      "hands": 56,
+      "bb_per_100": 244.64285714285714,
+      "delta": 0.0,
+      "elapsed_seconds": 0.30234720883890986,
+      "decision_latency_ms": {
+        "p50": 0.002624932676553726,
+        "p95": 0.7165752351284018,
+        "max": 0.9356248192489147
+      },
+      "search_diagnostics": {
+        "searched_decisions": 0,
+        "changed_actions": 0,
+        "counterfactual_branches": 0,
+        "mean_selected_predicted_gain_bb": null
+      },
+      "prediction_metrics": {
+        "half_life": null,
+        "public_opponent_decisions": 0,
+        "mean_excess_brier": null,
+        "mean_log_loss": null
+      },
+      "process_peak_rss_native_units": 124157952
+    },
+    {
+      "pool": "mixed_controls",
+      "seats": 7,
+      "trial": 5,
+      "variant": "prior",
+      "hands": 56,
+      "bb_per_100": 244.64285714285714,
+      "delta": 0.0,
+      "elapsed_seconds": 0.3026922079734504,
+      "decision_latency_ms": {
+        "p50": 0.002583954483270645,
+        "p95": 0.6971331313252448,
+        "max": 0.8907080627977848
+      },
+      "search_diagnostics": {
+        "searched_decisions": 0,
+        "changed_actions": 0,
+        "counterfactual_branches": 0,
+        "mean_selected_predicted_gain_bb": null
+      },
+      "prediction_metrics": {
+        "half_life": null,
+        "public_opponent_decisions": 953,
+        "mean_excess_brier": 0.2796791185729276,
+        "mean_log_loss": 0.8132828788288403
+      },
+      "process_peak_rss_native_units": 124157952
+    },
+    {
+      "pool": "mixed_controls",
+      "seats": 7,
+      "trial": 5,
+      "variant": "raw",
+      "hands": 56,
+      "bb_per_100": 244.64285714285714,
+      "delta": 0.0,
+      "elapsed_seconds": 0.3532019997946918,
+      "decision_latency_ms": {
+        "p50": 0.0026668421924114227,
+        "p95": 0.7072085514664639,
+        "max": 0.8905832655727863
+      },
+      "search_diagnostics": {
+        "searched_decisions": 0,
+        "changed_actions": 0,
+        "counterfactual_branches": 0,
+        "mean_selected_predicted_gain_bb": null
+      },
+      "prediction_metrics": {
+        "half_life": null,
+        "public_opponent_decisions": 953,
+        "mean_excess_brier": 0.03848288341300662,
+        "mean_log_loss": 0.4192724834414297
+      },
+      "process_peak_rss_native_units": 124157952
+    },
+    {
+      "pool": "mixed_controls",
+      "seats": 7,
+      "trial": 5,
+      "variant": "discounted",
+      "hands": 56,
+      "bb_per_100": 244.64285714285714,
+      "delta": 0.0,
+      "elapsed_seconds": 0.35685225017368793,
+      "decision_latency_ms": {
+        "p50": 0.0026673078536987305,
+        "p95": 0.6970669142901895,
+        "max": 0.893749762326479
+      },
+      "search_diagnostics": {
+        "searched_decisions": 0,
+        "changed_actions": 0,
+        "counterfactual_branches": 0,
+        "mean_selected_predicted_gain_bb": null
+      },
+      "prediction_metrics": {
+        "half_life": 64,
+        "public_opponent_decisions": 953,
+        "mean_excess_brier": 0.04639959771446299,
+        "mean_log_loss": 0.4446852989996536
+      },
+      "process_peak_rss_native_units": 124157952
+    },
+    {
+      "pool": "mixed_controls",
+      "seats": 8,
+      "trial": 0,
+      "variant": "original",
+      "hands": 64,
+      "bb_per_100": 2117.578125,
+      "delta": 0.0,
+      "elapsed_seconds": 0.43645629240199924,
+      "decision_latency_ms": {
+        "p50": 0.0024996697902679443,
+        "p95": 0.7981496863067155,
+        "max": 0.9875004179775715
+      },
+      "search_diagnostics": {
+        "searched_decisions": 0,
+        "changed_actions": 0,
+        "counterfactual_branches": 0,
+        "mean_selected_predicted_gain_bb": null
+      },
+      "prediction_metrics": {
+        "half_life": null,
+        "public_opponent_decisions": 0,
+        "mean_excess_brier": null,
+        "mean_log_loss": null
+      },
+      "process_peak_rss_native_units": 124157952
+    },
+    {
+      "pool": "mixed_controls",
+      "seats": 8,
+      "trial": 0,
+      "variant": "prior",
+      "hands": 64,
+      "bb_per_100": 2117.578125,
+      "delta": 0.0,
+      "elapsed_seconds": 1.391149832867086,
+      "decision_latency_ms": {
+        "p50": 0.002500135451555252,
+        "p95": 0.8348910603672267,
+        "max": 358.4219999611378
+      },
+      "search_diagnostics": {
+        "searched_decisions": 3,
+        "changed_actions": 0,
+        "counterfactual_branches": 256,
+        "mean_selected_predicted_gain_bb": 0.0
+      },
+      "prediction_metrics": {
+        "half_life": null,
+        "public_opponent_decisions": 1141,
+        "mean_excess_brier": 0.2916359333917616,
+        "mean_log_loss": 0.7980429546630395
+      },
+      "process_peak_rss_native_units": 124157952
+    },
+    {
+      "pool": "mixed_controls",
+      "seats": 8,
+      "trial": 0,
+      "variant": "raw",
+      "hands": 64,
+      "bb_per_100": 2117.578125,
+      "delta": 0.0,
+      "elapsed_seconds": 1.846124124713242,
+      "decision_latency_ms": {
+        "p50": 0.0025420449674129486,
+        "p95": 0.814574956893921,
+        "max": 492.24920896813273
+      },
+      "search_diagnostics": {
+        "searched_decisions": 3,
+        "changed_actions": 0,
+        "counterfactual_branches": 256,
+        "mean_selected_predicted_gain_bb": 0.0
+      },
+      "prediction_metrics": {
+        "half_life": null,
+        "public_opponent_decisions": 1141,
+        "mean_excess_brier": 0.03450024318301175,
+        "mean_log_loss": 0.36585119447318043
+      },
+      "process_peak_rss_native_units": 124157952
+    },
+    {
+      "pool": "mixed_controls",
+      "seats": 8,
+      "trial": 0,
+      "variant": "discounted",
+      "hands": 64,
+      "bb_per_100": 2117.578125,
+      "delta": 0.0,
+      "elapsed_seconds": 1.8486913330852985,
+      "decision_latency_ms": {
+        "p50": 0.0025830231606960297,
+        "p95": 0.8247786667197945,
+        "max": 486.1618750728667
+      },
+      "search_diagnostics": {
+        "searched_decisions": 3,
+        "changed_actions": 0,
+        "counterfactual_branches": 256,
+        "mean_selected_predicted_gain_bb": 0.0
+      },
+      "prediction_metrics": {
+        "half_life": 64,
+        "public_opponent_decisions": 1141,
+        "mean_excess_brier": 0.0420909356359928,
+        "mean_log_loss": 0.3925763651080774
+      },
+      "process_peak_rss_native_units": 124157952
+    },
+    {
+      "pool": "mixed_controls",
+      "seats": 8,
+      "trial": 1,
+      "variant": "original",
+      "hands": 64,
+      "bb_per_100": 439.65625,
+      "delta": 0.0,
+      "elapsed_seconds": 0.44936299975961447,
+      "decision_latency_ms": {
+        "p50": 0.002500135451555252,
+        "p95": 0.8043875452131027,
+        "max": 1.0025002993643284
+      },
+      "search_diagnostics": {
+        "searched_decisions": 0,
+        "changed_actions": 0,
+        "counterfactual_branches": 0,
+        "mean_selected_predicted_gain_bb": null
+      },
+      "prediction_metrics": {
+        "half_life": null,
+        "public_opponent_decisions": 0,
+        "mean_excess_brier": null,
+        "mean_log_loss": null
+      },
+      "process_peak_rss_native_units": 124157952
+    },
+    {
+      "pool": "mixed_controls",
+      "seats": 8,
+      "trial": 1,
+      "variant": "prior",
+      "hands": 64,
+      "bb_per_100": 439.65625,
+      "delta": 0.0,
+      "elapsed_seconds": 0.6626800838857889,
+      "decision_latency_ms": {
+        "p50": 0.002541113644838333,
+        "p95": 0.810566218569874,
+        "max": 207.7548331581056
+      },
+      "search_diagnostics": {
+        "searched_decisions": 1,
+        "changed_actions": 0,
+        "counterfactual_branches": 48,
+        "mean_selected_predicted_gain_bb": 0.0
+      },
+      "prediction_metrics": {
+        "half_life": null,
+        "public_opponent_decisions": 1311,
+        "mean_excess_brier": 0.29082974828375285,
+        "mean_log_loss": 0.7786504022822269
+      },
+      "process_peak_rss_native_units": 124157952
+    },
+    {
+      "pool": "mixed_controls",
+      "seats": 8,
+      "trial": 1,
+      "variant": "raw",
+      "hands": 64,
+      "bb_per_100": 439.65625,
+      "delta": 0.0,
+      "elapsed_seconds": 0.8140871250070632,
+      "decision_latency_ms": {
+        "p50": 0.002624932676553726,
+        "p95": 0.79575041308999,
+        "max": 278.12158316373825
+      },
+      "search_diagnostics": {
+        "searched_decisions": 1,
+        "changed_actions": 0,
+        "counterfactual_branches": 48,
+        "mean_selected_predicted_gain_bb": 0.0
+      },
+      "prediction_metrics": {
+        "half_life": null,
+        "public_opponent_decisions": 1311,
+        "mean_excess_brier": 0.03533127148166281,
+        "mean_log_loss": 0.3707343299665364
+      },
+      "process_peak_rss_native_units": 124157952
+    },
+    {
+      "pool": "mixed_controls",
+      "seats": 8,
+      "trial": 1,
+      "variant": "discounted",
+      "hands": 64,
+      "bb_per_100": 439.65625,
+      "delta": 0.0,
+      "elapsed_seconds": 0.8105854168534279,
+      "decision_latency_ms": {
+        "p50": 0.0026668421924114227,
+        "p95": 0.8175212889909723,
+        "max": 269.5963750593364
+      },
+      "search_diagnostics": {
+        "searched_decisions": 1,
+        "changed_actions": 0,
+        "counterfactual_branches": 48,
+        "mean_selected_predicted_gain_bb": 0.0
+      },
+      "prediction_metrics": {
+        "half_life": 64,
+        "public_opponent_decisions": 1311,
+        "mean_excess_brier": 0.043740813007053146,
+        "mean_log_loss": 0.39802678600539987
+      },
+      "process_peak_rss_native_units": 124157952
+    },
+    {
+      "pool": "mixed_controls",
+      "seats": 8,
+      "trial": 2,
+      "variant": "original",
+      "hands": 64,
+      "bb_per_100": 439.453125,
+      "delta": 0.0,
+      "elapsed_seconds": 0.42141862493008375,
+      "decision_latency_ms": {
+        "p50": 0.0024996697902679443,
+        "p95": 0.7994086481630802,
+        "max": 0.9937919676303864
+      },
+      "search_diagnostics": {
+        "searched_decisions": 0,
+        "changed_actions": 0,
+        "counterfactual_branches": 0,
+        "mean_selected_predicted_gain_bb": null
+      },
+      "prediction_metrics": {
+        "half_life": null,
+        "public_opponent_decisions": 0,
+        "mean_excess_brier": null,
+        "mean_log_loss": null
+      },
+      "process_peak_rss_native_units": 124157952
+    },
+    {
+      "pool": "mixed_controls",
+      "seats": 8,
+      "trial": 2,
+      "variant": "prior",
+      "hands": 64,
+      "bb_per_100": 439.453125,
+      "delta": 0.0,
+      "elapsed_seconds": 0.4244863330386579,
+      "decision_latency_ms": {
+        "p50": 0.002541113644838333,
+        "p95": 0.7925999350845808,
+        "max": 0.999916810542345
+      },
+      "search_diagnostics": {
+        "searched_decisions": 0,
+        "changed_actions": 0,
+        "counterfactual_branches": 0,
+        "mean_selected_predicted_gain_bb": null
+      },
+      "prediction_metrics": {
+        "half_life": null,
+        "public_opponent_decisions": 1193,
+        "mean_excess_brier": 0.28650377200335286,
+        "mean_log_loss": 0.782386321076561
+      },
+      "process_peak_rss_native_units": 124157952
+    },
+    {
+      "pool": "mixed_controls",
+      "seats": 8,
+      "trial": 2,
+      "variant": "raw",
+      "hands": 64,
+      "bb_per_100": 439.453125,
+      "delta": 0.0,
+      "elapsed_seconds": 0.4974331674166024,
+      "decision_latency_ms": {
+        "p50": 0.002625398337841034,
+        "p95": 0.7806418463587753,
+        "max": 1.0607093572616577
+      },
+      "search_diagnostics": {
+        "searched_decisions": 0,
+        "changed_actions": 0,
+        "counterfactual_branches": 0,
+        "mean_selected_predicted_gain_bb": null
+      },
+      "prediction_metrics": {
+        "half_life": null,
+        "public_opponent_decisions": 1193,
+        "mean_excess_brier": 0.040641681557754494,
+        "mean_log_loss": 0.36381573221028435
+      },
+      "process_peak_rss_native_units": 124157952
+    },
+    {
+      "pool": "mixed_controls",
+      "seats": 8,
+      "trial": 2,
+      "variant": "discounted",
+      "hands": 64,
+      "bb_per_100": 439.453125,
+      "delta": 0.0,
+      "elapsed_seconds": 0.4989030840806663,
+      "decision_latency_ms": {
+        "p50": 0.002625398337841034,
+        "p95": 0.7828086614608761,
+        "max": 1.030833926051855
+      },
+      "search_diagnostics": {
+        "searched_decisions": 0,
+        "changed_actions": 0,
+        "counterfactual_branches": 0,
+        "mean_selected_predicted_gain_bb": null
+      },
+      "prediction_metrics": {
+        "half_life": 64,
+        "public_opponent_decisions": 1193,
+        "mean_excess_brier": 0.04776677844272837,
+        "mean_log_loss": 0.3910026030297639
+      },
+      "process_peak_rss_native_units": 124157952
+    },
+    {
+      "pool": "mixed_controls",
+      "seats": 8,
+      "trial": 3,
+      "variant": "original",
+      "hands": 64,
+      "bb_per_100": -358.59375,
+      "delta": 0.0,
+      "elapsed_seconds": 0.40473445784300566,
+      "decision_latency_ms": {
+        "p50": 0.0024167820811271667,
+        "p95": 0.7411580299958587,
+        "max": 1.0246247984468937
+      },
+      "search_diagnostics": {
+        "searched_decisions": 0,
+        "changed_actions": 0,
+        "counterfactual_branches": 0,
+        "mean_selected_predicted_gain_bb": null
+      },
+      "prediction_metrics": {
+        "half_life": null,
+        "public_opponent_decisions": 0,
+        "mean_excess_brier": null,
+        "mean_log_loss": null
+      },
+      "process_peak_rss_native_units": 124157952
+    },
+    {
+      "pool": "mixed_controls",
+      "seats": 8,
+      "trial": 3,
+      "variant": "prior",
+      "hands": 64,
+      "bb_per_100": -358.59375,
+      "delta": 0.0,
+      "elapsed_seconds": 0.4026257498189807,
+      "decision_latency_ms": {
+        "p50": 0.0024167820811271667,
+        "p95": 0.735912565141916,
+        "max": 0.9267497807741165
+      },
+      "search_diagnostics": {
+        "searched_decisions": 0,
+        "changed_actions": 0,
+        "counterfactual_branches": 0,
+        "mean_selected_predicted_gain_bb": null
+      },
+      "prediction_metrics": {
+        "half_life": null,
+        "public_opponent_decisions": 1263,
+        "mean_excess_brier": 0.2899914489311164,
+        "mean_log_loss": 0.7945045084091205
+      },
+      "process_peak_rss_native_units": 124157952
+    },
+    {
+      "pool": "mixed_controls",
+      "seats": 8,
+      "trial": 3,
+      "variant": "raw",
+      "hands": 64,
+      "bb_per_100": -358.59375,
+      "delta": 0.0,
+      "elapsed_seconds": 0.48163891676813364,
+      "decision_latency_ms": {
+        "p50": 0.002541113644838333,
+        "p95": 0.7404213771224021,
+        "max": 0.966791994869709
+      },
+      "search_diagnostics": {
+        "searched_decisions": 0,
+        "changed_actions": 0,
+        "counterfactual_branches": 0,
+        "mean_selected_predicted_gain_bb": null
+      },
+      "prediction_metrics": {
+        "half_life": null,
+        "public_opponent_decisions": 1263,
+        "mean_excess_brier": 0.03259934175858548,
+        "mean_log_loss": 0.35232029533541115
+      },
+      "process_peak_rss_native_units": 124157952
+    },
+    {
+      "pool": "mixed_controls",
+      "seats": 8,
+      "trial": 3,
+      "variant": "discounted",
+      "hands": 64,
+      "bb_per_100": -358.59375,
+      "delta": 0.0,
+      "elapsed_seconds": 0.4827054999768734,
+      "decision_latency_ms": {
+        "p50": 0.0025420449674129486,
+        "p95": 0.739619042724371,
+        "max": 0.9555420838296413
+      },
+      "search_diagnostics": {
+        "searched_decisions": 0,
+        "changed_actions": 0,
+        "counterfactual_branches": 0,
+        "mean_selected_predicted_gain_bb": null
+      },
+      "prediction_metrics": {
+        "half_life": 64,
+        "public_opponent_decisions": 1263,
+        "mean_excess_brier": 0.0393200071168224,
+        "mean_log_loss": 0.38100139640084724
+      },
+      "process_peak_rss_native_units": 124157952
+    },
+    {
+      "pool": "mixed_controls",
+      "seats": 8,
+      "trial": 4,
+      "variant": "original",
+      "hands": 64,
+      "bb_per_100": 1212.703125,
+      "delta": 0.0,
+      "elapsed_seconds": 0.40884208399802446,
+      "decision_latency_ms": {
+        "p50": 0.00237487256526947,
+        "p95": 0.7481503300368779,
+        "max": 0.9333747439086437
+      },
+      "search_diagnostics": {
+        "searched_decisions": 0,
+        "changed_actions": 0,
+        "counterfactual_branches": 0,
+        "mean_selected_predicted_gain_bb": null
+      },
+      "prediction_metrics": {
+        "half_life": null,
+        "public_opponent_decisions": 0,
+        "mean_excess_brier": null,
+        "mean_log_loss": null
+      },
+      "process_peak_rss_native_units": 124157952
+    },
+    {
+      "pool": "mixed_controls",
+      "seats": 8,
+      "trial": 4,
+      "variant": "prior",
+      "hands": 64,
+      "bb_per_100": 1212.703125,
+      "delta": 0.0,
+      "elapsed_seconds": 0.43740654084831476,
+      "decision_latency_ms": {
+        "p50": 0.002500135451555252,
+        "p95": 0.8070328272879121,
+        "max": 0.9957081638276577
+      },
+      "search_diagnostics": {
+        "searched_decisions": 0,
+        "changed_actions": 0,
+        "counterfactual_branches": 0,
+        "mean_selected_predicted_gain_bb": null
+      },
+      "prediction_metrics": {
+        "half_life": null,
+        "public_opponent_decisions": 1218,
+        "mean_excess_brier": 0.2947771756978653,
+        "mean_log_loss": 0.8001651050879028
+      },
+      "process_peak_rss_native_units": 124157952
+    },
+    {
+      "pool": "mixed_controls",
+      "seats": 8,
+      "trial": 4,
+      "variant": "raw",
+      "hands": 64,
+      "bb_per_100": 1212.703125,
+      "delta": 0.0,
+      "elapsed_seconds": 0.5084893340244889,
+      "decision_latency_ms": {
+        "p50": 0.002624932676553726,
+        "p95": 0.7996669970452775,
+        "max": 1.0259998962283134
+      },
+      "search_diagnostics": {
+        "searched_decisions": 0,
+        "changed_actions": 0,
+        "counterfactual_branches": 0,
+        "mean_selected_predicted_gain_bb": null
+      },
+      "prediction_metrics": {
+        "half_life": null,
+        "public_opponent_decisions": 1218,
+        "mean_excess_brier": 0.03320791973969918,
+        "mean_log_loss": 0.3655283536971686
+      },
+      "process_peak_rss_native_units": 124157952
+    },
+    {
+      "pool": "mixed_controls",
+      "seats": 8,
+      "trial": 4,
+      "variant": "discounted",
+      "hands": 64,
+      "bb_per_100": 1212.703125,
+      "delta": 0.0,
+      "elapsed_seconds": 0.4864863748662174,
+      "decision_latency_ms": {
+        "p50": 0.002541113644838333,
+        "p95": 0.7589582353830336,
+        "max": 0.9632501751184464
+      },
+      "search_diagnostics": {
+        "searched_decisions": 0,
+        "changed_actions": 0,
+        "counterfactual_branches": 0,
+        "mean_selected_predicted_gain_bb": null
+      },
+      "prediction_metrics": {
+        "half_life": 64,
+        "public_opponent_decisions": 1218,
+        "mean_excess_brier": 0.040536164731193355,
+        "mean_log_loss": 0.3926583413679083
+      },
+      "process_peak_rss_native_units": 124157952
+    },
+    {
+      "pool": "mixed_controls",
+      "seats": 8,
+      "trial": 5,
+      "variant": "original",
+      "hands": 64,
+      "bb_per_100": 114.84375,
+      "delta": 0.0,
+      "elapsed_seconds": 0.42227800004184246,
+      "decision_latency_ms": {
+        "p50": 0.00237487256526947,
+        "p95": 0.7570807822048664,
+        "max": 0.9332499466836452
+      },
+      "search_diagnostics": {
+        "searched_decisions": 0,
+        "changed_actions": 0,
+        "counterfactual_branches": 0,
+        "mean_selected_predicted_gain_bb": null
+      },
+      "prediction_metrics": {
+        "half_life": null,
+        "public_opponent_decisions": 0,
+        "mean_excess_brier": null,
+        "mean_log_loss": null
+      },
+      "process_peak_rss_native_units": 124157952
+    },
+    {
+      "pool": "mixed_controls",
+      "seats": 8,
+      "trial": 5,
+      "variant": "prior",
+      "hands": 64,
+      "bb_per_100": 114.84375,
+      "delta": 0.0,
+      "elapsed_seconds": 0.437073125038296,
+      "decision_latency_ms": {
+        "p50": 0.0024586915969848633,
+        "p95": 0.7899226620793343,
+        "max": 0.9970841929316521
+      },
+      "search_diagnostics": {
+        "searched_decisions": 0,
+        "changed_actions": 0,
+        "counterfactual_branches": 0,
+        "mean_selected_predicted_gain_bb": null
+      },
+      "prediction_metrics": {
+        "half_life": null,
+        "public_opponent_decisions": 1142,
+        "mean_excess_brier": 0.2834280210157618,
+        "mean_log_loss": 0.7628047105376276
+      },
+      "process_peak_rss_native_units": 124157952
+    },
+    {
+      "pool": "mixed_controls",
+      "seats": 8,
+      "trial": 5,
+      "variant": "raw",
+      "hands": 64,
+      "bb_per_100": 114.84375,
+      "delta": 0.0,
+      "elapsed_seconds": 0.49385695811361074,
+      "decision_latency_ms": {
+        "p50": 0.002500135451555252,
+        "p95": 0.7492800010368228,
+        "max": 0.9423750452697277
+      },
+      "search_diagnostics": {
+        "searched_decisions": 0,
+        "changed_actions": 0,
+        "counterfactual_branches": 0,
+        "mean_selected_predicted_gain_bb": null
+      },
+      "prediction_metrics": {
+        "half_life": null,
+        "public_opponent_decisions": 1142,
+        "mean_excess_brier": 0.03801523357535995,
+        "mean_log_loss": 0.3756296617560464
+      },
+      "process_peak_rss_native_units": 124157952
+    },
+    {
+      "pool": "mixed_controls",
+      "seats": 8,
+      "trial": 5,
+      "variant": "discounted",
+      "hands": 64,
+      "bb_per_100": 114.84375,
+      "delta": 0.0,
+      "elapsed_seconds": 0.5134215829893947,
+      "decision_latency_ms": {
+        "p50": 0.0025830231606960297,
+        "p95": 0.753228762187064,
+        "max": 2.172333188354969
+      },
+      "search_diagnostics": {
+        "searched_decisions": 0,
+        "changed_actions": 0,
+        "counterfactual_branches": 0,
+        "mean_selected_predicted_gain_bb": null
+      },
+      "prediction_metrics": {
+        "half_life": 64,
+        "public_opponent_decisions": 1142,
+        "mean_excess_brier": 0.04703633109846718,
+        "mean_log_loss": 0.4025905285155237
+      },
+      "process_peak_rss_native_units": 124157952
+    },
+    {
+      "pool": "mixed_controls",
+      "seats": 9,
+      "trial": 0,
+      "variant": "original",
+      "hands": 72,
+      "bb_per_100": 237.84722222222223,
+      "delta": 0.0,
+      "elapsed_seconds": 0.4985420838929713,
+      "decision_latency_ms": {
+        "p50": 0.002541579306125641,
+        "p95": 0.7884875638410449,
+        "max": 1.1458327062427998
+      },
+      "search_diagnostics": {
+        "searched_decisions": 0,
+        "changed_actions": 0,
+        "counterfactual_branches": 0,
+        "mean_selected_predicted_gain_bb": null
+      },
+      "prediction_metrics": {
+        "half_life": null,
+        "public_opponent_decisions": 0,
+        "mean_excess_brier": null,
+        "mean_log_loss": null
+      },
+      "process_peak_rss_native_units": 124157952
+    },
+    {
+      "pool": "mixed_controls",
+      "seats": 9,
+      "trial": 0,
+      "variant": "prior",
+      "hands": 72,
+      "bb_per_100": 237.84722222222223,
+      "delta": 0.0,
+      "elapsed_seconds": 0.5007983748801053,
+      "decision_latency_ms": {
+        "p50": 0.002541113644838333,
+        "p95": 0.7982706185430286,
+        "max": 1.0897908359766006
+      },
+      "search_diagnostics": {
+        "searched_decisions": 0,
+        "changed_actions": 0,
+        "counterfactual_branches": 0,
+        "mean_selected_predicted_gain_bb": null
+      },
+      "prediction_metrics": {
+        "half_life": null,
+        "public_opponent_decisions": 1475,
+        "mean_excess_brier": 0.28233450847457625,
+        "mean_log_loss": 0.7929887238118257
+      },
+      "process_peak_rss_native_units": 124157952
+    },
+    {
+      "pool": "mixed_controls",
+      "seats": 9,
+      "trial": 0,
+      "variant": "raw",
+      "hands": 72,
+      "bb_per_100": 237.84722222222223,
+      "delta": 0.0,
+      "elapsed_seconds": 0.6043367083184421,
+      "decision_latency_ms": {
+        "p50": 0.002625398337841034,
+        "p95": 0.7937253452837467,
+        "max": 1.1103330180048943
+      },
+      "search_diagnostics": {
+        "searched_decisions": 0,
+        "changed_actions": 0,
+        "counterfactual_branches": 0,
+        "mean_selected_predicted_gain_bb": null
+      },
+      "prediction_metrics": {
+        "half_life": null,
+        "public_opponent_decisions": 1475,
+        "mean_excess_brier": 0.028813419584472172,
+        "mean_log_loss": 0.3595817837170444
+      },
+      "process_peak_rss_native_units": 124157952
+    },
+    {
+      "pool": "mixed_controls",
+      "seats": 9,
+      "trial": 0,
+      "variant": "discounted",
+      "hands": 72,
+      "bb_per_100": 237.84722222222223,
+      "delta": 0.0,
+      "elapsed_seconds": 0.6110925828106701,
+      "decision_latency_ms": {
+        "p50": 0.0026673078536987305,
+        "p95": 0.7902706041932106,
+        "max": 1.1125830933451653
+      },
+      "search_diagnostics": {
+        "searched_decisions": 0,
+        "changed_actions": 0,
+        "counterfactual_branches": 0,
+        "mean_selected_predicted_gain_bb": null
+      },
+      "prediction_metrics": {
+        "half_life": 64,
+        "public_opponent_decisions": 1475,
+        "mean_excess_brier": 0.03656444926767372,
+        "mean_log_loss": 0.3888511682525177
+      },
+      "process_peak_rss_native_units": 124157952
+    },
+    {
+      "pool": "mixed_controls",
+      "seats": 9,
+      "trial": 1,
+      "variant": "original",
+      "hands": 72,
+      "bb_per_100": 1514.9305555555557,
+      "delta": 0.0,
+      "elapsed_seconds": 0.5033177500590682,
+      "decision_latency_ms": {
+        "p50": 0.002500135451555252,
+        "p95": 0.7974663749337193,
+        "max": 1.0925419628620148
+      },
+      "search_diagnostics": {
+        "searched_decisions": 0,
+        "changed_actions": 0,
+        "counterfactual_branches": 0,
+        "mean_selected_predicted_gain_bb": null
+      },
+      "prediction_metrics": {
+        "half_life": null,
+        "public_opponent_decisions": 0,
+        "mean_excess_brier": null,
+        "mean_log_loss": null
+      },
+      "process_peak_rss_native_units": 124157952
+    },
+    {
+      "pool": "mixed_controls",
+      "seats": 9,
+      "trial": 1,
+      "variant": "prior",
+      "hands": 72,
+      "bb_per_100": 1514.9305555555557,
+      "delta": 0.0,
+      "elapsed_seconds": 0.5087582501582801,
+      "decision_latency_ms": {
+        "p50": 0.0025406479835510254,
+        "p95": 0.7971754297614096,
+        "max": 1.105666160583496
+      },
+      "search_diagnostics": {
+        "searched_decisions": 0,
+        "changed_actions": 0,
+        "counterfactual_branches": 0,
+        "mean_selected_predicted_gain_bb": null
+      },
+      "prediction_metrics": {
+        "half_life": null,
+        "public_opponent_decisions": 1479,
+        "mean_excess_brier": 0.2838608519269777,
+        "mean_log_loss": 0.7920792271080482
+      },
+      "process_peak_rss_native_units": 124157952
+    },
+    {
+      "pool": "mixed_controls",
+      "seats": 9,
+      "trial": 1,
+      "variant": "raw",
+      "hands": 72,
+      "bb_per_100": 1514.9305555555557,
+      "delta": 0.0,
+      "elapsed_seconds": 0.6071366658434272,
+      "decision_latency_ms": {
+        "p50": 0.002624932676553726,
+        "p95": 0.8007586933672426,
+        "max": 1.0958747006952763
+      },
+      "search_diagnostics": {
+        "searched_decisions": 0,
+        "changed_actions": 0,
+        "counterfactual_branches": 0,
+        "mean_selected_predicted_gain_bb": null
+      },
+      "prediction_metrics": {
+        "half_life": null,
+        "public_opponent_decisions": 1479,
+        "mean_excess_brier": 0.028836212276773864,
+        "mean_log_loss": 0.37119771430186305
+      },
+      "process_peak_rss_native_units": 124157952
+    },
+    {
+      "pool": "mixed_controls",
+      "seats": 9,
+      "trial": 1,
+      "variant": "discounted",
+      "hands": 72,
+      "bb_per_100": 1514.9305555555557,
+      "delta": 0.0,
+      "elapsed_seconds": 0.6121242502704263,
+      "decision_latency_ms": {
+        "p50": 0.002625398337841034,
+        "p95": 0.7976003922522066,
+        "max": 1.1015408672392368
+      },
+      "search_diagnostics": {
+        "searched_decisions": 0,
+        "changed_actions": 0,
+        "counterfactual_branches": 0,
+        "mean_selected_predicted_gain_bb": null
+      },
+      "prediction_metrics": {
+        "half_life": 64,
+        "public_opponent_decisions": 1479,
+        "mean_excess_brier": 0.036643393103628484,
+        "mean_log_loss": 0.39851583633108567
+      },
+      "process_peak_rss_native_units": 124157952
+    },
+    {
+      "pool": "mixed_controls",
+      "seats": 9,
+      "trial": 2,
+      "variant": "original",
+      "hands": 72,
+      "bb_per_100": 507.9861111111111,
+      "delta": 0.0,
+      "elapsed_seconds": 0.4925981666892767,
+      "decision_latency_ms": {
+        "p50": 0.0024158507585525513,
+        "p95": 0.7233378477394579,
+        "max": 1.1362084187567234
+      },
+      "search_diagnostics": {
+        "searched_decisions": 0,
+        "changed_actions": 0,
+        "counterfactual_branches": 0,
+        "mean_selected_predicted_gain_bb": null
+      },
+      "prediction_metrics": {
+        "half_life": null,
+        "public_opponent_decisions": 0,
+        "mean_excess_brier": null,
+        "mean_log_loss": null
+      },
+      "process_peak_rss_native_units": 124157952
+    },
+    {
+      "pool": "mixed_controls",
+      "seats": 9,
+      "trial": 2,
+      "variant": "prior",
+      "hands": 72,
+      "bb_per_100": 507.9861111111111,
+      "delta": 0.0,
+      "elapsed_seconds": 0.49253095779567957,
+      "decision_latency_ms": {
+        "p50": 0.00237487256526947,
+        "p95": 0.7273741532117127,
+        "max": 1.0444168001413345
+      },
+      "search_diagnostics": {
+        "searched_decisions": 0,
+        "changed_actions": 0,
+        "counterfactual_branches": 0,
+        "mean_selected_predicted_gain_bb": null
+      },
+      "prediction_metrics": {
+        "half_life": null,
+        "public_opponent_decisions": 1593,
+        "mean_excess_brier": 0.28143691148775896,
+        "mean_log_loss": 0.787337981023666
+      },
+      "process_peak_rss_native_units": 124157952
+    },
+    {
+      "pool": "mixed_controls",
+      "seats": 9,
+      "trial": 2,
+      "variant": "raw",
+      "hands": 72,
+      "bb_per_100": 507.9861111111111,
+      "delta": 0.0,
+      "elapsed_seconds": 0.5928429998457432,
+      "decision_latency_ms": {
+        "p50": 0.002541113644838333,
+        "p95": 0.7231832481920715,
+        "max": 1.048916019499302
+      },
+      "search_diagnostics": {
+        "searched_decisions": 0,
+        "changed_actions": 0,
+        "counterfactual_branches": 0,
+        "mean_selected_predicted_gain_bb": null
+      },
+      "prediction_metrics": {
+        "half_life": null,
+        "public_opponent_decisions": 1593,
+        "mean_excess_brier": 0.028562614356754213,
+        "mean_log_loss": 0.37143701917322364
+      },
+      "process_peak_rss_native_units": 124157952
+    },
+    {
+      "pool": "mixed_controls",
+      "seats": 9,
+      "trial": 2,
+      "variant": "discounted",
+      "hands": 72,
+      "bb_per_100": 507.9861111111111,
+      "delta": 0.0,
+      "elapsed_seconds": 0.5971804577857256,
+      "decision_latency_ms": {
+        "p50": 0.002541113644838333,
+        "p95": 0.7255456410348415,
+        "max": 1.0182089172303677
+      },
+      "search_diagnostics": {
+        "searched_decisions": 0,
+        "changed_actions": 0,
+        "counterfactual_branches": 0,
+        "mean_selected_predicted_gain_bb": null
+      },
+      "prediction_metrics": {
+        "half_life": 64,
+        "public_opponent_decisions": 1593,
+        "mean_excess_brier": 0.03626049309979199,
+        "mean_log_loss": 0.3984758049795006
+      },
+      "process_peak_rss_native_units": 124157952
+    },
+    {
+      "pool": "mixed_controls",
+      "seats": 9,
+      "trial": 3,
+      "variant": "original",
+      "hands": 72,
+      "bb_per_100": 399.65277777777777,
+      "delta": 0.0,
+      "elapsed_seconds": 0.4906557919457555,
+      "decision_latency_ms": {
+        "p50": 0.00237487256526947,
+        "p95": 0.0034999102354049683,
+        "max": 1.069250050932169
+      },
+      "search_diagnostics": {
+        "searched_decisions": 0,
+        "changed_actions": 0,
+        "counterfactual_branches": 0,
+        "mean_selected_predicted_gain_bb": null
+      },
+      "prediction_metrics": {
+        "half_life": null,
+        "public_opponent_decisions": 0,
+        "mean_excess_brier": null,
+        "mean_log_loss": null
+      },
+      "process_peak_rss_native_units": 124157952
+    },
+    {
+      "pool": "mixed_controls",
+      "seats": 9,
+      "trial": 3,
+      "variant": "prior",
+      "hands": 72,
+      "bb_per_100": 399.65277777777777,
+      "delta": 0.0,
+      "elapsed_seconds": 0.7088219579309225,
+      "decision_latency_ms": {
+        "p50": 0.0024158507585525513,
+        "p95": 0.0036670826375484467,
+        "max": 215.22620879113674
+      },
+      "search_diagnostics": {
+        "searched_decisions": 1,
+        "changed_actions": 0,
+        "counterfactual_branches": 32,
+        "mean_selected_predicted_gain_bb": 0.0
+      },
+      "prediction_metrics": {
+        "half_life": null,
+        "public_opponent_decisions": 1623,
+        "mean_excess_brier": 0.2839181762168823,
+        "mean_log_loss": 0.7991426841300795
+      },
+      "process_peak_rss_native_units": 124157952
+    },
+    {
+      "pool": "mixed_controls",
+      "seats": 9,
+      "trial": 3,
+      "variant": "raw",
+      "hands": 72,
+      "bb_per_100": 399.65277777777777,
+      "delta": 0.0,
+      "elapsed_seconds": 0.8456000001169741,
+      "decision_latency_ms": {
+        "p50": 0.0025420449674129486,
+        "p95": 0.0037855934351682624,
+        "max": 243.55537490919232
+      },
+      "search_diagnostics": {
+        "searched_decisions": 1,
+        "changed_actions": 0,
+        "counterfactual_branches": 32,
+        "mean_selected_predicted_gain_bb": 0.0
+      },
+      "prediction_metrics": {
+        "half_life": null,
+        "public_opponent_decisions": 1623,
+        "mean_excess_brier": 0.030835566731351825,
+        "mean_log_loss": 0.36981003044626354
+      },
+      "process_peak_rss_native_units": 124157952
+    },
+    {
+      "pool": "mixed_controls",
+      "seats": 9,
+      "trial": 3,
+      "variant": "discounted",
+      "hands": 72,
+      "bb_per_100": 399.65277777777777,
+      "delta": 0.0,
+      "elapsed_seconds": 0.8281223750673234,
+      "decision_latency_ms": {
+        "p50": 0.0025420449674129486,
+        "p95": 0.0036669429391622543,
+        "max": 220.76870827004313
+      },
+      "search_diagnostics": {
+        "searched_decisions": 1,
+        "changed_actions": 0,
+        "counterfactual_branches": 32,
+        "mean_selected_predicted_gain_bb": 0.0
+      },
+      "prediction_metrics": {
+        "half_life": 64,
+        "public_opponent_decisions": 1623,
+        "mean_excess_brier": 0.03877682306840143,
+        "mean_log_loss": 0.3983288024907854
+      },
+      "process_peak_rss_native_units": 124157952
+    },
+    {
+      "pool": "mixed_controls",
+      "seats": 9,
+      "trial": 4,
+      "variant": "original",
+      "hands": 72,
+      "bb_per_100": -321.52777777777777,
+      "delta": 0.0,
+      "elapsed_seconds": 0.49782458366826177,
+      "decision_latency_ms": {
+        "p50": 0.002375338226556778,
+        "p95": 0.7457960862666368,
+        "max": 1.0467078536748886
+      },
+      "search_diagnostics": {
+        "searched_decisions": 0,
+        "changed_actions": 0,
+        "counterfactual_branches": 0,
+        "mean_selected_predicted_gain_bb": null
+      },
+      "prediction_metrics": {
+        "half_life": null,
+        "public_opponent_decisions": 0,
+        "mean_excess_brier": null,
+        "mean_log_loss": null
+      },
+      "process_peak_rss_native_units": 124157952
+    },
+    {
+      "pool": "mixed_controls",
+      "seats": 9,
+      "trial": 4,
+      "variant": "prior",
+      "hands": 72,
+      "bb_per_100": -321.52777777777777,
+      "delta": 0.0,
+      "elapsed_seconds": 0.5020743329077959,
+      "decision_latency_ms": {
+        "p50": 0.0024158507585525513,
+        "p95": 0.7439681096002457,
+        "max": 1.0522915981709957
+      },
+      "search_diagnostics": {
+        "searched_decisions": 0,
+        "changed_actions": 0,
+        "counterfactual_branches": 0,
+        "mean_selected_predicted_gain_bb": null
+      },
+      "prediction_metrics": {
+        "half_life": null,
+        "public_opponent_decisions": 1472,
+        "mean_excess_brier": 0.2810849184782609,
+        "mean_log_loss": 0.7909446427734225
+      },
+      "process_peak_rss_native_units": 124157952
+    },
+    {
+      "pool": "mixed_controls",
+      "seats": 9,
+      "trial": 4,
+      "variant": "raw",
+      "hands": 72,
+      "bb_per_100": -321.52777777777777,
+      "delta": 0.0,
+      "elapsed_seconds": 0.6007504998706281,
+      "decision_latency_ms": {
+        "p50": 0.002541113644838333,
+        "p95": 0.7488713599741458,
+        "max": 1.0616248473525047
+      },
+      "search_diagnostics": {
+        "searched_decisions": 0,
+        "changed_actions": 0,
+        "counterfactual_branches": 0,
+        "mean_selected_predicted_gain_bb": null
+      },
+      "prediction_metrics": {
+        "half_life": null,
+        "public_opponent_decisions": 1472,
+        "mean_excess_brier": 0.035013239376680924,
+        "mean_log_loss": 0.38130726639974416
+      },
+      "process_peak_rss_native_units": 124157952
+    },
+    {
+      "pool": "mixed_controls",
+      "seats": 9,
+      "trial": 4,
+      "variant": "discounted",
+      "hands": 72,
+      "bb_per_100": -321.52777777777777,
+      "delta": 0.0,
+      "elapsed_seconds": 0.6221818341873586,
+      "decision_latency_ms": {
+        "p50": 0.002624932676553726,
+        "p95": 0.7456141058355569,
+        "max": 1.3382909819483757
+      },
+      "search_diagnostics": {
+        "searched_decisions": 0,
+        "changed_actions": 0,
+        "counterfactual_branches": 0,
+        "mean_selected_predicted_gain_bb": null
+      },
+      "prediction_metrics": {
+        "half_life": 64,
+        "public_opponent_decisions": 1472,
+        "mean_excess_brier": 0.04238675728714562,
+        "mean_log_loss": 0.4094584294222204
+      },
+      "process_peak_rss_native_units": 124157952
+    },
+    {
+      "pool": "mixed_controls",
+      "seats": 9,
+      "trial": 5,
+      "variant": "original",
+      "hands": 72,
+      "bb_per_100": 510.06944444444446,
+      "delta": 0.0,
+      "elapsed_seconds": 0.5100815407931805,
+      "decision_latency_ms": {
+        "p50": 0.0024158507585525513,
+        "p95": 0.7546477252617475,
+        "max": 1.0842503979802132
+      },
+      "search_diagnostics": {
+        "searched_decisions": 0,
+        "changed_actions": 0,
+        "counterfactual_branches": 0,
+        "mean_selected_predicted_gain_bb": null
+      },
+      "prediction_metrics": {
+        "half_life": null,
+        "public_opponent_decisions": 0,
+        "mean_excess_brier": null,
+        "mean_log_loss": null
+      },
+      "process_peak_rss_native_units": 124157952
+    },
+    {
+      "pool": "mixed_controls",
+      "seats": 9,
+      "trial": 5,
+      "variant": "prior",
+      "hands": 72,
+      "bb_per_100": 510.06944444444446,
+      "delta": 0.0,
+      "elapsed_seconds": 0.7158559998497367,
+      "decision_latency_ms": {
+        "p50": 0.0024167820811271667,
+        "p95": 0.7609212305396793,
+        "max": 199.28912492468953
+      },
+      "search_diagnostics": {
+        "searched_decisions": 1,
+        "changed_actions": 0,
+        "counterfactual_branches": 48,
+        "mean_selected_predicted_gain_bb": 0.0
+      },
+      "prediction_metrics": {
+        "half_life": null,
+        "public_opponent_decisions": 1550,
+        "mean_excess_brier": 0.28035987096774195,
+        "mean_log_loss": 0.7826805592323013
+      },
+      "process_peak_rss_native_units": 124157952
+    },
+    {
+      "pool": "mixed_controls",
+      "seats": 9,
+      "trial": 5,
+      "variant": "raw",
+      "hands": 72,
+      "bb_per_100": 510.06944444444446,
+      "delta": 0.0,
+      "elapsed_seconds": 0.9138104999437928,
+      "decision_latency_ms": {
+        "p50": 0.0025420449674129486,
+        "p95": 0.7506044348701834,
+        "max": 294.1941670142114
+      },
+      "search_diagnostics": {
+        "searched_decisions": 1,
+        "changed_actions": 0,
+        "counterfactual_branches": 48,
+        "mean_selected_predicted_gain_bb": 0.0
+      },
+      "prediction_metrics": {
+        "half_life": null,
+        "public_opponent_decisions": 1550,
+        "mean_excess_brier": 0.033722170677196094,
+        "mean_log_loss": 0.37864285383269675
+      },
+      "process_peak_rss_native_units": 124157952
+    },
+    {
+      "pool": "mixed_controls",
+      "seats": 9,
+      "trial": 5,
+      "variant": "discounted",
+      "hands": 72,
+      "bb_per_100": 510.06944444444446,
+      "delta": 0.0,
+      "elapsed_seconds": 0.9052634169347584,
+      "decision_latency_ms": {
+        "p50": 0.0025420449674129486,
+        "p95": 0.7484394125640392,
+        "max": 283.8441669009626
+      },
+      "search_diagnostics": {
+        "searched_decisions": 1,
+        "changed_actions": 0,
+        "counterfactual_branches": 48,
+        "mean_selected_predicted_gain_bb": 0.0
+      },
+      "prediction_metrics": {
+        "half_life": 64,
+        "public_opponent_decisions": 1550,
+        "mean_excess_brier": 0.041328017131660226,
+        "mean_log_loss": 0.40615129904910424
+      },
+      "process_peak_rss_native_units": 124157952
+    },
+    {
+      "pool": "passive_controls",
+      "seats": 6,
+      "trial": 0,
+      "variant": "original",
+      "hands": 48,
+      "bb_per_100": 265.09375,
+      "delta": 0.0,
+      "elapsed_seconds": 0.2408052501268685,
+      "decision_latency_ms": {
+        "p50": 0.0025830231606960297,
+        "p95": 0.5994142964482301,
+        "max": 0.7933750748634338
+      },
+      "search_diagnostics": {
+        "searched_decisions": 0,
+        "changed_actions": 0,
+        "counterfactual_branches": 0,
+        "mean_selected_predicted_gain_bb": null
+      },
+      "prediction_metrics": {
+        "half_life": null,
+        "public_opponent_decisions": 0,
+        "mean_excess_brier": null,
+        "mean_log_loss": null
+      },
+      "process_peak_rss_native_units": 124157952
+    },
+    {
+      "pool": "passive_controls",
+      "seats": 6,
+      "trial": 0,
+      "variant": "prior",
+      "hands": 48,
+      "bb_per_100": 1095.8333333333333,
+      "delta": 830.7395833333333,
+      "elapsed_seconds": 4.241064167115837,
+      "decision_latency_ms": {
+        "p50": 0.002624932676553726,
+        "p95": 0.6736235227435826,
+        "max": 335.1519168354571
+      },
+      "search_diagnostics": {
+        "searched_decisions": 20,
+        "changed_actions": 7,
+        "counterfactual_branches": 1616,
+        "mean_selected_predicted_gain_bb": 17.409984375
+      },
+      "prediction_metrics": {
+        "half_life": null,
+        "public_opponent_decisions": 714,
+        "mean_excess_brier": 0.16616526610644258,
+        "mean_log_loss": 0.4547308786285039
+      },
+      "process_peak_rss_native_units": 124157952
+    },
+    {
+      "pool": "passive_controls",
+      "seats": 6,
+      "trial": 0,
+      "variant": "raw",
+      "hands": 48,
+      "bb_per_100": 1529.25,
+      "delta": 1264.15625,
+      "elapsed_seconds": 4.876442166976631,
+      "decision_latency_ms": {
+        "p50": 0.002707820385694504,
+        "p95": 0.6791734602302313,
+        "max": 367.231875192374
+      },
+      "search_diagnostics": {
+        "searched_decisions": 20,
+        "changed_actions": 8,
+        "counterfactual_branches": 1616,
+        "mean_selected_predicted_gain_bb": 29.720796875
+      },
+      "prediction_metrics": {
+        "half_life": null,
+        "public_opponent_decisions": 714,
+        "mean_excess_brier": 0.025367430726708,
+        "mean_log_loss": 0.19400053436928089
+      },
+      "process_peak_rss_native_units": 124157952
+    },
+    {
+      "pool": "passive_controls",
+      "seats": 6,
+      "trial": 0,
+      "variant": "discounted",
+      "hands": 48,
+      "bb_per_100": 1233.4999999999998,
+      "delta": 968.4062499999998,
+      "elapsed_seconds": 4.831317416857928,
+      "decision_latency_ms": {
+        "p50": 0.0026673078536987305,
+        "p95": 0.6718870252370834,
+        "max": 366.7264166288078
+      },
+      "search_diagnostics": {
+        "searched_decisions": 20,
+        "changed_actions": 8,
+        "counterfactual_branches": 1616,
+        "mean_selected_predicted_gain_bb": 27.738125000000004
+      },
+      "prediction_metrics": {
+        "half_life": 64,
+        "public_opponent_decisions": 714,
+        "mean_excess_brier": 0.031313134740737644,
+        "mean_log_loss": 0.21342113813458508
+      },
+      "process_peak_rss_native_units": 124157952
+    },
+    {
+      "pool": "passive_controls",
+      "seats": 6,
+      "trial": 1,
+      "variant": "original",
+      "hands": 48,
+      "bb_per_100": 11.861111111111114,
+      "delta": 0.0,
+      "elapsed_seconds": 0.24778679199516773,
+      "decision_latency_ms": {
+        "p50": 0.0026659108698368073,
+        "p95": 0.6366893649101254,
+        "max": 0.8340827189385891
+      },
+      "search_diagnostics": {
+        "searched_decisions": 0,
+        "changed_actions": 0,
+        "counterfactual_branches": 0,
+        "mean_selected_predicted_gain_bb": null
+      },
+      "prediction_metrics": {
+        "half_life": null,
+        "public_opponent_decisions": 0,
+        "mean_excess_brier": null,
+        "mean_log_loss": null
+      },
+      "process_peak_rss_native_units": 124157952
+    },
+    {
+      "pool": "passive_controls",
+      "seats": 6,
+      "trial": 1,
+      "variant": "prior",
+      "hands": 48,
+      "bb_per_100": 903.1111111111112,
+      "delta": 891.2500000000001,
+      "elapsed_seconds": 4.305139374919236,
+      "decision_latency_ms": {
+        "p50": 0.002791639417409897,
+        "p95": 0.7260814309120178,
+        "max": 277.175291441381
+      },
+      "search_diagnostics": {
+        "searched_decisions": 19,
+        "changed_actions": 7,
+        "counterfactual_branches": 1600,
+        "mean_selected_predicted_gain_bb": 18.814813596491234
+      },
+      "prediction_metrics": {
+        "half_life": null,
+        "public_opponent_decisions": 703,
+        "mean_excess_brier": 0.17505832147937408,
+        "mean_log_loss": 0.47356826093861426
+      },
+      "process_peak_rss_native_units": 124157952
+    },
+    {
+      "pool": "passive_controls",
+      "seats": 6,
+      "trial": 1,
+      "variant": "raw",
+      "hands": 48,
+      "bb_per_100": 1350.0277777777776,
+      "delta": 1338.1666666666665,
+      "elapsed_seconds": 4.796513999812305,
+      "decision_latency_ms": {
+        "p50": 0.0027918722480535507,
+        "p95": 0.7168914191424846,
+        "max": 294.8680827394128
+      },
+      "search_diagnostics": {
+        "searched_decisions": 19,
+        "changed_actions": 10,
+        "counterfactual_branches": 1600,
+        "mean_selected_predicted_gain_bb": 35.388486842105266
+      },
+      "prediction_metrics": {
+        "half_life": null,
+        "public_opponent_decisions": 703,
+        "mean_excess_brier": 0.026506609130799597,
+        "mean_log_loss": 0.20192495336741537
+      },
+      "process_peak_rss_native_units": 124157952
+    },
+    {
+      "pool": "passive_controls",
+      "seats": 6,
+      "trial": 1,
+      "variant": "discounted",
+      "hands": 48,
+      "bb_per_100": 1401.736111111111,
+      "delta": 1389.875,
+      "elapsed_seconds": 4.781422124709934,
+      "decision_latency_ms": {
+        "p50": 0.0028330832719802856,
+        "p95": 0.7158936001360416,
+        "max": 298.8553331233561
+      },
+      "search_diagnostics": {
+        "searched_decisions": 19,
+        "changed_actions": 10,
+        "counterfactual_branches": 1600,
+        "mean_selected_predicted_gain_bb": 31.99932565789473
+      },
+      "prediction_metrics": {
+        "half_life": 64,
+        "public_opponent_decisions": 703,
+        "mean_excess_brier": 0.033418793228147656,
+        "mean_log_loss": 0.22282460432223208
+      },
+      "process_peak_rss_native_units": 124157952
+    },
+    {
+      "pool": "passive_controls",
+      "seats": 6,
+      "trial": 2,
+      "variant": "original",
+      "hands": 48,
+      "bb_per_100": 86.02083333333333,
+      "delta": 0.0,
+      "elapsed_seconds": 0.2770316251553595,
+      "decision_latency_ms": {
+        "p50": 0.0026673078536987305,
+        "p95": 0.693354057148099,
+        "max": 0.8176248520612717
+      },
+      "search_diagnostics": {
+        "searched_decisions": 0,
+        "changed_actions": 0,
+        "counterfactual_branches": 0,
+        "mean_selected_predicted_gain_bb": null
+      },
+      "prediction_metrics": {
+        "half_life": null,
+        "public_opponent_decisions": 0,
+        "mean_excess_brier": null,
+        "mean_log_loss": null
+      },
+      "process_peak_rss_native_units": 124157952
+    },
+    {
+      "pool": "passive_controls",
+      "seats": 6,
+      "trial": 2,
+      "variant": "prior",
+      "hands": 48,
+      "bb_per_100": 658.9375000000001,
+      "delta": 572.9166666666667,
+      "elapsed_seconds": 4.337554082740098,
+      "decision_latency_ms": {
+        "p50": 0.002624932676553726,
+        "p95": 0.7303131278604269,
+        "max": 314.12262516096234
+      },
+      "search_diagnostics": {
+        "searched_decisions": 19,
+        "changed_actions": 4,
+        "counterfactual_branches": 1536,
+        "mean_selected_predicted_gain_bb": 8.321578947368423
+      },
+      "prediction_metrics": {
+        "half_life": null,
+        "public_opponent_decisions": 726,
+        "mean_excess_brier": 0.1602961432506887,
+        "mean_log_loss": 0.4389388796269871
+      },
+      "process_peak_rss_native_units": 124157952
+    },
+    {
+      "pool": "passive_controls",
+      "seats": 6,
+      "trial": 2,
+      "variant": "raw",
+      "hands": 48,
+      "bb_per_100": 661.0208333333334,
+      "delta": 575.0,
+      "elapsed_seconds": 5.046455207746476,
+      "decision_latency_ms": {
+        "p50": 0.002750195562839508,
+        "p95": 0.7320211734622717,
+        "max": 410.65362468361855
+      },
+      "search_diagnostics": {
+        "searched_decisions": 19,
+        "changed_actions": 3,
+        "counterfactual_branches": 1536,
+        "mean_selected_predicted_gain_bb": 15.060065789473684
+      },
+      "prediction_metrics": {
+        "half_life": null,
+        "public_opponent_decisions": 726,
+        "mean_excess_brier": 0.024924153099443166,
+        "mean_log_loss": 0.18682731112288078
+      },
+      "process_peak_rss_native_units": 124157952
+    },
+    {
+      "pool": "passive_controls",
+      "seats": 6,
+      "trial": 2,
+      "variant": "discounted",
+      "hands": 48,
+      "bb_per_100": 661.0208333333334,
+      "delta": 575.0,
+      "elapsed_seconds": 4.979672959074378,
+      "decision_latency_ms": {
+        "p50": 0.0027921050786972046,
+        "p95": 0.73810457251966,
+        "max": 399.423458147794
+      },
+      "search_diagnostics": {
+        "searched_decisions": 19,
+        "changed_actions": 3,
+        "counterfactual_branches": 1536,
+        "mean_selected_predicted_gain_bb": 13.969605263157895
+      },
+      "prediction_metrics": {
+        "half_life": 64,
+        "public_opponent_decisions": 726,
+        "mean_excess_brier": 0.03067634169072883,
+        "mean_log_loss": 0.20612437031977374
+      },
+      "process_peak_rss_native_units": 124157952
+    },
+    {
+      "pool": "passive_controls",
+      "seats": 6,
+      "trial": 3,
+      "variant": "original",
+      "hands": 48,
+      "bb_per_100": 109.60416666666667,
+      "delta": 0.0,
+      "elapsed_seconds": 0.24482420831918716,
+      "decision_latency_ms": {
+        "p50": 0.002750195562839508,
+        "p95": 0.6296413950622078,
+        "max": 0.8194576948881149
+      },
+      "search_diagnostics": {
+        "searched_decisions": 0,
+        "changed_actions": 0,
+        "counterfactual_branches": 0,
+        "mean_selected_predicted_gain_bb": null
+      },
+      "prediction_metrics": {
+        "half_life": null,
+        "public_opponent_decisions": 0,
+        "mean_excess_brier": null,
+        "mean_log_loss": null
+      },
+      "process_peak_rss_native_units": 124157952
+    },
+    {
+      "pool": "passive_controls",
+      "seats": 6,
+      "trial": 3,
+      "variant": "prior",
+      "hands": 48,
+      "bb_per_100": 1971.875,
+      "delta": 1862.2708333333333,
+      "elapsed_seconds": 4.092542875092477,
+      "decision_latency_ms": {
+        "p50": 0.0027921050786972046,
+        "p95": 0.7152164354920385,
+        "max": 313.7467917986214
+      },
+      "search_diagnostics": {
+        "searched_decisions": 18,
+        "changed_actions": 7,
+        "counterfactual_branches": 1456,
+        "mean_selected_predicted_gain_bb": 18.95006944444445
+      },
+      "prediction_metrics": {
+        "half_life": null,
+        "public_opponent_decisions": 685,
+        "mean_excess_brier": 0.17175211678832117,
+        "mean_log_loss": 0.47237686954069263
+      },
+      "process_peak_rss_native_units": 124157952
+    },
+    {
+      "pool": "passive_controls",
+      "seats": 6,
+      "trial": 3,
+      "variant": "raw",
+      "hands": 48,
+      "bb_per_100": 977.0,
+      "delta": 867.3958333333334,
+      "elapsed_seconds": 4.510829332750291,
+      "decision_latency_ms": {
+        "p50": 0.002834014594554901,
+        "p95": 0.7212832570075989,
+        "max": 313.32241697236896
+      },
+      "search_diagnostics": {
+        "searched_decisions": 18,
+        "changed_actions": 6,
+        "counterfactual_branches": 1456,
+        "mean_selected_predicted_gain_bb": 28.258755787037035
+      },
+      "prediction_metrics": {
+        "half_life": null,
+        "public_opponent_decisions": 683,
+        "mean_excess_brier": 0.026887280600635624,
+        "mean_log_loss": 0.19664274441582766
+      },
+      "process_peak_rss_native_units": 124157952
+    },
+    {
+      "pool": "passive_controls",
+      "seats": 6,
+      "trial": 3,
+      "variant": "discounted",
+      "hands": 48,
+      "bb_per_100": 977.0,
+      "delta": 867.3958333333334,
+      "elapsed_seconds": 4.479942667298019,
+      "decision_latency_ms": {
+        "p50": 0.002834014594554901,
+        "p95": 0.7225494831800461,
+        "max": 314.06754115596414
+      },
+      "search_diagnostics": {
+        "searched_decisions": 18,
+        "changed_actions": 6,
+        "counterfactual_branches": 1456,
+        "mean_selected_predicted_gain_bb": 28.777471064814815
+      },
+      "prediction_metrics": {
+        "half_life": 64,
+        "public_opponent_decisions": 683,
+        "mean_excess_brier": 0.032183300159615166,
+        "mean_log_loss": 0.21548863188805137
+      },
+      "process_peak_rss_native_units": 124157952
+    },
+    {
+      "pool": "passive_controls",
+      "seats": 6,
+      "trial": 4,
+      "variant": "original",
+      "hands": 48,
+      "bb_per_100": 253.75000000000003,
+      "delta": 0.0,
+      "elapsed_seconds": 0.26793641736730933,
+      "decision_latency_ms": {
+        "p50": 0.002709217369556427,
+        "p95": 0.6991026690229772,
+        "max": 0.8444581180810928
+      },
+      "search_diagnostics": {
+        "searched_decisions": 0,
+        "changed_actions": 0,
+        "counterfactual_branches": 0,
+        "mean_selected_predicted_gain_bb": null
+      },
+      "prediction_metrics": {
+        "half_life": null,
+        "public_opponent_decisions": 0,
+        "mean_excess_brier": null,
+        "mean_log_loss": null
+      },
+      "process_peak_rss_native_units": 124157952
+    },
+    {
+      "pool": "passive_controls",
+      "seats": 6,
+      "trial": 4,
+      "variant": "prior",
+      "hands": 48,
+      "bb_per_100": 589.2083333333334,
+      "delta": 335.45833333333337,
+      "elapsed_seconds": 4.8258003341034055,
+      "decision_latency_ms": {
+        "p50": 0.0027907080948352814,
+        "p95": 0.7257331395521759,
+        "max": 292.0525833033025
+      },
+      "search_diagnostics": {
+        "searched_decisions": 21,
+        "changed_actions": 4,
+        "counterfactual_branches": 1712,
+        "mean_selected_predicted_gain_bb": 5.499151785714285
+      },
+      "prediction_metrics": {
+        "half_life": null,
+        "public_opponent_decisions": 719,
+        "mean_excess_brier": 0.1682692628650904,
+        "mean_log_loss": 0.45846283337948757
+      },
+      "process_peak_rss_native_units": 124157952
+    },
+    {
+      "pool": "passive_controls",
+      "seats": 6,
+      "trial": 4,
+      "variant": "raw",
+      "hands": 48,
+      "bb_per_100": 756.9166666666666,
+      "delta": 503.16666666666663,
+      "elapsed_seconds": 5.498605875298381,
+      "decision_latency_ms": {
+        "p50": 0.002834014594554901,
+        "p95": 0.7244142470881343,
+        "max": 341.1454171873629
+      },
+      "search_diagnostics": {
+        "searched_decisions": 21,
+        "changed_actions": 5,
+        "counterfactual_branches": 1712,
+        "mean_selected_predicted_gain_bb": 8.318541666666667
+      },
+      "prediction_metrics": {
+        "half_life": null,
+        "public_opponent_decisions": 719,
+        "mean_excess_brier": 0.019539984606367515,
+        "mean_log_loss": 0.19179062348657022
+      },
+      "process_peak_rss_native_units": 124157952
+    },
+    {
+      "pool": "passive_controls",
+      "seats": 6,
+      "trial": 4,
+      "variant": "discounted",
+      "hands": 48,
+      "bb_per_100": 643.375,
+      "delta": 389.625,
+      "elapsed_seconds": 5.462558750063181,
+      "decision_latency_ms": {
+        "p50": 0.002874992787837982,
+        "p95": 0.7330045336857435,
+        "max": 367.14249989017844
+      },
+      "search_diagnostics": {
+        "searched_decisions": 21,
+        "changed_actions": 4,
+        "counterfactual_branches": 1712,
+        "mean_selected_predicted_gain_bb": 7.797202380952381
+      },
+      "prediction_metrics": {
+        "half_life": 64,
+        "public_opponent_decisions": 719,
+        "mean_excess_brier": 0.026268960369043574,
+        "mean_log_loss": 0.21162527503312303
+      },
+      "process_peak_rss_native_units": 124157952
+    },
+    {
+      "pool": "passive_controls",
+      "seats": 6,
+      "trial": 5,
+      "variant": "original",
+      "hands": 48,
+      "bb_per_100": -91.81249999999999,
+      "delta": 0.0,
+      "elapsed_seconds": 0.26345312502235174,
+      "decision_latency_ms": {
+        "p50": 0.002750195562839508,
+        "p95": 0.629848102107644,
+        "max": 0.8272081613540649
+      },
+      "search_diagnostics": {
+        "searched_decisions": 0,
+        "changed_actions": 0,
+        "counterfactual_branches": 0,
+        "mean_selected_predicted_gain_bb": null
+      },
+      "prediction_metrics": {
+        "half_life": null,
+        "public_opponent_decisions": 0,
+        "mean_excess_brier": null,
+        "mean_log_loss": null
+      },
+      "process_peak_rss_native_units": 124157952
+    },
+    {
+      "pool": "passive_controls",
+      "seats": 6,
+      "trial": 5,
+      "variant": "prior",
+      "hands": 48,
+      "bb_per_100": -168.22916666666666,
+      "delta": -76.41666666666667,
+      "elapsed_seconds": 4.148571541998535,
+      "decision_latency_ms": {
+        "p50": 0.002791173756122589,
+        "p95": 0.7143416674807667,
+        "max": 309.7018748521805
+      },
+      "search_diagnostics": {
+        "searched_decisions": 18,
+        "changed_actions": 2,
+        "counterfactual_branches": 1440,
+        "mean_selected_predicted_gain_bb": 1.2192013888888888
+      },
+      "prediction_metrics": {
+        "half_life": null,
+        "public_opponent_decisions": 692,
+        "mean_excess_brier": 0.15772398843930635,
+        "mean_log_loss": 0.4432953422122674
+      },
+      "process_peak_rss_native_units": 124157952
+    },
+    {
+      "pool": "passive_controls",
+      "seats": 6,
+      "trial": 5,
+      "variant": "raw",
+      "hands": 48,
+      "bb_per_100": -173.95833333333334,
+      "delta": -82.14583333333336,
+      "elapsed_seconds": 4.774933708831668,
+      "decision_latency_ms": {
+        "p50": 0.002750195562839508,
+        "p95": 0.6893397774547337,
+        "max": 343.1271673180163
+      },
+      "search_diagnostics": {
+        "searched_decisions": 18,
+        "changed_actions": 1,
+        "counterfactual_branches": 1440,
+        "mean_selected_predicted_gain_bb": 1.3784375
+      },
+      "prediction_metrics": {
+        "half_life": null,
+        "public_opponent_decisions": 692,
+        "mean_excess_brier": 0.023367269950866243,
+        "mean_log_loss": 0.18289361882359417
+      },
+      "process_peak_rss_native_units": 124157952
+    },
+    {
+      "pool": "passive_controls",
+      "seats": 6,
+      "trial": 5,
+      "variant": "discounted",
+      "hands": 48,
+      "bb_per_100": -376.0416666666667,
+      "delta": -284.2291666666667,
+      "elapsed_seconds": 4.743625415954739,
+      "decision_latency_ms": {
+        "p50": 0.0027907080948352814,
+        "p95": 0.7137601263821124,
+        "max": 348.6958332359791
+      },
+      "search_diagnostics": {
+        "searched_decisions": 18,
+        "changed_actions": 2,
+        "counterfactual_branches": 1440,
+        "mean_selected_predicted_gain_bb": 5.7638541666666665
+      },
+      "prediction_metrics": {
+        "half_life": 64,
+        "public_opponent_decisions": 692,
+        "mean_excess_brier": 0.029697638191740573,
+        "mean_log_loss": 0.20317200514864198
+      },
+      "process_peak_rss_native_units": 124157952
+    },
+    {
+      "pool": "passive_controls",
+      "seats": 7,
+      "trial": 0,
+      "variant": "original",
+      "hands": 56,
+      "bb_per_100": -155.16071428571428,
+      "delta": 0.0,
+      "elapsed_seconds": 0.3112719999626279,
+      "decision_latency_ms": {
+        "p50": 0.0026668421924114227,
+        "p95": 0.6992751732468605,
+        "max": 0.9092907421290874
+      },
+      "search_diagnostics": {
+        "searched_decisions": 0,
+        "changed_actions": 0,
+        "counterfactual_branches": 0,
+        "mean_selected_predicted_gain_bb": null
+      },
+      "prediction_metrics": {
+        "half_life": null,
+        "public_opponent_decisions": 0,
+        "mean_excess_brier": null,
+        "mean_log_loss": null
+      },
+      "process_peak_rss_native_units": 124157952
+    },
+    {
+      "pool": "passive_controls",
+      "seats": 7,
+      "trial": 0,
+      "variant": "prior",
+      "hands": 56,
+      "bb_per_100": 350.3214285714285,
+      "delta": 505.4821428571428,
+      "elapsed_seconds": 4.84012091672048,
+      "decision_latency_ms": {
+        "p50": 0.0027087517082691193,
+        "p95": 0.7243338041007518,
+        "max": 302.7949999086559
+      },
+      "search_diagnostics": {
+        "searched_decisions": 20,
+        "changed_actions": 4,
+        "counterfactual_branches": 1632,
+        "mean_selected_predicted_gain_bb": 9.91721875
+      },
+      "prediction_metrics": {
+        "half_life": null,
+        "public_opponent_decisions": 921,
+        "mean_excess_brier": 0.16132899022801303,
+        "mean_log_loss": 0.47158347340865137
+      },
+      "process_peak_rss_native_units": 124157952
+    },
+    {
+      "pool": "passive_controls",
+      "seats": 7,
+      "trial": 0,
+      "variant": "raw",
+      "hands": 56,
+      "bb_per_100": 249.23214285714286,
+      "delta": 404.3928571428571,
+      "elapsed_seconds": 5.587113709188998,
+      "decision_latency_ms": {
+        "p50": 0.002709217369556427,
+        "p95": 0.7230256684124468,
+        "max": 367.25641693919897
+      },
+      "search_diagnostics": {
+        "searched_decisions": 20,
+        "changed_actions": 4,
+        "counterfactual_branches": 1632,
+        "mean_selected_predicted_gain_bb": 14.202796875
+      },
+      "prediction_metrics": {
+        "half_life": null,
+        "public_opponent_decisions": 921,
+        "mean_excess_brier": 0.019791547854684965,
+        "mean_log_loss": 0.20515590298378109
+      },
+      "process_peak_rss_native_units": 124157952
+    },
+    {
+      "pool": "passive_controls",
+      "seats": 7,
+      "trial": 0,
+      "variant": "discounted",
+      "hands": 56,
+      "bb_per_100": 354.5892857142857,
+      "delta": 509.75,
+      "elapsed_seconds": 5.4836506666615605,
+      "decision_latency_ms": {
+        "p50": 0.002750195562839508,
+        "p95": 0.7226580753922462,
+        "max": 358.9349160902202
+      },
+      "search_diagnostics": {
+        "searched_decisions": 20,
+        "changed_actions": 4,
+        "counterfactual_branches": 1632,
+        "mean_selected_predicted_gain_bb": 11.168390624999999
+      },
+      "prediction_metrics": {
+        "half_life": 64,
+        "public_opponent_decisions": 921,
+        "mean_excess_brier": 0.024354135891254722,
+        "mean_log_loss": 0.2227936880716063
+      },
+      "process_peak_rss_native_units": 124157952
+    },
+    {
+      "pool": "passive_controls",
+      "seats": 7,
+      "trial": 1,
+      "variant": "original",
+      "hands": 56,
+      "bb_per_100": -51.017857142857146,
+      "delta": 0.0,
+      "elapsed_seconds": 0.31871079187840223,
+      "decision_latency_ms": {
+        "p50": 0.002624932676553726,
+        "p95": 0.6999170873314142,
+        "max": 0.9139999747276306
+      },
+      "search_diagnostics": {
+        "searched_decisions": 0,
+        "changed_actions": 0,
+        "counterfactual_branches": 0,
+        "mean_selected_predicted_gain_bb": null
+      },
+      "prediction_metrics": {
+        "half_life": null,
+        "public_opponent_decisions": 0,
+        "mean_excess_brier": null,
+        "mean_log_loss": null
+      },
+      "process_peak_rss_native_units": 124157952
+    },
+    {
+      "pool": "passive_controls",
+      "seats": 7,
+      "trial": 1,
+      "variant": "prior",
+      "hands": 56,
+      "bb_per_100": 292.2857142857143,
+      "delta": 343.30357142857144,
+      "elapsed_seconds": 4.379585625138134,
+      "decision_latency_ms": {
+        "p50": 0.0026673078536987305,
+        "p95": 0.7174689089879394,
+        "max": 416.8450837023556
+      },
+      "search_diagnostics": {
+        "searched_decisions": 17,
+        "changed_actions": 3,
+        "counterfactual_branches": 1360,
+        "mean_selected_predicted_gain_bb": 13.227022058823529
+      },
+      "prediction_metrics": {
+        "half_life": null,
+        "public_opponent_decisions": 929,
+        "mean_excess_brier": 0.15745080731969857,
+        "mean_log_loss": 0.4616233805330807
+      },
+      "process_peak_rss_native_units": 124157952
+    },
+    {
+      "pool": "passive_controls",
+      "seats": 7,
+      "trial": 1,
+      "variant": "raw",
+      "hands": 56,
+      "bb_per_100": 656.5714285714286,
+      "delta": 707.5892857142857,
+      "elapsed_seconds": 4.997530084103346,
+      "decision_latency_ms": {
+        "p50": 0.002709217369556427,
+        "p95": 0.7287395419552922,
+        "max": 461.4718332886696
+      },
+      "search_diagnostics": {
+        "searched_decisions": 17,
+        "changed_actions": 3,
+        "counterfactual_branches": 1360,
+        "mean_selected_predicted_gain_bb": 26.532169117647058
+      },
+      "prediction_metrics": {
+        "half_life": null,
+        "public_opponent_decisions": 929,
+        "mean_excess_brier": 0.022497392389347535,
+        "mean_log_loss": 0.2013787510684525
+      },
+      "process_peak_rss_native_units": 124157952
+    },
+    {
+      "pool": "passive_controls",
+      "seats": 7,
+      "trial": 1,
+      "variant": "discounted",
+      "hands": 56,
+      "bb_per_100": 656.5714285714286,
+      "delta": 707.5892857142857,
+      "elapsed_seconds": 4.911427957937121,
+      "decision_latency_ms": {
+        "p50": 0.0027082860469818115,
+        "p95": 0.7254169322550297,
+        "max": 455.1628748886287
+      },
+      "search_diagnostics": {
+        "searched_decisions": 17,
+        "changed_actions": 3,
+        "counterfactual_branches": 1360,
+        "mean_selected_predicted_gain_bb": 23.9375
+      },
+      "prediction_metrics": {
+        "half_life": 64,
+        "public_opponent_decisions": 929,
+        "mean_excess_brier": 0.027397348014183892,
+        "mean_log_loss": 0.22002612601886776
+      },
+      "process_peak_rss_native_units": 124157952
+    },
+    {
+      "pool": "passive_controls",
+      "seats": 7,
+      "trial": 2,
+      "variant": "original",
+      "hands": 56,
+      "bb_per_100": 56.80357142857143,
+      "delta": 0.0,
+      "elapsed_seconds": 0.3220646660774946,
+      "decision_latency_ms": {
+        "p50": 0.0026668421924114227,
+        "p95": 0.6413339637219868,
+        "max": 0.9159999899566174
+      },
+      "search_diagnostics": {
+        "searched_decisions": 0,
+        "changed_actions": 0,
+        "counterfactual_branches": 0,
+        "mean_selected_predicted_gain_bb": null
+      },
+      "prediction_metrics": {
+        "half_life": null,
+        "public_opponent_decisions": 0,
+        "mean_excess_brier": null,
+        "mean_log_loss": null
+      },
+      "process_peak_rss_native_units": 124157952
+    },
+    {
+      "pool": "passive_controls",
+      "seats": 7,
+      "trial": 2,
+      "variant": "prior",
+      "hands": 56,
+      "bb_per_100": 436.125,
+      "delta": 379.32142857142856,
+      "elapsed_seconds": 4.334725291933864,
+      "decision_latency_ms": {
+        "p50": 0.002707820385694504,
+        "p95": 0.7201086729764937,
+        "max": 297.35566722229123
+      },
+      "search_diagnostics": {
+        "searched_decisions": 19,
+        "changed_actions": 5,
+        "counterfactual_branches": 1552,
+        "mean_selected_predicted_gain_bb": 9.334309210526316
+      },
+      "prediction_metrics": {
+        "half_life": null,
+        "public_opponent_decisions": 924,
+        "mean_excess_brier": 0.16759545454545452,
+        "mean_log_loss": 0.4793012213766463
+      },
+      "process_peak_rss_native_units": 124157952
+    },
+    {
+      "pool": "passive_controls",
+      "seats": 7,
+      "trial": 2,
+      "variant": "raw",
+      "hands": 56,
+      "bb_per_100": 629.7857142857143,
+      "delta": 572.9821428571429,
+      "elapsed_seconds": 4.973071000073105,
+      "decision_latency_ms": {
+        "p50": 0.0027497299015522003,
+        "p95": 0.7222249172627925,
+        "max": 325.9410001337528
+      },
+      "search_diagnostics": {
+        "searched_decisions": 19,
+        "changed_actions": 3,
+        "counterfactual_branches": 1552,
+        "mean_selected_predicted_gain_bb": 10.03078947368421
+      },
+      "prediction_metrics": {
+        "half_life": null,
+        "public_opponent_decisions": 924,
+        "mean_excess_brier": 0.02199102242529172,
+        "mean_log_loss": 0.205961057783826
+      },
+      "process_peak_rss_native_units": 124157952
+    },
+    {
+      "pool": "passive_controls",
+      "seats": 7,
+      "trial": 2,
+      "variant": "discounted",
+      "hands": 56,
+      "bb_per_100": 529.2321428571429,
+      "delta": 472.42857142857144,
+      "elapsed_seconds": 4.874149083159864,
+      "decision_latency_ms": {
+        "p50": 0.0027497299015522003,
+        "p95": 0.7213746197521685,
+        "max": 323.06141685694456
+      },
+      "search_diagnostics": {
+        "searched_decisions": 19,
+        "changed_actions": 4,
+        "counterfactual_branches": 1552,
+        "mean_selected_predicted_gain_bb": 13.683749999999998
+      },
+      "prediction_metrics": {
+        "half_life": 64,
+        "public_opponent_decisions": 924,
+        "mean_excess_brier": 0.027392585755061236,
+        "mean_log_loss": 0.22613156678836344
+      },
+      "process_peak_rss_native_units": 124157952
+    },
+    {
+      "pool": "passive_controls",
+      "seats": 7,
+      "trial": 3,
+      "variant": "original",
+      "hands": 56,
+      "bb_per_100": 156.89285714285714,
+      "delta": 0.0,
+      "elapsed_seconds": 0.3395775416865945,
+      "decision_latency_ms": {
+        "p50": 0.002624932676553726,
+        "p95": 0.6162254139780998,
+        "max": 0.9098751470446587
+      },
+      "search_diagnostics": {
+        "searched_decisions": 0,
+        "changed_actions": 0,
+        "counterfactual_branches": 0,
+        "mean_selected_predicted_gain_bb": null
+      },
+      "prediction_metrics": {
+        "half_life": null,
+        "public_opponent_decisions": 0,
+        "mean_excess_brier": null,
+        "mean_log_loss": null
+      },
+      "process_peak_rss_native_units": 124157952
+    },
+    {
+      "pool": "passive_controls",
+      "seats": 7,
+      "trial": 3,
+      "variant": "prior",
+      "hands": 56,
+      "bb_per_100": 803.5,
+      "delta": 646.6071428571429,
+      "elapsed_seconds": 4.419418375007808,
+      "decision_latency_ms": {
+        "p50": 0.0026668421924114227,
+        "p95": 0.7178922183811665,
+        "max": 300.03424966707826
+      },
+      "search_diagnostics": {
+        "searched_decisions": 18,
+        "changed_actions": 4,
+        "counterfactual_branches": 1456,
+        "mean_selected_predicted_gain_bb": 13.213645833333334
+      },
+      "prediction_metrics": {
+        "half_life": null,
+        "public_opponent_decisions": 947,
+        "mean_excess_brier": 0.15530137275607178,
+        "mean_log_loss": 0.45532917893754515
+      },
+      "process_peak_rss_native_units": 124157952
+    },
+    {
+      "pool": "passive_controls",
+      "seats": 7,
+      "trial": 3,
+      "variant": "raw",
+      "hands": 56,
+      "bb_per_100": 1030.357142857143,
+      "delta": 873.4642857142858,
+      "elapsed_seconds": 5.028364541940391,
+      "decision_latency_ms": {
+        "p50": 0.0027082860469818115,
+        "p95": 0.7147494703531262,
+        "max": 338.80891604349017
+      },
+      "search_diagnostics": {
+        "searched_decisions": 18,
+        "changed_actions": 3,
+        "counterfactual_branches": 1456,
+        "mean_selected_predicted_gain_bb": 19.499097222222222
+      },
+      "prediction_metrics": {
+        "half_life": null,
+        "public_opponent_decisions": 947,
+        "mean_excess_brier": 0.0228071267389052,
+        "mean_log_loss": 0.20507793773724042
+      },
+      "process_peak_rss_native_units": 124157952
+    },
+    {
+      "pool": "passive_controls",
+      "seats": 7,
+      "trial": 3,
+      "variant": "discounted",
+      "hands": 56,
+      "bb_per_100": 805.2857142857143,
+      "delta": 648.3928571428572,
+      "elapsed_seconds": 4.997729000169784,
+      "decision_latency_ms": {
+        "p50": 0.0027082860469818115,
+        "p95": 0.7148082368075848,
+        "max": 325.781375169754
+      },
+      "search_diagnostics": {
+        "searched_decisions": 18,
+        "changed_actions": 3,
+        "counterfactual_branches": 1456,
+        "mean_selected_predicted_gain_bb": 14.282812499999999
+      },
+      "prediction_metrics": {
+        "half_life": 64,
+        "public_opponent_decisions": 947,
+        "mean_excess_brier": 0.028041284955641507,
+        "mean_log_loss": 0.2227288991145064
+      },
+      "process_peak_rss_native_units": 124157952
+    },
+    {
+      "pool": "passive_controls",
+      "seats": 7,
+      "trial": 4,
+      "variant": "original",
+      "hands": 56,
+      "bb_per_100": 459.74107142857144,
+      "delta": 0.0,
+      "elapsed_seconds": 0.3208690001629293,
+      "decision_latency_ms": {
+        "p50": 0.0026659108698368073,
+        "p95": 0.7064061937853694,
+        "max": 0.934333074837923
+      },
+      "search_diagnostics": {
+        "searched_decisions": 0,
+        "changed_actions": 0,
+        "counterfactual_branches": 0,
+        "mean_selected_predicted_gain_bb": null
+      },
+      "prediction_metrics": {
+        "half_life": null,
+        "public_opponent_decisions": 0,
+        "mean_excess_brier": null,
+        "mean_log_loss": null
+      },
+      "process_peak_rss_native_units": 124157952
+    },
+    {
+      "pool": "passive_controls",
+      "seats": 7,
+      "trial": 4,
+      "variant": "prior",
+      "hands": 56,
+      "bb_per_100": 1512.75,
+      "delta": 1053.0089285714284,
+      "elapsed_seconds": 4.292723750229925,
+      "decision_latency_ms": {
+        "p50": 0.0026673078536987305,
+        "p95": 0.7166252471506596,
+        "max": 368.81512496620417
+      },
+      "search_diagnostics": {
+        "searched_decisions": 17,
+        "changed_actions": 7,
+        "counterfactual_branches": 1360,
+        "mean_selected_predicted_gain_bb": 22.92222426470588
+      },
+      "prediction_metrics": {
+        "half_life": null,
+        "public_opponent_decisions": 939,
+        "mean_excess_brier": 0.16547113951011713,
+        "mean_log_loss": 0.4734567438202582
+      },
+      "process_peak_rss_native_units": 124157952
+    },
+    {
+      "pool": "passive_controls",
+      "seats": 7,
+      "trial": 4,
+      "variant": "raw",
+      "hands": 56,
+      "bb_per_100": 1696.6785714285713,
+      "delta": 1236.9375,
+      "elapsed_seconds": 4.786803416907787,
+      "decision_latency_ms": {
+        "p50": 0.0027087517082691193,
+        "p95": 0.727000180631876,
+        "max": 406.75750002264977
+      },
+      "search_diagnostics": {
+        "searched_decisions": 17,
+        "changed_actions": 7,
+        "counterfactual_branches": 1360,
+        "mean_selected_predicted_gain_bb": 38.24829044117647
+      },
+      "prediction_metrics": {
+        "half_life": null,
+        "public_opponent_decisions": 939,
+        "mean_excess_brier": 0.02606837806434218,
+        "mean_log_loss": 0.2119859103459724
+      },
+      "process_peak_rss_native_units": 124157952
+    },
+    {
+      "pool": "passive_controls",
+      "seats": 7,
+      "trial": 4,
+      "variant": "discounted",
+      "hands": 56,
+      "bb_per_100": 1696.6785714285713,
+      "delta": 1236.9375,
+      "elapsed_seconds": 4.748580750077963,
+      "decision_latency_ms": {
+        "p50": 0.0026673078536987305,
+        "p95": 0.7262079743668437,
+        "max": 415.971249807626
+      },
+      "search_diagnostics": {
+        "searched_decisions": 17,
+        "changed_actions": 7,
+        "counterfactual_branches": 1360,
+        "mean_selected_predicted_gain_bb": 34.65637867647059
+      },
+      "prediction_metrics": {
+        "half_life": 64,
+        "public_opponent_decisions": 939,
+        "mean_excess_brier": 0.031226770079627295,
+        "mean_log_loss": 0.2314970996374742
+      },
+      "process_peak_rss_native_units": 124157952
+    },
+    {
+      "pool": "passive_controls",
+      "seats": 7,
+      "trial": 5,
+      "variant": "original",
+      "hands": 56,
+      "bb_per_100": 411.5892857142857,
+      "delta": 0.0,
+      "elapsed_seconds": 0.31707337498664856,
+      "decision_latency_ms": {
+        "p50": 0.0026668421924114227,
+        "p95": 0.6953665055334568,
+        "max": 0.9228750132024288
+      },
+      "search_diagnostics": {
+        "searched_decisions": 0,
+        "changed_actions": 0,
+        "counterfactual_branches": 0,
+        "mean_selected_predicted_gain_bb": null
+      },
+      "prediction_metrics": {
+        "half_life": null,
+        "public_opponent_decisions": 0,
+        "mean_excess_brier": null,
+        "mean_log_loss": null
+      },
+      "process_peak_rss_native_units": 124157952
+    },
+    {
+      "pool": "passive_controls",
+      "seats": 7,
+      "trial": 5,
+      "variant": "prior",
+      "hands": 56,
+      "bb_per_100": 1622.3392857142858,
+      "delta": 1210.75,
+      "elapsed_seconds": 4.879873625002801,
+      "decision_latency_ms": {
+        "p50": 0.002709217369556427,
+        "p95": 0.7250836119055748,
+        "max": 382.53479171544313
+      },
+      "search_diagnostics": {
+        "searched_decisions": 20,
+        "changed_actions": 6,
+        "counterfactual_branches": 1632,
+        "mean_selected_predicted_gain_bb": 13.997171875000001
+      },
+      "prediction_metrics": {
+        "half_life": null,
+        "public_opponent_decisions": 929,
+        "mean_excess_brier": 0.1663659849300323,
+        "mean_log_loss": 0.4808825513251008
+      },
+      "process_peak_rss_native_units": 124157952
+    },
+    {
+      "pool": "passive_controls",
+      "seats": 7,
+      "trial": 5,
+      "variant": "raw",
+      "hands": 56,
+      "bb_per_100": 1738.9107142857142,
+      "delta": 1327.3214285714284,
+      "elapsed_seconds": 5.473635292146355,
+      "decision_latency_ms": {
+        "p50": 0.0027497299015522003,
+        "p95": 0.7210079580545425,
+        "max": 424.8236669227481
+      },
+      "search_diagnostics": {
+        "searched_decisions": 20,
+        "changed_actions": 5,
+        "counterfactual_branches": 1632,
+        "mean_selected_predicted_gain_bb": 20.259281249999997
+      },
+      "prediction_metrics": {
+        "half_life": null,
+        "public_opponent_decisions": 929,
+        "mean_excess_brier": 0.020643334423694128,
+        "mean_log_loss": 0.20956817543079864
+      },
+      "process_peak_rss_native_units": 124157952
+    },
+    {
+      "pool": "passive_controls",
+      "seats": 7,
+      "trial": 5,
+      "variant": "discounted",
+      "hands": 56,
+      "bb_per_100": 1185.267857142857,
+      "delta": 773.6785714285713,
+      "elapsed_seconds": 5.427091582678258,
+      "decision_latency_ms": {
+        "p50": 0.0027497299015522003,
+        "p95": 0.7201164029538631,
+        "max": 426.3800419867039
+      },
+      "search_diagnostics": {
+        "searched_decisions": 20,
+        "changed_actions": 5,
+        "counterfactual_branches": 1632,
+        "mean_selected_predicted_gain_bb": 13.623609375000001
+      },
+      "prediction_metrics": {
+        "half_life": 64,
+        "public_opponent_decisions": 929,
+        "mean_excess_brier": 0.025296395673826924,
+        "mean_log_loss": 0.22827839907297431
+      },
+      "process_peak_rss_native_units": 124157952
+    },
+    {
+      "pool": "passive_controls",
+      "seats": 8,
+      "trial": 0,
+      "variant": "original",
+      "hands": 64,
+      "bb_per_100": 1185.546875,
+      "delta": 0.0,
+      "elapsed_seconds": 0.45271229185163975,
+      "decision_latency_ms": {
+        "p50": 0.0025830231606960297,
+        "p95": 0.7104999385774136,
+        "max": 1.0038749314844608
+      },
+      "search_diagnostics": {
+        "searched_decisions": 0,
+        "changed_actions": 0,
+        "counterfactual_branches": 0,
+        "mean_selected_predicted_gain_bb": null
+      },
+      "prediction_metrics": {
+        "half_life": null,
+        "public_opponent_decisions": 0,
+        "mean_excess_brier": null,
+        "mean_log_loss": null
+      },
+      "process_peak_rss_native_units": 124157952
+    },
+    {
+      "pool": "passive_controls",
+      "seats": 8,
+      "trial": 0,
+      "variant": "prior",
+      "hands": 64,
+      "bb_per_100": 2651.171875,
+      "delta": 1465.625,
+      "elapsed_seconds": 6.6679610828869045,
+      "decision_latency_ms": {
+        "p50": 0.002583954483270645,
+        "p95": 0.797670450992882,
+        "max": 374.8625838197768
+      },
+      "search_diagnostics": {
+        "searched_decisions": 23,
+        "changed_actions": 6,
+        "counterfactual_branches": 1808,
+        "mean_selected_predicted_gain_bb": 15.336277173913043
+      },
+      "prediction_metrics": {
+        "half_life": null,
+        "public_opponent_decisions": 1331,
+        "mean_excess_brier": 0.1716305033809166,
+        "mean_log_loss": 0.4600422917899004
+      },
+      "process_peak_rss_native_units": 124157952
+    },
+    {
+      "pool": "passive_controls",
+      "seats": 8,
+      "trial": 0,
+      "variant": "raw",
+      "hands": 64,
+      "bb_per_100": 2530.859375,
+      "delta": 1345.3125,
+      "elapsed_seconds": 7.725055625196546,
+      "decision_latency_ms": {
+        "p50": 0.002625398337841034,
+        "p95": 0.802207738161087,
+        "max": 428.8903339765966
+      },
+      "search_diagnostics": {
+        "searched_decisions": 23,
+        "changed_actions": 5,
+        "counterfactual_branches": 1808,
+        "mean_selected_predicted_gain_bb": 32.21467391304348
+      },
+      "prediction_metrics": {
+        "half_life": null,
+        "public_opponent_decisions": 1328,
+        "mean_excess_brier": 0.018950034977381645,
+        "mean_log_loss": 0.17171460598845376
+      },
+      "process_peak_rss_native_units": 124157952
+    },
+    {
+      "pool": "passive_controls",
+      "seats": 8,
+      "trial": 0,
+      "variant": "discounted",
+      "hands": 64,
+      "bb_per_100": 2530.859375,
+      "delta": 1345.3125,
+      "elapsed_seconds": 7.618697790894657,
+      "decision_latency_ms": {
+        "p50": 0.0026668421924114227,
+        "p95": 0.7974160835146904,
+        "max": 421.2535419501364
+      },
+      "search_diagnostics": {
+        "searched_decisions": 23,
+        "changed_actions": 5,
+        "counterfactual_branches": 1808,
+        "mean_selected_predicted_gain_bb": 27.41236413043478
+      },
+      "prediction_metrics": {
+        "half_life": 64,
+        "public_opponent_decisions": 1328,
+        "mean_excess_brier": 0.0242892924494309,
+        "mean_log_loss": 0.1931901125283403
+      },
+      "process_peak_rss_native_units": 124157952
+    },
+    {
+      "pool": "passive_controls",
+      "seats": 8,
+      "trial": 1,
+      "variant": "original",
+      "hands": 64,
+      "bb_per_100": 570.703125,
+      "delta": 0.0,
+      "elapsed_seconds": 0.45780220814049244,
+      "decision_latency_ms": {
+        "p50": 0.0025830231606960297,
+        "p95": 0.7124892435967922,
+        "max": 1.0069580748677254
+      },
+      "search_diagnostics": {
+        "searched_decisions": 0,
+        "changed_actions": 0,
+        "counterfactual_branches": 0,
+        "mean_selected_predicted_gain_bb": null
+      },
+      "prediction_metrics": {
+        "half_life": null,
+        "public_opponent_decisions": 0,
+        "mean_excess_brier": null,
+        "mean_log_loss": null
+      },
+      "process_peak_rss_native_units": 124157952
+    },
+    {
+      "pool": "passive_controls",
+      "seats": 8,
+      "trial": 1,
+      "variant": "prior",
+      "hands": 64,
+      "bb_per_100": 767.578125,
+      "delta": 196.875,
+      "elapsed_seconds": 6.316034041810781,
+      "decision_latency_ms": {
+        "p50": 0.002583954483270645,
+        "p95": 0.7952623069286346,
+        "max": 463.73033337295055
+      },
+      "search_diagnostics": {
+        "searched_decisions": 21,
+        "changed_actions": 5,
+        "counterfactual_branches": 1568,
+        "mean_selected_predicted_gain_bb": 18.857638888888886
+      },
+      "prediction_metrics": {
+        "half_life": null,
+        "public_opponent_decisions": 1355,
+        "mean_excess_brier": 0.17502981549815497,
+        "mean_log_loss": 0.4674271912939127
+      },
+      "process_peak_rss_native_units": 124157952
+    },
+    {
+      "pool": "passive_controls",
+      "seats": 8,
+      "trial": 1,
+      "variant": "raw",
+      "hands": 64,
+      "bb_per_100": 741.015625,
+      "delta": 170.3125,
+      "elapsed_seconds": 7.32410137495026,
+      "decision_latency_ms": {
+        "p50": 0.0026668421924114227,
+        "p95": 0.7933750748634338,
+        "max": 527.2312918677926
+      },
+      "search_diagnostics": {
+        "searched_decisions": 21,
+        "changed_actions": 3,
+        "counterfactual_branches": 1568,
+        "mean_selected_predicted_gain_bb": 18.584434523809524
+      },
+      "prediction_metrics": {
+        "half_life": null,
+        "public_opponent_decisions": 1354,
+        "mean_excess_brier": 0.02128752126726623,
+        "mean_log_loss": 0.1784326761185278
+      },
+      "process_peak_rss_native_units": 124157952
+    },
+    {
+      "pool": "passive_controls",
+      "seats": 8,
+      "trial": 1,
+      "variant": "discounted",
+      "hands": 64,
+      "bb_per_100": 533.59375,
+      "delta": -37.109375,
+      "elapsed_seconds": 7.093262834008783,
+      "decision_latency_ms": {
+        "p50": 0.002624932676553726,
+        "p95": 0.8001672104001045,
+        "max": 489.57099998369813
+      },
+      "search_diagnostics": {
+        "searched_decisions": 21,
+        "changed_actions": 5,
+        "counterfactual_branches": 1568,
+        "mean_selected_predicted_gain_bb": 24.273065476190474
+      },
+      "prediction_metrics": {
+        "half_life": 64,
+        "public_opponent_decisions": 1354,
+        "mean_excess_brier": 0.02790564595473423,
+        "mean_log_loss": 0.2019511397642452
+      },
+      "process_peak_rss_native_units": 124157952
+    },
+    {
+      "pool": "passive_controls",
+      "seats": 8,
+      "trial": 2,
+      "variant": "original",
+      "hands": 64,
+      "bb_per_100": 833.203125,
+      "delta": 0.0,
+      "elapsed_seconds": 0.4448146251961589,
+      "decision_latency_ms": {
+        "p50": 0.0025830231606960297,
+        "p95": 0.7043750956654549,
+        "max": 1.0110833682119846
+      },
+      "search_diagnostics": {
+        "searched_decisions": 0,
+        "changed_actions": 0,
+        "counterfactual_branches": 0,
+        "mean_selected_predicted_gain_bb": null
+      },
+      "prediction_metrics": {
+        "half_life": null,
+        "public_opponent_decisions": 0,
+        "mean_excess_brier": null,
+        "mean_log_loss": null
+      },
+      "process_peak_rss_native_units": 124157952
+    },
+    {
+      "pool": "passive_controls",
+      "seats": 8,
+      "trial": 2,
+      "variant": "prior",
+      "hands": 64,
+      "bb_per_100": 1155.078125,
+      "delta": 321.875,
+      "elapsed_seconds": 6.2769659999758005,
+      "decision_latency_ms": {
+        "p50": 0.002707820385694504,
+        "p95": 0.8116248063743114,
+        "max": 449.1855422966182
+      },
+      "search_diagnostics": {
+        "searched_decisions": 21,
+        "changed_actions": 2,
+        "counterfactual_branches": 1648,
+        "mean_selected_predicted_gain_bb": 7.66779761904762
+      },
+      "prediction_metrics": {
+        "half_life": null,
+        "public_opponent_decisions": 1314,
+        "mean_excess_brier": 0.16818401826484017,
+        "mean_log_loss": 0.4577058262823885
+      },
+      "process_peak_rss_native_units": 124157952
+    },
+    {
+      "pool": "passive_controls",
+      "seats": 8,
+      "trial": 2,
+      "variant": "raw",
+      "hands": 64,
+      "bb_per_100": 1387.109375,
+      "delta": 553.90625,
+      "elapsed_seconds": 7.297409458085895,
+      "decision_latency_ms": {
+        "p50": 0.0026659108698368073,
+        "p95": 0.7879999466240406,
+        "max": 525.1749157905579
+      },
+      "search_diagnostics": {
+        "searched_decisions": 21,
+        "changed_actions": 4,
+        "counterfactual_branches": 1648,
+        "mean_selected_predicted_gain_bb": 14.141011904761905
+      },
+      "prediction_metrics": {
+        "half_life": null,
+        "public_opponent_decisions": 1314,
+        "mean_excess_brier": 0.017086985896266317,
+        "mean_log_loss": 0.1698220762673137
+      },
+      "process_peak_rss_native_units": 124157952
+    },
+    {
+      "pool": "passive_controls",
+      "seats": 8,
+      "trial": 2,
+      "variant": "discounted",
+      "hands": 64,
+      "bb_per_100": 1281.640625,
+      "delta": 448.4375,
+      "elapsed_seconds": 7.011004500091076,
+      "decision_latency_ms": {
+        "p50": 0.002624932676553726,
+        "p95": 0.7969588041305542,
+        "max": 469.85829109326005
+      },
+      "search_diagnostics": {
+        "searched_decisions": 21,
+        "changed_actions": 3,
+        "counterfactual_branches": 1648,
+        "mean_selected_predicted_gain_bb": 12.127619047619048
+      },
+      "prediction_metrics": {
+        "half_life": 64,
+        "public_opponent_decisions": 1314,
+        "mean_excess_brier": 0.022658885805045832,
+        "mean_log_loss": 0.19132957038549786
+      },
+      "process_peak_rss_native_units": 124157952
+    },
+    {
+      "pool": "passive_controls",
+      "seats": 8,
+      "trial": 3,
+      "variant": "original",
+      "hands": 64,
+      "bb_per_100": 1441.421875,
+      "delta": 0.0,
+      "elapsed_seconds": 0.44888579100370407,
+      "decision_latency_ms": {
+        "p50": 0.0025830231606960297,
+        "p95": 0.7090892875567081,
+        "max": 1.0101250372827053
+      },
+      "search_diagnostics": {
+        "searched_decisions": 0,
+        "changed_actions": 0,
+        "counterfactual_branches": 0,
+        "mean_selected_predicted_gain_bb": null
+      },
+      "prediction_metrics": {
+        "half_life": null,
+        "public_opponent_decisions": 0,
+        "mean_excess_brier": null,
+        "mean_log_loss": null
+      },
+      "process_peak_rss_native_units": 124157952
+    },
+    {
+      "pool": "passive_controls",
+      "seats": 8,
+      "trial": 3,
+      "variant": "prior",
+      "hands": 64,
+      "bb_per_100": 2803.53125,
+      "delta": 1362.109375,
+      "elapsed_seconds": 6.817138541024178,
+      "decision_latency_ms": {
+        "p50": 0.002624932676553726,
+        "p95": 0.8009877754375339,
+        "max": 357.680625282228
+      },
+      "search_diagnostics": {
+        "searched_decisions": 25,
+        "changed_actions": 9,
+        "counterfactual_branches": 1904,
+        "mean_selected_predicted_gain_bb": 19.673125
+      },
+      "prediction_metrics": {
+        "half_life": null,
+        "public_opponent_decisions": 1345,
+        "mean_excess_brier": 0.18174973977695166,
+        "mean_log_loss": 0.4802005886294784
+      },
+      "process_peak_rss_native_units": 124157952
+    },
+    {
+      "pool": "passive_controls",
+      "seats": 8,
+      "trial": 3,
+      "variant": "raw",
+      "hands": 64,
+      "bb_per_100": 3533.6093750000005,
+      "delta": 2092.1875000000005,
+      "elapsed_seconds": 7.82954916683957,
+      "decision_latency_ms": {
+        "p50": 0.002666376531124115,
+        "p95": 0.8041250985115764,
+        "max": 431.17725010961294
+      },
+      "search_diagnostics": {
+        "searched_decisions": 25,
+        "changed_actions": 9,
+        "counterfactual_branches": 1904,
+        "mean_selected_predicted_gain_bb": 41.970625
+      },
+      "prediction_metrics": {
+        "half_life": null,
+        "public_opponent_decisions": 1345,
+        "mean_excess_brier": 0.022271377437291323,
+        "mean_log_loss": 0.1771667236279121
+      },
+      "process_peak_rss_native_units": 124157952
+    },
+    {
+      "pool": "passive_controls",
+      "seats": 8,
+      "trial": 3,
+      "variant": "discounted",
+      "hands": 64,
+      "bb_per_100": 3430.4843750000005,
+      "delta": 1989.0625000000005,
+      "elapsed_seconds": 7.689674333203584,
+      "decision_latency_ms": {
+        "p50": 0.0026659108698368073,
+        "p95": 0.8032562443986534,
+        "max": 423.7979589961469
+      },
+      "search_diagnostics": {
+        "searched_decisions": 25,
+        "changed_actions": 9,
+        "counterfactual_branches": 1904,
+        "mean_selected_predicted_gain_bb": 39.053125
+      },
+      "prediction_metrics": {
+        "half_life": 64,
+        "public_opponent_decisions": 1345,
+        "mean_excess_brier": 0.02790616087207835,
+        "mean_log_loss": 0.19999129723949202
+      },
+      "process_peak_rss_native_units": 124157952
+    },
+    {
+      "pool": "passive_controls",
+      "seats": 8,
+      "trial": 4,
+      "variant": "original",
+      "hands": 64,
+      "bb_per_100": 1248.828125,
+      "delta": 0.0,
+      "elapsed_seconds": 0.4712100410833955,
+      "decision_latency_ms": {
+        "p50": 0.0025830231606960297,
+        "p95": 0.7051542401313782,
+        "max": 2.476250287145376
+      },
+      "search_diagnostics": {
+        "searched_decisions": 0,
+        "changed_actions": 0,
+        "counterfactual_branches": 0,
+        "mean_selected_predicted_gain_bb": null
+      },
+      "prediction_metrics": {
+        "half_life": null,
+        "public_opponent_decisions": 0,
+        "mean_excess_brier": null,
+        "mean_log_loss": null
+      },
+      "process_peak_rss_native_units": 124157952
+    },
+    {
+      "pool": "passive_controls",
+      "seats": 8,
+      "trial": 4,
+      "variant": "prior",
+      "hands": 64,
+      "bb_per_100": 2281.640625,
+      "delta": 1032.8125,
+      "elapsed_seconds": 6.195147457998246,
+      "decision_latency_ms": {
+        "p50": 0.0025830231606960297,
+        "p95": 0.792687525972724,
+        "max": 348.74058421701193
+      },
+      "search_diagnostics": {
+        "searched_decisions": 21,
+        "changed_actions": 5,
+        "counterfactual_branches": 1632,
+        "mean_selected_predicted_gain_bb": 18.99404761904762
+      },
+      "prediction_metrics": {
+        "half_life": null,
+        "public_opponent_decisions": 1364,
+        "mean_excess_brier": 0.1678934017595308,
+        "mean_log_loss": 0.4532053819619068
+      },
+      "process_peak_rss_native_units": 124157952
+    },
+    {
+      "pool": "passive_controls",
+      "seats": 8,
+      "trial": 4,
+      "variant": "raw",
+      "hands": 64,
+      "bb_per_100": 2751.953125,
+      "delta": 1503.125,
+      "elapsed_seconds": 7.208993666339666,
+      "decision_latency_ms": {
+        "p50": 0.002624932676553726,
+        "p95": 0.7815619464963675,
+        "max": 454.5996249653399
+      },
+      "search_diagnostics": {
+        "searched_decisions": 21,
+        "changed_actions": 5,
+        "counterfactual_branches": 1632,
+        "mean_selected_predicted_gain_bb": 25.886904761904763
+      },
+      "prediction_metrics": {
+        "half_life": null,
+        "public_opponent_decisions": 1364,
+        "mean_excess_brier": 0.021633117410480452,
+        "mean_log_loss": 0.17703645989270358
+      },
+      "process_peak_rss_native_units": 124157952
+    },
+    {
+      "pool": "passive_controls",
+      "seats": 8,
+      "trial": 4,
+      "variant": "discounted",
+      "hands": 64,
+      "bb_per_100": 2646.484375,
+      "delta": 1397.65625,
+      "elapsed_seconds": 7.03905866574496,
+      "decision_latency_ms": {
+        "p50": 0.002624932676553726,
+        "p95": 0.7908961270004511,
+        "max": 443.425249774009
+      },
+      "search_diagnostics": {
+        "searched_decisions": 21,
+        "changed_actions": 5,
+        "counterfactual_branches": 1632,
+        "mean_selected_predicted_gain_bb": 26.703869047619047
+      },
+      "prediction_metrics": {
+        "half_life": 64,
+        "public_opponent_decisions": 1364,
+        "mean_excess_brier": 0.027156203156820748,
+        "mean_log_loss": 0.19784967356342578
+      },
+      "process_peak_rss_native_units": 124157952
+    },
+    {
+      "pool": "passive_controls",
+      "seats": 8,
+      "trial": 5,
+      "variant": "original",
+      "hands": 64,
+      "bb_per_100": 563.28125,
+      "delta": 0.0,
+      "elapsed_seconds": 0.4351753331720829,
+      "decision_latency_ms": {
+        "p50": 0.0025420449674129486,
+        "p95": 0.7154835155233741,
+        "max": 0.993708148598671
+      },
+      "search_diagnostics": {
+        "searched_decisions": 0,
+        "changed_actions": 0,
+        "counterfactual_branches": 0,
+        "mean_selected_predicted_gain_bb": null
+      },
+      "prediction_metrics": {
+        "half_life": null,
+        "public_opponent_decisions": 0,
+        "mean_excess_brier": null,
+        "mean_log_loss": null
+      },
+      "process_peak_rss_native_units": 124157952
+    },
+    {
+      "pool": "passive_controls",
+      "seats": 8,
+      "trial": 5,
+      "variant": "prior",
+      "hands": 64,
+      "bb_per_100": 647.65625,
+      "delta": 84.375,
+      "elapsed_seconds": 6.078409291803837,
+      "decision_latency_ms": {
+        "p50": 0.002624932676553726,
+        "p95": 0.805216352455318,
+        "max": 442.54687521606684
+      },
+      "search_diagnostics": {
+        "searched_decisions": 20,
+        "changed_actions": 2,
+        "counterfactual_branches": 1584,
+        "mean_selected_predicted_gain_bb": 8.19375
+      },
+      "prediction_metrics": {
+        "half_life": null,
+        "public_opponent_decisions": 1316,
+        "mean_excess_brier": 0.16469863221884498,
+        "mean_log_loss": 0.45294114547053194
+      },
+      "process_peak_rss_native_units": 124157952
+    },
+    {
+      "pool": "passive_controls",
+      "seats": 8,
+      "trial": 5,
+      "variant": "raw",
+      "hands": 64,
+      "bb_per_100": 601.953125,
+      "delta": 38.671875,
+      "elapsed_seconds": 7.143305750098079,
+      "decision_latency_ms": {
+        "p50": 0.0026659108698368073,
+        "p95": 0.8006600895896553,
+        "max": 463.73066725209355
+      },
+      "search_diagnostics": {
+        "searched_decisions": 20,
+        "changed_actions": 2,
+        "counterfactual_branches": 1584,
+        "mean_selected_predicted_gain_bb": 11.95078125
+      },
+      "prediction_metrics": {
+        "half_life": null,
+        "public_opponent_decisions": 1316,
+        "mean_excess_brier": 0.017640546920366672,
+        "mean_log_loss": 0.17038113032378774
+      },
+      "process_peak_rss_native_units": 124157952
+    },
+    {
+      "pool": "passive_controls",
+      "seats": 8,
+      "trial": 5,
+      "variant": "discounted",
+      "hands": 64,
+      "bb_per_100": 601.953125,
+      "delta": 38.671875,
+      "elapsed_seconds": 6.901060209143907,
+      "decision_latency_ms": {
+        "p50": 0.002625398337841034,
+        "p95": 0.798587896861136,
+        "max": 444.7453343309462
+      },
+      "search_diagnostics": {
+        "searched_decisions": 20,
+        "changed_actions": 2,
+        "counterfactual_branches": 1584,
+        "mean_selected_predicted_gain_bb": 10.5984375
+      },
+      "prediction_metrics": {
+        "half_life": 64,
+        "public_opponent_decisions": 1316,
+        "mean_excess_brier": 0.02274729553978139,
+        "mean_log_loss": 0.19074708284797076
+      },
+      "process_peak_rss_native_units": 124157952
+    },
+    {
+      "pool": "passive_controls",
+      "seats": 9,
+      "trial": 0,
+      "variant": "original",
+      "hands": 72,
+      "bb_per_100": -144.09722222222223,
+      "delta": 0.0,
+      "elapsed_seconds": 0.5510031660087407,
+      "decision_latency_ms": {
+        "p50": 0.002459157258272171,
+        "p95": 0.7020934484899042,
+        "max": 1.0932502336800098
+      },
+      "search_diagnostics": {
+        "searched_decisions": 0,
+        "changed_actions": 0,
+        "counterfactual_branches": 0,
+        "mean_selected_predicted_gain_bb": null
+      },
+      "prediction_metrics": {
+        "half_life": null,
+        "public_opponent_decisions": 0,
+        "mean_excess_brier": null,
+        "mean_log_loss": null
+      },
+      "process_peak_rss_native_units": 124157952
+    },
+    {
+      "pool": "passive_controls",
+      "seats": 9,
+      "trial": 0,
+      "variant": "prior",
+      "hands": 72,
+      "bb_per_100": 814.5833333333334,
+      "delta": 958.6805555555557,
+      "elapsed_seconds": 5.988554125186056,
+      "decision_latency_ms": {
+        "p50": 0.0024996697902679443,
+        "p95": 0.7858562748879191,
+        "max": 578.5382082685828
+      },
+      "search_diagnostics": {
+        "searched_decisions": 19,
+        "changed_actions": 6,
+        "counterfactual_branches": 1488,
+        "mean_selected_predicted_gain_bb": 25.17611842105263
+      },
+      "prediction_metrics": {
+        "half_life": null,
+        "public_opponent_decisions": 1623,
+        "mean_excess_brier": 0.16301712877387553,
+        "mean_log_loss": 0.4636169465080938
+      },
+      "process_peak_rss_native_units": 124157952
+    },
+    {
+      "pool": "passive_controls",
+      "seats": 9,
+      "trial": 0,
+      "variant": "raw",
+      "hands": 72,
+      "bb_per_100": 814.5833333333334,
+      "delta": 958.6805555555557,
+      "elapsed_seconds": 6.979160541202873,
+      "decision_latency_ms": {
+        "p50": 0.002583954483270645,
+        "p95": 0.7812934461981055,
+        "max": 608.2429587841034
+      },
+      "search_diagnostics": {
+        "searched_decisions": 19,
+        "changed_actions": 6,
+        "counterfactual_branches": 1488,
+        "mean_selected_predicted_gain_bb": 44.12090460526316
+      },
+      "prediction_metrics": {
+        "half_life": null,
+        "public_opponent_decisions": 1623,
+        "mean_excess_brier": 0.018909270078107544,
+        "mean_log_loss": 0.1870415928837942
+      },
+      "process_peak_rss_native_units": 124157952
+    },
+    {
+      "pool": "passive_controls",
+      "seats": 9,
+      "trial": 0,
+      "variant": "discounted",
+      "hands": 72,
+      "bb_per_100": 496.875,
+      "delta": 640.9722222222222,
+      "elapsed_seconds": 6.8083020420745015,
+      "decision_latency_ms": {
+        "p50": 0.0025830231606960297,
+        "p95": 0.7835812866687761,
+        "max": 611.9284168817103
+      },
+      "search_diagnostics": {
+        "searched_decisions": 19,
+        "changed_actions": 6,
+        "counterfactual_branches": 1488,
+        "mean_selected_predicted_gain_bb": 32.72929276315789
+      },
+      "prediction_metrics": {
+        "half_life": 64,
+        "public_opponent_decisions": 1623,
+        "mean_excess_brier": 0.024582080389636086,
+        "mean_log_loss": 0.20842744021953127
+      },
+      "process_peak_rss_native_units": 124157952
+    },
+    {
+      "pool": "passive_controls",
+      "seats": 9,
+      "trial": 1,
+      "variant": "original",
+      "hands": 72,
+      "bb_per_100": 969.7083333333334,
+      "delta": 0.0,
+      "elapsed_seconds": 0.5503724166192114,
+      "decision_latency_ms": {
+        "p50": 0.002500135451555252,
+        "p95": 0.7145247654989361,
+        "max": 1.154417172074318
+      },
+      "search_diagnostics": {
+        "searched_decisions": 0,
+        "changed_actions": 0,
+        "counterfactual_branches": 0,
+        "mean_selected_predicted_gain_bb": null
+      },
+      "prediction_metrics": {
+        "half_life": null,
+        "public_opponent_decisions": 0,
+        "mean_excess_brier": null,
+        "mean_log_loss": null
+      },
+      "process_peak_rss_native_units": 124157952
+    },
+    {
+      "pool": "passive_controls",
+      "seats": 9,
+      "trial": 1,
+      "variant": "prior",
+      "hands": 72,
+      "bb_per_100": 969.7083333333334,
+      "delta": 0.0,
+      "elapsed_seconds": 6.633896291721612,
+      "decision_latency_ms": {
+        "p50": 0.002541113644838333,
+        "p95": 0.7951246341690421,
+        "max": 407.7171250246465
+      },
+      "search_diagnostics": {
+        "searched_decisions": 21,
+        "changed_actions": 0,
+        "counterfactual_branches": 1648,
+        "mean_selected_predicted_gain_bb": 0.0
+      },
+      "prediction_metrics": {
+        "half_life": null,
+        "public_opponent_decisions": 1619,
+        "mean_excess_brier": 0.16143285978999383,
+        "mean_log_loss": 0.4610635291888731
+      },
+      "process_peak_rss_native_units": 124157952
+    },
+    {
+      "pool": "passive_controls",
+      "seats": 9,
+      "trial": 1,
+      "variant": "raw",
+      "hands": 72,
+      "bb_per_100": 1633.75,
+      "delta": 664.0416666666666,
+      "elapsed_seconds": 8.039411500096321,
+      "decision_latency_ms": {
+        "p50": 0.002624932676553726,
+        "p95": 0.7941150572150945,
+        "max": 472.4477496929467
+      },
+      "search_diagnostics": {
+        "searched_decisions": 21,
+        "changed_actions": 3,
+        "counterfactual_branches": 1648,
+        "mean_selected_predicted_gain_bb": 9.047708333333334
+      },
+      "prediction_metrics": {
+        "half_life": null,
+        "public_opponent_decisions": 1619,
+        "mean_excess_brier": 0.017840510259743973,
+        "mean_log_loss": 0.1795399294039837
+      },
+      "process_peak_rss_native_units": 124157952
+    },
+    {
+      "pool": "passive_controls",
+      "seats": 9,
+      "trial": 1,
+      "variant": "discounted",
+      "hands": 72,
+      "bb_per_100": 1246.25,
+      "delta": 276.54166666666663,
+      "elapsed_seconds": 7.79550408385694,
+      "decision_latency_ms": {
+        "p50": 0.002624932676553726,
+        "p95": 0.7973349653184412,
+        "max": 451.6038750298321
+      },
+      "search_diagnostics": {
+        "searched_decisions": 21,
+        "changed_actions": 2,
+        "counterfactual_branches": 1648,
+        "mean_selected_predicted_gain_bb": 4.376964285714286
+      },
+      "prediction_metrics": {
+        "half_life": 64,
+        "public_opponent_decisions": 1619,
+        "mean_excess_brier": 0.022383267421565236,
+        "mean_log_loss": 0.1984025639502005
+      },
+      "process_peak_rss_native_units": 124157952
+    },
+    {
+      "pool": "passive_controls",
+      "seats": 9,
+      "trial": 2,
+      "variant": "original",
+      "hands": 72,
+      "bb_per_100": 210.41666666666666,
+      "delta": 0.0,
+      "elapsed_seconds": 0.5708367917686701,
+      "decision_latency_ms": {
+        "p50": 0.002459157258272171,
+        "p95": 0.7827607914805412,
+        "max": 1.0952078737318516
+      },
+      "search_diagnostics": {
+        "searched_decisions": 0,
+        "changed_actions": 0,
+        "counterfactual_branches": 0,
+        "mean_selected_predicted_gain_bb": null
+      },
+      "prediction_metrics": {
+        "half_life": null,
+        "public_opponent_decisions": 0,
+        "mean_excess_brier": null,
+        "mean_log_loss": null
+      },
+      "process_peak_rss_native_units": 124157952
+    },
+    {
+      "pool": "passive_controls",
+      "seats": 9,
+      "trial": 2,
+      "variant": "prior",
+      "hands": 72,
+      "bb_per_100": 1349.3055555555557,
+      "delta": 1138.888888888889,
+      "elapsed_seconds": 7.578341249842197,
+      "decision_latency_ms": {
+        "p50": 0.002500135451555252,
+        "p95": 0.8015522034838796,
+        "max": 430.353666190058
+      },
+      "search_diagnostics": {
+        "searched_decisions": 22,
+        "changed_actions": 5,
+        "counterfactual_branches": 1760,
+        "mean_selected_predicted_gain_bb": 13.274176136363637
+      },
+      "prediction_metrics": {
+        "half_life": null,
+        "public_opponent_decisions": 1668,
+        "mean_excess_brier": 0.1601521582733813,
+        "mean_log_loss": 0.453152740721924
+      },
+      "process_peak_rss_native_units": 124157952
+    },
+    {
+      "pool": "passive_controls",
+      "seats": 9,
+      "trial": 2,
+      "variant": "raw",
+      "hands": 72,
+      "bb_per_100": 1659.7222222222222,
+      "delta": 1449.3055555555554,
+      "elapsed_seconds": 8.794531542342156,
+      "decision_latency_ms": {
+        "p50": 0.002583954483270645,
+        "p95": 0.8037291700020432,
+        "max": 495.73499988764524
+      },
+      "search_diagnostics": {
+        "searched_decisions": 22,
+        "changed_actions": 6,
+        "counterfactual_branches": 1760,
+        "mean_selected_predicted_gain_bb": 28.621079545454542
+      },
+      "prediction_metrics": {
+        "half_life": null,
+        "public_opponent_decisions": 1668,
+        "mean_excess_brier": 0.022774853591303223,
+        "mean_log_loss": 0.18389778645354296
+      },
+      "process_peak_rss_native_units": 124157952
+    },
+    {
+      "pool": "passive_controls",
+      "seats": 9,
+      "trial": 2,
+      "variant": "discounted",
+      "hands": 72,
+      "bb_per_100": 1262.1527777777778,
+      "delta": 1051.736111111111,
+      "elapsed_seconds": 8.723540207836777,
+      "decision_latency_ms": {
+        "p50": 0.002624932676553726,
+        "p95": 0.8068130118772388,
+        "max": 490.8011252991855
+      },
+      "search_diagnostics": {
+        "searched_decisions": 22,
+        "changed_actions": 4,
+        "counterfactual_branches": 1760,
+        "mean_selected_predicted_gain_bb": 21.96625
+      },
+      "prediction_metrics": {
+        "half_life": 64,
+        "public_opponent_decisions": 1668,
+        "mean_excess_brier": 0.02661442960089721,
+        "mean_log_loss": 0.20346202837778993
+      },
+      "process_peak_rss_native_units": 124157952
+    },
+    {
+      "pool": "passive_controls",
+      "seats": 9,
+      "trial": 3,
+      "variant": "original",
+      "hands": 72,
+      "bb_per_100": 150.34722222222223,
+      "delta": 0.0,
+      "elapsed_seconds": 0.548186874948442,
+      "decision_latency_ms": {
+        "p50": 0.002500135451555252,
+        "p95": 0.7736125495284789,
+        "max": 1.2230840511620045
+      },
+      "search_diagnostics": {
+        "searched_decisions": 0,
+        "changed_actions": 0,
+        "counterfactual_branches": 0,
+        "mean_selected_predicted_gain_bb": null
+      },
+      "prediction_metrics": {
+        "half_life": null,
+        "public_opponent_decisions": 0,
+        "mean_excess_brier": null,
+        "mean_log_loss": null
+      },
+      "process_peak_rss_native_units": 124157952
+    },
+    {
+      "pool": "passive_controls",
+      "seats": 9,
+      "trial": 3,
+      "variant": "prior",
+      "hands": 72,
+      "bb_per_100": 890.9722222222222,
+      "delta": 740.625,
+      "elapsed_seconds": 7.020528375171125,
+      "decision_latency_ms": {
+        "p50": 0.0025420449674129486,
+        "p95": 0.8230162784457198,
+        "max": 403.8731246255338
+      },
+      "search_diagnostics": {
+        "searched_decisions": 21,
+        "changed_actions": 2,
+        "counterfactual_branches": 1648,
+        "mean_selected_predicted_gain_bb": 8.700446428571428
+      },
+      "prediction_metrics": {
+        "half_life": null,
+        "public_opponent_decisions": 1672,
+        "mean_excess_brier": 0.16100275119617224,
+        "mean_log_loss": 0.4583330287394459
+      },
+      "process_peak_rss_native_units": 124157952
+    },
+    {
+      "pool": "passive_controls",
+      "seats": 9,
+      "trial": 3,
+      "variant": "raw",
+      "hands": 72,
+      "bb_per_100": 983.6805555555555,
+      "delta": 833.3333333333333,
+      "elapsed_seconds": 8.025510457810014,
+      "decision_latency_ms": {
+        "p50": 0.002583954483270645,
+        "p95": 0.8080374449491499,
+        "max": 468.2310838252306
+      },
+      "search_diagnostics": {
+        "searched_decisions": 21,
+        "changed_actions": 4,
+        "counterfactual_branches": 1648,
+        "mean_selected_predicted_gain_bb": 14.424523809523809
+      },
+      "prediction_metrics": {
+        "half_life": null,
+        "public_opponent_decisions": 1672,
+        "mean_excess_brier": 0.019842288377809377,
+        "mean_log_loss": 0.1864413107807967
+      },
+      "process_peak_rss_native_units": 124157952
+    },
+    {
+      "pool": "passive_controls",
+      "seats": 9,
+      "trial": 3,
+      "variant": "discounted",
+      "hands": 72,
+      "bb_per_100": 874.3055555555555,
+      "delta": 723.9583333333333,
+      "elapsed_seconds": 7.745621374808252,
+      "decision_latency_ms": {
+        "p50": 0.002583954483270645,
+        "p95": 0.7997166831046335,
+        "max": 447.0543749630451
+      },
+      "search_diagnostics": {
+        "searched_decisions": 21,
+        "changed_actions": 3,
+        "counterfactual_branches": 1648,
+        "mean_selected_predicted_gain_bb": 10.950565476190476
+      },
+      "prediction_metrics": {
+        "half_life": 64,
+        "public_opponent_decisions": 1672,
+        "mean_excess_brier": 0.024930326674912896,
+        "mean_log_loss": 0.20742930434881782
+      },
+      "process_peak_rss_native_units": 124157952
+    },
+    {
+      "pool": "passive_controls",
+      "seats": 9,
+      "trial": 4,
+      "variant": "original",
+      "hands": 72,
+      "bb_per_100": 733.9444444444446,
+      "delta": 0.0,
+      "elapsed_seconds": 0.5241213329136372,
+      "decision_latency_ms": {
+        "p50": 0.0024996697902679443,
+        "p95": 0.7446497678756661,
+        "max": 1.1659166775643826
+      },
+      "search_diagnostics": {
+        "searched_decisions": 0,
+        "changed_actions": 0,
+        "counterfactual_branches": 0,
+        "mean_selected_predicted_gain_bb": null
+      },
+      "prediction_metrics": {
+        "half_life": null,
+        "public_opponent_decisions": 0,
+        "mean_excess_brier": null,
+        "mean_log_loss": null
+      },
+      "process_peak_rss_native_units": 124157952
+    },
+    {
+      "pool": "passive_controls",
+      "seats": 9,
+      "trial": 4,
+      "variant": "prior",
+      "hands": 72,
+      "bb_per_100": 1041.236111111111,
+      "delta": 307.2916666666665,
+      "elapsed_seconds": 5.988996167201549,
+      "decision_latency_ms": {
+        "p50": 0.002541113644838333,
+        "p95": 0.7967668585479257,
+        "max": 393.86583399027586
+      },
+      "search_diagnostics": {
+        "searched_decisions": 19,
+        "changed_actions": 2,
+        "counterfactual_branches": 1488,
+        "mean_selected_predicted_gain_bb": 4.985197368421052
+      },
+      "prediction_metrics": {
+        "half_life": null,
+        "public_opponent_decisions": 1608,
+        "mean_excess_brier": 0.16484850746268656,
+        "mean_log_loss": 0.46799740064591444
+      },
+      "process_peak_rss_native_units": 124157952
+    },
+    {
+      "pool": "passive_controls",
+      "seats": 9,
+      "trial": 4,
+      "variant": "raw",
+      "hands": 72,
+      "bb_per_100": 914.1527777777778,
+      "delta": 180.20833333333326,
+      "elapsed_seconds": 6.975434875115752,
+      "decision_latency_ms": {
+        "p50": 0.002624932676553726,
+        "p95": 0.7964921183884136,
+        "max": 467.94495824724436
+      },
+      "search_diagnostics": {
+        "searched_decisions": 19,
+        "changed_actions": 2,
+        "counterfactual_branches": 1488,
+        "mean_selected_predicted_gain_bb": 9.009046052631579
+      },
+      "prediction_metrics": {
+        "half_life": null,
+        "public_opponent_decisions": 1608,
+        "mean_excess_brier": 0.0161495557935048,
+        "mean_log_loss": 0.18326722439575074
+      },
+      "process_peak_rss_native_units": 124157952
+    },
+    {
+      "pool": "passive_controls",
+      "seats": 9,
+      "trial": 4,
+      "variant": "discounted",
+      "hands": 72,
+      "bb_per_100": 914.1527777777778,
+      "delta": 180.20833333333326,
+      "elapsed_seconds": 6.90738712484017,
+      "decision_latency_ms": {
+        "p50": 0.002624932676553726,
+        "p95": 0.7860747165977946,
+        "max": 478.1810827553272
+      },
+      "search_diagnostics": {
+        "searched_decisions": 19,
+        "changed_actions": 2,
+        "counterfactual_branches": 1488,
+        "mean_selected_predicted_gain_bb": 7.832269736842106
+      },
+      "prediction_metrics": {
+        "half_life": 64,
+        "public_opponent_decisions": 1608,
+        "mean_excess_brier": 0.021430527304157124,
+        "mean_log_loss": 0.20436979734604055
+      },
+      "process_peak_rss_native_units": 124157952
+    },
+    {
+      "pool": "passive_controls",
+      "seats": 9,
+      "trial": 5,
+      "variant": "original",
+      "hands": 72,
+      "bb_per_100": -52.43055555555556,
+      "delta": 0.0,
+      "elapsed_seconds": 0.5452795000746846,
+      "decision_latency_ms": {
+        "p50": 0.002500135451555252,
+        "p95": 0.6963107734918593,
+        "max": 1.1575422249734402
+      },
+      "search_diagnostics": {
+        "searched_decisions": 0,
+        "changed_actions": 0,
+        "counterfactual_branches": 0,
+        "mean_selected_predicted_gain_bb": null
+      },
+      "prediction_metrics": {
+        "half_life": null,
+        "public_opponent_decisions": 0,
+        "mean_excess_brier": null,
+        "mean_log_loss": null
+      },
+      "process_peak_rss_native_units": 124157952
+    },
+    {
+      "pool": "passive_controls",
+      "seats": 9,
+      "trial": 5,
+      "variant": "prior",
+      "hands": 72,
+      "bb_per_100": -137.84722222222223,
+      "delta": -85.41666666666667,
+      "elapsed_seconds": 5.539055542089045,
+      "decision_latency_ms": {
+        "p50": 0.002500135451555252,
+        "p95": 0.7169077871367335,
+        "max": 395.6112922169268
+      },
+      "search_diagnostics": {
+        "searched_decisions": 19,
+        "changed_actions": 1,
+        "counterfactual_branches": 1456,
+        "mean_selected_predicted_gain_bb": 5.6644736842105265
+      },
+      "prediction_metrics": {
+        "half_life": null,
+        "public_opponent_decisions": 1595,
+        "mean_excess_brier": 0.16506206896551726,
+        "mean_log_loss": 0.46996823031125995
+      },
+      "process_peak_rss_native_units": 124157952
+    },
+    {
+      "pool": "passive_controls",
+      "seats": 9,
+      "trial": 5,
+      "variant": "raw",
+      "hands": 72,
+      "bb_per_100": -52.43055555555556,
+      "delta": 0.0,
+      "elapsed_seconds": 6.837376959156245,
+      "decision_latency_ms": {
+        "p50": 0.002625398337841034,
+        "p95": 0.7396815577521919,
+        "max": 470.38008319213986
+      },
+      "search_diagnostics": {
+        "searched_decisions": 19,
+        "changed_actions": 2,
+        "counterfactual_branches": 1456,
+        "mean_selected_predicted_gain_bb": 5.067434210526316
+      },
+      "prediction_metrics": {
+        "half_life": null,
+        "public_opponent_decisions": 1595,
+        "mean_excess_brier": 0.0160602760525119,
+        "mean_log_loss": 0.17569948923253192
+      },
+      "process_peak_rss_native_units": 124157952
+    },
+    {
+      "pool": "passive_controls",
+      "seats": 9,
+      "trial": 5,
+      "variant": "discounted",
+      "hands": 72,
+      "bb_per_100": -137.84722222222223,
+      "delta": -85.41666666666667,
+      "elapsed_seconds": 6.640985915903002,
+      "decision_latency_ms": {
+        "p50": 0.0026659108698368073,
+        "p95": 0.742914178408682,
+        "max": 447.0237079076469
+      },
+      "search_diagnostics": {
+        "searched_decisions": 19,
+        "changed_actions": 1,
+        "counterfactual_branches": 1456,
+        "mean_selected_predicted_gain_bb": 5.032894736842105
+      },
+      "prediction_metrics": {
+        "half_life": 64,
+        "public_opponent_decisions": 1595,
+        "mean_excess_brier": 0.021269497303531528,
+        "mean_log_loss": 0.19756284882504632
+      },
+      "process_peak_rss_native_units": 124157952
+    }
+  ],
+  "experiment_manifest": {
+    "kind": "development only; development-recency-screen-v1 fresh seeds",
+    "trials": 6,
+    "rotations": 8,
+    "seats": [
+      6,
+      7,
+      8,
+      9
+    ],
+    "modes": {
+      "original": "off",
+      "prior": "off",
+      "raw": "learned",
+      "discounted": "learned"
+    },
+    "pools": {
+      "mixed_controls": [
+        "caller",
+        "tight",
+        "aggressive"
+      ],
+      "passive_controls": [
+        "caller",
+        "tight",
+        "tight"
+      ]
+    },
+    "configs": {
+      "original": {
+        "samples": 32,
+        "call_margin": 0.02,
+        "raise_margin": 0.12,
+        "bet_fraction": 0.5,
+        "adaptive": false
+      },
+      "prior": {
+        "worlds": 16,
+        "response_model": "named",
+        "se_penalty": 1.96,
+        "min_gain_bb": 0.25,
+        "response_half_life": null
+      },
+      "raw": {
+        "worlds": 16,
+        "response_model": "named",
+        "se_penalty": 1.96,
+        "min_gain_bb": 0.25,
+        "response_half_life": null
+      },
+      "discounted": {
+        "worlds": 16,
+        "response_model": "named",
+        "se_penalty": 1.96,
+        "min_gain_bb": 0.25,
+        "response_half_life": 64
+      }
+    },
+    "provenance": {
+      "git_commit": "ae136487b8f4d990eae397b524f650fefa0f5590",
+      "git_status": "M pokerbot/response_profiles.py\n M pokerbot/responses.py\n M pokerbot/river_search.py\n M pokerbot/runner.py\n?? research/RECENCY_MATCH_PLAN.md\n?? research/recency_screen.py\n?? research/response_recency.py\n?? tests/test_response_recency.py\n?? tests/test_response_recency_experiment.py",
+      "source_sha256": {
+        "pokerbot/__init__.py": "9d25d92bccf3d24419aa67731462554dde88a919ba4e0b6a6c8bb8b236a4bf8b",
+        "pokerbot/__main__.py": "557a4d834582bae8a50728538fad9aa92d68af8e8a07f718a7ae97a4cb768cb1",
+        "pokerbot/adapters.py": "d5b6c209c9b7c18413ce950cd0ed6ef720d4a0131bec6b926fd347d7861f4bfd",
+        "pokerbot/baseline_v1.py": "a0496890a106b3704613f044099adac9e1d13296b8bafe5fd64d85068f686020",
+        "pokerbot/benchmark.py": "cbef6ab41a1caa3344a3200a6e9e31898d4efbc9071b6f60c941e836a34fad63",
+        "pokerbot/card_controls.py": "389961c2cba94fae22fcb43a4fff063dbfc9a6b72acfca3a58eb998729d1bb35",
+        "pokerbot/engine.py": "df82a739c17fa382c0312e5341d5da561eaf721dd39856773cc1f456130eec2b",
+        "pokerbot/equity.py": "0473e0dfdf3f7eb8ae0909145e94e50470011b78e44b277d0e59d0a105178f0e",
+        "pokerbot/policies.py": "f8a9e0ce6babe64ceb585f7bcf57b5ca3136761f512a4591a99a8d8869ae356c",
+        "pokerbot/profiles.py": "bdc6d4137ae754a00ff6faaf48d8b791d5031ffed6830cfbf441ebfb3152ab44",
+        "pokerbot/range_policy.py": "3dc512eb480b5065a6cd1048ae148c30898815872b2ac07ff11621fe2c2c5c82",
+        "pokerbot/ranges.py": "7fc939a84b81733a49f68d40b6c7faea1e980c0145d6ba94b63a329a9c1e44c4",
+        "pokerbot/response_profiles.py": "a1c50cacb900d278118d19ce37cceac845dc71e68b1a50b2085c07a6fc3c2b99",
+        "pokerbot/responses.py": "77a476b79cf20d592b189bfb921d71c5ea061ca19f30b116571126fd793be1a2",
+        "pokerbot/river_search.py": "4121fb922eeaeb3ae6fc1cc2b6cb7d1679db8c6d3d9793f2db8ab2ae28558e3f",
+        "pokerbot/runner.py": "409d396c9b871093c8eb1844689d9236e94cfcf29cb2b3f478a605112aeb5d41"
+      },
+      "python": "3.14.7",
+      "platform": "macOS-15.6.1-arm64-arm-64bit-Mach-O",
+      "open_spiel": "2.0.2",
+      "rules_engine": "pokerkit",
+      "pokerkit": "0.7.5",
+      "payout_rule": "fractional",
+      "numpy": "2.5.3",
+      "scipy": "1.18.1"
+    },
+    "script_sha256": "c7c1c6f45b05ef95179f33076e0a574b5fa4cbc96eb29a3c6dae731646f7e461",
+    "plan_sha256": "5372f2e77cf15af114f1254083d6680d55a68f71c2af0900de58e0f41b00aae0",
+    "helper_sha256": "ff00728880a900cdffe77375ebf0a7a75cca94c643dbcfc8fade5292f236b2f4"
+  },
+  "peak_rss_native_units": 124157952,
+  "rss_unit": "bytes on macOS; KiB on Linux",
+  "hypothesis": "A 64-opportunity half-life improves the same named-response river policy",
+  "limitations": "Six independent sessions per default cell; unadjusted exploratory intervals; stationary card-independent controls; uniform hidden holdings; no bet-size model; prediction scores concern each arm's encountered contexts and do not establish profit"
+}

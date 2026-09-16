@@ -1,4 +1,4 @@
-# Research checkpoint — September 16, 2026, named response learning
+# Research checkpoint — September 16, 2026, recency prediction and poker returns
 
 ## Current state
 
@@ -47,7 +47,7 @@ select the legacy backend, and old replay verification still passes.
 
 ## Validation
 
-- **127 root tests passed; no expected failures in the root suite.**
+- **143 root tests passed; no expected failures in the root suite.**
 - **53 vendor tests passed, 2 existing expected failures.** The three historical
   CLI tests still do not assert command success.
 - All **680 design arithmetic checks passed**.
@@ -360,18 +360,78 @@ Results are in `research/results/2026-09-16-response-screen-001.json` and
 **78,708**, excluding synthetic opportunities, hypothetical branches, mechanics
 tests and toy CFR. No strategy is promoted and no confirmation attempt allocated.
 
+## Recency: prediction milestone passed, poker improvement not established
+
+Optional recency weighting now discounts only the named player's own observed
+opportunities. Raw public rows and settings persist separately from derived
+fractional counts; duplicate hands, reopening, legacy raw databases and trial
+resets are tested. The default remains raw counts. No search policy is promoted.
+
+The unchanged `RESPONSE_RECENCY_PLAN.md` pilot completed all **120 streams /
+122,880 scored synthetic opportunities**, passing all eight adjusted primary
+comparisons. After a behavior switch, discounted excess Brier was .35638 versus
+.46500 for prior and .69464 for raw counts. With mistaken history, whole-stream
+error was .09210 versus .46500 and .87330. Stationary/unfamiliar error increased
+by .00269–.00478 versus raw counts, within the predeclared .02 tolerance.
+Sparse mistaken-history predictions still lagged the prior after eight and 32
+new observations. This is average recovery under specified synthetic processes,
+not instant robustness or chip-return evidence. See `RESPONSE_RECENCY_RESULTS.md`.
+
+`recency-screen-001` then completed the independently specified **192 sessions /
+11,520 played hands**: original, prior-response river search, raw learned search
+and discounted learned search; two development pools; 6–9 seats; six trials
+per cell and eight complete seat rotations. No confirmation deals were used.
+
+| Passive pool: discounted minus raw | Mean bb/100 | Exploratory 95% interval |
+| --- | ---: | ---: |
+| 6 seats | -93.28 | [-235.37, 48.82] |
+| 7 seats | -128.99 | [-376.69, 118.72] |
+| 8 seats | -86.91 | [-168.99, -4.84] |
+| 9 seats | -216.26 | [-396.69, -35.83] |
+
+The last two intervals are negative, but these are unadjusted development
+comparisons on six independent trials, not definitive tests across all screened
+cells. Every discounted-minus-prior interval included zero. Mixed-pool
+discounted/raw returns matched in this sample; degenerate [0,0] intervals do
+not prove population equivalence. Raw learning versus prior had one positive
+selected passive seven-seat interval (+164.04, [2.91, 325.16]); that remains
+exploratory. Search-versus-original gains in several passive cells do not
+establish learning's contribution or strength against the held-out mixtures.
+
+Pooled prediction error also favors raw over discounted on these stationary
+opponents: .03467 versus .04219 in the mixed pool, .02061 versus .02595 in the
+passive pool. Both improve over prior (.28019 and .16571), but each arm is
+scored on its encountered contexts. Prediction improvement is not a causal
+profit result. Preserve this tradeoff; do not make fixed forgetting the default.
+
+Runtime was **497.2 simulation seconds**, peak RSS **118.41 MiB**, maximum
+decision time **611.93 ms**. The candidate arms searched 1,521 real decisions,
+changed 324 actions and simulated 120,000 hypothetical branches. These branches
+are not extra played hands. Another **144 nine-seat hands replayed exactly**;
+both completed reports resume byte-for-byte. Source, plan, helper and frozen
+baseline hashes match. Root tests: 143 pass; vendor: 53 pass, two existing
+expected failures. Mechanics promotion blockers remain empty, but candidate
+integration into confirmation has a separate limitation noted below.
+
+Results: `results/2026-09-16-response-recency-001.json` and
+`results/2026-09-16-recency-screen-001.json`. Cumulative played evaluation hands:
+**90,228**, including earlier historical screens and excluding replays,
+mechanics, synthetic opportunities, toy training and hypothetical branches.
+No held-out confirmation attempt has been allocated or passed.
+
 ## Next bounded work
 
-1. Repair stale-history sensitivity with per-player recency weighting. Follow
-   the already specified `research/RESPONSE_RECENCY_PLAN.md`: a 64-opportunity
-   half-life, fresh 20-seed streams, paired adjusted improvement/noninferiority
-   checks, and explicit stationary/sparse/changing/mistaken cells. Then test
-   raw versus discounted learning in fresh played matches. Prediction success
-   must remain separate from chip-return strength.
-2. Extend the tested reconstruction/rollout boundary to turn decisions with a
-   prespecified action/world budget, then evaluate earlier-decision coverage and
-   paired returns. Future community cards must be sampled, never copied from
-   a live deck. Preserve public-only continuations and side-pot fixtures.
+1. Extend confirmation to versioned policy/configuration types: its current
+   implementation rebuilds only `EquityConfig`, so river/named/turn candidates
+   are not supported yet. Preserve legacy manifests, frozen baseline, holdout
+   mixes and the shared repeated-attempt error budget. Reject unsupported
+   candidates before touching the attempt ledger; do not run confirmation yet.
+2. Implement the separately specified `TURN_SEARCH_PLAN.md` with sampled unseen
+   future cards and existing engine payouts. Its fixed first screen isolates
+   turn-plus-river from river-only search with learning off. A public-event audit
+   of existing baseline logs found only 48 additional affected scripted hands
+   and 35 card-aware hands out of 1,440 per pool. Coverage is broader but still
+   limited; this is a hypothesis, not a promised strength improvement.
 3. Investigate concentrated range weights and replicate position effects on fresh
    development sessions with more independent trials. Maintain scripted-pool
    regression checks. Consider evaluation variance reduction only after its
@@ -384,6 +444,11 @@ tests and toy CFR. No strategy is promoted and no confirmation attempt allocated
 5. Freeze a promising candidate and execute the existing 6–9-seat confirmation
    protocol. On passage, preserve the result and specify the next harder stage
    before looking at its results.
+
+Fixed recency remains an optional experimental model. A future independent
+study can test choosing or mixing memory rates from public predictive losses,
+rather than always forgetting at one rate. It must retain stationary,
+sparse, mistaken and changing cases and separately test poker returns.
 
 ## Continuing task
 

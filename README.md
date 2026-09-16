@@ -101,6 +101,22 @@ deliberately mistaken history. The initial model has no forgetting and fails
 some robustness diagnostics; it is not validated for exploitation. Read
 `research/RESPONSE_LEARNING.md` before interpreting prediction improvements.
 
+Optional per-player recency weighting is now available. Its fixed synthetic
+prediction pilot passed the specified average recovery and stationary-tolerance
+checks; early predictions after bad history can still be poor. The default
+remains raw counts, and prediction passage is not a poker-strength promotion.
+
+```sh
+.venv/bin/python research/response_recency.py --out runs/my-response-recency
+.venv/bin/python research/recency_screen.py --out runs/my-recency-screen
+```
+
+The first command uses the fixed 64-opportunity half-life and 120 complete
+streams. The second separately compares original/prior/raw/discounted policies
+on fresh played matches. Both save source/configuration hashes and resumable
+results. See `research/RESPONSE_RECENCY_RESULTS.md` for the prediction evidence,
+and `research/TURN_SEARCH_PLAN.md` for the next, independent search extension.
+
 What the borrowed poker engine is, how to run it, and what it would cost to move
 it from its 20-card deck to a normal 52-card one: `REFERENCE_NOTES.md`.
 
