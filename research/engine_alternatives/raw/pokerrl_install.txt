@@ -1,20 +1,10 @@
 # Does PokerRL install on this machine? Attempted into a throwaway
-# environment so that nothing else is disturbed, on 2026-09-16T01:40:16Z.
+# environment so that nothing else is disturbed, on 2026-09-16T01:40:36Z.
 # commands:
 #   python3 -m venv /tmp/pokerrl-attempt
 #   /tmp/pokerrl-attempt/bin/pip install PokerRL
 
 Python 3.13.15
-  Installing build dependencies: started
-  Installing build dependencies: finished with status 'done'
-  Getting requirements to build wheel: started
-  Getting requirements to build wheel: finished with status 'error'
-  error: subprocess-exited-with-error
-  
-  × Getting requirements to build wheel did not run successfully.
-  │ exit code: 1
-  ╰─> [27 lines of output]
-      Traceback (most recent call last):
         File "/private/tmp/claude-501/pokerrl-attempt/lib/python3.13/site-packages/pip/_vendor/pyproject_hooks/_in_process/_in_process.py", line 389, in <module>
           main()
           ~~~~^^
@@ -23,26 +13,27 @@ Python 3.13.15
                                    ~~~~^^^^^^^^^^^^^^^^^^^^^^^^
         File "/private/tmp/claude-501/pokerrl-attempt/lib/python3.13/site-packages/pip/_vendor/pyproject_hooks/_in_process/_in_process.py", line 143, in get_requires_for_build_wheel
           return hook(config_settings)
-        File "/private/var/folders/p7/0sr91b5d6_q4y29p7qchphb80000gn/T/pip-build-env-40fwpdxu/overlay/lib/python3.13/site-packages/setuptools/build_meta.py", line 333, in get_requires_for_build_wheel
+        File "/private/var/folders/p7/0sr91b5d6_q4y29p7qchphb80000gn/T/pip-build-env-0e6zb1zn/overlay/lib/python3.13/site-packages/setuptools/build_meta.py", line 333, in get_requires_for_build_wheel
           return self._get_build_requires(config_settings, requirements=[])
                  ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-        File "/private/var/folders/p7/0sr91b5d6_q4y29p7qchphb80000gn/T/pip-build-env-40fwpdxu/overlay/lib/python3.13/site-packages/setuptools/build_meta.py", line 301, in _get_build_requires
+        File "/private/var/folders/p7/0sr91b5d6_q4y29p7qchphb80000gn/T/pip-build-env-0e6zb1zn/overlay/lib/python3.13/site-packages/setuptools/build_meta.py", line 301, in _get_build_requires
           self.run_setup()
           ~~~~~~~~~~~~~~^^
-        File "/private/var/folders/p7/0sr91b5d6_q4y29p7qchphb80000gn/T/pip-build-env-40fwpdxu/overlay/lib/python3.13/site-packages/setuptools/build_meta.py", line 520, in run_setup
+        File "/private/var/folders/p7/0sr91b5d6_q4y29p7qchphb80000gn/T/pip-build-env-0e6zb1zn/overlay/lib/python3.13/site-packages/setuptools/build_meta.py", line 520, in run_setup
           super().run_setup(setup_script=setup_script)
           ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^
-        File "/private/var/folders/p7/0sr91b5d6_q4y29p7qchphb80000gn/T/pip-build-env-40fwpdxu/overlay/lib/python3.13/site-packages/setuptools/build_meta.py", line 317, in run_setup
+        File "/private/var/folders/p7/0sr91b5d6_q4y29p7qchphb80000gn/T/pip-build-env-0e6zb1zn/overlay/lib/python3.13/site-packages/setuptools/build_meta.py", line 317, in run_setup
           exec(code, locals())  # noqa: S102 # exec is intentional here
           ~~~~^^^^^^^^^^^^^^^^
         File "<string>", line 2, in <module>
-        File "/private/var/folders/p7/0sr91b5d6_q4y29p7qchphb80000gn/T/pip-install-yygv5ysr/pycrayon_dc1efa1036b54072a59e7649e7cd119c/pycrayon/__init__.py", line 1, in <module>
+        File "/private/var/folders/p7/0sr91b5d6_q4y29p7qchphb80000gn/T/pip-install-xkdyxfci/pycrayon_1acebde57e614ca3bfcee3997666e078/pycrayon/__init__.py", line 1, in <module>
           from .crayon import CrayonClient
-        File "/private/var/folders/p7/0sr91b5d6_q4y29p7qchphb80000gn/T/pip-install-yygv5ysr/pycrayon_dc1efa1036b54072a59e7649e7cd119c/pycrayon/crayon.py", line 1, in <module>
+        File "/private/var/folders/p7/0sr91b5d6_q4y29p7qchphb80000gn/T/pip-install-xkdyxfci/pycrayon_1acebde57e614ca3bfcee3997666e078/pycrayon/crayon.py", line 1, in <module>
           import requests
       ModuleNotFoundError: No module named 'requests'
       [end of output]
   
   note: This error originates from a subprocess, and is likely not a problem with pip.
 ERROR: Failed to build 'pycrayon' when getting requirements to build wheel
-# pip exit code: 
+
+# pip exit code: 1

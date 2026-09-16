@@ -702,8 +702,13 @@ trained to fall back on.** It is not the wrong shape.
 541 stars, last push 2023-03-31, MIT licence. By Eric Steinberger, who also wrote
 a well-known Deep CFR paper, so the CFR code is real research code.
 
-**It does not install on this machine.** `pip install PokerRL` fails outright: a
-dependency, `pycrayon`, cannot be built under Python 3.13.
+**It does not install on this machine.** `pip install PokerRL` fails outright,
+exit code 1, at a dependency called `pycrayon`, which cannot be built at all:
+its build script imports the package it is trying to build, which in turn
+imports `requests`, which is not there while a package is being built.
+`ERROR: Failed to build 'pycrayon' when getting requirements to build wheel` -
+the whole attempt is in `research/engine_alternatives/raw/pokerrl_install.txt`.
+Nothing about PokerRL itself was reachable to test.
 
 **Requirement 2: no.** Its CFR is hard-wired to two players -
 `PokerRL/cfr/_CFRBase.py:40` is literally `self._n_seats = 2`. The same
