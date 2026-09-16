@@ -8,6 +8,7 @@ source: https://raw.githubusercontent.com/uoftcprg/phh-dataset/main/data/handhq
    seats (occupied-seat numbers) present: 991/991
    max(seats) == seat_count: 767/948   max(seats) > seat_count: 0
    dealt-in counts (len(players)): {2: 21, 3: 63, 4: 89, 5: 167, 6: 263, 7: 110, 8: 163, 9: 115}
+   seat_count present by dealt-in count: {2: '21/21', 3: '58/63', 4: '87/89', 5: '166/167', 6: '250/263', 7: '101/110', 8: '156/163', 9: '109/115'}
    8-handed: 163   9-handed: 115   8+9: 278/991 = 28.1%
    starting_stacks all inf: 0/991
 
@@ -17,6 +18,7 @@ source: https://raw.githubusercontent.com/uoftcprg/phh-dataset/main/data/handhq
    seat_count present: 0/985   values: {}
    seats (occupied-seat numbers) present: 985/985
    dealt-in counts (len(players)): {2: 156, 3: 20, 4: 87, 5: 205, 6: 356, 7: 15, 8: 48, 9: 82, 10: 16}
+   seat_count present by dealt-in count: {2: '0/156', 3: '0/20', 4: '0/87', 5: '0/205', 6: '0/356', 7: '0/15', 8: '0/48', 9: '0/82', 10: '0/16'}
    8-handed: 48   9-handed: 82   8+9: 130/985 = 13.2%
    starting_stacks all inf: 985/985
 
@@ -26,6 +28,7 @@ source: https://raw.githubusercontent.com/uoftcprg/phh-dataset/main/data/handhq
    seat_count present: 0/995   values: {}
    seats (occupied-seat numbers) present: 995/995
    dealt-in counts (len(players)): {2: 105, 3: 66, 4: 147, 5: 300, 6: 332, 8: 5, 9: 30, 10: 10}
+   seat_count present by dealt-in count: {2: '0/105', 3: '0/66', 4: '0/147', 5: '0/300', 6: '0/332', 8: '0/5', 9: '0/30', 10: '0/10'}
    8-handed: 5   9-handed: 30   8+9: 35/995 = 3.5%
    starting_stacks all inf: 0/995
 
@@ -36,6 +39,7 @@ source: https://raw.githubusercontent.com/uoftcprg/phh-dataset/main/data/handhq
    seats (occupied-seat numbers) present: 991/991
    max(seats) == seat_count: 343/393   max(seats) > seat_count: 0
    dealt-in counts (len(players)): {2: 506, 3: 6, 4: 48, 5: 167, 6: 191, 7: 23, 8: 19, 9: 31}
+   seat_count present by dealt-in count: {2: '0/506', 3: '6/6', 4: '48/48', 5: '165/167', 6: '174/191', 7: '0/23', 8: '0/19', 9: '0/31'}
    8-handed: 19   9-handed: 31   8+9: 50/991 = 5.0%
    starting_stacks all inf: 0/991
 
@@ -45,6 +49,7 @@ source: https://raw.githubusercontent.com/uoftcprg/phh-dataset/main/data/handhq
    seat_count present: 0/999   values: {}
    seats (occupied-seat numbers) present: 999/999
    dealt-in counts (len(players)): {2: 202, 3: 8, 4: 55, 5: 169, 6: 258, 7: 36, 8: 87, 9: 184}
+   seat_count present by dealt-in count: {2: '0/202', 3: '0/8', 4: '0/55', 5: '0/169', 6: '0/258', 7: '0/36', 8: '0/87', 9: '0/184'}
    8-handed: 87   9-handed: 184   8+9: 271/999 = 27.1%
    starting_stacks all inf: 0/999
 
@@ -54,6 +59,7 @@ source: https://raw.githubusercontent.com/uoftcprg/phh-dataset/main/data/handhq
    seat_count present: 0/999   values: {}
    seats (occupied-seat numbers) present: 999/999
    dealt-in counts (len(players)): {3: 141, 4: 358, 5: 500}
+   seat_count present by dealt-in count: {3: '0/141', 4: '0/358', 5: '0/500'}
    8-handed: 0   9-handed: 0   8+9: 0/999 = 0.0%
    starting_stacks all inf: 0/999
 

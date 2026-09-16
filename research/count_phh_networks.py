@@ -10,6 +10,8 @@ per file:
 * how many carry a `seat_count` field, and its values (chairs at the table);
 * how many carry a `seats` field (the seat numbers the dealt-in players hold);
 * the distribution of dealt-in player counts (the length of `players`);
+* for each dealt-in count, how many of those hands carry `seat_count` — the
+  shape of the coverage, not just its total;
 * the 8- and 9-handed share of the file;
 * how many hands have every entry of `starting_stacks` equal to `inf`.
 
@@ -110,6 +112,7 @@ def report(name: str, path: str, cache: pathlib.Path, out) -> None:
     seats_max_equals_seat_count = 0
     seats_max_exceeds_seat_count = 0
     dealt_in: collections.Counter[int] = collections.Counter()
+    dealt_in_with_seat_count: collections.Counter[int] = collections.Counter()
     stacks_present = 0
     all_inf_stacks = 0
 
@@ -118,6 +121,8 @@ def report(name: str, path: str, cache: pathlib.Path, out) -> None:
         if "seat_count" in hand:
             seat_count_present += 1
             seat_count_values[hand["seat_count"].strip()] += 1
+            if "players" in hand:
+                dealt_in_with_seat_count[n_items(hand["players"])] += 1
         if "seats" in hand:
             seats_present += 1
         if "seats" in hand and "seat_count" in hand:
@@ -151,6 +156,11 @@ def report(name: str, path: str, cache: pathlib.Path, out) -> None:
             file=out,
         )
     print(f"   dealt-in counts (len(players)): {dict(sorted(dealt_in.items()))}", file=out)
+    coverage = {
+        size: f"{dealt_in_with_seat_count[size]}/{count}"
+        for size, count in sorted(dealt_in.items())
+    }
+    print(f"   seat_count present by dealt-in count: {coverage}", file=out)
     print(
         f"   8-handed: {eight}   9-handed: {nine}   8+9: {both}/{total}"
         f" = {100.0 * both / total:.1f}%",
