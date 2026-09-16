@@ -528,9 +528,16 @@ tests/arena/    # test-only tree; nothing in the bot's import graph imports it
 
 **Hard boundaries, each with a reason:**
 
-- `personas/` **must not import anything under the bot's decision path**, and a
-  test asserts this by inspecting the import graph. A persona that shares code
-  with the bot cannot detect a bug in that shared code.
+- `personas/` **must not import the bot's own code** — nothing from the package
+  that holds the bot's strategy and its decisions — and a test asserts this by
+  inspecting the import graph. A persona that shares *the bot's* code cannot
+  detect a bug in that shared code. **The vendored engine is not the bot, and
+  personas do call it**: made-hand strength goes to the engine's own evaluator,
+  the same call the bot makes, deliberately and with no second implementation
+  ([§3.3](#33-the-forefront-rule-and-the-personas), which settles this and is
+  the section to read if the two ever look as though they disagree). The
+  boundary also runs the other way: nothing reachable from the bot's entry point
+  may import anything under `tests/`.
 - `runner.py` owns the game rules by delegating to the vendored engine. It does
   not implement betting rules itself. See
   [Engine requirements](#engine-requirements).
@@ -617,10 +624,15 @@ flags are designed to punish.
 
 ### 3.3 The forefront rule and the personas
 
-`CLAUDE.md`'s forefront rule forbids hand-rolled hand-strength or decision logic
-*in place of the vendored engine*, and confines the external evaluator to tests.
-Personas are decision logic. This needs saying out loud rather than being left
-ambiguous:
+`CLAUDE.md`'s forefront rule, in its current form, draws the line by job rather
+than by file. Bookkeeping about cards is ours to write — it names *enumerating
+the 169 preflop hand classes*, suit isomorphisms and deck enumeration — but
+**"anything that ranks or values a hand, or chooses an action"** goes to the
+vendored engine, and its two-column table reserves *evaluating hand strength*
+and *choosing an action* to the engine by name. The external evaluator (`treys`)
+is licensed only in the test role, never in the bot's decision path. Personas
+both rank hands and choose actions. This needs saying out loud rather than being
+left ambiguous:
 
 - **Personas are test-only code, in the same category as
   `tests/ground_truth/`.** The whole `arena` tree lives under `tests/`. **The
@@ -631,9 +643,9 @@ ambiguous:
   with the bot cannot detect a bug in that shared code, and a bot that can reach
   persona code has smuggled hand-rolled poker judgement into itself.
 - **The forefront rule governs the bot under test, not its sparring partners.**
-  `CLAUDE.md` forbids hand-rolled hand-strength or decision logic *in place of the
-  vendored engine*, in the bot's decision path, and it already licenses an outside
-  evaluator (`treys`) in the test role. A persona is a fixture. The rule that
+  What `CLAUDE.md` reserves to the engine, it reserves inside the bot — the
+  thing that plays — and it already licenses an outside evaluator (`treys`) in
+  the test role. A persona is a fixture. The rule that
   applies to a fixture is the one that applies to `tests/ground_truth/`: it is
   named, it is test-only, and it never plays.
 - **Three different judgements, three different answers. Do not collapse them
@@ -659,6 +671,19 @@ ambiguous:
      (see [Sources](#sources)); the transcription must be checked against the
      named edition before the table is used, and a test must assert the table has
      exactly 169 entries and is a strict ranking.
+
+     **Read against the current forefront rule, this table sits on the engine's
+     side of the line, and is admissible only because it is not in the bot.**
+     `CLAUDE.md` hands us the *enumeration* of the 169 classes and reserves
+     *ranking or valuing* a hand to the engine, and a Chen score is a ranking.
+     Three things make it a fixture rather than a breach: it is transcribed from
+     a published table rather than being poker judgement invented here; it lives
+     under `tests/` and a test fails if the bot's import graph ever reaches it;
+     and the engine has nothing to offer in its place, because neither it nor
+     `treys` scores two cards. That is exactly the position the rule already
+     grants `treys` — named, external, test-only, never in the decision path. If
+     a chosen engine does turn out to rank starting hands, this table is deleted
+     and that call is used instead.
   3. **Am I drawing?** (`calling_station`'s "any made hand or draw") → **also not
      something either evaluator does.** Detecting four to a flush or an
      open-ended straight is a property of an incomplete hand. This is a small,
@@ -849,7 +874,9 @@ Do not implement it until the simple version is working and measured.
 arena report  bot A=<sha> B=<sha>  engine=<sha>  seed=<n>  2026-XX-XX
 tier: nightly acceptance   cells: 20   budget: 10h   elapsed: 4h51m
 seats: 6 8 9 2 fixed + 3 rotating (cycle 3>4>5>7; night 1 of 4)
-weights: n6=0.50  n8=0.15 n9=0.15  n2=0.10 n3=0.10   (config, operator 2026-09-15)
+weights: n6=0.50  n8=0.15 n9=0.15  n2=0.10 n3=0.10
+         (config; design choice here, implementing the operator's stated ordering
+          of table sizes, 2026-09-15 - the numbers are not the operator's)
 window: all 8 seat counts must have passed within the last 4 nightly runs; 7 have
         (2,3,4,5,6,8,9, some against an earlier bot sha, which the table prints);
         n=7 ran 1 run ago and FAILED, so its last pass is 5 runs ago, outside the
@@ -942,7 +969,7 @@ measured**, not a result:
 | Bot decisions per hand | 4 | **Placeholder. Measure it.** Nothing sources this |
 | ⇒ bot-seconds per hand | **1.0** | Product of the two |
 | Parallel workers on the laptop | 8 | **Placeholder.** 8 of the 10 cores, leaving two for everything else. **Memory per worker is entirely unmeasured** ([X8](#engine-requirements)), and 16 GB is what decides whether 8 workers thrash |
-| ⇒ hands per hour | **28,800** | 3,600 × 8 ÷ 1.0 |
+| ⇒ hands per hour | **28,800** | 3,600 × 8 ÷ 1.0. **Counts all 8 workers as equally fast**, which the row above says they are not — see the homogeneity assumption below |
 
 These are [X7](#engine-requirements) and [X8](#engine-requirements), restated as
 the numbers that actually decide the wall clock. **Until they are measured, every
@@ -961,6 +988,21 @@ wrong by more than half and the nightly run stops fitting in a night.** That is
 the sense in which [X8](#engine-requirements) matters, and it is why memory per
 worker — the thing that most plausibly forces the count down on a 16 GB
 machine — has to be measured before the first real run.
+
+**The homogeneity assumption, stated because the margin above is thin.** Both
+sums treat a worker as a worker: 3,600 × 8 and the 3.92 breakeven count heads,
+not speed. This machine's ten cores are **four performance cores and six
+efficiency cores**, and an efficiency core is the slower kind — it is built to
+save power, not to finish first. So eight workers are not eight times one
+worker. Four performance cores plus four efficiency cores are worth somewhere
+between four and eight of the figure used here, and the true number is
+unmeasured. That matters precisely because the breakeven is 3.92: the headcount
+has half of nothing to spare once each head is worth less than one.
+**[X8](#engine-requirements) must therefore be measured as hands per hour with
+*k* workers running, for each *k*, and never as a count of usable cores**; if
+the eight-worker throughput comes in below 3.92 performance-core equivalents,
+the nightly run does not fit in a night and the grid, not the ceiling, is what
+gives way.
 
 **The full grid against the cap.** 6,781,440 hands ÷ 28,800 per hour =
 **235 hours ≈ 9.8 days on one laptop.** That is **23.5 times** the 10-hour cap,
@@ -1051,8 +1093,9 @@ the same (z₀.₉₇₅ + z₀.₈₀)² = 7.8489 that
 [§2.5](#25-win-rate-with-honest-statistics) uses, Δ = √(2 × 1,500² × 7.8489 ÷
 44,851) = **28.1 mbb/hand**. **The headline is identical on all four nights**,
 which is the point of a fixed cycle: the release criterion does not move
-depending on which night a change lands on. *(For comparison, take the rotating seat away and the four fixed seat counts
-2, 6, 8 and 9 are what is left. The banding of
+depending on which night a change lands on. *(For comparison, take the rotating
+seat away and the four fixed seat counts 2, 6, 8 and 9 are what is left. The
+banding of
 [§3.5](#35-the-decision-rule-is-this-change-an-improvement) point 2 then gives
 6 = .50, 8 = .15, 9 = .15 and 2 = .20 — the last band's whole 0.20 goes to the
 one other seat count present — so Σwᵢ² = 0.50² + 0.15² + 0.15² + 0.20² = 0.335,
@@ -1548,7 +1591,7 @@ is usable:
 | X5 | Can the trained strategy be queried for an **action-probability distribution** at a decision point, rather than only a sampled action? *(Identical to the opponent model design's E1.)* | LBR (Tier 3), AIVAT (Tier 4) |
 | X6 | Does the engine handle side pots correctly when players are all-in for different amounts at a multiway pot? | I3; any n ≥ 3 result |
 | X7 | The three numbers that convert hands into hours, for a table of n players: **(a)** engine-only throughput, complete hands per second per core, with no bot thinking; **(b)** **seconds per bot decision** at the decision-time budget actually shipped; **(c)** **bot decisions per hand**, measured, not assumed. | Every sample size in [§2.5](#25-win-rate-with-honest-statistics) and the whole budget in [§3.6](#36-the-run-budget-turning-hands-into-hours) |
-| X8 | How many `arena` workers can this laptop run in parallel without thrashing — cores usable and memory per worker? | The wall-clock column in [§3.6](#36-the-run-budget-turning-hands-into-hours) |
+| X8 | How many `arena` workers can this laptop run in parallel without thrashing — cores usable and memory per worker — and **what does each one actually deliver?** Measured as hands per hour with *k* workers running, for each *k*, because this machine's cores are not alike (4 performance + 6 efficiency) and [§3.6](#36-the-run-budget-turning-hands-into-hours)'s arithmetic counts workers as equal | The wall-clock column in [§3.6](#36-the-run-budget-turning-hands-into-hours) |
 
 **X7 is a measurement, not a yes/no, and it should be the first thing measured**,
 because it converts every hand count in this document into a number of hours and
@@ -1739,7 +1782,9 @@ independent, as with the `tilter` persona.
 Hochberg, "Controlling the False Discovery Rate: A Practical and Powerful
 Approach to Multiple Testing", *Journal of the Royal Statistical Society Series
 B* 57(1):289–300, 1995. DOI `10.1111/j.2517-6161.1995.tb02031.x`. Used for the
-eight simultaneous per-table-size tests.
+simultaneous per-table-size tests — five table sizes on a nightly run, inside a
+family of the 20 cells that run buys
+([§3.5](#35-the-decision-rule-is-this-change-an-improvement)).
 
 <a id="s-wald"></a>**[Wald 1945]** Abraham Wald, "Sequential Tests of Statistical
 Hypotheses", *The Annals of Mathematical Statistics* 16(2):117–186, 1945. DOI
