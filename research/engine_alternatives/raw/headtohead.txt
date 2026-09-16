@@ -2,3 +2,8 @@
 # uptime: 23:01  up 43 days,  5:17, 2 users, load averages: 2.52 3.14 4.23
 # wall clock at start: 23:01:04
 # command: caffeinate -i ../../.venv-engines/bin/python bench_play.py headtohead 900   (caffeinate keeps the machine from sleeping during the run)
+chooser (seat 0, 0.25s/decision, fcpa) vs 5 random: n=3467 hands  mean=+21.90 bb/hand  sd=222.6 bb  95% CI = +14.50 .. +29.31 bb/hand (half-width 7.41) [900s, 3572 decisions, seed=20260915]
+    hands needed for a half-width of 1 bb/hand at this spread: 190,284
+# wall clock at end: 23:16:04
+# 1-minute load average at end: 4.06
+# uptime at end: 23:16  up 43 days,  5:32, 2 users, load averages: 4.06 3.90 3.98

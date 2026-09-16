@@ -97,9 +97,16 @@ a processor core, averaged over the last minute, is called the **load average**;
 this machine has ten cores, and above a load of about 4 its timings stop meaning
 anything. Every timing below was taken only once the load was under 4, with the
 load written down beside it, and with all the timings that get compared against
-each other taken in rotation in a single sitting. An earlier draft of this
-document did none of that and its speeds were three to four times too low as a
-result.
+each other taken in rotation in a single sitting. There is one more trap, found
+the hard way while re-timing: a laptop that goes to sleep part way through a
+run - lid closed, idle timer - wrecks the timing without the measuring program
+noticing, because the clock the program times itself with stops with the
+machine. So every long run was held awake with `caffeinate`, macOS's own tool
+for exactly that, and the machine's power log was checked afterwards for any
+sleep inside the run's wall-clock window; two head-to-head runs and one whole
+paired session that a sleep had split were thrown away and taken again. An
+earlier draft of this document did none of this and its speeds were three to
+four times too low as a result.
 
 Verified on 2026-09-15 and re-timed on 2026-09-16, macOS 15.2 (24.2.0),
 Apple M4, 10 cores, 16 GiB, Python 3.13.15, `open_spiel` 2.0.2, `texasholdem`
@@ -190,7 +197,7 @@ Everything that has to be pinned down for the paragraph above to mean anything:
 | Play-outs per decision, `fcpa` | **7,370 - 12,373 - 13,285** (lowest, middle and highest of six repeats of 20 decisions each; individual decisions ranged 4,848-13,414; machine load 3.1-4.0 throughout) |
 | Play-outs per decision, `fullgame` | **117 - 244 - 250** (the same six repeats; individual decisions ranged 31-269) |
 | Candidate moves weighed | 4 of 4 legal under `fcpa`; **8 of 19,803** under `fullgame` |
-| Play strength, against five opponents moving at random | **+22.80 big blinds a hand**, 95% confidence interval **+15.07 to +30.53**, over **n = 3,412 hands** (menu mode; see below for what this is and is not worth) |
+| Play strength, against five opponents moving at random | **+21.90 big blinds a hand**, 95% confidence interval **+14.50 to +29.31**, over **n = 3,467 hands** (menu mode; see below for what this is and is not worth) |
 
 **How the play-outs relate to the 19,803 legal moves: they cannot cover them,
 and the chooser does not try.** No play-out count of this order - and not the
@@ -238,10 +245,10 @@ Rerun properly, with the interval:
 | | |
 | --- | --- |
 | Set-up | chooser in seat 0, 250 ms a decision, menu mode (`fcpa`); five opponents choosing uniformly at random from the same menu the chooser's own play-outs assume they use |
-| Hands | **n = 3,412** (3,550 chooser decisions, 900 seconds, seed 20260915) |
-| Result | **+22.80 big blinds a hand** |
-| The range the true figure is 95-times-in-100 inside (its 95% confidence interval) | **+15.07 to +30.53** big blinds a hand |
-| How far a typical single hand landed from that average (its standard deviation) | 230.4 big blinds a hand |
+| Hands | **n = 3,467** (3,572 chooser decisions, 900 seconds, seed 20260915; machine load 2.52 at the start and 4.06 at the end, run under `caffeinate` so the machine could not sleep part way, wall clock 23:01:04 to 23:16:04 - `raw/headtohead.txt`) |
+| Result | **+21.90 big blinds a hand** |
+| The range the true figure is 95-times-in-100 inside (its 95% confidence interval) | **+14.50 to +29.31** big blinds a hand |
+| How far a typical single hand landed from that average (its standard deviation) | 222.6 big blinds a hand |
 
 The interval stays clear of zero, so this **is** a real result: the machinery
 works end to end, inside the time budget, and it beats random play.
@@ -258,7 +265,7 @@ builds; in this test they really do pick uniformly from that same menu. Its
 picture of its opponents is therefore exactly right, which it never would be
 against anyone real. Being wrong about how opponents behave is the single
 largest error a bot of this shape can make, and this test is constructed so
-that the error is zero. Read **+22.80 big blinds a hand as a best case**, not
+that the error is zero. Read **+21.90 big blinds a hand as a best case**, not
 as a typical one.
 
 It is also a **menu-mode** result: the real-sizing chooser, at 250 ms and about
