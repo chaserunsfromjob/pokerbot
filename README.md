@@ -76,6 +76,18 @@ profiles. It does not yet infer ranges from postflop bets or evaluate future
 betting. All-in participants remain in the sampled field. Existing rules,
 hand-ranking code and the frozen original strategy are unchanged.
 
+River-only action evaluation is available through a separate development screen:
+
+```sh
+.venv/bin/python research/river_screen.py --out runs/my-river-screen
+```
+
+It reconstructs hypothetical hands from public observations, compares legal
+moves under two fixed response assumptions, and lets PokerKit settle each
+continuation. Earlier streets retain the frozen original policy. Uniform hidden
+cards, response-model error and noisy move selection remain limitations; this
+is not an equilibrium solver. See `research/RIVER_SEARCH.md` for the protocol.
+
 What the borrowed poker engine is, how to run it, and what it would cost to move
 it from its 20-card deck to a normal 52-card one: `REFERENCE_NOTES.md`.
 

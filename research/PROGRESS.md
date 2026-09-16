@@ -1,4 +1,4 @@
-# Research checkpoint — September 16, 2026, position and range ablations
+# Research checkpoint — September 16, 2026, river action evaluation
 
 ## Current state
 
@@ -47,7 +47,7 @@ select the legacy backend, and old replay verification still passes.
 
 ## Validation
 
-- **97 root tests passed; no expected failures in the root suite.**
+- **114 root tests passed; no expected failures in the root suite.**
 - **53 vendor tests passed, 2 existing expected failures.** The three historical
   CLI tests still do not assert command success.
 - All **680 design arithmetic checks passed**.
@@ -232,21 +232,80 @@ training/component candidate, not an installed opponent. Dependencies and model
 execution were not attempted. See `research/TRAINED_CANDIDATES_REVIEW.md` for
 primary sources, evidence, PokerRL/Deep CFR and RLCard compatibility findings.
 
+## River action evaluation: 8,640 hands
+
+`pokerbot/river_search.py` now evaluates a small legal river move menu. It samples
+16 hypothetical joint hidden-card assignments from public inputs, reconstructs
+the betting history, and lets PokerKit settle each continuation, preserving
+actual participants and side pots. It never receives the live simulator state.
+Opponents use a guessed fixed response policy, and hero uses the original policy
+after the root move. Before the river it exactly preserves the original policy.
+
+The two development variants assume either the frozen equity response or an
+always-calling response. Both retain uniform hidden cards. A paired-standard-
+error penalty makes action changes conservative; it is not a statistical
+strength guarantee. Seventeen search tests cover exact chip values, folded-hand
+eligibility, unequal-stack side pots, ties, short all-ins, hidden-card invariance,
+root mutation isolation and action selection in certain-value situations.
+
+`runs/river-screen-001` completed **144 sessions / 8,640 played hands**, across
+two pools, 6–9 seats, six independent trials per cell and eight seat rotations.
+The seed namespace is new and no confirmation deals were consumed. The complete
+result is inconclusive. Gains against the original in the card-aware pool:
+
+| Response assumption | 6 seats | 7 seats | 8 seats | 9 seats |
+| --- | ---: | ---: | ---: | ---: |
+| Frozen equity policy | +23.08 | +23.44 | -3.79 | +28.24 |
+| Always calls | -13.72 | -5.36 | +5.96 | +107.51 |
+
+Units: paired bb/100; every interval includes zero. No positive lower interval
+was obtained in the scripted pool either. Several scripted cells have zero
+sampled differences because river changes had no observed effect; their
+degenerate [0, 0] sample intervals do not prove population-level equivalence.
+
+The equity-response variant searched 312 decisions and changed 25; the
+calling-response variant searched 295 and changed 60. The **46,608 hypothetical
+root-action branches are computation, not additional independent played hands**.
+Public-event-only coverage analysis of the original-policy logs shows hero had
+a river decision in only 2/384 scripted eight-seat hands and 2/432 scripted
+nine-seat hands. In the card-aware pool it was 50/288, 56/336, 44/384 and 55/432.
+This confines the intervention's impact and motivates work on earlier decisions,
+without treating these small samples as precise strength estimates.
+
+Runtime: **207.6 simulation seconds**, **118.38 MiB peak RSS**. Maximum observed
+decision latency was **595.24 ms**. Maximum per-session p95 across *all* policies
+was 2.98 ms, which hides rare expensive search decisions; the maximum is therefore
+also reported. Exact replay verified another 72 nine-seat hands. Completed-run
+resume preserved the report byte-for-byte, including original resource records.
+All experiment package hashes and frozen baseline hashes remain unchanged.
+
+Results: `research/results/2026-09-16-river-screen-001.json`; coverage and input
+hashes: `research/results/2026-09-16-river-coverage.json`. Reproduce coverage with
+`research/river_coverage.py`. Cumulative played strategy-evaluation hands are
+**71,028**, excluding mechanics, toy CFR and internal hypothetical branches.
+No strategy was promoted; no held-out confirmation attempt has been allocated.
+
+See `research/RIVER_SEARCH.md` for assumptions and follow-up primary research on
+Bayesian response models and AIVAT variance reduction. Neither paper's method
+is implemented by this prototype. Exact policy distributions and independent
+unbiasedness checks would be needed before adopting a new evaluation estimator;
+the raw-return benchmark remains fixed.
+
 ## Next bounded work
 
-1. Prototype explicit river action values before extending search to turn/flop:
-   folding, calling and a small legal raise menu; model opponents' responses and
-   settle actual multiway/side pots with the existing engine. Validate known
-   response fixtures independently, then compare against the same policy with
-   search disabled. Keep candidate public inputs separate from privileged logs.
-2. Calibrate action likelihoods and inspect low-effective-sample decisions.
-   Distinguish card-independent aggression from strength-dependent action using
-   named public histories. Compare off/oracle/learned versions of the same
-   candidate and sparse, wrong and changing models. Do not simply increase
-   confidence in the current hand-authored range assumptions.
-3. Replicate promising position effects on fresh development sessions with more
-   independent trials and a prespecified precision target. Preserve regressions
-   against the scripted pool; do not use its poor cells to retune confirmation.
+1. Improve response modeling with the same river evaluator: fixed versus known
+   scripted response models versus estimates from named public histories. Begin
+   with calibrated control fixtures; retain model uncertainty and wrong-model
+   stress tests. Do not interpret the current uniform-card estimates as calibrated
+   ranges or predicted gain as realized profit.
+2. Extend the tested reconstruction/rollout boundary to turn decisions with a
+   prespecified action/world budget, then evaluate earlier-decision coverage and
+   paired returns. Future community cards must be sampled, never copied from
+   a live deck. Preserve public-only continuations and side-pot fixtures.
+3. Investigate concentrated range weights and replicate position effects on fresh
+   development sessions with more independent trials. Maintain scripted-pool
+   regression checks. Consider evaluation variance reduction only after its
+   prerequisites and zero-mean corrections are independently validated.
 4. Build one native policy/component bridge or a bounded hold'em training pilot
    with real saved artifacts and independent seeds. NoRegrets is limited to
    2–6 seats upstream; dickreuter needs local strategy config and a policy bridge;

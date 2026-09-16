@@ -88,6 +88,9 @@ class EquityPolicy:
 
 
 def make_policy(name, config=None):
+    if name == "river":
+        from .river_search import RiverPolicy
+        return RiverPolicy(config)
     if name == "range":
         from .range_policy import RangePolicy
         return RangePolicy(config)
