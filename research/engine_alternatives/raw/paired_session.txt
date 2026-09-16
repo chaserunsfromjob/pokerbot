@@ -1900,3 +1900,16 @@ rollouts per 0.25s decision: n=20 decisions, min=123 max=227 mean=183
     [load 5.05 > 4.0, waiting 60s (420s waited so far)]
     [load 4.41 > 4.0, waiting 60s (480s waited so far)]
     [load 4.17 > 4.0, waiting 60s (540s waited so far)]
+--- repeat 6: bench_speed [1-minute load average at start: 3.64] ---
+seed=20260915 seconds per engine=10.0 players=6 stack=20000 blinds=50/100
+engine                                      hands/s  actions/hand    hands
+OpenSpiel universal_poker fcpa menu           48410           7.9   484103
+OpenSpiel universal_poker fullgame             4606           8.8    46060
+texasholdem 0.11.0 menu                        9095           8.5    90952
+texasholdem 0.11.0 real sizing                 8350           9.9    83496
+PokerKit 0.7.5 menu                             737           8.7     7373
+PokerKit 0.7.5 real sizing                      860          10.4     8600
+PyPokerEngine 1.0.1 menu                        954           7.9     9542
+PyPokerEngine 1.0.1 real sizing                 886          12.3     8862
+--- end repeat 6: bench_speed [load at end: 4.57] ---
+    [load 4.57 > 4.0, waiting 60s (0s waited so far)]
