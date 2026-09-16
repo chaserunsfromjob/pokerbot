@@ -16,3 +16,19 @@ review round 2. The wall figure is `time` on the `./console_solver -i
 turn_input.txt` invocation; the load figure is the first of the three numbers
 from `uptime` immediately before it. An earlier run of the same command on a
 busier machine took about 8 s of wall clock, and that load was not recorded.
+
+The earlier run's own log was found again while applying review round 5. It
+was produced by the same command file, byte-for-byte identical to
+texassolver_turn_full_ranges.txt, and it reached the same exploitability at
+the same iteration. Its last two lines, copied out of that log rather than
+retyped:
+
+  Total exploitability 0.7382398 precent
+  time used: 0.706
+
+That 0.706 s is where the 0.71 s upper end of "0.56 to 0.71 s of solver time"
+in RESOURCES_SOLVERS.md comes from. Its wall clock was written down at the
+time only as about 8 s and its load not at all, which is why the fresh run
+above is the one with figures beside it. The earlier log was a scratch file
+outside this repository and is not published; texassolver_turn_run.log is the
+fresh run, and it is the log every other figure here is read from.

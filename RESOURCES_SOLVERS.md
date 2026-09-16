@@ -89,7 +89,11 @@ Four findings drive the recommendation:
    same loop written in plain Python on phevaluator was never measured here,
    and the arithmetic below rests on an **assumption, not a measurement**:
    that such a loop deals of the order of ten thousand play-outs, a figure no
-   measurement in this file supplies and no source here cites. On that assumption, and counting one hand
+   measurement in this file supplies and no source here cites. The play-out
+   counts in `ENGINE_ALTERNATIVES.md` are not that figure and do not supply
+   it: those count whole hands played out to the end inside a quarter-second
+   of thinking, where these count deals of the remaining cards to settle one
+   hand's equity in a Python loop. On that assumption, and counting one hand
    ranking per play-out, 10,000 rankings at the measured 2.6 million a second
    take 10,000 ÷ 2,600,000 = **3.8 ms**, and at the measured 0.9 million a
    second 10,000 ÷ 900,000 = **11 ms**: a few milliseconds to about ten, not a
@@ -102,13 +106,15 @@ Four findings drive the recommendation:
    makes them, over the **HyperText Transfer Protocol**, **HTTP** — answered
    on `127.0.0.1:3737` with a CPU-only solver, so
    "Windows/Linux only" in its README is just missing documentation. Its
-   author's own experiments report 40 to 80 big blinds per 100 hands gained by
-   exploiting a correctly identified player type, and, when the read is wrong,
-   a loss that runs from 0 to 461 bb/100 depending on which wrong read it is
-   (his cross-exploit table, `docs/player_types.md:127-136`: one number per
-   counter-strategy-played against table-actually-faced pair; the row for the
-   Nit counter-strategy alone spans 126 to 461). That is both the promise and
-   the warning. Read the
+   author's own experiments — results he got from his older fixed opponent
+   profiles, which a note on his own page says are not predictions for the app
+   he ships today (entry 3) — report 40 to 80 big blinds per 100 hands gained
+   by exploiting a correctly identified player type, and, when the read is
+   wrong, a loss that runs from 0 to 461 bb/100 depending on which wrong read
+   it is (his cross-exploit table, `docs/player_types.md:127-136`: one number
+   per counter-strategy-played against table-actually-faced pair; the row for
+   the Nit counter-strategy alone spans 126 to 461). That is both the promise
+   and the warning. Read the
    build times with one caveat that applies to both Rust projects in this
    file: **this Mac has no Rust toolchain installed**, so every Rust number
    here required installing one first (Appendix B says exactly how, and where
@@ -198,10 +204,14 @@ reference implementation, not a product).
     bet and 60% raise per street, all-in): **0.74% exploitability at iteration
     51 in 0.56 to 0.71 s solver time; 5.5 to 8 s wall** including tree build
     and a 360 KB JSON strategy dump, over two runs; the fresh one was 0.561 s
-    solver time and 5.45 s wall at a 1-minute load of 3.40. Command file and
+    solver time and 5.45 s wall at a 1-minute load of 3.40, and the earlier one
+    on a busier machine was 0.706 s solver time — the 0.71 above — with its
+    wall clock noted only as about 8 s. Command file and
     raw solver log published at
     `research/solvers/texassolver_turn_full_ranges.txt` and
-    `research/solvers/texassolver_turn_run.log`; the command is in Appendix B.
+    `research/solvers/texassolver_turn_run.log`; both runs' timers are written
+    out in `research/solvers/texassolver_turn_run_note.txt`, the earlier one
+    copied from its log; the command is in Appendix B.
   - The bundled 3-street sample (2-hand vs 2-hand ranges): 0.44%
     exploitability at iteration 71 in 10.5 s solver time, 16.4 s wall.
   - **Full flop tree, same full ranges, three streets, 33%/75% bets, 60%
@@ -401,6 +411,18 @@ second above.
   and against a Whale table; that row's worst cell is **461 bb/100** against a
   Maniac table, and its range against non-nit tables is 126 to 461. Quote the
   row, not the pair.
+- What the author says about his own numbers: the file that holds them opens
+  with a warning he added himself, `docs/player_types.md` lines 3-6, read
+  2026-09-16 — "September 2026: generated profiles now use separate limp-entry
+  defenses and the app defaults to adaptive large-bet responses. Historical
+  results below used fixed profiles and should not be read as current
+  adaptive-model predictions. See the correction and its limits
+  (preflop_modeling_fix.md)." In plain terms: every figure above is something
+  that happened in his past experiments, where the imaginary opponents played
+  one fixed way; his current program adjusts as the hand goes on, so those
+  figures are not a forecast of what it would win or lose now. They are still
+  the only numbers anyone has published for this, and they are quoted here as
+  history, not as a promise.
 - Limits: single-author, brand new, no licence, no Mac instructions,
   multiway is preflop only.
 - Ratings: (a) 2 (preflop 2-9, postflop 2) — (b) 3 — (c) 3 — (d) 3
@@ -886,7 +908,7 @@ and cheap. Sources checked today:
 | Preflop Wizard blog https://www.preflopwizard.app/blog/9-max-preflop-chart | 9-max and 6-max charts for opening when everyone ahead has folded (**raise first in**, **RFI**) and for defending the big blind, at 100bb, 2.5x open; updated Jul 2026 | web page / printable PDF | free |
 | preflopranges.app https://preflopranges.app/ | "15,000+ charts": 9-max MTT 10 to 200bb, 6-max cash, 3-max spins, with per-hand frequencies; open beta, no account | web only, no export found | free |
 | PokerCoaching https://pokercoaching.com/preflop-charts/ | 6-max and full-ring cash, MTT 15/75bb, push-fold; GTO **and exploitative** versions | PDF, email required | free |
-| MonkerGuy https://www.monkerguy.com/ | 6-max and 9-max NLHE 20 to 200bb, 8-max MTT packs; MonkerSolver output | .mkr, MonkerViewer, **.txt ranges (Pio/PPT compatible)** | $69 (6-max 100bb) to $499 |
+| MonkerGuy https://www.monkerguy.com/ | 6-max and 9-max NLHE 20 to 200bb, 8-max MTT packs; MonkerSolver output | .mkr, MonkerViewer, **.txt ranges (Pio/PPT compatible)** | hold'em products only: **$69** for the cheapest single sim ("6-MAX 100BB, 2.5x Open") up to **$319** for the tournament pack ("8max (BB ANTE) MTT Pack"); the 9-handed sim this project would actually want ("9 PLAYERS NLH, 100bb - 2.5x Open") is **$199**. The one $499 item on the site is "6-MAX PLO MTT (BB ANTE) Pack", which is Omaha, a different game. Prices read off the page 2026-09-16 |
 | GTO Sims https://gtosims.com/ | Spin&Go, 6-max, MTT from Simple Preflop Holdem | Simple Preflop files, Pio charts, PNG | per solution, price not shown |
 | TexasSolver release bundle | 6-max 100bb ranges (BTN/CO/MP/SB/UTG opens, 3-bet, call trees) as plain text | text, already on this Mac | free |
 | GTO Wizard | 9-max multiway preflop, custom antes/straddles | copy as UPI text by hand | top tier, monthly; $229 to $359 a month, vendor-confirmed (see entry 17) |
@@ -896,9 +918,11 @@ but the page returned 404: UNVERIFIED.
 
 None of the free chart sites offer bulk download or an API, so getting a set in
 usable form means buying a pack — MonkerGuy's Pio-compatible .txt ranges run
-$69 to $499 — or hand-copying the free 9-max charts into a text format once.
+from $69 for one 6-max 100bb hold'em sim to $319 for the 8-max tournament
+pack, with the 9-handed 100bb sim at $199 (read off the page 2026-09-16) — or
+hand-copying the free 9-max charts into a text format once.
 Either way, preflop ranges for 2 to 9 seats are available free or for $69 to
-$499, so no preflop solving is needed to obtain them. What is done with them is
+$319, so no preflop solving is needed to obtain them. What is done with them is
 a separate question and not this file's to answer; see the recommendation.
 
 ---
@@ -941,7 +965,8 @@ was run here; everything below it was read about.
    not one: **no licence file at all**, and its multiway is preflop only. Its
    player-type definitions are worth borrowing for `OPPONENT_MODEL_DESIGN.md`
    whatever else is decided.
-6. **MonkerGuy .txt ranges** ($69 to $499 one-time) or the free 9-max charts
+6. **MonkerGuy .txt ranges** ($69 one-time for a single 6-max 100bb hold'em
+   sim, up to $319 for the 8-max tournament pack) or the free 9-max charts
    — precomputed preflop for every table size, no solving needed.
 7. **MonkerSolver** (EUR 499 one-time, macOS) — solves **any street with any
    number of players**, which nothing else here does natively on a Mac at a
@@ -987,7 +1012,7 @@ hand. So what follows is written as **input to the reconciliation of the four
 research sweeps against `CLAUDE.md`**, with the settled parts marked as settled
 and the open parts left open.
 
-**Settled by measurement, and safe to adopt now.**
+**Settled by measurement: timings only, no tool nominated.**
 
 - **Hand ranking and equity: what the stopwatch says.** Three things were
   timed on this machine, and this is all of it. `phevaluator` ranks 7-card
@@ -1031,7 +1056,7 @@ and the open parts left open.
     the rule set below.
 - **Where the bot's preflop play comes from.** The market fact is in Part 4 and
   is not in doubt: preflop ranges for 2 to 9 seats are available free or for
-  $69 to $499, so no preflop solving is needed to obtain them. What that does
+  $69 to $319, so no preflop solving is needed to obtain them. What that does
   not settle is what the bot plays preflop from when it has to act. That is a
   decision-path choice of the same class as the heads-up engine above —
   `CLAUDE.md:26` reserves **"Producing the strategy itself"** to the engine —
@@ -1065,11 +1090,16 @@ and the open parts left open.
   at random during the hand, producing a 6-player 52-card no-limit decision
   inside a 250 ms budget on this same machine, with no solver and no training.
   Its own document is candid that the quality of that decision depends on the
-  betting abstraction — about 13,000 play-outs per decision against a
-  four-move menu, but only about 242 with full bet sizing, which it calls
-  mostly noise — and that it needs the same rule carve-out as the rule set
+  betting abstraction — cutting the choices down to a four-move menu buys it
+  far more play-outs per decision than letting it bet any amount does, and it
+  calls the any-amount search mostly noise — and that it needs the same
+  rule carve-out as the rule set
   above, because the code that compares the play-outs is also code that picks
-  the action. So the honest statement is: **a multiway decision-time option
+  the action. No play-out counts are quoted here on purpose: that document is
+  still a draft under review, its own counts have already moved once while
+  this file cited them, and its point above does not depend on them. Read the
+  figures there, not here. So the honest statement is: **a multiway
+  decision-time option
   exists and is measured; what does not exist is an affordable multiway
   postflop *solver* on a Mac that another program can drive.** Which of the
   two covers multiway is
@@ -1078,13 +1108,20 @@ and the open parts left open.
 - **GTOpen's player types.** Its promise (+40 to +80 bb/100 when the read is
   right) and its warning (a loss running from 0 to 461 bb/100 when it is
   wrong, depending on which wrong read it is — see entry 3 for what the table
-  actually says) are the author's own numbers, not ours. Its definitions are
+  actually says) are the author's own numbers, not ours, and they are results
+  he recorded with his older fixed opponent profiles rather than predictions
+  for the app he ships today (entry 3 quotes the note on his page that says
+  so). Its definitions are
   worth borrowing for
   `OPPONENT_MODEL_DESIGN.md`; adopting its exploit solves is a licence
   question (it has no licence file) as well as a rule question.
 
-The settled part costs nothing and uses only ISC and Apache code that private
-use permits. The open parts cost at most an optional $69 to $499 range pack
+The settled part is a set of stopwatch readings, so it adopts no code and costs
+nothing at all. The code that was timed for it — OMPEval (ISC licence) and
+`phevaluator` (Apache-2.0) — is free, and both of those licences permit private
+use of the kind this project makes, so adopting either would also cost nothing
+if the reconciliation ever decided to. The open parts
+cost at most an optional $69 to $319 range pack
 and, if the reconciliation goes the way of the tools measured here, add AGPL
 code (TexasSolver, postflop-solver), which private use also permits.
 
