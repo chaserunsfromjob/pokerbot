@@ -90,8 +90,9 @@ Plain-words glossary for terms used below:
   flop is *under the gun* (**UTG**), then the *middle position* seats (**MP**),
   then the *cutoff* (**CO**), one seat before the dealer, and the dealer
   himself, the *button* (**BTN**), who acts last after the flop.
-- *GTO*: a balanced strategy that cannot be beaten long-term but does not
-  punish weak opponents as hard as a tailored ("exploitative") one.
+- *Game theory optimal*, or **GTO**: a balanced strategy that cannot be beaten
+  long-term but does not punish weak opponents as hard as a tailored
+  ("exploitative") one.
 - *Equity*: the share of the pot a hand is worth on average if the hand were
   played to the end from here — "this hand wins 62% of the time against what
   the others could be holding" is an equity figure. It says how strong a
@@ -210,18 +211,19 @@ Two rules about the marks themselves:
   the scraper and mouse control are Windows-bound.
 - Plays today? "Currently the bot only works for tables with 6 players", and
   the README admits the official table maps for PokerStars/PartyPoker have
-  drifted. "Any other table can be mapped as well" through its template GUI.
-  No-limit: yes.
+  drifted. "Any other table can be mapped as well" through its template editor,
+  a window you point and click in rather than type commands at — a *graphical
+  user interface*, or **GUI**. No-limit: yes.
 - Per-opponent adjustment: **no by-name model.** Decisions use equity, pot
   odds, and "behaviour in the previous rounds" of the current hand. No
   persistent per-player statistics.
 - Ratings: a ✗ (6 only) · b ~ (**a fixed menu**, the same shape as DeepHoldem's
   in 3.7. `poker/decisionmaker/decisionmaker.py:23` is the whole action set —
-  `bet1, bet2, bet3, bet4, bet_bluff = ['Bet','BetPlus','Bet half pot','Bet
-  pot','Bet Bluff']` — and `decisionmaker.py:562-572` attaches the amounts:
-  the minimum bet; the minimum bet increased by a fixed multiple of itself
-  (the `BetPlusInc` setting); half the pot, for both `bet3` and the bluff;
-  and the pot.
+  `bet1, bet2, bet3, bet4, bet_bluff = ['Bet', 'BetPlus', 'Bet half pot',
+  'Bet pot', 'Bet Bluff']` — and `decisionmaker.py:562-572` attaches the
+  amounts: the minimum bet; the minimum bet increased by a fixed multiple of
+  itself (the `BetPlusInc` setting); half the pot, for both `bet3` and the
+  bluff; and the pot.
   `poker/tools/mouse_mover.py:179-214` then executes them by clicking the poker
   client's own half-pot, pot or all-in button, or a counted number of increment
   clicks, so no other amount can be entered. The tunable parameters and the
@@ -304,13 +306,13 @@ Two rules about the marks themselves:
     small.
   - One figure that looks like a memory figure and is not: the 400-million-pass
     6-max run is reported as "521.7M infosets, 391M exported strategies,
-    **16GB**, 1h56m" (`README.md:668`, `BASELINES.md:470`). That 16GB is the
-    size of the file that run wrote, not the memory it held — it sits in a list
-    of outputs beside the counts and the wall-clock time, and it works out at
-    about 43 bytes per exported strategy, the same rate as the 200M run's
-    4.34 GB for 101 million. It happens to equal this laptop's total memory,
-    which makes it easy to misread as "it fits"; nothing in the repository says
-    what that run held in memory while it ran.
+    **16GB**, 1h56m" (`README.md:668`; corroborated at `BASELINES.md:470`).
+    That 16GB is the size of the file that run wrote, not the memory it held —
+    it sits in a list of outputs beside the counts and the wall-clock time, and
+    it works out at about 43 bytes per exported strategy, the same rate as the
+    200M run's 4.34 GB for 101 million. It happens to equal this laptop's total
+    memory, which makes it easy to misread as "it fits"; nothing in the
+    repository says what that run held in memory while it ran.
 - The knobs that would shrink it, and what the repo says they cost: `--iters`
   (fewer training passes: a 25M-pass checkpoint holds 60.5M situations against
   121.1M at 200M, so on the order of half the memory; at the ratio those runs
@@ -476,9 +478,9 @@ Two rules about the marks themselves:
 - What: a neural-network trainer you play against and import hands into; it
   grades your decisions against its own near-balanced strategy.
 - Price (read from the site's page data): $29.90/month or $16.66/month billed
-  annually (about $200/year), 10-day free trial, "PokerSnowie is for personal
-  use", professional use by custom offer. Footer copyright 2025; company
-  registration C56838, Malta.
+  annually (about $200/year) at /pricing; 10-day free trial at /free-trial.
+  "PokerSnowie is for personal use", professional use by custom offer. Footer
+  copyright 2025; company registration C56838, Malta.
 - Platforms: Windows, macOS (10.12+), iOS, Android; the phone apps are
   "Optimized for HU and 5-seated". Desktop covers heads-up, 6-max and full
   ring (per the Cardmates review; the site's own feature page did not render
@@ -536,8 +538,10 @@ Two rules about the marks themselves:
   the moment the seats fill — *sit-and-go*, or **SNG**; and heads-up. Up to 6
   tables at once.
 - Price: free demo (stops after 200 hands), $129 for one year, $79 renewal.
-- Platforms: Windows desktop clients (licence "can be moved to any PC"). No
-  API, no Mac.
+- Platforms: Windows desktop clients ("License can be moved as often as
+  needed", qualified by the same page's FAQ: "Is the license restricted to 1
+  computer?" — "Yes, but we are happy to move it for you upon request as often
+  as you need."). No API, no Mac.
 - Per-opponent adjustment: PPL profiles can branch on what an opponent has
   done in the current hand, **and on an opponent's screen name** — the guide's
   section 3.2.6, "Opponent Name Variable" (p. 18-19), documents `Opponent =`,
@@ -651,11 +655,12 @@ Two rules about the marks themselves:
 
 - URL: https://github.com/fabienpierret/poker-gto-rt
 - What it claims: a real-time analysis pipeline "optimized for < 400ms latency
-  on Apple Silicon" — YOLO table and card detection, SAM2 segmentation,
-  calibrated reading of the pot, bet and stack numbers out of the picture —
-  turning an image of printed text back into text is *optical character
-  recognition*, **OCR** — CoreML acceleration, then a CFR/Monte-Carlo
-  recommendation, advisory only, on an M4 Max with 36 GB.
+  on Apple Silicon" — finding the table and the cards in a screenshot with a
+  one-pass object detector, *YOLO*; tracing each object's exact outline with a
+  cut-out model, *SAM2*; calibrated reading of the pot, bet and stack numbers
+  out of the picture — turning an image of printed text back into text is
+  *optical character recognition*, **OCR** — CoreML acceleration, then a
+  CFR/Monte-Carlo recommendation, advisory only, on an M4 Max with 36 GB.
 - **What it contains: two files.** The full repository tree is `README.md`
   (3,503 bytes) and `LICENSE` (1,070 bytes). No source, no models, no tests,
   no packaging; GitHub reports the repository size as 3 KB and detects no
@@ -669,10 +674,12 @@ Two rules about the marks themselves:
 
 ### 3.16 PokerScreenBot (Vlad-Boyar) and PokerGPT (HarperJonesGPT): more screen readers
 
-- PokerScreenBot, https://github.com/Vlad-Boyar/PokerScreenBot: YOLOv8 table
-  and digit detection, ResNet18/MobileNetV2 card classifiers, FastAPI and
-  Telegram front ends, spin-and-go solver database. Pushed 2025-06-28, 0
-  stars, no licence, and "trained models and solver databases are excluded
+- PokerScreenBot, https://github.com/Vlad-Boyar/PokerScreenBot: the same
+  one-pass object detector for the table and the digits, *YOLOv8*; two standard
+  picture-sorting networks naming the cards, *ResNet18* and *MobileNetV2*; a
+  Python toolkit for serving requests over the web, *FastAPI*, and Telegram
+  front ends; spin-and-go solver database. Pushed 2025-06-28, 0 stars, no
+  licence, and "trained models and solver databases are excluded
   intentionally". Infrastructure only.
 - PokerGPT, https://github.com/HarperJonesGPT/PokerGPT: Windows 11 PokerStars
   6-max bot that reads the table with Tesseract OCR and asks GPT-4 what to do.
@@ -740,7 +747,8 @@ Two rules about the marks themselves:
   a separate Python attempt with no trained strategy.
 - Strategy shipped: only the 20-card short-deck blueprint pickles referenced
   in its README. Already known from the project's own work: the 52-card path
-  is ~18 days and ~147 GiB.
+  is ~18 days and ~147 GiB (`REFERENCE_NOTES.md:414` for 18.4 days, `:427` for
+  146.5 GiB).
 - Ratings: a ~ · b ✗ (fixed-limit as vendored) · c ✗ · d ✗ · e ✓.
 
 ### 3.20 whatsdis/pluribus — 242 stars, and it does not run
@@ -1009,7 +1017,7 @@ What this survey *does* settle, and hands to that reconciliation:
   measurement to make, not a fact to look up.
 - **Measure against Slumbot from day one.** Free, live, verified, callable
   from Python today. It is heads-up, so it bounds one seat count only.
-- **Exactly one shipped design measures the player it is keyed to** —
+- **Exactly one shipped design looks up measured statistics by name** —
   OpenHoldem's per-seat statistics, looked up by screen name and handed to the
   decision code as inputs (3.1). Shanky's `Opponent =` branches by screen name
   too (3.12), but it is the other half of the job only: OpenHoldem fetches the
@@ -1035,11 +1043,11 @@ What this survey *does* settle, and hands to that reconciliation:
   a classification split or an archetype, selecting *which* engine strategy to
   load, and substituting an opponent model into the engine's own solver. The
   combining entry in our column and the combining row on the engine's are a
-  matched pair, and the pairing is the whole limit: combining rates across the
-  **observed population** — the standing database — into a baseline, a
-  classification split or an archetype is ours, while combining the rates of
-  the players **in the hand being played** into a number that then drives a
-  decision is the engine's.
+  matched pair: combining rates across the **observed population** — the whole
+  database, seated players' stored rows included, with being seated never the
+  criterion for inclusion — into a baseline, a classification split or an
+  archetype is ours, while combining the rates of the players **in the hand
+  being played** into a number that then drives a decision is the engine's.
 
   Of the categories allowed to us, "substituting an opponent model into the
   engine's own solver" has exactly **one** shipped example in this survey, and
