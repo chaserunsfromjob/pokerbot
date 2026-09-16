@@ -71,6 +71,70 @@ point in this document.
 
 ## 1. Table size
 
+### 1.0 The engine this project has today already answers three of these questions, and answers them no
+
+Read this first, because it sets when everything below becomes actionable.
+
+The part of the program that knows the rules of poker and decides what to do is
+called the **engine**, and this project did not write one — it borrowed a
+published one, `poker_ai`, and surveyed it in `REFERENCE_NOTES.md`. Three
+questions this document goes on to ask are already settled for *that* engine,
+and settled in the negative:
+
+- **It seats seven players at most.** It deals from a cut-down deck of 20 cards.
+  A hand needs two private cards per player plus five shared ones, so eight
+  players need 21 cards out of a deck of 20 and the hand runs out mid-way
+  (`REFERENCE_NOTES.md`:485-497). The survey draws the consequence for the
+  operator's own priorities in so many words: "the 8/9 band is **impossible on
+  the short deck**" (`REFERENCE_NOTES.md`:499-503, and the summary at :12-15).
+  Seats 8 and 9 are unreachable there, not merely untested.
+- **It has no bet sizes at all.** A raise is always one fixed amount — one big
+  blind on top of the call, doubled on the turn and the river — and at most
+  three raises are allowed in a round of betting. That is the fixed-stakes form
+  of the game (**fixed-limit**), where this project wants the free-stakes form
+  (**no-limit**). The survey's words: "there is no bet-sizing dimension anywhere
+  in the tree" (`REFERENCE_NOTES.md`:523-542, and the summary at :16-19).
+- **Converting it to the ordinary 52-card deck is out**, at a claimed 18.4 days
+  of computing and 146.5 GiB of memory demanded in one piece, on a laptop that
+  has neither, against a budget of hours (`REFERENCE_NOTES.md`:8-11). So the
+  seven-seat ceiling cannot be lifted by converting this engine either.
+
+**What that changes here, and what it does not.** It changes **no
+recommendation below** — not one of R1 to R14, and none of the reasoning any of
+them rests on. What it changes is each recommendation's stated dependency:
+
+- **Reachable now, on the engine in the repository.** Everything about seat
+  counts 2 through 7 that is measurement and bookkeeping rather than betting:
+  [R1](#r1--define-the-seat-count-band-as-a-context-value-not-a-new-table-extension-42)
+  to [R5](#r5--do-not-add-a-table-size-dimension-to-the-bucket-grid-or-the-archetypes-extension-44-and-45),
+  [R7](#r7--cross-tabulate-v5s-bluff-frequency-report-by-seat-count-extension-6),
+  [R13](#r13--make-the-deviation-cap-a-function-of-seat-count-extension-52) and
+  [R14](#r14--record-the-seat-count-mixture-v4-measured-extension-6). None of
+  them needs a bet size or an eighth seat.
+- **Waiting on which engine this project ends up with.** Seat counts 8 and 9
+  wherever they appear — the `FULL` band in
+  [R1](#r1--define-the-seat-count-band-as-a-context-value-not-a-new-table-extension-42),
+  the eight-seat-count solve budget in
+  [R6](#r6--the-compute-cap-is-already-in-45-and-e5-what-is-left-is-the-resources_solversmd-pointer-extension-most-of-it-already-applied-45-and-engine-requirements)
+  and [Q4](#4-questions-for-the-operator) — and the **whole** of
+  [§2](#2-continuous-bet-sizing) with everything resting on it
+  ([R8](#r8--add-the-sizing-stats-to-the-stat-table-extension-42-and-23-of-the-design-document),
+  [R9](#r9--add-two-sizing-exploit-flags-extension-44),
+  [R11](#r11--write-the-sampling-rule-into-the-design-as-a-rule-not-an-assumption-correction-41-and-45),
+  [R12](#r12--add-v6-the-bots-own-sizing-distribution-extension-6)). That choice
+  is the one the four surveys now in progress are being reconciled into, of
+  which `REFERENCE_NOTES.md` is one; this document is written so that those
+  recommendations are ready the day it is made, not so that they can be started
+  before it.
+
+**One consequence worth stating on its own: E7, E8 and E9 in
+[R10](#r10--add-three-engine-requirements-extension-opponent_model_designmd-engine-requirements)
+are questions put to a *candidate* engine, not open questions about the vendored
+one.** Put to the vendored one they are already answered — no chosen bet size at
+all rather than more than one, nothing to translate because there are no sizes
+to translate between, and seven seats rather than nine. They belong in the
+engine choice as selection criteria.
+
 ### 1.1 Three different quantities get called "table size"
 
 They diverge, and the design document currently uses one word for all three.
@@ -81,6 +145,15 @@ Separating them is most of the work.
 | **Seat count** `n` | Players dealt in at the start of the hand | The positional mix; which seats exist at all; the blind frequency |
 | **Field size** `m` | Opponents still live at the moment of a decision | The bluff arithmetic in `OPPONENT_MODEL_DESIGN.md` Table B |
 | **Band** | A grouping of seat counts that share a baseline | A bookkeeping choice this document has to make; nothing in poker forces it |
+
+**A note on the letter `n`, because three different quantities are written with
+it and only one of them is this document's.** Everywhere in this document `n` is
+the seat count in the table above — except where a quoted source uses the same
+letter for something else. Two places do: Ganzfried and Sandholm's Equation 1
+indexes a public history with `n`, and the design document's confidence formula
+`n/(n+s)` counts opportunities with it. Both are flagged where they appear
+([§2.2](#22-sizing-as-a-signal-about-the-opponent)); neither is a seat count, and
+nothing in this document derives one from the other.
 
 `m ≤ n − 1` always, and the gap is large. A nine-handed table very often plays
 three-way after the flop; a three-handed table very often plays heads-up after
@@ -103,7 +176,7 @@ this section.
 
 #### Table 1: what seat count mechanically fixes
 
-Derived; `n` is the seat count. Computed 2026-09-15.
+Derived; `n` is the seat count. Computed and checked by `tools/check_table_size_numbers.py`, 2026-09-15.
 
 | `n` | Dealt in a blind (`2/n`) | On the button (`1/n`) | Neither blind nor button (`max(0, (n−3)/n)`) | Mean players still to act behind (`(n−1)/2`) |
 | --- | --- | --- | --- | --- |
@@ -141,7 +214,7 @@ even when the per-position policy is frozen.**
 Total variation distance between the positional-weight vectors of two seat
 counts — for uniform weights on `{0,…,n−1}` and `{0,…,m−1}`, this is
 `½·Σ|p−q|`. Read it as "the share of one table's hands that come from positional
-contexts the other table reaches at a different rate." Computed 2026-09-15.
+contexts the other table reaches at a different rate." Computed and checked by `tools/check_table_size_numbers.py`, 2026-09-15.
 
 | | `n`=2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
@@ -167,7 +240,7 @@ spread, not a measured or cited quantity** — it stands for how much more often
 person plays from the button than from under the gun, which nobody here has
 measured. It is on exactly the footing of the illustrative `p̂` anchors in
 `OPPONENT_MODEL_DESIGN.md` Table C.
-Computed 2026-09-15.
+Computed and checked by `tools/check_table_size_numbers.py`, 2026-09-15.
 
 | Comparison | TV | Spread 0.30 | Spread 0.50 | Spread 0.70 |
 | --- | --- | --- | --- | --- |
@@ -337,7 +410,7 @@ is as trustworthy as the unstratified stat was.
 
 Applied to two of Table C's rows. **Those row values are illustrative in the
 source table and stay illustrative here**; what is real is the multiplier.
-Computed 2026-09-15.
+Computed and checked by `tools/check_table_size_numbers.py`, 2026-09-15.
 
 | Stat | Table C hands (illustrative) | × 4 bands | × 4 size buckets ([§2.5](#25-what-sizing-buckets-cost)) | × both |
 | --- | --- | --- | --- | --- |
@@ -382,8 +455,8 @@ guarantee, because independently-computed equilibrium strategies need not form
 one jointly. That argument is explicitly about games with **more than two
 players**. At `n = 2` it does not apply: heads-up poker is two-player zero-sum,
 an equilibrium strategy is unbeatable in expectation regardless of the opponent,
-and the design document's own §1 says so in the sentence immediately before the
-one it builds on.
+and the design document's own §1 says so two sentences earlier in the same
+paragraph as the one it builds on.
 
 This is not an academic point. It reverses the risk calculus at one end of the
 now-required range:
@@ -412,6 +485,17 @@ depends on that; it is context for why the `n = 2` case is different in kind.
 ---
 
 ## 2. Continuous bet sizing
+
+**Nothing in this section is reachable on the engine the repository has.** Its
+betting is fixed-limit — one fixed raise amount, at most three raises a street,
+"no bet-sizing dimension anywhere in the tree"
+(`REFERENCE_NOTES.md`:523-542) — so there are no sizes for the bot to choose, no
+sizes for an opponent to choose, and nothing for any of the stats below to
+measure. This section is written for whichever engine the four-survey
+reconciliation settles on, and
+[§1.0](#10-the-engine-this-project-has-today-already-answers-three-of-these-questions-and-answers-them-no)
+is where that dependency is set out in full. The argument does not change with
+the engine; only the date it can be acted on does.
 
 ### 2.1 What "true no-limit" changes
 
@@ -448,11 +532,14 @@ street and each role (bettor first-in, raiser, three-bettor), the counts of the
 opponent's bets falling in each size bucket. This does not fit the binomial
 shrinkage in §4.3, but it fits its source directly: DBBR's Equation 1 in
 [Ganzfried & Sandholm 2011](#s-ganzfried2011) §4.2 is already stated over an
-action set `a` at a public history `n`, i.e. it is a Dirichlet posterior over a
-categorical outcome. Making `BASELINE[stat]` a *vector* over size buckets and
-applying the identical equation is the natural extension and requires no new
-mechanism, only a vector-valued baseline. `confidence = n/(n+s)` is unchanged,
-since `n` is still the opportunity count.
+action set `a` at a public history, which **the paper** indexes with `n` — the
+paper's own letter for its own quantity, and not this document's seat count. It
+is a Dirichlet posterior over a categorical outcome. Making `BASELINE[stat]` a
+*vector* over size buckets and applying the identical equation is the natural
+extension and requires no new mechanism, only a vector-valued baseline.
+`confidence = n/(n+s)` is unchanged, where that `n` is **the design document's
+opportunity count** — a third use of the letter again, and again not the seat
+count.
 
 **(b) `fold_to_bet[street, size_bucket]` — the directly monetisable one.** How
 often this opponent folds conditional on the size they are facing. This is the
@@ -523,6 +610,15 @@ it, the correct response is to report that and stop, exactly as §4.5 already
 instructs for Tier 1 and requirement E2** — not to add a randomiser outside the
 engine. That instinct will occur to somebody; it must be refused explicitly.
 
+**The engine in the repository already fails this, and fails it at the limit.**
+It does not offer one size per spot; it offers no chosen size at all, a raise
+being a fixed amount fixed by the rules
+(`REFERENCE_NOTES.md`:523-542,
+[§1.0](#10-the-engine-this-project-has-today-already-answers-three-of-these-questions-and-answers-them-no)).
+So this failure is not a risk to guard against on the current engine — it is
+that engine's settled condition, and the requirement stated here is a condition
+on its replacement.
+
 **Failure 3: deterministic action translation.** When an opponent bets an amount
 not in the engine's abstraction, something must map it onto one that is. A
 deterministic map — "anything up to 0.7 of pot is treated as a half-pot bet" —
@@ -549,7 +645,7 @@ never certain, which is what removes the exploitable threshold.
 Why translation is worth getting right rather than approximating. Calling a bet
 of `B` into a pot of `P` requires pot equity `B/(P + 2B)`; the columns give the
 error in required equity if the bot acts on the wrong size. `P = 1`. Computed
-2026-09-15.
+and checked by `tools/check_table_size_numbers.py`, 2026-09-15.
 
 | Actual bet (pot fractions) | True required equity | Error if treated as 0.5 pot | Error if treated as 1.0 pot |
 | --- | --- | --- | --- |
@@ -601,7 +697,7 @@ so `(1 + 2f)^k = 1 + 2·SPR`, where SPR is the stack-to-pot ratio.
 
 #### Table 6: pot fraction needed to reach all-in in `k` equal bets
 
-Derived from `(1 + 2f)^k = 1 + 2·SPR`. Computed 2026-09-15.
+Derived from `(1 + 2f)^k = 1 + 2·SPR`. Computed and checked by `tools/check_table_size_numbers.py`, 2026-09-15.
 
 | SPR | `f` in 1 street | `f` in 2 streets | `f` in 3 streets |
 | --- | --- | --- | --- |
@@ -688,6 +784,17 @@ share a band, because the operator's table-size priority, recorded 2026-09-15,
 treats them as the same thing ([Q4](#4-questions-for-the-operator)); the same
 priority puts the bulk of the hands at `n = 6`, so whichever band holds `6` is
 the one that will fill first.
+
+**`FULL` will be partly empty for as long as the current engine is the engine.**
+That engine seats seven at most, so of `FULL`'s three seat counts only `7` can
+produce a hand on it at all, and `8` and `9` wait on the engine choice
+(`REFERENCE_NOTES.md`:499-503,
+[§1.0](#10-the-engine-this-project-has-today-already-answers-three-of-these-questions-and-answers-them-no)).
+The band definition is unaffected — it is a label on a stored hand, and a band
+with no hands in it simply falls back, which is what
+[R2](#r2--make-baseline-and-both-split-thresholds-per-band-correction-43-and-44)'s
+chain is for — but a coding task should not read an empty `FULL` band as a
+defect.
 
 **Everything else — the `4|5` and `6|7` cuts — is an unmeasured bookkeeping
 choice, and [Table 2](#table-2-how-far-apart-two-seat-counts-are-as-positional-mixtures)
@@ -814,6 +921,19 @@ what the remaining recommendation rests on. What §4.5 and E5 already carry:
   `S_BASE` to play at all — leaving a floor of **8 runs**, one `S_BASE` per seat
   count; cutting a bucket saves 8 runs, one at every seat count.
 
+**Two more of these have been overtaken since the pinned revision, and are named
+here so the delta is not read as larger than it is.** `OPPONENT_MODEL_DESIGN.md`
+has moved on from `5aa40b8` — it is at commit `5f7a1a8` as this is written — and
+commit `72eff27` put into its §4.5 two things this document would otherwise be
+recommending: **the operator's solve order** ("Solve 6-handed first; then 8- and
+9-handed as one band; then every remaining seat count", §4.5 at :1287-1288 of
+that revision), and **the rule that 8 and 9 still need separate solver runs**
+even though the operator's priority ranks them together, because a 9-handed
+solve faces eight opponents and an 8-handed table presents seven (§4.5 at
+:1292-1300). The cross-references elsewhere in this document stay pinned to
+`5aa40b8`, which is the revision they were checked against; these two are the
+only places where the later revision has already taken the recommendation.
+
 **The genuine delta, and all this item now recommends.** Two points:
 
 - **Point §4.5 at `RESOURCES_SOLVERS.md` as well.** §4.5 names
@@ -877,6 +997,10 @@ bucket. `bet_size_dist` is a distribution over buckets, so its baseline is a **v
 and its shrinkage uses DBBR Equation 1 in its original categorical form
 ([Ganzfried & Sandholm 2011](#s-ganzfried2011) §4.2) rather than the binomial
 special case in §4.3 — the equation is unchanged, only `BASELINE` gains an index.
+The `n` in that equation is the paper's public-history index and the `n` in
+`confidence = n/(n+s)` is the opportunity count; neither is the seat count this
+recommendation bands on
+([§1.1](#11-three-different-quantities-get-called-table-size)).
 
 Per-opponent `fold_to_bet` should use **two** buckets (split at 0.70 pot) and the
 population baseline **four**, for the reason in
@@ -909,10 +1033,22 @@ fire on noise.
 | E8 | Does the engine perform **action translation** for an opponent bet not in its abstraction, and is the mapping randomised? | Not being readable at a size threshold ([§2.3](#23-sizing-as-a-signal-about-us), Failure 3) |
 | E9 | Can the engine be run at **every seat count from 2 to 9**, and does the abstraction change with seat count? | The whole 2-to-9 requirement; R6's solve budget |
 
+**All three are asked of a candidate engine, not of the vendored one, whose
+answers are already known and are all no.** `REFERENCE_NOTES.md` records them:
+the raise amount is fixed by the rules, so E7's count is not "one size" but no
+chosen size at all and E8 has nothing to translate between (:523-542); and the
+20-card deck seats seven at most, so E9's answer is "2 to 7, not 8 or 9"
+(:499-503). Asking them of that engine is therefore closed, and
+[§1.0](#10-the-engine-this-project-has-today-already-answers-three-of-these-questions-and-answers-them-no)
+sets out what that does and does not change. These three rows are selection
+criteria for the engine the four-survey reconciliation chooses.
+
 E7 and E9 are answerable without writing any code and should be answered before
 the Tier 1 solve budget in R6 is committed to. **Each of the three carries its own
 "and if the answer is no, then what", because that is the point at which somebody
-will otherwise reach for a patch outside the engine.**
+will otherwise reach for a patch outside the engine.** Each is written for a
+candidate engine that has bet sizes to speak of; the bullets below do not
+describe a repair to the vendored engine.
 
 - **If E7's answer is "one size": report it and stop**, exactly as §4.5 instructs
   for E2 — not a size randomiser outside the engine, which would be AI-written
@@ -927,14 +1063,22 @@ will otherwise reach for a patch outside the engine.**
   randomly, which is a point for E9's survey and for `ENGINE_ALTERNATIVES.md` to
   weigh; (2) failing that, implement the pseudo-harmonic mapping
   ([Ganzfried & Sandholm 2013](#s-ganzfried2013), **formula not verified — confirm
-  against the primary text first**) *inside the engine's own translation code*, as
-  a change to the vendored engine covered by its tests, never as a wrapper in the
-  integration layer that rewrites the opponent's bet before the engine sees it;
-  (3) if neither is possible, **report that and stop**, as for E7.
+  against the primary text first**) *inside the chosen engine's own translation
+  code*, as a change to that engine's source covered by its tests, never as a
+  wrapper in the integration layer that rewrites the opponent's bet before the
+  engine sees it; (3) if neither is possible, **report that and stop**, as for
+  E7. **Remedy (2) is not available on the vendored engine and is not proposing
+  it**: that engine has no bet sizes and therefore no translation code to put
+  the mapping inside of (`REFERENCE_NOTES.md`:523-542). It is a repair to a
+  candidate engine that translates badly, not to one that has nothing to
+  translate.
 - **If E9's answer is "not at every seat count": report it and stop** for the seat
   counts it cannot reach, and fall back to `S_BASE` there, which §4.5 already
   makes the default for anything uncertain. Do not simulate a missing seat count
-  by loading a strategy solved for another one; §4.5 forbids exactly that.
+  by loading a strategy solved for another one; §4.5 forbids exactly that. **For
+  the vendored engine this is already the answer, and the seat counts it cannot
+  reach are 8 and 9** (`REFERENCE_NOTES.md`:499-503), which is why the operator's
+  second priority waits on the engine choice rather than on this design.
 
 ### R11 — Write the sampling rule into the design as a rule, not an assumption. *(Correction. §4.1 and §4.5.)*
 
@@ -1012,6 +1156,16 @@ reachable in hours on one laptop.** Thirty-two runs are inside that cap only if
 one run takes minutes on one laptop, so the question is not only "how many seat
 counts" but "with which solver, if any".
 
+**The 32 assumes eight reachable seat counts, and the engine in the repository
+reaches seven.** Its 20-card deck seats seven at most, so the seat counts it can
+play are 2 through 7, which is **six** of the eight — a budget of **24 runs, not
+32** — and the operator's own second priority, 8- and 9-handed play, cannot be
+solved or played there at all
+(`REFERENCE_NOTES.md`:499-503,
+[§1.0](#10-the-engine-this-project-has-today-already-answers-three-of-these-questions-and-answers-them-no)).
+The 32 stated here is the budget for an engine that reaches the whole required
+range, which is one of the things the engine choice has to buy.
+
 **This question may not need answering at all.** §4.5 marks its own solve plan as
 conditional: `ENGINE_ALTERNATIVES.md` is under review and recommends computing
 decisions at play time rather than solving strategies offline, and if that
@@ -1028,7 +1182,14 @@ passes, solve in the order the operator's own table-size priority sets, recorded
 2026-09-15: **mostly 6-handed play, then 8 and 9 which the operator treats as the
 same thing** — so `n = 6` first, then `n = 8` and `n = 9` together, then the rest
 of the 2-to-9 range, which stays a firm requirement rather than becoming
-optional. (Solve order, not the stat bands of
+optional. **That order is no longer a recommendation this document is making:
+`OPPONENT_MODEL_DESIGN.md` §4.5 states it itself at commit `72eff27`, later than
+the `5aa40b8` this document is pinned to, and adds that "treated the same" ranks
+8 and 9 in priority without merging their solver runs**
+([R6](#r6--the-compute-cap-is-already-in-45-and-e5-what-is-left-is-the-resources_solversmd-pointer-extension-most-of-it-already-applied-45-and-engine-requirements)).
+It is repeated here because it is what the answer to this question would be
+executed against, not because it is still open. (Solve order, not the stat bands
+of
 [R1](#r1--define-the-seat-count-band-as-a-context-value-not-a-new-table-extension-42);
 the two answer different questions.) Have the bot decline to load a
 counter-strategy at an unsolved seat count, falling back to `S_BASE`, which §4.5 already makes the default for
@@ -1212,19 +1373,49 @@ bands the bot's own measured baseline instead of hardcoding one per band.
 
 ## Provenance of every number in this document
 
+**A program checks this table, so it cannot quietly go stale.**
+`tools/check_table_size_numbers.py` holds one copy of every constant this
+document declares — the seat counts, the illustrative spread column, the
+illustrative Table C hand counts, the band and bucket counts, the bet sizes, the
+stack-to-pot ratios and the strategy count — and recomputes from them **every
+figure in Tables 1 to 6, the `4.5×` and `2.25×` multipliers, and the solver-run
+counts**, comparing each against what the prose prints, in *every* place the
+prose prints it. It needs nothing but Python itself: no engine, no network, no
+installed libraries. `tests/test_table_size_numbers.py` runs it as part of the
+test suite, and also mutates one figure at a time in a scratch copy to prove the
+check still catches drift. The rule that follows, and it is the same rule
+`OPPONENT_MODEL_DESIGN.md` §4.7 states for its own checker,
+`tools/check_design_numbers.py`: **a constant is changed in the script and in
+the prose together, in one edit, and the script is what says the prose is still
+right.**
+
+Two things it deliberately does not check, so the boundary is not guessed at:
+figures quoted from `OPPONENT_MODEL_DESIGN.md` or from the
+[Sources](#sources) — those are checked against their source by citation, not by
+arithmetic — and section numbers, dates and anchors. Every row below that names
+the script is checked by it; every row that does not, is not.
+
+**The two checkers should become one.** This document and
+`OPPONENT_MODEL_DESIGN.md` sit on separate branches and each carries its own
+script, which duplicates the rounding, table-reading and reporting code.
+Consolidating them is filed as a task to be done once both documents are on the
+trunk branch, rather than attempted from one branch against the other.
+
 | Number | Where it comes from |
 | --- | --- |
-| [Table 1](#table-1-what-seat-count-mechanically-fixes) — `2/n`, `1/n`, `(n−3)/n`, `(n−1)/2` | Derived; computed by script 2026-09-15. Follows from preflop action order giving each "players behind" value `0…n−1` exactly once per orbit |
-| [Table 2](#table-2-how-far-apart-two-seat-counts-are-as-positional-mixtures) — total variation distances | Computed by script 2026-09-15, as `½·Σ|p−q|` over the uniform positional-weight vectors of Table 1. Elementary arithmetic |
-| [Table 3](#table-3-the-swing-that-costs-nothing-but-a-change-of-seat-count) — the shift bounds | Computed by script 2026-09-15 as `TV × spread`, the standard total-variation bound. **The spread column (0.30 / 0.50 / 0.70) is illustrative, not measured or cited**, on the same footing as the `p̂` anchors in `OPPONENT_MODEL_DESIGN.md` Table C |
-| The `4.5×` blind-frequency ratio between heads-up and 9-max | Derived; `(2/2)/(2/9) = 4.5`, the `2/n` column of Table 1. It is the ratio of blind frequencies, **not** the hands multiplier for any particular stat |
-| The `2.25×` hands multiplier for `fold_to_steal`, 9-max versus heads-up ([§1.6](#16-what-banding-costs), [R4](#r4--redefine-fold_to_steals-opportunity-or-split-it-correction-42)) | Derived from §1.4's reasoning: at `n = 2` only the big blind can defend, so half the blind hands are opportunities, `(1/(2/9))/(1/(1/2)) = 2.25`. The 9-max conditional rate is not 1 either, so this is a reasoned figure to be replaced by `denominator / hands_dealt` from logged hands |
-| [Table 4](#table-4-the-fragmentation-multiplier) — the `k×` multiplier | Derived: the opportunity count for a fixed interval half-width does not depend on stratification, so `k` strata need `k` times the hands. **The 323 and 640 base values are inherited from `OPPONENT_MODEL_DESIGN.md` Table C and are illustrative there; the products inherit that status** |
-| 32 solver runs (R6) and 16 under banding | Derived; 8 seat counts × 4 strategies, and 4 bands × 4 strategies. Computed 2026-09-15. `OPPONENT_MODEL_DESIGN.md` §4.5 and E5 now state the same 32 independently |
+| [Table 1](#table-1-what-seat-count-mechanically-fixes) — `2/n`, `1/n`, `(n−3)/n`, `(n−1)/2` | Derived; computed and checked by `tools/check_table_size_numbers.py` 2026-09-15. Follows from preflop action order giving each "players behind" value `0…n−1` exactly once per orbit |
+| [Table 2](#table-2-how-far-apart-two-seat-counts-are-as-positional-mixtures) — total variation distances | Computed and checked by `tools/check_table_size_numbers.py` 2026-09-15, as `½·Σ|p−q|` over the uniform positional-weight vectors of Table 1. Elementary arithmetic |
+| [Table 3](#table-3-the-swing-that-costs-nothing-but-a-change-of-seat-count) — the shift bounds | Computed and checked by `tools/check_table_size_numbers.py` 2026-09-15 as `TV × spread`, the standard total-variation bound. **The spread column (0.30 / 0.50 / 0.70) is illustrative, not measured or cited**, on the same footing as the `p̂` anchors in `OPPONENT_MODEL_DESIGN.md` Table C |
+| The `4.5×` blind-frequency ratio between heads-up and 9-max | Derived; `(2/2)/(2/9) = 4.5`, the `2/n` column of Table 1; computed and checked by `tools/check_table_size_numbers.py` 2026-09-15, in the provenance row and at both places in the prose that state it. It is the ratio of blind frequencies, **not** the hands multiplier for any particular stat |
+| The `2.25×` hands multiplier for `fold_to_steal`, 9-max versus heads-up ([§1.6](#16-what-banding-costs), [R4](#r4--redefine-fold_to_steals-opportunity-or-split-it-correction-42)) | Derived from §1.4's reasoning: at `n = 2` only the big blind can defend, so half the blind hands are opportunities, `(1/(2/9))/(1/(1/2)) = 2.25`; computed and checked by `tools/check_table_size_numbers.py` 2026-09-15, in the provenance row and at every place in the prose that states it. The 9-max conditional rate is not 1 either, so this is a reasoned figure to be replaced by `denominator / hands_dealt` from logged hands |
+| [Table 4](#table-4-the-fragmentation-multiplier) — the `k×` multiplier | Derived: the opportunity count for a fixed interval half-width does not depend on stratification, so `k` strata need `k` times the hands. Computed and checked by `tools/check_table_size_numbers.py` 2026-09-15, in the table and in §2.5's restatement of it. **The 323 and 640 base values are inherited from `OPPONENT_MODEL_DESIGN.md` Table C and are illustrative there; the products inherit that status** |
+| 32 solver runs (R6) and 16 under banding | Derived; 8 seat counts × 4 strategies, and 4 bands × 4 strategies. Computed and checked by `tools/check_table_size_numbers.py`, 2026-09-15. `OPPONENT_MODEL_DESIGN.md` §4.5 and E5 now state the same 32 independently |
+| 24 runs, the budget the vendored engine could pay for ([Q4](#4-questions-for-the-operator)) | Derived; 6 reachable seat counts × 4 strategies, computed and checked by `tools/check_table_size_numbers.py` 2026-09-15. The 6 is **not derived here**: the vendored engine's 20-card deck seats seven at most, so its seat counts are 2 through 7, taken from `REFERENCE_NOTES.md`:485-497 |
+| The vendored engine's seven-seat ceiling, its fixed-limit betting, and the 18.4 days and 146.5 GiB of the 52-card conversion ([§1.0](#10-the-engine-this-project-has-today-already-answers-three-of-these-questions-and-answers-them-no)) | **Not derived here.** Read from `REFERENCE_NOTES.md` on the trunk branch, which measured them: the deck arithmetic at :485-497 and its 8/9 consequence at :499-503, the fixed raise amount and three-raise cap at :523-542, and the conversion cost at :8-11 |
 | 3 runs saved per seat count dropped, an 8-run floor, and 8 runs saved per bucket cut (R6, [Q4](#4-questions-for-the-operator)) | **Not derived here.** Taken from `OPPONENT_MODEL_DESIGN.md` §4.5 at commit `5aa40b8`, which states them: a dropped seat count still needs its own `S_BASE`, so only its three counter-strategies are saved, leaving one `S_BASE` per seat count as the floor |
 | The compute cap R6 and [Q4](#4-questions-for-the-operator) hold the solve budget to — hours on one laptop, no multi-day computing | **The operator's own requirement, recorded 2026-09-15.** Not derived and not a measurement: it is a constraint stated by the operator, and it is repeated here verbatim in substance rather than paraphrased into a number of hours |
-| [Table 5](#table-5-what-mis-reading-a-bet-size-costs-exactly) — required pot equity `B/(P+2B)` and the error columns | Computed by script 2026-09-15. Elementary pot-odds arithmetic, `P = 1` |
-| [Table 6](#table-6-pot-fraction-needed-to-reach-all-in-in-k-equal-bets) — `f` from `(1+2f)^k = 1+2·SPR` | Derived and computed by script 2026-09-15. Each bet-and-call multiplies the pot by `(1+2f)`; elementary |
+| [Table 5](#table-5-what-mis-reading-a-bet-size-costs-exactly) — required pot equity `B/(P+2B)` and the error columns | Computed and checked by `tools/check_table_size_numbers.py` 2026-09-15. Elementary pot-odds arithmetic, `P = 1` |
+| [Table 6](#table-6-pot-fraction-needed-to-reach-all-in-in-k-equal-bets) — `f` from `(1+2f)^k = 1+2·SPR` | Derived; computed and checked by `tools/check_table_size_numbers.py` 2026-09-15. Each bet-and-call multiplies the pot by `(1+2f)`; elementary |
 | The 19.9% / 25.0% / 30.0% / 33.3% bluff shares, and the **25.2pp** break-even-fold spread cited in [§2.5](#25-what-sizing-buckets-cost) | Read from `OPPONENT_MODEL_DESIGN.md` Table A, which computes them as `s/(1+2s)` and `s/(1+s)`. Re-derived here and matched. The spread is that table's `1.00` row (50.0%) minus its `0.33` row (24.8%) |
 | The pseudo-harmonic formula `((B−x)(1+A))/((B−A)(1+x))` | [Ganzfried & Sandholm 2013](#s-ganzfried2013). **Quoted from memory; NOT retrieved or verified. Confirm against the primary text before implementing** |
 | 4.52% showdown ratio | [Teofilo & Reis 2011](#s-teofilo2011), Table 1, as read and reported by `OPPONENT_MODEL_DESIGN.md` |
