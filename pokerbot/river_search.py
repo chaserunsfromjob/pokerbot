@@ -97,7 +97,7 @@ class RiverConfig:
     def __post_init__(self):
         if type(self.worlds) is not int or self.worlds < 2:
             raise ValueError("Need at least two rollout worlds")
-        if self.response_model not in ("equity", "caller"):
+        if self.response_model not in ("equity", "caller", "named"):
             raise ValueError("Unknown river response model")
         if not 0 <= self.se_penalty <= 10 or not 0 <= self.min_gain_bb <= 100:
             raise ValueError("Invalid action-selection regularization")
@@ -117,7 +117,11 @@ class RiverPolicy:
         # menu amounts. Never silently compare against a surrogate baseline.
         actions = sorted(set(menu(obs) + [original.action]))
         cfg = self.config
-        values = evaluate_actions(obs, actions, self.response, self.baseline, rng, cfg.worlds)
+        response = self.response
+        if cfg.response_model == "named":
+            from .responses import NamedResponse
+            response = NamedResponse(profiles)
+        values = evaluate_actions(obs, actions, response, self.baseline, rng, cfg.worlds)
         estimates = {}
         selected, best_score = original.action, cfg.min_gain_bb
         for action in actions:

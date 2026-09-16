@@ -17,6 +17,7 @@ from .baseline_v1 import FrozenEquityV1
 from .engine import Hand
 from .policies import EquityConfig, make_policy
 from .profiles import Profiles
+from .response_profiles import ResponseProfiles, public_response
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -62,12 +63,15 @@ def session(*, seats, hands, seed, config, pool, log_path=None,
     policies.update({name: FrozenEquityV1() if style == "equity" else make_policy(style)
                      for name, style in styles.items()})
     profiles = Profiles(profile_path, session_id)
+    use_responses = hero_policy == "river" and getattr(config, "response_model", None) == "named"
+    responses = ResponseProfiles(profile_path, session_id) if use_responses else None
     total = 0.0
     latency = []
     hand_log = Path(log_path).open("x") if log_path else None
     started = time.perf_counter()
     try:
         for h in range(hands):
+            observations = []
             rotation = h % seats
             seated = names[rotation:] + names[:rotation]
             hand = Hand(seated, stacks=[stack_bb * 100] * seats,
@@ -76,22 +80,31 @@ def session(*, seats, hands, seed, config, pool, log_path=None,
                 obs = hand.observation()
                 name = seated[obs.actor]
                 model = profiles.view() if learning == "learned" else {}
+                if responses is not None and learning == "learned":
+                    model = responses.view()
                 if learning == "oracle":
                     # Exact conditional facing-bet fold probabilities of our
                     # scripted controls; unavailable for card-dependent equity.
                     model = {k: {"fold_rate": oracle_fold(v, obs), "facing_bet": 1000000}
                              for k, v in styles.items() if v != "equity"}
+                    if responses is not None:
+                        model = {k: {"response_oracle": v} for k, v in styles.items()}
                 rng = random.Random(seed_for("policy", seed, h, name, len(hand.events)))
                 begin = time.perf_counter()
                 result = policies[name].decide(obs, model if name == "hero" else {}, rng)
                 latency.append(time.perf_counter() - begin)
+                if responses is not None:
+                    observations.append(public_response(obs, result))
                 hand.apply(result)
                 if len(hand.events) > 10000:
                     raise RuntimeError("Hand exceeded decision limit")
             total += hand.returns()[seated.index("hero")] / 100
             profiles.record(h, hand.events)
+            if responses is not None:
+                responses.record(h, observations)
             if hand_log:
-                hand_log.write(json.dumps({"hand_id": h, **hand.record()}) + "\n")
+                extra = {"response_observations": observations} if responses is not None else {}
+                hand_log.write(json.dumps({"hand_id": h, **extra, **hand.record()}) + "\n")
                 hand_log.flush()
         return {"seed": seed, "seats": seats, "hands": hands, "hero_bb": total,
                 "bb_per_100": total * 100 / hands, "pool": styles,
@@ -99,9 +112,12 @@ def session(*, seats, hands, seed, config, pool, log_path=None,
                 "decision_latency_ms": {"p50": float(np.quantile(latency, .5) * 1000),
                                         "p95": float(np.quantile(latency, .95) * 1000),
                                         "max": max(latency) * 1000},
-                "public_profiles": profiles.view()}
+                "public_profiles": profiles.view(),
+                **({"response_profiles": responses.view()} if responses is not None else {})}
     finally:
         profiles.close()
+        if responses is not None:
+            responses.close()
         if hand_log:
             hand_log.close()
 

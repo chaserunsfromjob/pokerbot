@@ -1,0 +1,2950 @@
+{
+  "status": "synthetic prediction diagnostics; not strategy strength or played hands",
+  "seeds": [
+    17,
+    29,
+    43
+  ],
+  "scenarios": [
+    "caller",
+    "tight",
+    "aggressive",
+    "unfamiliar",
+    "changing",
+    "mistaken_history"
+  ],
+  "generated_opportunities": 18432,
+  "injected_wrong_observations_per_mistaken_trial": 800,
+  "rows": [
+    {
+      "scenario": "caller",
+      "seed": 17,
+      "observations": 1024,
+      "mean_prior_excess_brier": 0.46499999999999003,
+      "mean_learned_excess_brier": 0.0038411195038702624,
+      "window_256_383_prior_excess_brier": 0.4650000000000015,
+      "window_256_383_learned_excess_brier": 0.00028848247325472806,
+      "checkpoints": [
+        {
+          "observations": 0,
+          "truth": [
+            0.0,
+            1.0,
+            0.0
+          ],
+          "learned": [
+            0.3499999999999999,
+            0.45,
+            0.20000000000000004
+          ],
+          "learned_excess_brier": 0.465,
+          "prior_excess_brier": 0.465
+        },
+        {
+          "observations": 8,
+          "truth": [
+            0.0,
+            1.0,
+            0.0
+          ],
+          "learned": [
+            0.17499999999999996,
+            0.725,
+            0.10000000000000002
+          ],
+          "learned_excess_brier": 0.11625,
+          "prior_excess_brier": 0.465
+        },
+        {
+          "observations": 32,
+          "truth": [
+            0.0,
+            1.0,
+            0.0
+          ],
+          "learned": [
+            0.06999999999999998,
+            0.89,
+            0.04000000000000001
+          ],
+          "learned_excess_brier": 0.018599999999999995,
+          "prior_excess_brier": 0.465
+        },
+        {
+          "observations": 128,
+          "truth": [
+            0.0,
+            1.0,
+            0.0
+          ],
+          "learned": [
+            0.020588235294117643,
+            0.9676470588235294,
+            0.011764705882352943
+          ],
+          "learned_excess_brier": 0.0016089965397923871,
+          "prior_excess_brier": 0.465
+        },
+        {
+          "observations": 256,
+          "truth": [
+            0.0,
+            1.0,
+            0.0
+          ],
+          "learned": [
+            0.010606060606060603,
+            0.9833333333333334,
+            0.0060606060606060615
+          ],
+          "learned_excess_brier": 0.00042699724517906133,
+          "prior_excess_brier": 0.465
+        },
+        {
+          "observations": 264,
+          "truth": [
+            0.0,
+            1.0,
+            0.0
+          ],
+          "learned": [
+            0.010294117647058822,
+            0.9838235294117648,
+            0.005882352941176471
+          ],
+          "learned_excess_brier": 0.000402249134948095,
+          "prior_excess_brier": 0.465
+        },
+        {
+          "observations": 288,
+          "truth": [
+            0.0,
+            1.0,
+            0.0
+          ],
+          "learned": [
+            0.009459459459459457,
+            0.9851351351351352,
+            0.005405405405405407
+          ],
+          "learned_excess_brier": 0.0003396639883126357,
+          "prior_excess_brier": 0.465
+        },
+        {
+          "observations": 384,
+          "truth": [
+            0.0,
+            1.0,
+            0.0
+          ],
+          "learned": [
+            0.007142857142857141,
+            0.9887755102040817,
+            0.004081632653061225
+          ],
+          "learned_excess_brier": 0.0001936693044564745,
+          "prior_excess_brier": 0.465
+        },
+        {
+          "observations": 512,
+          "truth": [
+            0.0,
+            1.0,
+            0.0
+          ],
+          "learned": [
+            0.0053846153846153835,
+            0.9915384615384616,
+            0.0030769230769230774
+          ],
+          "learned_excess_brier": 0.00011005917159763225,
+          "prior_excess_brier": 0.465
+        },
+        {
+          "observations": 1024,
+          "truth": [
+            0.0,
+            1.0,
+            0.0
+          ],
+          "learned": [
+            0.002713178294573643,
+            0.9957364341085271,
+            0.001550387596899225
+          ],
+          "learned_excess_brier": 2.7943032269695772e-05,
+          "prior_excess_brier": 0.465
+        }
+      ]
+    },
+    {
+      "scenario": "caller",
+      "seed": 29,
+      "observations": 1024,
+      "mean_prior_excess_brier": 0.46499999999999003,
+      "mean_learned_excess_brier": 0.0038411195038702624,
+      "window_256_383_prior_excess_brier": 0.4650000000000015,
+      "window_256_383_learned_excess_brier": 0.00028848247325472806,
+      "checkpoints": [
+        {
+          "observations": 0,
+          "truth": [
+            0.0,
+            1.0,
+            0.0
+          ],
+          "learned": [
+            0.3499999999999999,
+            0.45,
+            0.20000000000000004
+          ],
+          "learned_excess_brier": 0.465,
+          "prior_excess_brier": 0.465
+        },
+        {
+          "observations": 8,
+          "truth": [
+            0.0,
+            1.0,
+            0.0
+          ],
+          "learned": [
+            0.17499999999999996,
+            0.725,
+            0.10000000000000002
+          ],
+          "learned_excess_brier": 0.11625,
+          "prior_excess_brier": 0.465
+        },
+        {
+          "observations": 32,
+          "truth": [
+            0.0,
+            1.0,
+            0.0
+          ],
+          "learned": [
+            0.06999999999999998,
+            0.89,
+            0.04000000000000001
+          ],
+          "learned_excess_brier": 0.018599999999999995,
+          "prior_excess_brier": 0.465
+        },
+        {
+          "observations": 128,
+          "truth": [
+            0.0,
+            1.0,
+            0.0
+          ],
+          "learned": [
+            0.020588235294117643,
+            0.9676470588235294,
+            0.011764705882352943
+          ],
+          "learned_excess_brier": 0.0016089965397923871,
+          "prior_excess_brier": 0.465
+        },
+        {
+          "observations": 256,
+          "truth": [
+            0.0,
+            1.0,
+            0.0
+          ],
+          "learned": [
+            0.010606060606060603,
+            0.9833333333333334,
+            0.0060606060606060615
+          ],
+          "learned_excess_brier": 0.00042699724517906133,
+          "prior_excess_brier": 0.465
+        },
+        {
+          "observations": 264,
+          "truth": [
+            0.0,
+            1.0,
+            0.0
+          ],
+          "learned": [
+            0.010294117647058822,
+            0.9838235294117648,
+            0.005882352941176471
+          ],
+          "learned_excess_brier": 0.000402249134948095,
+          "prior_excess_brier": 0.465
+        },
+        {
+          "observations": 288,
+          "truth": [
+            0.0,
+            1.0,
+            0.0
+          ],
+          "learned": [
+            0.009459459459459457,
+            0.9851351351351352,
+            0.005405405405405407
+          ],
+          "learned_excess_brier": 0.0003396639883126357,
+          "prior_excess_brier": 0.465
+        },
+        {
+          "observations": 384,
+          "truth": [
+            0.0,
+            1.0,
+            0.0
+          ],
+          "learned": [
+            0.007142857142857141,
+            0.9887755102040817,
+            0.004081632653061225
+          ],
+          "learned_excess_brier": 0.0001936693044564745,
+          "prior_excess_brier": 0.465
+        },
+        {
+          "observations": 512,
+          "truth": [
+            0.0,
+            1.0,
+            0.0
+          ],
+          "learned": [
+            0.0053846153846153835,
+            0.9915384615384616,
+            0.0030769230769230774
+          ],
+          "learned_excess_brier": 0.00011005917159763225,
+          "prior_excess_brier": 0.465
+        },
+        {
+          "observations": 1024,
+          "truth": [
+            0.0,
+            1.0,
+            0.0
+          ],
+          "learned": [
+            0.002713178294573643,
+            0.9957364341085271,
+            0.001550387596899225
+          ],
+          "learned_excess_brier": 2.7943032269695772e-05,
+          "prior_excess_brier": 0.465
+        }
+      ]
+    },
+    {
+      "scenario": "caller",
+      "seed": 43,
+      "observations": 1024,
+      "mean_prior_excess_brier": 0.46499999999999003,
+      "mean_learned_excess_brier": 0.0038411195038702624,
+      "window_256_383_prior_excess_brier": 0.4650000000000015,
+      "window_256_383_learned_excess_brier": 0.00028848247325472806,
+      "checkpoints": [
+        {
+          "observations": 0,
+          "truth": [
+            0.0,
+            1.0,
+            0.0
+          ],
+          "learned": [
+            0.3499999999999999,
+            0.45,
+            0.20000000000000004
+          ],
+          "learned_excess_brier": 0.465,
+          "prior_excess_brier": 0.465
+        },
+        {
+          "observations": 8,
+          "truth": [
+            0.0,
+            1.0,
+            0.0
+          ],
+          "learned": [
+            0.17499999999999996,
+            0.725,
+            0.10000000000000002
+          ],
+          "learned_excess_brier": 0.11625,
+          "prior_excess_brier": 0.465
+        },
+        {
+          "observations": 32,
+          "truth": [
+            0.0,
+            1.0,
+            0.0
+          ],
+          "learned": [
+            0.06999999999999998,
+            0.89,
+            0.04000000000000001
+          ],
+          "learned_excess_brier": 0.018599999999999995,
+          "prior_excess_brier": 0.465
+        },
+        {
+          "observations": 128,
+          "truth": [
+            0.0,
+            1.0,
+            0.0
+          ],
+          "learned": [
+            0.020588235294117643,
+            0.9676470588235294,
+            0.011764705882352943
+          ],
+          "learned_excess_brier": 0.0016089965397923871,
+          "prior_excess_brier": 0.465
+        },
+        {
+          "observations": 256,
+          "truth": [
+            0.0,
+            1.0,
+            0.0
+          ],
+          "learned": [
+            0.010606060606060603,
+            0.9833333333333334,
+            0.0060606060606060615
+          ],
+          "learned_excess_brier": 0.00042699724517906133,
+          "prior_excess_brier": 0.465
+        },
+        {
+          "observations": 264,
+          "truth": [
+            0.0,
+            1.0,
+            0.0
+          ],
+          "learned": [
+            0.010294117647058822,
+            0.9838235294117648,
+            0.005882352941176471
+          ],
+          "learned_excess_brier": 0.000402249134948095,
+          "prior_excess_brier": 0.465
+        },
+        {
+          "observations": 288,
+          "truth": [
+            0.0,
+            1.0,
+            0.0
+          ],
+          "learned": [
+            0.009459459459459457,
+            0.9851351351351352,
+            0.005405405405405407
+          ],
+          "learned_excess_brier": 0.0003396639883126357,
+          "prior_excess_brier": 0.465
+        },
+        {
+          "observations": 384,
+          "truth": [
+            0.0,
+            1.0,
+            0.0
+          ],
+          "learned": [
+            0.007142857142857141,
+            0.9887755102040817,
+            0.004081632653061225
+          ],
+          "learned_excess_brier": 0.0001936693044564745,
+          "prior_excess_brier": 0.465
+        },
+        {
+          "observations": 512,
+          "truth": [
+            0.0,
+            1.0,
+            0.0
+          ],
+          "learned": [
+            0.0053846153846153835,
+            0.9915384615384616,
+            0.0030769230769230774
+          ],
+          "learned_excess_brier": 0.00011005917159763225,
+          "prior_excess_brier": 0.465
+        },
+        {
+          "observations": 1024,
+          "truth": [
+            0.0,
+            1.0,
+            0.0
+          ],
+          "learned": [
+            0.002713178294573643,
+            0.9957364341085271,
+            0.001550387596899225
+          ],
+          "learned_excess_brier": 2.7943032269695772e-05,
+          "prior_excess_brier": 0.465
+        }
+      ]
+    },
+    {
+      "scenario": "tight",
+      "seed": 17,
+      "observations": 1024,
+      "mean_prior_excess_brier": 0.20580000000000365,
+      "mean_learned_excess_brier": 0.0055033463206009174,
+      "window_256_383_prior_excess_brier": 0.2058,
+      "window_256_383_learned_excess_brier": 0.002686309673365177,
+      "checkpoints": [
+        {
+          "observations": 0,
+          "truth": [
+            0.72,
+            0.28,
+            0.0
+          ],
+          "learned": [
+            0.3499999999999999,
+            0.45,
+            0.20000000000000004
+          ],
+          "learned_excess_brier": 0.20580000000000007,
+          "prior_excess_brier": 0.20580000000000007
+        },
+        {
+          "observations": 8,
+          "truth": [
+            0.72,
+            0.28,
+            0.0
+          ],
+          "learned": [
+            0.48749999999999993,
+            0.4125,
+            0.10000000000000002
+          ],
+          "learned_excess_brier": 0.08161250000000002,
+          "prior_excess_brier": 0.20580000000000007
+        },
+        {
+          "observations": 32,
+          "truth": [
+            0.72,
+            0.28,
+            0.0
+          ],
+          "learned": [
+            0.5700000000000001,
+            0.39,
+            0.04000000000000001
+          ],
+          "learned_excess_brier": 0.036199999999999975,
+          "prior_excess_brier": 0.20580000000000007
+        },
+        {
+          "observations": 128,
+          "truth": [
+            0.72,
+            0.28,
+            0.0
+          ],
+          "learned": [
+            0.6529411764705882,
+            0.33529411764705885,
+            0.011764705882352943
+          ],
+          "learned_excess_brier": 0.007692733564013836,
+          "prior_excess_brier": 0.20580000000000007
+        },
+        {
+          "observations": 256,
+          "truth": [
+            0.72,
+            0.28,
+            0.0
+          ],
+          "learned": [
+            0.6810606060606061,
+            0.31287878787878787,
+            0.0060606060606060615
+          ],
+          "learned_excess_brier": 0.0026340220385674823,
+          "prior_excess_brier": 0.20580000000000007
+        },
+        {
+          "observations": 264,
+          "truth": [
+            0.72,
+            0.28,
+            0.0
+          ],
+          "learned": [
+            0.6757352941176471,
+            0.31838235294117645,
+            0.005882352941176471
+          ],
+          "learned_excess_brier": 0.0034671712802768068,
+          "prior_excess_brier": 0.20580000000000007
+        },
+        {
+          "observations": 288,
+          "truth": [
+            0.72,
+            0.28,
+            0.0
+          ],
+          "learned": [
+            0.6817567567567568,
+            0.3128378378378378,
+            0.005405405405405407
+          ],
+          "learned_excess_brier": 0.002570087655222778,
+          "prior_excess_brier": 0.20580000000000007
+        },
+        {
+          "observations": 384,
+          "truth": [
+            0.72,
+            0.28,
+            0.0
+          ],
+          "learned": [
+            0.6908163265306123,
+            0.3051020408163265,
+            0.004081632653061225
+          ],
+          "learned_excess_brier": 0.0014984589754268984,
+          "prior_excess_brier": 0.20580000000000007
+        },
+        {
+          "observations": 512,
+          "truth": [
+            0.72,
+            0.28,
+            0.0
+          ],
+          "learned": [
+            0.7111538461538461,
+            0.2857692307692308,
+            0.0030769230769230774
+          ],
+          "learned_excess_brier": 0.00012100591715976292,
+          "prior_excess_brier": 0.20580000000000007
+        },
+        {
+          "observations": 1024,
+          "truth": [
+            0.72,
+            0.28,
+            0.0
+          ],
+          "learned": [
+            0.7120155038759689,
+            0.2864341085271318,
+            0.001550387596899225
+          ],
+          "learned_excess_brier": 0.000107553632594196,
+          "prior_excess_brier": 0.20580000000000007
+        }
+      ]
+    },
+    {
+      "scenario": "tight",
+      "seed": 29,
+      "observations": 1024,
+      "mean_prior_excess_brier": 0.20580000000000365,
+      "mean_learned_excess_brier": 0.0015247530018227856,
+      "window_256_383_prior_excess_brier": 0.2058,
+      "window_256_383_learned_excess_brier": 0.00016837528412673965,
+      "checkpoints": [
+        {
+          "observations": 0,
+          "truth": [
+            0.72,
+            0.28,
+            0.0
+          ],
+          "learned": [
+            0.3499999999999999,
+            0.45,
+            0.20000000000000004
+          ],
+          "learned_excess_brier": 0.20580000000000007,
+          "prior_excess_brier": 0.20580000000000007
+        },
+        {
+          "observations": 8,
+          "truth": [
+            0.72,
+            0.28,
+            0.0
+          ],
+          "learned": [
+            0.5499999999999999,
+            0.35,
+            0.10000000000000002
+          ],
+          "learned_excess_brier": 0.043800000000000006,
+          "prior_excess_brier": 0.20580000000000007
+        },
+        {
+          "observations": 32,
+          "truth": [
+            0.72,
+            0.28,
+            0.0
+          ],
+          "learned": [
+            0.6950000000000001,
+            0.265,
+            0.04000000000000001
+          ],
+          "learned_excess_brier": 0.002449999999999997,
+          "prior_excess_brier": 0.20580000000000007
+        },
+        {
+          "observations": 128,
+          "truth": [
+            0.72,
+            0.28,
+            0.0
+          ],
+          "learned": [
+            0.6823529411764706,
+            0.3058823529411765,
+            0.011764705882352943
+          ],
+          "learned_excess_brier": 0.0022256055363321764,
+          "prior_excess_brier": 0.20580000000000007
+        },
+        {
+          "observations": 256,
+          "truth": [
+            0.72,
+            0.28,
+            0.0
+          ],
+          "learned": [
+            0.7000000000000001,
+            0.29393939393939394,
+            0.0060606060606060615
+          ],
+          "learned_excess_brier": 0.0006310376492194631,
+          "prior_excess_brier": 0.20580000000000007
+        },
+        {
+          "observations": 264,
+          "truth": [
+            0.72,
+            0.28,
+            0.0
+          ],
+          "learned": [
+            0.7014705882352942,
+            0.29264705882352937,
+            0.005882352941176471
+          ],
+          "learned_excess_brier": 0.0005378892733563964,
+          "prior_excess_brier": 0.20580000000000007
+        },
+        {
+          "observations": 288,
+          "truth": [
+            0.72,
+            0.28,
+            0.0
+          ],
+          "learned": [
+            0.7121621621621622,
+            0.28243243243243243,
+            0.005405405405405407
+          ],
+          "learned_excess_brier": 9.656683710737628e-05,
+          "prior_excess_brier": 0.20580000000000007
+        },
+        {
+          "observations": 384,
+          "truth": [
+            0.72,
+            0.28,
+            0.0
+          ],
+          "learned": [
+            0.7137755102040817,
+            0.28214285714285714,
+            0.004081632653061225
+          ],
+          "learned_excess_brier": 5.9995835068720096e-05,
+          "prior_excess_brier": 0.20580000000000007
+        },
+        {
+          "observations": 512,
+          "truth": [
+            0.72,
+            0.28,
+            0.0
+          ],
+          "learned": [
+            0.7073076923076923,
+            0.2896153846153846,
+            0.0030769230769230774
+          ],
+          "learned_excess_brier": 0.0002630177514792887,
+          "prior_excess_brier": 0.20580000000000007
+        },
+        {
+          "observations": 1024,
+          "truth": [
+            0.72,
+            0.28,
+            0.0
+          ],
+          "learned": [
+            0.7284883720930232,
+            0.26996124031007757,
+            0.001550387596899225
+          ],
+          "learned_excess_brier": 0.00017523285860224648,
+          "prior_excess_brier": 0.20580000000000007
+        }
+      ]
+    },
+    {
+      "scenario": "tight",
+      "seed": 43,
+      "observations": 1024,
+      "mean_prior_excess_brier": 0.20580000000000365,
+      "mean_learned_excess_brier": 0.0017208621003420473,
+      "window_256_383_prior_excess_brier": 0.2058,
+      "window_256_383_learned_excess_brier": 0.0006358108153987856,
+      "checkpoints": [
+        {
+          "observations": 0,
+          "truth": [
+            0.72,
+            0.28,
+            0.0
+          ],
+          "learned": [
+            0.3499999999999999,
+            0.45,
+            0.20000000000000004
+          ],
+          "learned_excess_brier": 0.20580000000000007,
+          "prior_excess_brier": 0.20580000000000007
+        },
+        {
+          "observations": 8,
+          "truth": [
+            0.72,
+            0.28,
+            0.0
+          ],
+          "learned": [
+            0.6124999999999999,
+            0.2875,
+            0.10000000000000002
+          ],
+          "learned_excess_brier": 0.021612500000000014,
+          "prior_excess_brier": 0.20580000000000007
+        },
+        {
+          "observations": 32,
+          "truth": [
+            0.72,
+            0.28,
+            0.0
+          ],
+          "learned": [
+            0.67,
+            0.29,
+            0.04000000000000001
+          ],
+          "learned_excess_brier": 0.004199999999999994,
+          "prior_excess_brier": 0.20580000000000007
+        },
+        {
+          "observations": 128,
+          "truth": [
+            0.72,
+            0.28,
+            0.0
+          ],
+          "learned": [
+            0.6749999999999999,
+            0.31323529411764706,
+            0.011764705882352943
+          ],
+          "learned_excess_brier": 0.003267993079584777,
+          "prior_excess_brier": 0.20580000000000007
+        },
+        {
+          "observations": 256,
+          "truth": [
+            0.72,
+            0.28,
+            0.0
+          ],
+          "learned": [
+            0.7227272727272728,
+            0.2712121212121212,
+            0.0060606060606060615
+          ],
+          "learned_excess_brier": 0.00012139577594123188,
+          "prior_excess_brier": 0.20580000000000007
+        },
+        {
+          "observations": 264,
+          "truth": [
+            0.72,
+            0.28,
+            0.0
+          ],
+          "learned": [
+            0.7272058823529413,
+            0.26691176470588235,
+            0.005882352941176471
+          ],
+          "learned_excess_brier": 0.00025782871972318577,
+          "prior_excess_brier": 0.20580000000000007
+        },
+        {
+          "observations": 288,
+          "truth": [
+            0.72,
+            0.28,
+            0.0
+          ],
+          "learned": [
+            0.7222972972972973,
+            0.2722972972972973,
+            0.005405405405405407
+          ],
+          "learned_excess_brier": 9.382761139517962e-05,
+          "prior_excess_brier": 0.20580000000000007
+        },
+        {
+          "observations": 384,
+          "truth": [
+            0.72,
+            0.28,
+            0.0
+          ],
+          "learned": [
+            0.7418367346938776,
+            0.2540816326530612,
+            0.004081632653061225
+          ],
+          "learned_excess_brier": 0.0011652644731361967,
+          "prior_excess_brier": 0.20580000000000007
+        },
+        {
+          "observations": 512,
+          "truth": [
+            0.72,
+            0.28,
+            0.0
+          ],
+          "learned": [
+            0.7361538461538462,
+            0.26076923076923075,
+            0.0030769230769230774
+          ],
+          "learned_excess_brier": 0.0006402366863905352,
+          "prior_excess_brier": 0.20580000000000007
+        },
+        {
+          "observations": 1024,
+          "truth": [
+            0.72,
+            0.28,
+            0.0
+          ],
+          "learned": [
+            0.7265503875968992,
+            0.27189922480620154,
+            0.001550387596899225
+          ],
+          "learned_excess_brier": 0.0001109338381106905,
+          "prior_excess_brier": 0.20580000000000007
+        }
+      ]
+    },
+    {
+      "scenario": "aggressive",
+      "seed": 17,
+      "observations": 1024,
+      "mean_prior_excess_brier": 0.2450000000000031,
+      "mean_learned_excess_brier": 0.0024412894410666217,
+      "window_256_383_prior_excess_brier": 0.2450000000000003,
+      "window_256_383_learned_excess_brier": 0.0003688411772098968,
+      "checkpoints": [
+        {
+          "observations": 0,
+          "truth": [
+            0.0,
+            0.44999999999999996,
+            0.55
+          ],
+          "learned": [
+            0.3499999999999999,
+            0.45,
+            0.20000000000000004
+          ],
+          "learned_excess_brier": 0.24499999999999994,
+          "prior_excess_brier": 0.24499999999999994
+        },
+        {
+          "observations": 8,
+          "truth": [
+            0.0,
+            0.44999999999999996,
+            0.55
+          ],
+          "learned": [
+            0.17499999999999996,
+            0.35,
+            0.47500000000000003
+          ],
+          "learned_excess_brier": 0.046249999999999986,
+          "prior_excess_brier": 0.24499999999999994
+        },
+        {
+          "observations": 32,
+          "truth": [
+            0.0,
+            0.44999999999999996,
+            0.55
+          ],
+          "learned": [
+            0.06999999999999998,
+            0.39,
+            0.54
+          ],
+          "learned_excess_brier": 0.00859999999999999,
+          "prior_excess_brier": 0.24499999999999994
+        },
+        {
+          "observations": 128,
+          "truth": [
+            0.0,
+            0.44999999999999996,
+            0.55
+          ],
+          "learned": [
+            0.020588235294117643,
+            0.43823529411764706,
+            0.5411764705882353
+          ],
+          "learned_excess_brier": 0.0006401384083044986,
+          "prior_excess_brier": 0.24499999999999994
+        },
+        {
+          "observations": 256,
+          "truth": [
+            0.0,
+            0.44999999999999996,
+            0.55
+          ],
+          "learned": [
+            0.010606060606060603,
+            0.4492424242424242,
+            0.5401515151515152
+          ],
+          "learned_excess_brier": 0.00021005509641873338,
+          "prior_excess_brier": 0.24499999999999994
+        },
+        {
+          "observations": 264,
+          "truth": [
+            0.0,
+            0.44999999999999996,
+            0.55
+          ],
+          "learned": [
+            0.010294117647058822,
+            0.44705882352941173,
+            0.5426470588235294
+          ],
+          "learned_excess_brier": 0.0001686851211072676,
+          "prior_excess_brier": 0.24499999999999994
+        },
+        {
+          "observations": 288,
+          "truth": [
+            0.0,
+            0.44999999999999996,
+            0.55
+          ],
+          "learned": [
+            0.009459459459459457,
+            0.4614864864864865,
+            0.529054054054054
+          ],
+          "learned_excess_brier": 0.0006601533966398869,
+          "prior_excess_brier": 0.24499999999999994
+        },
+        {
+          "observations": 384,
+          "truth": [
+            0.0,
+            0.44999999999999996,
+            0.55
+          ],
+          "learned": [
+            0.007142857142857141,
+            0.4658163265306122,
+            0.5270408163265305
+          ],
+          "learned_excess_brier": 0.0008283007080383231,
+          "prior_excess_brier": 0.24499999999999994
+        },
+        {
+          "observations": 512,
+          "truth": [
+            0.0,
+            0.44999999999999996,
+            0.55
+          ],
+          "learned": [
+            0.0053846153846153835,
+            0.47423076923076923,
+            0.5203846153846154
+          ],
+          "learned_excess_brier": 0.0014931952662721906,
+          "prior_excess_brier": 0.24499999999999994
+        },
+        {
+          "observations": 1024,
+          "truth": [
+            0.0,
+            0.44999999999999996,
+            0.55
+          ],
+          "learned": [
+            0.002713178294573643,
+            0.46569767441860466,
+            0.5315891472868217
+          ],
+          "learned_excess_brier": 0.0005927378162370078,
+          "prior_excess_brier": 0.24499999999999994
+        }
+      ]
+    },
+    {
+      "scenario": "aggressive",
+      "seed": 29,
+      "observations": 1024,
+      "mean_prior_excess_brier": 0.2450000000000031,
+      "mean_learned_excess_brier": 0.0064523836966715285,
+      "window_256_383_prior_excess_brier": 0.2450000000000003,
+      "window_256_383_learned_excess_brier": 0.004577273210959313,
+      "checkpoints": [
+        {
+          "observations": 0,
+          "truth": [
+            0.0,
+            0.44999999999999996,
+            0.55
+          ],
+          "learned": [
+            0.3499999999999999,
+            0.45,
+            0.20000000000000004
+          ],
+          "learned_excess_brier": 0.24499999999999994,
+          "prior_excess_brier": 0.24499999999999994
+        },
+        {
+          "observations": 8,
+          "truth": [
+            0.0,
+            0.44999999999999996,
+            0.55
+          ],
+          "learned": [
+            0.17499999999999996,
+            0.475,
+            0.35000000000000003
+          ],
+          "learned_excess_brier": 0.07125,
+          "prior_excess_brier": 0.24499999999999994
+        },
+        {
+          "observations": 32,
+          "truth": [
+            0.0,
+            0.44999999999999996,
+            0.55
+          ],
+          "learned": [
+            0.06999999999999998,
+            0.54,
+            0.39
+          ],
+          "learned_excess_brier": 0.03860000000000002,
+          "prior_excess_brier": 0.24499999999999994
+        },
+        {
+          "observations": 128,
+          "truth": [
+            0.0,
+            0.44999999999999996,
+            0.55
+          ],
+          "learned": [
+            0.020588235294117643,
+            0.48970588235294116,
+            0.48970588235294116
+          ],
+          "learned_excess_brier": 0.005635813148788937,
+          "prior_excess_brier": 0.24499999999999994
+        },
+        {
+          "observations": 256,
+          "truth": [
+            0.0,
+            0.44999999999999996,
+            0.55
+          ],
+          "learned": [
+            0.010606060606060603,
+            0.4795454545454545,
+            0.5098484848484848
+          ],
+          "learned_excess_brier": 0.0025975665748393115,
+          "prior_excess_brier": 0.24499999999999994
+        },
+        {
+          "observations": 264,
+          "truth": [
+            0.0,
+            0.44999999999999996,
+            0.55
+          ],
+          "learned": [
+            0.010294117647058822,
+            0.48014705882352937,
+            0.5095588235294117
+          ],
+          "learned_excess_brier": 0.0026503027681660965,
+          "prior_excess_brier": 0.24499999999999994
+        },
+        {
+          "observations": 288,
+          "truth": [
+            0.0,
+            0.44999999999999996,
+            0.55
+          ],
+          "learned": [
+            0.009459459459459457,
+            0.49189189189189186,
+            0.4986486486486486
+          ],
+          "learned_excess_brier": 0.004481373265157059,
+          "prior_excess_brier": 0.24499999999999994
+        },
+        {
+          "observations": 384,
+          "truth": [
+            0.0,
+            0.44999999999999996,
+            0.55
+          ],
+          "learned": [
+            0.007142857142857141,
+            0.49387755102040815,
+            0.4989795918367347
+          ],
+          "learned_excess_brier": 0.004579341940857984,
+          "prior_excess_brier": 0.24499999999999994
+        },
+        {
+          "observations": 512,
+          "truth": [
+            0.0,
+            0.44999999999999996,
+            0.55
+          ],
+          "learned": [
+            0.0053846153846153835,
+            0.47807692307692307,
+            0.5165384615384616
+          ],
+          "learned_excess_brier": 0.00193698224852071,
+          "prior_excess_brier": 0.24499999999999994
+        },
+        {
+          "observations": 1024,
+          "truth": [
+            0.0,
+            0.44999999999999996,
+            0.55
+          ],
+          "learned": [
+            0.002713178294573643,
+            0.4734496124031008,
+            0.5238372093023256
+          ],
+          "learned_excess_brier": 0.0012417372754041278,
+          "prior_excess_brier": 0.24499999999999994
+        }
+      ]
+    },
+    {
+      "scenario": "aggressive",
+      "seed": 43,
+      "observations": 1024,
+      "mean_prior_excess_brier": 0.2450000000000031,
+      "mean_learned_excess_brier": 0.0028320417770003967,
+      "window_256_383_prior_excess_brier": 0.2450000000000003,
+      "window_256_383_learned_excess_brier": 0.000569795205670907,
+      "checkpoints": [
+        {
+          "observations": 0,
+          "truth": [
+            0.0,
+            0.44999999999999996,
+            0.55
+          ],
+          "learned": [
+            0.3499999999999999,
+            0.45,
+            0.20000000000000004
+          ],
+          "learned_excess_brier": 0.24499999999999994,
+          "prior_excess_brier": 0.24499999999999994
+        },
+        {
+          "observations": 8,
+          "truth": [
+            0.0,
+            0.44999999999999996,
+            0.55
+          ],
+          "learned": [
+            0.17499999999999996,
+            0.35,
+            0.47500000000000003
+          ],
+          "learned_excess_brier": 0.046249999999999986,
+          "prior_excess_brier": 0.24499999999999994
+        },
+        {
+          "observations": 32,
+          "truth": [
+            0.0,
+            0.44999999999999996,
+            0.55
+          ],
+          "learned": [
+            0.06999999999999998,
+            0.41500000000000004,
+            0.515
+          ],
+          "learned_excess_brier": 0.007349999999999994,
+          "prior_excess_brier": 0.24499999999999994
+        },
+        {
+          "observations": 128,
+          "truth": [
+            0.0,
+            0.44999999999999996,
+            0.55
+          ],
+          "learned": [
+            0.020588235294117643,
+            0.3941176470588235,
+            0.5852941176470587
+          ],
+          "learned_excess_brier": 0.004792387543252582,
+          "prior_excess_brier": 0.24499999999999994
+        },
+        {
+          "observations": 256,
+          "truth": [
+            0.0,
+            0.44999999999999996,
+            0.55
+          ],
+          "learned": [
+            0.010606060606060603,
+            0.42272727272727273,
+            0.5666666666666667
+          ],
+          "learned_excess_brier": 0.001134067952249766,
+          "prior_excess_brier": 0.24499999999999994
+        },
+        {
+          "observations": 264,
+          "truth": [
+            0.0,
+            0.44999999999999996,
+            0.55
+          ],
+          "learned": [
+            0.010294117647058822,
+            0.42867647058823527,
+            0.5610294117647059
+          ],
+          "learned_excess_brier": 0.0006823096885813131,
+          "prior_excess_brier": 0.24499999999999994
+        },
+        {
+          "observations": 288,
+          "truth": [
+            0.0,
+            0.44999999999999996,
+            0.55
+          ],
+          "learned": [
+            0.009459459459459457,
+            0.4243243243243243,
+            0.5662162162162162
+          ],
+          "learned_excess_brier": 0.0010116873630387105,
+          "prior_excess_brier": 0.24499999999999994
+        },
+        {
+          "observations": 384,
+          "truth": [
+            0.0,
+            0.44999999999999996,
+            0.55
+          ],
+          "learned": [
+            0.007142857142857141,
+            0.4607142857142857,
+            0.5321428571428571
+          ],
+          "learned_excess_brier": 0.0004846938775510225,
+          "prior_excess_brier": 0.24499999999999994
+        },
+        {
+          "observations": 512,
+          "truth": [
+            0.0,
+            0.44999999999999996,
+            0.55
+          ],
+          "learned": [
+            0.0053846153846153835,
+            0.46076923076923076,
+            0.5338461538461539
+          ],
+          "learned_excess_brier": 0.0004059171597633155,
+          "prior_excess_brier": 0.24499999999999994
+        },
+        {
+          "observations": 1024,
+          "truth": [
+            0.0,
+            0.44999999999999996,
+            0.55
+          ],
+          "learned": [
+            0.002713178294573643,
+            0.4627906976744186,
+            0.5344961240310078
+          ],
+          "learned_excess_brier": 0.00041133345351842036,
+          "prior_excess_brier": 0.24499999999999994
+        }
+      ]
+    },
+    {
+      "scenario": "unfamiliar",
+      "seed": 17,
+      "observations": 1024,
+      "mean_prior_excess_brier": 0.5450000000000014,
+      "mean_learned_excess_brier": 0.003329738655961878,
+      "window_256_383_prior_excess_brier": 0.5450000000000013,
+      "window_256_383_learned_excess_brier": 0.0005830514098120956,
+      "checkpoints": [
+        {
+          "observations": 0,
+          "truth": [
+            0.1,
+            0.1,
+            0.8
+          ],
+          "learned": [
+            0.3499999999999999,
+            0.45,
+            0.20000000000000004
+          ],
+          "learned_excess_brier": 0.5449999999999999,
+          "prior_excess_brier": 0.5449999999999999
+        },
+        {
+          "observations": 8,
+          "truth": [
+            0.1,
+            0.1,
+            0.8
+          ],
+          "learned": [
+            0.17499999999999996,
+            0.2875,
+            0.5375
+          ],
+          "learned_excess_brier": 0.10968750000000001,
+          "prior_excess_brier": 0.5449999999999999
+        },
+        {
+          "observations": 32,
+          "truth": [
+            0.1,
+            0.1,
+            0.8
+          ],
+          "learned": [
+            0.14499999999999996,
+            0.13999999999999999,
+            0.7150000000000001
+          ],
+          "learned_excess_brier": 0.010849999999999988,
+          "prior_excess_brier": 0.5449999999999999
+        },
+        {
+          "observations": 128,
+          "truth": [
+            0.1,
+            0.1,
+            0.8
+          ],
+          "learned": [
+            0.11617647058823528,
+            0.09999999999999999,
+            0.7838235294117647
+          ],
+          "learned_excess_brier": 0.0005233564013840843,
+          "prior_excess_brier": 0.5449999999999999
+        },
+        {
+          "observations": 256,
+          "truth": [
+            0.1,
+            0.1,
+            0.8
+          ],
+          "learned": [
+            0.09393939393939395,
+            0.0893939393939394,
+            0.8166666666666667
+          ],
+          "learned_excess_brier": 0.00042699724517906133,
+          "prior_excess_brier": 0.5449999999999999
+        },
+        {
+          "observations": 264,
+          "truth": [
+            0.1,
+            0.1,
+            0.8
+          ],
+          "learned": [
+            0.0911764705882353,
+            0.09411764705882353,
+            0.8147058823529412
+          ],
+          "learned_excess_brier": 0.00032871972318338947,
+          "prior_excess_brier": 0.5449999999999999
+        },
+        {
+          "observations": 288,
+          "truth": [
+            0.1,
+            0.1,
+            0.8
+          ],
+          "learned": [
+            0.09391891891891892,
+            0.08648648648648649,
+            0.8195945945945946
+          ],
+          "learned_excess_brier": 0.0006035427319211091,
+          "prior_excess_brier": 0.5449999999999999
+        },
+        {
+          "observations": 384,
+          "truth": [
+            0.1,
+            0.1,
+            0.8
+          ],
+          "learned": [
+            0.09897959183673469,
+            0.09591836734693877,
+            0.8051020408163266
+          ],
+          "learned_excess_brier": 4.373177842565669e-05,
+          "prior_excess_brier": 0.5449999999999999
+        },
+        {
+          "observations": 512,
+          "truth": [
+            0.1,
+            0.1,
+            0.8
+          ],
+          "learned": [
+            0.11115384615384614,
+            0.09346153846153847,
+            0.7953846153846155
+          ],
+          "learned_excess_brier": 0.00018846153846153774,
+          "prior_excess_brier": 0.5449999999999999
+        },
+        {
+          "observations": 1024,
+          "truth": [
+            0.1,
+            0.1,
+            0.8
+          ],
+          "learned": [
+            0.09379844961240309,
+            0.09457364341085271,
+            0.8116279069767443
+          ],
+          "learned_excess_brier": 0.00020311279370230226,
+          "prior_excess_brier": 0.5449999999999999
+        }
+      ]
+    },
+    {
+      "scenario": "unfamiliar",
+      "seed": 29,
+      "observations": 1024,
+      "mean_prior_excess_brier": 0.5450000000000014,
+      "mean_learned_excess_brier": 0.0031215245992961037,
+      "window_256_383_prior_excess_brier": 0.5450000000000013,
+      "window_256_383_learned_excess_brier": 0.000688455504903299,
+      "checkpoints": [
+        {
+          "observations": 0,
+          "truth": [
+            0.1,
+            0.1,
+            0.8
+          ],
+          "learned": [
+            0.3499999999999999,
+            0.45,
+            0.20000000000000004
+          ],
+          "learned_excess_brier": 0.5449999999999999,
+          "prior_excess_brier": 0.5449999999999999
+        },
+        {
+          "observations": 8,
+          "truth": [
+            0.1,
+            0.1,
+            0.8
+          ],
+          "learned": [
+            0.17499999999999996,
+            0.225,
+            0.6
+          ],
+          "learned_excess_brier": 0.06125000000000002,
+          "prior_excess_brier": 0.5449999999999999
+        },
+        {
+          "observations": 32,
+          "truth": [
+            0.1,
+            0.1,
+            0.8
+          ],
+          "learned": [
+            0.06999999999999998,
+            0.16499999999999998,
+            0.765
+          ],
+          "learned_excess_brier": 0.006350000000000001,
+          "prior_excess_brier": 0.5449999999999999
+        },
+        {
+          "observations": 128,
+          "truth": [
+            0.1,
+            0.1,
+            0.8
+          ],
+          "learned": [
+            0.07941176470588235,
+            0.12941176470588237,
+            0.7911764705882353
+          ],
+          "learned_excess_brier": 0.0013667820069204173,
+          "prior_excess_brier": 0.5449999999999999
+        },
+        {
+          "observations": 256,
+          "truth": [
+            0.1,
+            0.1,
+            0.8
+          ],
+          "learned": [
+            0.0787878787878788,
+            0.12348484848484849,
+            0.7977272727272727
+          ],
+          "learned_excess_brier": 0.0010066574839302112,
+          "prior_excess_brier": 0.5449999999999999
+        },
+        {
+          "observations": 264,
+          "truth": [
+            0.1,
+            0.1,
+            0.8
+          ],
+          "learned": [
+            0.08750000000000001,
+            0.11985294117647059,
+            0.7926470588235294
+          ],
+          "learned_excess_brier": 0.0006044550173010391,
+          "prior_excess_brier": 0.5449999999999999
+        },
+        {
+          "observations": 288,
+          "truth": [
+            0.1,
+            0.1,
+            0.8
+          ],
+          "learned": [
+            0.0804054054054054,
+            0.12027027027027028,
+            0.7993243243243243
+          ],
+          "learned_excess_brier": 0.0007952885317750187,
+          "prior_excess_brier": 0.5449999999999999
+        },
+        {
+          "observations": 384,
+          "truth": [
+            0.1,
+            0.1,
+            0.8
+          ],
+          "learned": [
+            0.08367346938775509,
+            0.10357142857142858,
+            0.8127551020408164
+          ],
+          "learned_excess_brier": 0.00044200333194502307,
+          "prior_excess_brier": 0.5449999999999999
+        },
+        {
+          "observations": 512,
+          "truth": [
+            0.1,
+            0.1,
+            0.8
+          ],
+          "learned": [
+            0.09384615384615384,
+            0.09538461538461539,
+            0.8107692307692308
+          ],
+          "learned_excess_brier": 0.00017514792899408262,
+          "prior_excess_brier": 0.5449999999999999
+        },
+        {
+          "observations": 1024,
+          "truth": [
+            0.1,
+            0.1,
+            0.8
+          ],
+          "learned": [
+            0.10155038759689922,
+            0.10232558139534884,
+            0.796124031007752
+          ],
+          "learned_excess_brier": 2.2835166155880034e-05,
+          "prior_excess_brier": 0.5449999999999999
+        }
+      ]
+    },
+    {
+      "scenario": "unfamiliar",
+      "seed": 43,
+      "observations": 1024,
+      "mean_prior_excess_brier": 0.5450000000000014,
+      "mean_learned_excess_brier": 0.0066437171446112634,
+      "window_256_383_prior_excess_brier": 0.5450000000000013,
+      "window_256_383_learned_excess_brier": 0.00044312827965104287,
+      "checkpoints": [
+        {
+          "observations": 0,
+          "truth": [
+            0.1,
+            0.1,
+            0.8
+          ],
+          "learned": [
+            0.3499999999999999,
+            0.45,
+            0.20000000000000004
+          ],
+          "learned_excess_brier": 0.5449999999999999,
+          "prior_excess_brier": 0.5449999999999999
+        },
+        {
+          "observations": 8,
+          "truth": [
+            0.1,
+            0.1,
+            0.8
+          ],
+          "learned": [
+            0.23749999999999996,
+            0.2875,
+            0.47500000000000003
+          ],
+          "learned_excess_brier": 0.15968749999999998,
+          "prior_excess_brier": 0.5449999999999999
+        },
+        {
+          "observations": 32,
+          "truth": [
+            0.1,
+            0.1,
+            0.8
+          ],
+          "learned": [
+            0.19499999999999998,
+            0.13999999999999999,
+            0.665
+          ],
+          "learned_excess_brier": 0.028849999999999994,
+          "prior_excess_brier": 0.5449999999999999
+        },
+        {
+          "observations": 128,
+          "truth": [
+            0.1,
+            0.1,
+            0.8
+          ],
+          "learned": [
+            0.13088235294117648,
+            0.12941176470588237,
+            0.7397058823529411
+          ],
+          "learned_excess_brier": 0.005454152249134963,
+          "prior_excess_brier": 0.5449999999999999
+        },
+        {
+          "observations": 256,
+          "truth": [
+            0.1,
+            0.1,
+            0.8
+          ],
+          "learned": [
+            0.09772727272727273,
+            0.11590909090909092,
+            0.7863636363636364
+          ],
+          "learned_excess_brier": 0.0004442148760330589,
+          "prior_excess_brier": 0.5449999999999999
+        },
+        {
+          "observations": 264,
+          "truth": [
+            0.1,
+            0.1,
+            0.8
+          ],
+          "learned": [
+            0.10220588235294117,
+            0.1161764705882353,
+            0.7816176470588235
+          ],
+          "learned_excess_brier": 0.0006044550173010397,
+          "prior_excess_brier": 0.5449999999999999
+        },
+        {
+          "observations": 288,
+          "truth": [
+            0.1,
+            0.1,
+            0.8
+          ],
+          "learned": [
+            0.10067567567567567,
+            0.11013513513513513,
+            0.7891891891891891
+          ],
+          "learned_excess_brier": 0.00022005113221329665,
+          "prior_excess_brier": 0.5449999999999999
+        },
+        {
+          "observations": 384,
+          "truth": [
+            0.1,
+            0.1,
+            0.8
+          ],
+          "learned": [
+            0.10153061224489796,
+            0.11122448979591837,
+            0.7872448979591837
+          ],
+          "learned_excess_brier": 0.00029102457309454347,
+          "prior_excess_brier": 0.5449999999999999
+        },
+        {
+          "observations": 512,
+          "truth": [
+            0.1,
+            0.1,
+            0.8
+          ],
+          "learned": [
+            0.0996153846153846,
+            0.09923076923076923,
+            0.8011538461538462
+          ],
+          "learned_excess_brier": 2.071005917159821e-06,
+          "prior_excess_brier": 0.5449999999999999
+        },
+        {
+          "observations": 1024,
+          "truth": [
+            0.1,
+            0.1,
+            0.8
+          ],
+          "learned": [
+            0.11317829457364341,
+            0.0877906976744186,
+            0.799031007751938
+          ],
+          "learned_excess_brier": 0.00032367345712397085,
+          "prior_excess_brier": 0.5449999999999999
+        }
+      ]
+    },
+    {
+      "scenario": "changing",
+      "seed": 17,
+      "observations": 1024,
+      "mean_prior_excess_brier": 0.4001999999999937,
+      "mean_learned_excess_brier": 0.18502971636437962,
+      "window_256_383_prior_excess_brier": 0.4650000000000015,
+      "window_256_383_learned_excess_brier": 0.6323791725615111,
+      "checkpoints": [
+        {
+          "observations": 0,
+          "truth": [
+            0.72,
+            0.28,
+            0.0
+          ],
+          "learned": [
+            0.3499999999999999,
+            0.45,
+            0.20000000000000004
+          ],
+          "learned_excess_brier": 0.20580000000000007,
+          "prior_excess_brier": 0.20580000000000007
+        },
+        {
+          "observations": 8,
+          "truth": [
+            0.72,
+            0.28,
+            0.0
+          ],
+          "learned": [
+            0.48749999999999993,
+            0.4125,
+            0.10000000000000002
+          ],
+          "learned_excess_brier": 0.08161250000000002,
+          "prior_excess_brier": 0.20580000000000007
+        },
+        {
+          "observations": 32,
+          "truth": [
+            0.72,
+            0.28,
+            0.0
+          ],
+          "learned": [
+            0.5700000000000001,
+            0.39,
+            0.04000000000000001
+          ],
+          "learned_excess_brier": 0.036199999999999975,
+          "prior_excess_brier": 0.20580000000000007
+        },
+        {
+          "observations": 128,
+          "truth": [
+            0.72,
+            0.28,
+            0.0
+          ],
+          "learned": [
+            0.6529411764705882,
+            0.33529411764705885,
+            0.011764705882352943
+          ],
+          "learned_excess_brier": 0.007692733564013836,
+          "prior_excess_brier": 0.20580000000000007
+        },
+        {
+          "observations": 256,
+          "truth": [
+            0.0,
+            1.0,
+            0.0
+          ],
+          "learned": [
+            0.6810606060606061,
+            0.31287878787878787,
+            0.0060606060606060615
+          ],
+          "learned_excess_brier": 0.9360158402203859,
+          "prior_excess_brier": 0.465
+        },
+        {
+          "observations": 264,
+          "truth": [
+            0.0,
+            1.0,
+            0.0
+          ],
+          "learned": [
+            0.661029411764706,
+            0.33308823529411763,
+            0.005882352941176471
+          ],
+          "learned_excess_brier": 0.8817657871972321,
+          "prior_excess_brier": 0.465
+        },
+        {
+          "observations": 288,
+          "truth": [
+            0.0,
+            1.0,
+            0.0
+          ],
+          "learned": [
+            0.6074324324324325,
+            0.38716216216216215,
+            0.005405405405405407
+          ],
+          "learned_excess_brier": 0.7445735938641345,
+          "prior_excess_brier": 0.465
+        },
+        {
+          "observations": 384,
+          "truth": [
+            0.0,
+            1.0,
+            0.0
+          ],
+          "learned": [
+            0.4586734693877551,
+            0.5372448979591836,
+            0.004081632653061225
+          ],
+          "learned_excess_brier": 0.42454029571012086,
+          "prior_excess_brier": 0.465
+        },
+        {
+          "observations": 512,
+          "truth": [
+            0.0,
+            1.0,
+            0.0
+          ],
+          "learned": [
+            0.3457692307692308,
+            0.6511538461538462,
+            0.0030769230769230774
+          ],
+          "learned_excess_brier": 0.24125946745562127,
+          "prior_excess_brier": 0.465
+        },
+        {
+          "observations": 1024,
+          "truth": [
+            0.0,
+            1.0,
+            0.0
+          ],
+          "learned": [
+            0.1742248062015504,
+            0.8242248062015504,
+            0.001550387596899225
+          ],
+          "learned_excess_brier": 0.06125360555255094,
+          "prior_excess_brier": 0.465
+        }
+      ]
+    },
+    {
+      "scenario": "changing",
+      "seed": 29,
+      "observations": 1024,
+      "mean_prior_excess_brier": 0.4001999999999937,
+      "mean_learned_excess_brier": 0.19155204919761729,
+      "window_256_383_prior_excess_brier": 0.4650000000000015,
+      "window_256_383_learned_excess_brier": 0.6678772510917145,
+      "checkpoints": [
+        {
+          "observations": 0,
+          "truth": [
+            0.72,
+            0.28,
+            0.0
+          ],
+          "learned": [
+            0.3499999999999999,
+            0.45,
+            0.20000000000000004
+          ],
+          "learned_excess_brier": 0.20580000000000007,
+          "prior_excess_brier": 0.20580000000000007
+        },
+        {
+          "observations": 8,
+          "truth": [
+            0.72,
+            0.28,
+            0.0
+          ],
+          "learned": [
+            0.5499999999999999,
+            0.35,
+            0.10000000000000002
+          ],
+          "learned_excess_brier": 0.043800000000000006,
+          "prior_excess_brier": 0.20580000000000007
+        },
+        {
+          "observations": 32,
+          "truth": [
+            0.72,
+            0.28,
+            0.0
+          ],
+          "learned": [
+            0.6950000000000001,
+            0.265,
+            0.04000000000000001
+          ],
+          "learned_excess_brier": 0.002449999999999997,
+          "prior_excess_brier": 0.20580000000000007
+        },
+        {
+          "observations": 128,
+          "truth": [
+            0.72,
+            0.28,
+            0.0
+          ],
+          "learned": [
+            0.6823529411764706,
+            0.3058823529411765,
+            0.011764705882352943
+          ],
+          "learned_excess_brier": 0.0022256055363321764,
+          "prior_excess_brier": 0.20580000000000007
+        },
+        {
+          "observations": 256,
+          "truth": [
+            0.0,
+            1.0,
+            0.0
+          ],
+          "learned": [
+            0.7000000000000001,
+            0.29393939393939394,
+            0.0060606060606060615
+          ],
+          "learned_excess_brier": 0.9885583103764923,
+          "prior_excess_brier": 0.465
+        },
+        {
+          "observations": 264,
+          "truth": [
+            0.0,
+            1.0,
+            0.0
+          ],
+          "learned": [
+            0.6794117647058824,
+            0.31470588235294117,
+            0.005882352941176471
+          ],
+          "learned_excess_brier": 0.9312629757785468,
+          "prior_excess_brier": 0.465
+        },
+        {
+          "observations": 288,
+          "truth": [
+            0.0,
+            1.0,
+            0.0
+          ],
+          "learned": [
+            0.6243243243243244,
+            0.37027027027027026,
+            0.005405405405405407
+          ],
+          "learned_excess_brier": 0.7863696128560994,
+          "prior_excess_brier": 0.465
+        },
+        {
+          "observations": 384,
+          "truth": [
+            0.0,
+            1.0,
+            0.0
+          ],
+          "learned": [
+            0.4714285714285715,
+            0.5244897959183673,
+            0.004081632653061225
+          ],
+          "learned_excess_brier": 0.44837151187005425,
+          "prior_excess_brier": 0.465
+        },
+        {
+          "observations": 512,
+          "truth": [
+            0.0,
+            1.0,
+            0.0
+          ],
+          "learned": [
+            0.3553846153846154,
+            0.6415384615384616,
+            0.0030769230769230774
+          ],
+          "learned_excess_brier": 0.2548023668639053,
+          "prior_excess_brier": 0.465
+        },
+        {
+          "observations": 1024,
+          "truth": [
+            0.0,
+            1.0,
+            0.0
+          ],
+          "learned": [
+            0.17906976744186048,
+            0.8193798449612403,
+            0.001550387596899225
+          ],
+          "learned_excess_brier": 0.0646920257196082,
+          "prior_excess_brier": 0.465
+        }
+      ]
+    },
+    {
+      "scenario": "changing",
+      "seed": 43,
+      "observations": 1024,
+      "mean_prior_excess_brier": 0.4001999999999937,
+      "mean_learned_excess_brier": 0.20390626393345948,
+      "window_256_383_prior_excess_brier": 0.4650000000000015,
+      "window_256_383_learned_excess_brier": 0.7117545046851351,
+      "checkpoints": [
+        {
+          "observations": 0,
+          "truth": [
+            0.72,
+            0.28,
+            0.0
+          ],
+          "learned": [
+            0.3499999999999999,
+            0.45,
+            0.20000000000000004
+          ],
+          "learned_excess_brier": 0.20580000000000007,
+          "prior_excess_brier": 0.20580000000000007
+        },
+        {
+          "observations": 8,
+          "truth": [
+            0.72,
+            0.28,
+            0.0
+          ],
+          "learned": [
+            0.6124999999999999,
+            0.2875,
+            0.10000000000000002
+          ],
+          "learned_excess_brier": 0.021612500000000014,
+          "prior_excess_brier": 0.20580000000000007
+        },
+        {
+          "observations": 32,
+          "truth": [
+            0.72,
+            0.28,
+            0.0
+          ],
+          "learned": [
+            0.67,
+            0.29,
+            0.04000000000000001
+          ],
+          "learned_excess_brier": 0.004199999999999994,
+          "prior_excess_brier": 0.20580000000000007
+        },
+        {
+          "observations": 128,
+          "truth": [
+            0.72,
+            0.28,
+            0.0
+          ],
+          "learned": [
+            0.6749999999999999,
+            0.31323529411764706,
+            0.011764705882352943
+          ],
+          "learned_excess_brier": 0.003267993079584777,
+          "prior_excess_brier": 0.20580000000000007
+        },
+        {
+          "observations": 256,
+          "truth": [
+            0.0,
+            1.0,
+            0.0
+          ],
+          "learned": [
+            0.7227272727272728,
+            0.2712121212121212,
+            0.0060606060606060615
+          ],
+          "learned_excess_brier": 1.0535032139577594,
+          "prior_excess_brier": 0.465
+        },
+        {
+          "observations": 264,
+          "truth": [
+            0.0,
+            1.0,
+            0.0
+          ],
+          "learned": [
+            0.7014705882352942,
+            0.29264705882352937,
+            0.005882352941176471
+          ],
+          "learned_excess_brier": 0.9924437716262977,
+          "prior_excess_brier": 0.465
+        },
+        {
+          "observations": 288,
+          "truth": [
+            0.0,
+            1.0,
+            0.0
+          ],
+          "learned": [
+            0.6445945945945947,
+            0.35,
+            0.005405405405405407
+          ],
+          "learned_excess_brier": 0.8380314097881667,
+          "prior_excess_brier": 0.465
+        },
+        {
+          "observations": 384,
+          "truth": [
+            0.0,
+            1.0,
+            0.0
+          ],
+          "learned": [
+            0.48673469387755103,
+            0.5091836734693878,
+            0.004081632653061225
+          ],
+          "learned_excess_brier": 0.47782798833819246,
+          "prior_excess_brier": 0.465
+        },
+        {
+          "observations": 512,
+          "truth": [
+            0.0,
+            1.0,
+            0.0
+          ],
+          "learned": [
+            0.36692307692307696,
+            0.63,
+            0.0030769230769230774
+          ],
+          "learned_excess_brier": 0.27154201183431953,
+          "prior_excess_brier": 0.465
+        },
+        {
+          "observations": 1024,
+          "truth": [
+            0.0,
+            1.0,
+            0.0
+          ],
+          "learned": [
+            0.18488372093023256,
+            0.8135658914728683,
+            0.001550387596899225
+          ],
+          "learned_excess_brier": 0.06894207078901506,
+          "prior_excess_brier": 0.465
+        }
+      ]
+    },
+    {
+      "scenario": "mistaken_history",
+      "seed": 17,
+      "observations": 1024,
+      "mean_prior_excess_brier": 0.46499999999999003,
+      "mean_learned_excess_brier": 0.8732962560612599,
+      "window_256_383_prior_excess_brier": 0.4650000000000015,
+      "window_256_383_learned_excess_brier": 1.0192471742149911,
+      "checkpoints": [
+        {
+          "observations": 0,
+          "truth": [
+            0.0,
+            1.0,
+            0.0
+          ],
+          "learned": [
+            0.9935643564356436,
+            0.004455445544554456,
+            0.0019801980198019807
+          ],
+          "learned_excess_brier": 1.9782830114694636,
+          "prior_excess_brier": 0.465
+        },
+        {
+          "observations": 8,
+          "truth": [
+            0.0,
+            1.0,
+            0.0
+          ],
+          "learned": [
+            0.9838235294117647,
+            0.014215686274509804,
+            0.0019607843137254906
+          ],
+          "learned_excess_brier": 1.939683294886582,
+          "prior_excess_brier": 0.465
+        },
+        {
+          "observations": 32,
+          "truth": [
+            0.0,
+            1.0,
+            0.0
+          ],
+          "learned": [
+            0.9557142857142856,
+            0.04238095238095238,
+            0.0019047619047619052
+          ],
+          "learned_excess_brier": 1.8304276643990929,
+          "prior_excess_brier": 0.465
+        },
+        {
+          "observations": 128,
+          "truth": [
+            0.0,
+            1.0,
+            0.0
+          ],
+          "learned": [
+            0.8576923076923076,
+            0.1405982905982906,
+            0.0017094017094017098
+          ],
+          "learned_excess_brier": 1.4742103148513406,
+          "prior_excess_brier": 0.465
+        },
+        {
+          "observations": 256,
+          "truth": [
+            0.0,
+            1.0,
+            0.0
+          ],
+          "learned": [
+            0.7545112781954887,
+            0.24398496240601505,
+            0.001503759398496241
+          ],
+          "learned_excess_brier": 1.140848267284753,
+          "prior_excess_brier": 0.465
+        },
+        {
+          "observations": 264,
+          "truth": [
+            0.0,
+            1.0,
+            0.0
+          ],
+          "learned": [
+            0.7488805970149254,
+            0.2496268656716418,
+            0.001492537313432836
+          ],
+          "learned_excess_brier": 1.1238842169748273,
+          "prior_excess_brier": 0.465
+        },
+        {
+          "observations": 288,
+          "truth": [
+            0.0,
+            1.0,
+            0.0
+          ],
+          "learned": [
+            0.7324817518248175,
+            0.26605839416058397,
+            0.0014598540145985405
+          ],
+          "learned_excess_brier": 1.075201928712238,
+          "prior_excess_brier": 0.465
+        },
+        {
+          "observations": 384,
+          "truth": [
+            0.0,
+            1.0,
+            0.0
+          ],
+          "learned": [
+            0.673489932885906,
+            0.32516778523489936,
+            0.0013422818791946312
+          ],
+          "learned_excess_brier": 0.9089890095040764,
+          "prior_excess_brier": 0.465
+        },
+        {
+          "observations": 512,
+          "truth": [
+            0.0,
+            1.0,
+            0.0
+          ],
+          "learned": [
+            0.6081818181818182,
+            0.3906060606060606,
+            0.0012121212121212123
+          ],
+          "learned_excess_brier": 0.7412475665748393,
+          "prior_excess_brier": 0.465
+        },
+        {
+          "observations": 1024,
+          "truth": [
+            0.0,
+            1.0,
+            0.0
+          ],
+          "learned": [
+            0.43820960698689954,
+            0.5609170305676855,
+            0.0008733624454148473
+          ],
+          "learned_excess_brier": 0.3848222764630728,
+          "prior_excess_brier": 0.465
+        }
+      ]
+    },
+    {
+      "scenario": "mistaken_history",
+      "seed": 29,
+      "observations": 1024,
+      "mean_prior_excess_brier": 0.46499999999999003,
+      "mean_learned_excess_brier": 0.8732962560612599,
+      "window_256_383_prior_excess_brier": 0.4650000000000015,
+      "window_256_383_learned_excess_brier": 1.0192471742149911,
+      "checkpoints": [
+        {
+          "observations": 0,
+          "truth": [
+            0.0,
+            1.0,
+            0.0
+          ],
+          "learned": [
+            0.9935643564356436,
+            0.004455445544554456,
+            0.0019801980198019807
+          ],
+          "learned_excess_brier": 1.9782830114694636,
+          "prior_excess_brier": 0.465
+        },
+        {
+          "observations": 8,
+          "truth": [
+            0.0,
+            1.0,
+            0.0
+          ],
+          "learned": [
+            0.9838235294117647,
+            0.014215686274509804,
+            0.0019607843137254906
+          ],
+          "learned_excess_brier": 1.939683294886582,
+          "prior_excess_brier": 0.465
+        },
+        {
+          "observations": 32,
+          "truth": [
+            0.0,
+            1.0,
+            0.0
+          ],
+          "learned": [
+            0.9557142857142856,
+            0.04238095238095238,
+            0.0019047619047619052
+          ],
+          "learned_excess_brier": 1.8304276643990929,
+          "prior_excess_brier": 0.465
+        },
+        {
+          "observations": 128,
+          "truth": [
+            0.0,
+            1.0,
+            0.0
+          ],
+          "learned": [
+            0.8576923076923076,
+            0.1405982905982906,
+            0.0017094017094017098
+          ],
+          "learned_excess_brier": 1.4742103148513406,
+          "prior_excess_brier": 0.465
+        },
+        {
+          "observations": 256,
+          "truth": [
+            0.0,
+            1.0,
+            0.0
+          ],
+          "learned": [
+            0.7545112781954887,
+            0.24398496240601505,
+            0.001503759398496241
+          ],
+          "learned_excess_brier": 1.140848267284753,
+          "prior_excess_brier": 0.465
+        },
+        {
+          "observations": 264,
+          "truth": [
+            0.0,
+            1.0,
+            0.0
+          ],
+          "learned": [
+            0.7488805970149254,
+            0.2496268656716418,
+            0.001492537313432836
+          ],
+          "learned_excess_brier": 1.1238842169748273,
+          "prior_excess_brier": 0.465
+        },
+        {
+          "observations": 288,
+          "truth": [
+            0.0,
+            1.0,
+            0.0
+          ],
+          "learned": [
+            0.7324817518248175,
+            0.26605839416058397,
+            0.0014598540145985405
+          ],
+          "learned_excess_brier": 1.075201928712238,
+          "prior_excess_brier": 0.465
+        },
+        {
+          "observations": 384,
+          "truth": [
+            0.0,
+            1.0,
+            0.0
+          ],
+          "learned": [
+            0.673489932885906,
+            0.32516778523489936,
+            0.0013422818791946312
+          ],
+          "learned_excess_brier": 0.9089890095040764,
+          "prior_excess_brier": 0.465
+        },
+        {
+          "observations": 512,
+          "truth": [
+            0.0,
+            1.0,
+            0.0
+          ],
+          "learned": [
+            0.6081818181818182,
+            0.3906060606060606,
+            0.0012121212121212123
+          ],
+          "learned_excess_brier": 0.7412475665748393,
+          "prior_excess_brier": 0.465
+        },
+        {
+          "observations": 1024,
+          "truth": [
+            0.0,
+            1.0,
+            0.0
+          ],
+          "learned": [
+            0.43820960698689954,
+            0.5609170305676855,
+            0.0008733624454148473
+          ],
+          "learned_excess_brier": 0.3848222764630728,
+          "prior_excess_brier": 0.465
+        }
+      ]
+    },
+    {
+      "scenario": "mistaken_history",
+      "seed": 43,
+      "observations": 1024,
+      "mean_prior_excess_brier": 0.46499999999999003,
+      "mean_learned_excess_brier": 0.8732962560612599,
+      "window_256_383_prior_excess_brier": 0.4650000000000015,
+      "window_256_383_learned_excess_brier": 1.0192471742149911,
+      "checkpoints": [
+        {
+          "observations": 0,
+          "truth": [
+            0.0,
+            1.0,
+            0.0
+          ],
+          "learned": [
+            0.9935643564356436,
+            0.004455445544554456,
+            0.0019801980198019807
+          ],
+          "learned_excess_brier": 1.9782830114694636,
+          "prior_excess_brier": 0.465
+        },
+        {
+          "observations": 8,
+          "truth": [
+            0.0,
+            1.0,
+            0.0
+          ],
+          "learned": [
+            0.9838235294117647,
+            0.014215686274509804,
+            0.0019607843137254906
+          ],
+          "learned_excess_brier": 1.939683294886582,
+          "prior_excess_brier": 0.465
+        },
+        {
+          "observations": 32,
+          "truth": [
+            0.0,
+            1.0,
+            0.0
+          ],
+          "learned": [
+            0.9557142857142856,
+            0.04238095238095238,
+            0.0019047619047619052
+          ],
+          "learned_excess_brier": 1.8304276643990929,
+          "prior_excess_brier": 0.465
+        },
+        {
+          "observations": 128,
+          "truth": [
+            0.0,
+            1.0,
+            0.0
+          ],
+          "learned": [
+            0.8576923076923076,
+            0.1405982905982906,
+            0.0017094017094017098
+          ],
+          "learned_excess_brier": 1.4742103148513406,
+          "prior_excess_brier": 0.465
+        },
+        {
+          "observations": 256,
+          "truth": [
+            0.0,
+            1.0,
+            0.0
+          ],
+          "learned": [
+            0.7545112781954887,
+            0.24398496240601505,
+            0.001503759398496241
+          ],
+          "learned_excess_brier": 1.140848267284753,
+          "prior_excess_brier": 0.465
+        },
+        {
+          "observations": 264,
+          "truth": [
+            0.0,
+            1.0,
+            0.0
+          ],
+          "learned": [
+            0.7488805970149254,
+            0.2496268656716418,
+            0.001492537313432836
+          ],
+          "learned_excess_brier": 1.1238842169748273,
+          "prior_excess_brier": 0.465
+        },
+        {
+          "observations": 288,
+          "truth": [
+            0.0,
+            1.0,
+            0.0
+          ],
+          "learned": [
+            0.7324817518248175,
+            0.26605839416058397,
+            0.0014598540145985405
+          ],
+          "learned_excess_brier": 1.075201928712238,
+          "prior_excess_brier": 0.465
+        },
+        {
+          "observations": 384,
+          "truth": [
+            0.0,
+            1.0,
+            0.0
+          ],
+          "learned": [
+            0.673489932885906,
+            0.32516778523489936,
+            0.0013422818791946312
+          ],
+          "learned_excess_brier": 0.9089890095040764,
+          "prior_excess_brier": 0.465
+        },
+        {
+          "observations": 512,
+          "truth": [
+            0.0,
+            1.0,
+            0.0
+          ],
+          "learned": [
+            0.6081818181818182,
+            0.3906060606060606,
+            0.0012121212121212123
+          ],
+          "learned_excess_brier": 0.7412475665748393,
+          "prior_excess_brier": 0.465
+        },
+        {
+          "observations": 1024,
+          "truth": [
+            0.0,
+            1.0,
+            0.0
+          ],
+          "learned": [
+            0.43820960698689954,
+            0.5609170305676855,
+            0.0008733624454148473
+          ],
+          "learned_excess_brier": 0.3848222764630728,
+          "prior_excess_brier": 0.465
+        }
+      ]
+    }
+  ],
+  "provenance": {
+    "git_commit": "a58a7fc274197fbd0bdc3b94c52af6387a97f103",
+    "git_status": "M pokerbot/river_search.py\n M pokerbot/runner.py\n?? pokerbot/response_profiles.py\n?? pokerbot/responses.py\n?? research/response_screen.py\n?? research/response_stress.py\n?? tests/test_response_profiles.py",
+    "source_sha256": {
+      "pokerbot/__init__.py": "9d25d92bccf3d24419aa67731462554dde88a919ba4e0b6a6c8bb8b236a4bf8b",
+      "pokerbot/__main__.py": "557a4d834582bae8a50728538fad9aa92d68af8e8a07f718a7ae97a4cb768cb1",
+      "pokerbot/adapters.py": "d5b6c209c9b7c18413ce950cd0ed6ef720d4a0131bec6b926fd347d7861f4bfd",
+      "pokerbot/baseline_v1.py": "a0496890a106b3704613f044099adac9e1d13296b8bafe5fd64d85068f686020",
+      "pokerbot/benchmark.py": "cbef6ab41a1caa3344a3200a6e9e31898d4efbc9071b6f60c941e836a34fad63",
+      "pokerbot/card_controls.py": "389961c2cba94fae22fcb43a4fff063dbfc9a6b72acfca3a58eb998729d1bb35",
+      "pokerbot/engine.py": "df82a739c17fa382c0312e5341d5da561eaf721dd39856773cc1f456130eec2b",
+      "pokerbot/equity.py": "0473e0dfdf3f7eb8ae0909145e94e50470011b78e44b277d0e59d0a105178f0e",
+      "pokerbot/policies.py": "f8a9e0ce6babe64ceb585f7bcf57b5ca3136761f512a4591a99a8d8869ae356c",
+      "pokerbot/profiles.py": "bdc6d4137ae754a00ff6faaf48d8b791d5031ffed6830cfbf441ebfb3152ab44",
+      "pokerbot/range_policy.py": "3dc512eb480b5065a6cd1048ae148c30898815872b2ac07ff11621fe2c2c5c82",
+      "pokerbot/ranges.py": "7fc939a84b81733a49f68d40b6c7faea1e980c0145d6ba94b63a329a9c1e44c4",
+      "pokerbot/response_profiles.py": "5f1a8f35f56407f2a9e3f41c14f852b734fcd99ebf5a4c1653cf5a677dbf83ca",
+      "pokerbot/responses.py": "8a64418f2a864b35f9fccc8f95567c66f0de7fbdfe32733a6dcb42170b5266b9",
+      "pokerbot/river_search.py": "8bd2fda374f16f0e9d5640a14c61f8fe125ce0b5170e7f32238c2a438bd07eb2",
+      "pokerbot/runner.py": "8ce1773407e48f268f9a622ed59f033201b2ad56bff4ef2c4e3b0496f1201e79"
+    },
+    "python": "3.14.7",
+    "platform": "macOS-15.6.1-arm64-arm-64bit-Mach-O",
+    "open_spiel": "2.0.2",
+    "rules_engine": "pokerkit",
+    "pokerkit": "0.7.5",
+    "payout_rule": "fractional",
+    "numpy": "2.5.3",
+    "scipy": "1.18.1"
+  },
+  "script_sha256": "1f47264e72b00ba6d2a902a0a1c2d2f3ba303d05e0a1f4455f0947a4fd027c79",
+  "limitations": "Known categorical synthetic processes; single legal context; nondecaying counts; no full-game decisions or strength claim"
+}

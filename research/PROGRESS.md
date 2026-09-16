@@ -1,4 +1,4 @@
-# Research checkpoint — September 16, 2026, river action evaluation
+# Research checkpoint — September 16, 2026, named response learning
 
 ## Current state
 
@@ -47,7 +47,7 @@ select the legacy backend, and old replay verification still passes.
 
 ## Validation
 
-- **114 root tests passed; no expected failures in the root suite.**
+- **127 root tests passed; no expected failures in the root suite.**
 - **53 vendor tests passed, 2 existing expected failures.** The three historical
   CLI tests still do not assert command success.
 - All **680 design arithmetic checks passed**.
@@ -291,13 +291,83 @@ is implemented by this prototype. Exact policy distributions and independent
 unbiasedness checks would be needed before adopting a new evaluation estimator;
 the raw-return benchmark remains fixed.
 
+## Named response learning: 7,680 hands and a failed robustness check
+
+`response_profiles.py` now stores named action observations separately from
+policies, by street, facing-bet status and legal raise availability. Profiles
+persist within a session, survive seat rotation and reset across independent
+trials. Completed-hand records are idempotent and replayable from SQLite.
+`responses.py` estimates smoothed fold/check-call/raise distributions with
+per-player cross-street backoff. The river evaluator uses a copied snapshot;
+counterfactual branches cannot update the learned state. No opponent cards,
+private policies or actual simulator state enter learned profiles.
+
+Tests verify legal-opportunity denominators, independent copies, persistence,
+trial resets, stationary calibration and exact oracle agreement with caller,
+tight and aggressive controls. The separate known-policy oracle is synthetic
+diagnostic input only; it is not a learned fact about classmates.
+
+`runs/response-screen-001` completed **128 sessions / 7,680 played hands**,
+four arms (original, prior-response search, oracle-response search, learned-response
+search), two newly specified control pools and all 6–9-seat sizes. Each cell
+uses four independent trials and eight full seat rotations. All use fresh
+development deals; no confirmation data was consumed.
+
+Probability error against the known control distributions improved substantially:
+
+| Pool | Prior mean excess Brier | Learned mean excess Brier |
+| --- | ---: | ---: |
+| Mixed caller/tight/aggressive | .27890 | .03648 |
+| Passive caller/tight/tight | .16629 | .02170 |
+
+These host-only scores use predictions made before learning from the scored
+hand. They measure probability error on each arm's encountered contexts, not
+profit or a causal strength effect. The oracle's probability error is zero by
+construction, and must not be counted as a learned result.
+
+Additional chip-return gains from learning versus the identical prior-response
+policy remain inconclusive at every size and pool. In the passive pool, means
+were +161.99, +63.34, -79.59 and +94.53 bb/100 at 6–9 seats, respectively; all
+intervals include zero. Some comparisons of search against the original are
+promising: learned search versus original at six seats was +665.29 [153.43,
+1177.16] and at seven seats +861.24 [20.08, 1702.40]. Prior-only search also had
+positive descriptive intervals in passive six- and eight-seat cells. These
+are unadjusted exploratory results on only four sessions per cell, restricted
+controls and selected comparisons; they do not establish learning's contribution
+or pass the held-out benchmark. Zero sampled differences in some mixed cells
+do not prove equivalence.
+
+The three candidate arms searched 970 real decisions, changed 222 actions and
+simulated 76,240 hypothetical root-action branches. Branches are not independent
+played hands. Runtime was **324.1 simulation seconds**, peak RSS **120.06 MiB**,
+and maximum decision latency **662.29 ms**. Replay verified another 72 nine-seat
+learned-policy hands; resume preserved the full report byte-for-byte. Package
+and original baseline hashes match the experiment. Root suite: 127 pass; vendor:
+53 pass and two existing expected failures.
+
+The separate synthetic stress study generated **18,432 action opportunities**
+across six scenarios and three seeds; these are not poker hands. Stationary and
+unfamiliar action frequencies were learned well. However, immediately after a
+tight-to-calling switch, learned excess Brier was .67067 versus prior .46500;
+with deliberately wrong initial history, whole-stream error was .87330 versus
+prior .46500. **Robust adaptation failed.** The model has no forgetting and can
+retain misleading evidence. Preserve those failures; do not present stationary
+calibration as a robust exploitative strategy.
+
+Results are in `research/results/2026-09-16-response-screen-001.json` and
+`research/results/2026-09-16-response-stress.json`. Method and limitations:
+`research/RESPONSE_LEARNING.md`. Cumulative played strategy-evaluation hands:
+**78,708**, excluding synthetic opportunities, hypothetical branches, mechanics
+tests and toy CFR. No strategy is promoted and no confirmation attempt allocated.
+
 ## Next bounded work
 
-1. Improve response modeling with the same river evaluator: fixed versus known
-   scripted response models versus estimates from named public histories. Begin
-   with calibrated control fixtures; retain model uncertainty and wrong-model
-   stress tests. Do not interpret the current uniform-card estimates as calibrated
-   ranges or predicted gain as realized profit.
+1. Repair stale-history sensitivity with per-player recency weighting. Follow
+   the already specified `research/RESPONSE_RECENCY_PLAN.md`: a 64-opportunity
+   half-life, fresh 20-seed streams, paired adjusted improvement/noninferiority
+   checks, and explicit stationary/sparse/changing/mistaken cells. Then test
+   raw versus discounted learning in fresh played matches. Prediction success
+   must remain separate from chip-return strength.
 2. Extend the tested reconstruction/rollout boundary to turn decisions with a
    prespecified action/world budget, then evaluate earlier-decision coverage and
    paired returns. Future community cards must be sampled, never copied from

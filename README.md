@@ -88,6 +88,19 @@ continuation. Earlier streets retain the frozen original policy. Uniform hidden
 cards, response-model error and noisy move selection remain limitations; this
 is not an equilibrium solver. See `research/RIVER_SEARCH.md` for the protocol.
 
+Named public response counts can feed the same river evaluator:
+
+```sh
+.venv/bin/python research/response_screen.py --out runs/my-response-screen
+.venv/bin/python research/response_stress.py --out runs/my-response-stress.json
+```
+
+The first command separates prior-only, known scripted-opponent and learned
+models. The second tests prediction under sparse and changing data, including
+deliberately mistaken history. The initial model has no forgetting and fails
+some robustness diagnostics; it is not validated for exploitation. Read
+`research/RESPONSE_LEARNING.md` before interpreting prediction improvements.
+
 What the borrowed poker engine is, how to run it, and what it would cost to move
 it from its 20-card deck to a normal 52-card one: `REFERENCE_NOTES.md`.
 
