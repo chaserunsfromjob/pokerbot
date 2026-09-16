@@ -40,19 +40,23 @@ appear:
 
 Four findings drive the recommendation:
 
-1. **Multiway postflop solvers for a Mac exist; none is scriptable or fast
-   enough for decision time.** Two products solve any street with any number
-   of players on macOS: **MonkerSolver** (EUR 499 one-time, native macOS,
+1. **Multiway postflop solvers for a Mac exist; none can be driven by another
+   program, and none is fast enough for decision time.** Two products solve
+   any street with any number of players on macOS: **MonkerSolver** (EUR 499 one-time, native macOS,
    "any street with any number of players" per its own vendor page) and
    **Holdem Solver** (free beta, macOS Apple Silicon, 2 to 9 players). Both
    are driven by hand, and neither vendor page documents a way for one program
    to ask another for an answer — an **application programming interface**, or
-   **API** — nor any scripting interface. That is what keeps them off the
-   decision path; the timing is a separate question, and for Holdem Solver it
+   **API**. MonkerSolver does have a built-in tool for queueing a list of
+   boards, but a person starts it by hand and it runs overnight to days
+   (entry 16); no outside program controls either solver. That is what keeps
+   them off the decision path; the timing is a separate question, and for Holdem Solver it
    is **UNVERIFIED**: what a multiway postflop tree costs in memory and hours
    there has no vendor figure behind it and was not measured here. The
-   MonkerSolver vendor page does say that tree size scales with available RAM
-   and solving time with CPU speed. The rest are narrower: 3-way
+   MonkerSolver vendor page does say that tree size scales with how much
+   working memory the machine has — its **random-access memory**, or **RAM** —
+   and solving time with how fast its processor is, the **central processing
+   unit** or **CPU**. The rest are narrower: 3-way
    postflop in the browser (GTO Wizard, $229 to $359 a month for the tier that
    has it, from the vendor's own patch notes; no API) or on
    Windows (Simple 3-way), and preflop-only multiway (Simple Preflop Holdem,
@@ -62,7 +66,9 @@ Four findings drive the recommendation:
    solved a turn-and-river spot with the full 6-max ranges — 93 and 95 hand
    classes, which expand to 606 card combinations on each side — to 0.74%
    exploitability in 0.56 to 0.71 s of solver time (5.5 to 8 s wall including
-   tree build and writing the answer to JSON). postflop-solver (Rust library,
+   tree build and writing the answer out as text another program can read
+   back, in the **JavaScript Object Notation** format, **JSON**).
+   postflop-solver (Rust library,
    AGPL) solved a comparable turn spot to 0.46% of the pot in 0.19 to 0.23 s
    wall across five runs. Both measured on this Mac today, each started with
    the machine's 1-minute load average under 4.0 — see Appendix A, which
@@ -80,14 +86,21 @@ Four findings drive the recommendation:
    to 2.6 million 7-card hands per second from Python, same caveat about
    load. A bot asking "how good is my hand against what they probably hold"
    gets a usable Monte-Carlo answer in a millisecond **through OMPEval**; the
-   same loop written in plain Python on phevaluator needs of the order of ten
-   thousand play-outs and is therefore a tens-of-milliseconds job, not a
-   sub-millisecond one.
+   same loop written in plain Python on phevaluator was never measured here,
+   and the arithmetic below rests on an **assumption, not a measurement**:
+   that such a loop deals of the order of ten thousand play-outs, a figure no
+   measurement in this file supplies and no source here cites. On that assumption, and counting one hand
+   ranking per play-out, 10,000 rankings at the measured 2.6 million a second
+   take 10,000 ÷ 2,600,000 = **3.8 ms**, and at the measured 0.9 million a
+   second 10,000 ÷ 900,000 = **11 ms**: a few milliseconds to about ten, not a
+   sub-millisecond job.
 4. **Only one open-source project explicitly does what the operator wants,
    opponent-specific exploitation across 2 to 9 seats, and it is preflop-only
    for multiway**: GTOpen (Rust, active this week, no licence file). It
    compiled on this Mac in 1 min 53 s to 3 min 20 s across two builds, and its
-   HTTP server answered on `127.0.0.1:3737` with a CPU-only solver, so
+   own small web server — it takes requests in the same way a web browser
+   makes them, over the **HyperText Transfer Protocol**, **HTTP** — answered
+   on `127.0.0.1:3737` with a CPU-only solver, so
    "Windows/Linux only" in its README is just missing documentation. Its
    author's own experiments report 40 to 80 big blinds per 100 hands gained by
    exploiting a correctly identified player type, and, when the read is wrong,
@@ -157,7 +170,8 @@ reference implementation, not a product).
   playing the spot against itself thousands of times and cutting back whatever
   it comes to regret; that method is **counterfactual regret minimisation**,
   written **CFR**, and every open-source solver in this file uses some form of
-  it. Ships a GUI and a **console binary driven by a text command file**.
+  it. Ships a point-and-click window — a **graphical user interface**, or
+  **GUI** — and a **console binary driven by a text command file**.
 - Last activity: last commit 26 Aug 2026; last binary release v0.2.0 on
   4 Nov 2021 (macOS zip included; **2,547 stars**, read from the GitHub API on
   15 Sep 2026).
@@ -203,7 +217,7 @@ reference implementation, not a product).
     | Run | Wall | CPU | Cores busy | Peak memory | Iterations printed | 1-minute load at the start | Runner stdout |
     | --- | --- | --- | --- | --- | --- | --- | --- |
     | 1 | 423.1 s | 699.8 s | 1.65 | 5.79 GiB | 0, 2, 3 | not recorded | `texassolver_flop_run1_423s.log` |
-    | 2 | 421.4 s | 493.4 s | 1.17 | 4.95 GiB | 0, 2 | 3.29 | `texassolver_flop_run2_421s.log` |
+    | 2 | 421.4 s | 493.4 s | 1.17 | 4.95 GiB | 0, 2 | 3.29, recorded in `texassolver_flop_run2_load_note.txt` | `texassolver_flop_run2_421s.log` |
     | 3 | 422.5 s | 462.2 s | 1.09 | 5.41 GiB | 0, 2, 3 | 3.75 | `texassolver_flop_run3_422s_instrumented.log` |
 
     All three printed the same two exploitability figures: **226.39% of pot at
@@ -427,7 +441,8 @@ second above.
   (`crates/cfr_core`, exposed to Python as `poker_solver._rust` through PyO3
   and maturin) that does the solving. Tabular Discounted CFR with the
   published Brown-Sandholm 2019 constants, checked tier against tier by
-  differential tests. Ships a local browser GUI (NiceGUI), a CLI, a
+  differential tests. Ships a local browser GUI (NiceGUI), a way to run it by
+  typing commands in a terminal — a **command-line interface**, or **CLI** — a
   Pio-style range parser, exact and Monte-Carlo equity, a precomputed
   preflop blueprint, and a node-lock editor in the tree browser.
 - Last activity: created 20 May 2026, pushed 18 Jun 2026; 4 stars, one author.
@@ -634,13 +649,28 @@ second above.
   source or date was ever cited for it, the vendor page says nothing about
   AutoHotkey, and the sentence is dropped. The conclusion rests on the vendor
   page alone. Solutions export as .mkr and .txt range files.
+- Scripting: the vendor page does not mention it, but a third-party guide
+  documents a scripting tool inside the program —
+  https://plodalong.com/articles/monkersolver-scripting ("MonkerSolver: Using
+  the Scripting Tool to Batch Solve Flops", MonkerSolver Series Part 3,
+  PlodAlong, 31 March 2026). What it is: a dialog in the program's own window,
+  opened from the **Solve** menu, where you pick one saved `.tree` file with
+  its ranges included, give it a comma-separated list of boards, set
+  "Volatility" to 2.0 and "Reset avg after iterations" to 7, choose a save
+  folder, and click **Start**; it then solves each board in the list in turn
+  and writes each answer out to that folder. What it is not: a way for another
+  program to use the solver. There is no command line, no API and nothing a
+  program can call to start a solve or read one back, and the guide's own
+  expectation of the run is that you "leave this running overnight or across
+  multiple days".
 - Multiway: yes, preflop **and postflop, on any street**, which is what the
   vendor page claims in as many words. It is emphatically **not** a
   preflop-only tool, and an earlier draft of this file said so in its summary;
   that was wrong and is corrected above. The real limits are different ones:
   multiway postflop trees need a lot of RAM and hours of solving, so it is a
-  study tool, not a decision-time engine, and there is no way to drive it from
-  a program.
+  study tool, not a decision-time engine, and there is no external program
+  control: its batches are started by hand from the Solve menu and run
+  overnight to days (see Scripting above).
 - Ratings: (a) 3 (any street, any number of players) — (b) 3 — (c) 1 (no node
   locking documented) — (d) 1 (macOS yes, but by hand and in hours) — (e) 3.
 
@@ -791,8 +821,15 @@ second above.
   `POST /task/cfr/schedule`, `GET /task/cfr/result/{id}`; JSON in, per-hand
   EV/strategy out (NumPy-friendly). Custom 1326-weight ranges, arbitrary bet
   grids, 2 to 20 s per solve.
-- Price: consumer plans $10/$76/$209 per month (no API); **API plans start at
-  $1,875/month plus a $2,000 setup fee**, or $0.025 per calculation on demand.
+- Price: **API plans start at $1,875/month plus a $2,000 setup fee** (Builder,
+  50,000 calls included, overage $0.05 a call; Production $2,625 and $0.04;
+  Scale $4,875 with 300,000 calls included and **overage $0.025 a call**;
+  Enterprise $6,750, unlimited, no overage). The same $0.025 a calculation is
+  also sold outright on that page as an On-Demand tier, "Sold in packs of $250
+  for 10,000 calculations". The separate consumer plans are on
+  https://deepsolver.com/pricing, not on the API page, and that page today
+  shows two: Pro $69 a month ($41.40 billed yearly) and Essential $49 a month
+  ($29.40 billed yearly); neither lists API access among its features.
 - Multiway: **not supported** ("multi-way is not supported").
 - Ratings: (a) 0 — (b) 3 — (c) 1 — (d) 3 — (e) 0 (price).
 
@@ -857,9 +894,12 @@ and cheap. Sources checked today:
 A gumroad pack of 576 tournament ranges in .txt (mkosmis) came up in search
 but the page returned 404: UNVERIFIED.
 
-None of the free chart sites offer bulk download or an API; the practical
-route is to buy a MonkerGuy text pack (or hand-copy the free 9-max charts
-into the repo's own text format once) and never solve preflop ourselves.
+None of the free chart sites offer bulk download or an API, so getting a set in
+usable form means buying a pack — MonkerGuy's Pio-compatible .txt ranges run
+$69 to $499 — or hand-copying the free 9-max charts into a text format once.
+Either way, preflop ranges for 2 to 9 seats are available free or for $69 to
+$499, so no preflop solving is needed to obtain them. What is done with them is
+a separate question and not this file's to answer; see the recommendation.
 
 ---
 
@@ -905,7 +945,8 @@ was run here; everything below it was read about.
    — precomputed preflop for every table size, no solving needed.
 7. **MonkerSolver** (EUR 499 one-time, macOS) — solves **any street with any
    number of players**, which nothing else here does natively on a Mac at a
-   one-time price. Not on the decision path: no scripting interface, and
+   one-time price. Not on the decision path: no external program control — its
+   scripting tool batches a board list by hand and overnight (entry 16) — and
    multiway postflop trees take RAM and hours. Buy it only for offline study.
 8. **Holdem Solver** (free beta, macOS, 2 to 9 players) — the other Mac tool
    that solves multiway postflop, and free while the beta lasts, but the
@@ -940,9 +981,9 @@ slumbot2019 and DecisionHoldem (multi-day blueprints, heads-up).
 
 This is a tool survey. It can say which tools work and how fast; it cannot
 choose the bot's architecture, because most of what follows turns on a rule
-question and on a competing proposal in another document. Only two pieces are
-this file's to settle, and both are about speed rather than about what decides
-a hand. So what follows is written as **input to the reconciliation of the four
+question and on a competing proposal in another document. Only one piece is
+this file's to settle, and it is about speed rather than about what decides a
+hand. So what follows is written as **input to the reconciliation of the four
 research sweeps against `CLAUDE.md`**, with the settled parts marked as settled
 and the open parts left open.
 
@@ -958,8 +999,6 @@ and the open parts left open.
   oracle for tests and nothing else — so nothing at runtime is being displaced
   by any of that. These are speeds, not a nomination; which evaluator the bot
   calls when it has to act is in the open list below.
-- **Preflop: buy or transcribe ranges** for 2 to 9 seats rather than solving
-  preflop at all. This is the cheapest well-covered part of the problem.
 
 **Open, and for the reconciliation to decide — not for this file.**
 
@@ -990,6 +1029,16 @@ and the open parts left open.
     input; **it is withdrawn.** Who produces the opponent range, and whether
     writing that code needs a carve-out, goes to the same reconciliation as
     the rule set below.
+- **Where the bot's preflop play comes from.** The market fact is in Part 4 and
+  is not in doubt: preflop ranges for 2 to 9 seats are available free or for
+  $69 to $499, so no preflop solving is needed to obtain them. What that does
+  not settle is what the bot plays preflop from when it has to act. That is a
+  decision-path choice of the same class as the heads-up engine above —
+  `CLAUDE.md:26` reserves **"Producing the strategy itself"** to the engine —
+  and nothing measured here bears on it. An earlier draft of this file put
+  "buy or transcribe ranges for 2 to 9 seats rather than solving preflop at
+  all" in the settled list above. **No measurement stood behind it, and it is
+  moved here.**
 - **Which evaluator the bot calls at decision time.** Naming one is the same
   class of decision as naming the heads-up engine above: it is a choice about
   what the bot calls when it has to act, and no project file records such a
@@ -1021,8 +1070,9 @@ and the open parts left open.
   mostly noise — and that it needs the same rule carve-out as the rule set
   above, because the code that compares the play-outs is also code that picks
   the action. So the honest statement is: **a multiway decision-time option
-  exists and is measured; what does not exist is an affordable, scriptable
-  multiway postflop *solver* on a Mac.** Which of the two covers multiway is
+  exists and is measured; what does not exist is an affordable multiway
+  postflop *solver* on a Mac that another program can drive.** Which of the
+  two covers multiway is
   exactly what the reconciliation has to settle, and they are not alternatives
   within this document's authority.
 - **GTOpen's player types.** Its promise (+40 to +80 bb/100 when the read is
@@ -1033,10 +1083,10 @@ and the open parts left open.
   `OPPONENT_MODEL_DESIGN.md`; adopting its exploit solves is a licence
   question (it has no licence file) as well as a rule question.
 
-The settled part costs nothing but an optional $69 range pack and uses only
-ISC and Apache code that private use permits. The open parts, if the
-reconciliation goes the way of the tools measured here, add AGPL code
-(TexasSolver, postflop-solver), which private use also permits.
+The settled part costs nothing and uses only ISC and Apache code that private
+use permits. The open parts cost at most an optional $69 to $499 range pack
+and, if the reconciliation goes the way of the tools measured here, add AGPL
+code (TexasSolver, postflop-solver), which private use also permits.
 
 ---
 
@@ -1046,16 +1096,18 @@ Wall-clock speed on a laptop moves by tens of percent, and sometimes by a
 factor of two, with whatever else the machine is doing. Other work shares this
 laptop, so every timing **re-taken this round** — the first, third, fourth and
 fifth rows below — was started only once the 1-minute load average was under
-4.0, and that load is recorded beside it. The rows without a load beside them
-are carried from earlier rounds, when the load was not recorded; read those as
-looser. Where a measurement was repeated the range is given, and the range is
-the honest figure.
+4.0, and that load is recorded beside it. One row is the exception to both
+halves of that sentence: the sixth, the GTOpen build, was re-taken this round
+but its start load was not recorded. The remaining rows without a load beside
+them are carried from earlier rounds, when the load was not recorded; read
+those as looser. Where a measurement was repeated the range is given, and the
+range is the honest figure.
 
 | Tool | Spot | Result | Time (1-minute load at the start) |
 | --- | --- | --- | --- |
 | TexasSolver 0.2.0 | turn+river, 93 vs 95 hand classes (606 combinations each), one 66% bet, 60% raise, all-in | 0.74% exploitability, iter 51 | 0.56 to 0.71 s solve, 5.5 to 8 s wall (load 3.40 on the fresh run) |
 | TexasSolver 0.2.0 | bundled 3-street sample, 2 vs 2 hand classes | 0.44%, iter 71 | 10.5 s solve, 16.4 s wall |
-| TexasSolver 0.2.0 | flop+turn+river, same full ranges, 33/75% bets, 10 threads | iterations 0, 2 and 3 printed; 226.39% of pot at iteration 0 and 221.72% at iteration 2 on all three runs | stopped at 421.4 / 422.5 / 423.1 s wall, 493.4 / 462.2 / 699.8 s CPU, 4.95 / 5.41 / 5.79 GiB over three runs (loads 3.29, 3.75, and not recorded on the third) |
+| TexasSolver 0.2.0 | flop+turn+river, same full ranges, 33/75% bets, 10 threads | iterations 0 and 2 printed on every run and 3 on two of the three (see the per-run table below); 226.39% of pot at iteration 0 and 221.72% at iteration 2 on all three runs | stopped at 421.4 / 422.5 / 423.1 s wall, 493.4 / 462.2 / 699.8 s CPU, 4.95 / 5.41 / 5.79 GiB over three runs (loads 3.29, 3.75, and not recorded on the third) |
 | postflop-solver | turn+river, ~40% vs ~40% ranges, 60%/geo/all-in, 2.5x raises | 0.46% of pot (0.91 chips of 200), iter 100 | 0.19 to 0.23 s wall, 1.53 to 1.59 s CPU over five runs (load 3.40) |
 | GTOpen solve-cli | `bench_spot.json` flop, 3 streets, 1.35M nodes, CPU-only | 1.233% of pot, iter 100 | 76.0 and 79.3 s wall, 1.4 GB (load 3.96 and 3.58) |
 | GTOpen | `cargo build --release -p server`, clean target dir | binary | 1 min 53 s to 3 min 20 s |
@@ -1075,7 +1127,7 @@ beside the command file:
 | Run | Wall | CPU | Cores busy of 10 | Peak memory | Iterations printed | 1-minute load at the start | Runner stdout |
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | 1 | 423.1 s | 699.8 s | 1.65 | 5.79 GiB | 0, 2, 3 | not recorded | `texassolver_flop_run1_423s.log` |
-| 2 | 421.4 s | 493.4 s | 1.17 | 4.95 GiB | 0, 2 | 3.29 | `texassolver_flop_run2_421s.log` |
+| 2 | 421.4 s | 493.4 s | 1.17 | 4.95 GiB | 0, 2 | 3.29, recorded in `texassolver_flop_run2_load_note.txt` | `texassolver_flop_run2_421s.log` |
 | 3 | 422.5 s | 462.2 s | 1.09 | 5.41 GiB | 0, 2, 3 | 3.75 | `texassolver_flop_run3_422s_instrumented.log` |
 
 All three printed **exploitability 226.39% of pot at iteration 0 and 221.72%
@@ -1153,6 +1205,8 @@ python3 research/solvers/run_texassolver_flop.py <release-dir> 420
     #     load not recorded
     #   research/solvers/texassolver_flop_run2_421s.log
     #     421.4 s wall, 493.4 s CPU, 1.17 cores, 4.95 GiB, iters 0/2, load 3.29
+    #     (that load is in research/solvers/texassolver_flop_run2_load_note.txt,
+    #     copied from the probe line the solver itself does not print)
     #   research/solvers/texassolver_flop_run3_422s_instrumented.log
     #     422.5 s wall, 462.2 s CPU, 1.09 cores, 5.41 GiB, iters 0/2/3, load
     #     3.75; this is the run carrying the page-fault and swap sampling
@@ -1181,7 +1235,8 @@ cargo +1.85.0 build --release --example basic    # 19.1 s, dependencies cached
 
 # GTOpen: rustc 1.98.1 (48a229cea 2026-09-01), CPU-only
 CARGO_TARGET_DIR=<scratch>/GTOpen/target_clean cargo build --release -p server
-    # 1 min 53 s wall, 261 s CPU (first build, earlier: 3 min 20 s)
+    # 1 min 53 s wall, 261 s CPU (the rebuild, today; the first build took
+    # 3 min 20 s)
 ./target/release/gto-server & curl 127.0.0.1:3737/api/status   # {"state":"idle","gpu":false,...}
 ./target/release/solve-cli bench_spot.json 100 0.05
     # 1.233% of pot at iteration 100 in 76.0 s and 79.3 s, two re-runs started
