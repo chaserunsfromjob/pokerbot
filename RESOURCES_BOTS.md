@@ -530,13 +530,13 @@ Two rules about the marks themselves:
 ### 3.12 Shanky Technologies Holdem Bot (bonusbots.com)
 
 - URLs: https://bonusbots.com/, https://bonusbots.com/pricing.htm
-- What: "the original autoplay Texas Holdem Poker Bot since 2007". Version
-  12.7.8 posted 2026-08-12. Ships "pre-loaded with 6 good profiles" written in
-  PPL (its rule language; OpenPPL was derived from it). It advertises cash
-  games; tournaments across many tables that merge as players are knocked out
-  — *multi-table tournaments*, or **MTTs**; one-table tournaments that begin
-  the moment the seats fill — *sit-and-go*, or **SNG**; and heads-up. Up to 6
-  tables at once.
+- What: "The original & industry leading autoplay Texas Holdem Poker Bot since
+  2007." Version 12.7.8 posted 2026-08-12. Ships "pre-loaded with 6 good
+  profiles" written in PPL (its rule language; OpenPPL was derived from it). It
+  advertises cash games; tournaments across many tables that merge as players
+  are knocked out — *multi-table tournaments*, or **MTTs**; one-table
+  tournaments that begin the moment the seats fill — *sit-and-go*, or **SNG**;
+  and heads-up. Up to 6 tables at once.
 - Price: free demo (stops after 200 hands), $129 for one year, $79 renewal.
 - Platforms: Windows desktop clients ("License can be moved as often as
   needed", qualified by the same page's FAQ: "Is the license restricted to 1
