@@ -1893,3 +1893,5 @@ rollouts per 0.25s decision: n=20 decisions, min=123 max=227 mean=183
     [load 4.68 > 4.0, waiting 60s (0s waited so far)]
     [load 6.24 > 4.0, waiting 60s (60s waited so far)]
     [load 5.33 > 4.0, waiting 60s (120s waited so far)]
+    [load 5.73 > 4.0, waiting 60s (180s waited so far)]
+    [load 5.75 > 4.0, waiting 60s (240s waited so far)]
