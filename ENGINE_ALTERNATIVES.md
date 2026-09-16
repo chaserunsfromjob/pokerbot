@@ -79,20 +79,33 @@ These programs are research artefacts. **They are not the bot**, they are not on
 the bot's import path, and whether code of that shape may become the bot at all
 is the open rule question set out at the end of this document.
 
-Two conditions decide whether a poker measurement means anything, and both are
-stated with every number below. First, the **betting abstraction**: whether the
-engine was offering a four-move menu or every whole-chip raise amount. Within
-OpenSpiel that alone is about **eleven times** in complete hands per second,
-and about **fifty times** in the play-outs the bot gets inside one decision.
+Three conditions decide whether a poker measurement here means anything, and all
+three are stated with every number below.
+
+First, the **betting abstraction**: whether the engine was offering a four-move
+menu or every whole-chip raise amount. Within OpenSpiel that alone is about
+**eleven times** in complete hands per second, and about **fifty times** in the
+play-outs the bot gets inside one decision.
+
 Second, for anything measured over hands, **how many hands, and how wide the
 uncertainty is**. A poker result without the second is not a weak result; it is
 not a result.
 
-Verified on 2026-09-15, macOS 15.2 (24.2.0), Apple M4, 10 cores, 16 GiB,
-Python 3.13.15, `open_spiel` 2.0.2, `texasholdem` 0.11.0, PokerKit 0.7.5.
-Wall-clock speed on this laptop varies by up to a factor of two between
-repeats, so speeds are quoted as the range over six repeats rather than as one
-figure, and speed comparisons are taken as ratios within a repeat.
+Third, and this is new in this draft, **how busy the machine was**. This laptop
+is shared with other work. A count of how many programs were queued waiting for
+a processor core, averaged over the last minute, is called the **load average**;
+this machine has ten cores, and above a load of about 4 its timings stop meaning
+anything. Every timing below was taken only once the load was under 4, with the
+load written down beside it, and with all the timings that get compared against
+each other taken in rotation in a single sitting. An earlier draft of this
+document did none of that and its speeds were three to four times too low as a
+result.
+
+Verified on 2026-09-15 and re-timed on 2026-09-16, macOS 15.2 (24.2.0),
+Apple M4, 10 cores, 16 GiB, Python 3.13.15, `open_spiel` 2.0.2, `texasholdem`
+0.11.0, PokerKit 0.7.5, PyPokerEngine 1.0.1, RLCard 1.2.0, `clubs` 0.1.4.
+Speeds are quoted as the range over six repeats rather than as one figure, and
+speed comparisons are taken as ratios within a repeat.
 
 ---
 
@@ -170,8 +183,8 @@ Everything that has to be pinned down for the paragraph above to mean anything:
 | Offline training | **none** |
 | Time to first playable decision | immediate |
 | Decision budget | **250 ms**, enforced by a wall-clock deadline checked before every play-out, so it stops at the budget rather than after a fixed count |
-| Play-outs per decision, `fcpa` | **13,131** (n = 20 decisions; range 12,451-13,279) |
-| Play-outs per decision, `fullgame` | **242** (n = 20 decisions; range 205-267) |
+| Play-outs per decision, `fcpa` | **7,370 - 12,373 - 13,285** (lowest, middle and highest of six repeats of 20 decisions each; individual decisions ranged 4,848-13,414; machine load 3.1-4.0 throughout) |
+| Play-outs per decision, `fullgame` | **117 - 244 - 250** (the same six repeats; individual decisions ranged 31-269) |
 | Candidate moves weighed | 4 of 4 legal under `fcpa`; **8 of 19,803** under `fullgame` |
 | Play strength, against five opponents moving at random | **+22.80 big blinds a hand**, 95% confidence interval **+15.07 to +30.53**, over **n = 3,412 hands** (menu mode; see below for what this is and is not worth) |
 
@@ -185,17 +198,18 @@ the smallest legal raise, that raise doubled repeatedly, and all-in. The
 250 ms is then split round-robin across those candidates.
 
 That has a consequence worth stating in the same breath as the speed. Under
-`fullgame`, 242 play-outs across 8 candidates is about **30 play-outs each**.
-A typical single hand of this game lands 223 big blinds away from the average
-(measured below), so an average taken over only 30 of them could easily be out
-by roughly **±50 big blinds** - that plus-or-minus is the **standard error**
-described above. At a quarter of a second, in real-sizing mode, the ranking the
-bot produces is therefore **mostly noise**. Under `fcpa`, the same budget gives
-about 3,280 play-outs per candidate, and the same plus-or-minus falls to near
-±5 big blinds, which is a real comparison. This is the strongest practical
-argument in the document for searching the menu game rather than the
-real-sizing game, and it was invisible while the betting abstraction went
-unstated.
+`fullgame`, the middle repeat's 244 play-outs across 8 candidates is about
+**30 play-outs each** - and in the slowest repeat, 117 across 8, about
+**15 each**. A typical single hand of this game lands 223 big blinds away from
+the average (measured below), so an average taken over only 30 of them could
+easily be out by roughly **±40 big blinds**, and over 15 by **±58** - that
+plus-or-minus is the **standard error** described above. At a quarter of a
+second, in real-sizing mode, the ranking the bot produces is therefore **mostly
+noise**. Under `fcpa`, the same budget gives about 3,100 play-outs per
+candidate, and the same plus-or-minus falls to about **±4 big blinds**, which is
+a real comparison. This is the strongest practical argument in the document for
+searching the menu game rather than the real-sizing game, and it was invisible
+while the betting abstraction went unstated.
 
 Set that against the road we are on: **at least 18 days of computing and more
 memory than the machine has, to reach a bot that still cannot choose a bet
@@ -269,32 +283,46 @@ document over-claimed it. What was run, exactly:
     ../../.venv-engines/bin/python bench_cfr.py 45     # numpy seed 20260915
 
 OpenSpiel's own external-sampling Monte Carlo CFR, **with no card abstraction
-at all**, betting abstraction `fcpa`, 45 seconds per configuration, one core.
-Raw output in `research/engine_alternatives/raw/cfr.txt`. "Still-new per round"
-is counted over the last quarter of each run, so it is the rate *after* the
-easy situations have been seen.
+at all**, betting abstraction `fcpa`, 45 seconds per configuration, one core,
+machine load 3.52 at the start and 4.81 at the end. Raw output in
+`research/engine_alternatives/raw/cfr.txt`. "Still-new per round" is counted
+over the last quarter of each run, so it is the rate *after* the easy
+situations have been seen.
 
-| Game (all `fcpa`, no card abstraction) | Rounds in 45 s | Situations stored | Still-new per round |
-| --- | --- | --- | --- |
-| 6 players, 52 cards, 200bb | 7,950 | 778,582 | 84.8 |
-| 6 players, 52 cards, 20bb | 5,401 | 445,154 | 69.2 |
-| 6 players, 52 cards, 10bb | 7,870 | 490,456 | 49.2 |
-| 6 players, 24 cards, 10bb | 17,160 | 493,221 | 19.4 |
-| 6 players, **20 cards** (`poker_ai`'s deck), 10bb | 16,913 | 418,540 | 16.5 |
-| 3 players, 52 cards, 10bb | 37,478 | 606,670 | 14.2 |
-| 6 players, 52 cards, 10bb, **pre-flop only** | 31,936 | 911,510 | 17.4 |
+**The table is given twice, and the second reading is the honest one.** Giving
+every configuration the same 45 seconds is not a fair race: a configuration
+that runs faster gets more rounds in those seconds, and more rounds by itself
+means more situations found and a lower rate of new ones. So the right-hand
+pair of columns re-reads the same run as if every configuration had been
+stopped at **16,900 rounds**, which is the most that all seven reached. An
+earlier draft of this document only had the left-hand reading, and drew a
+conclusion from it that the right-hand reading does not support.
 
-Read the last column, not the middle one: a configuration that runs faster gets
-more rounds in its 45 seconds and therefore piles up more situations, which is
-why pre-flop-only shows the largest total. What matters is whether the flow of
-*new* situations is drying up, and in none of these is it.
+| Game (all `fcpa`, no card abstraction) | Rounds in 45 s | Situations stored | Still-new per round | Situations at 16,900 rounds | **Still-new per round, at 16,900 rounds** |
+| --- | --- | --- | --- | --- | --- |
+| 6 players, 52 cards, 200bb | 16,944 | 1,456,253 | 71.7 | 1,453,100 | **71.7** |
+| 6 players, 52 cards, 20bb | 18,008 | 1,153,621 | 50.6 | 1,097,603 | **51.2** |
+| 6 players, 52 cards, 10bb | 20,462 | 964,878 | 33.9 | 845,212 | **36.1** |
+| 6 players, 24 cards, 10bb | 25,872 | 633,310 | 15.8 | 488,828 | **19.6** |
+| 6 players, **20 cards** (`poker_ai`'s deck), 10bb | 26,311 | 555,196 | 14.2 | 418,308 | **16.4** |
+| 3 players, 52 cards, 10bb | 56,564 | 882,287 | 14.5 | 311,032 | **14.8** |
+| 6 players, 52 cards, 10bb, **pre-flop only** | 31,122 | 898,369 | 17.7 | 627,745 | **24.0** |
+
+Read a "still-new per round" column, not a "situations stored" one. What matters
+is whether the flow of *brand-new* situations is drying up, and in none of these
+is it: the best of them is still meeting roughly **fifteen situations it has
+never seen before, in every single round**, after tens of thousands of rounds.
 
 Shrinking the deck does not rescue it: `poker_ai`'s own 20-card deck is still
-turning up 16.5 new situations per round after 16,913 rounds. Cutting the hand
-back to pre-flop only gives the lowest rate of any 6-player row here (17.4,
-against 84.8 for the full 200bb game), but it has not converged either - it is
-the most promising of these, not a finished one. Only the 3-player row is
-lower, and a 3-player strategy is not what this project is aiming at.
+turning up 16.4 new situations per round at 16,900 rounds. **And cutting the
+hand back to pre-flop only is not the winner an earlier draft made it.** At
+matched rounds it sits at 24.0 - above the 20-card row (16.4), above the
+24-card row (19.6) and above the 3-player row (14.8), and below only the three
+full-length 52-card games. Its apparent advantage came from counting seconds
+instead of rounds: it runs nearly twice as many rounds as the 200bb game in the
+same 45 seconds, and a faster configuration always looks calmer on a
+per-round-at-the-end measure. **The claim that pre-flop-only is the slowest
+growing 6-player game here is withdrawn.**
 
 **What that establishes:** *unabstracted* CFR does not converge on this machine
 inside this budget, on any of these games. That is a real result and it is why
@@ -346,46 +374,72 @@ compared only against engines doing the same job:
 
 Same 6-player 52-card game throughout, 200 big blinds deep, blinds 50/100, one
 core, every move drawn at random from what the engine itself says is legal, one
-Python call per node. Six repeats of ten seconds per row, `bench_speed.py`,
-raw output in `research/engine_alternatives/raw/speed.txt`:
+Python call per node. Six repeats of ten seconds per row.
+
+**All of it was measured in one sitting, with the chooser counts above and the
+redraw rates below, taken in rotation.** That matters more than it sounds: this
+laptop is shared with other work, and figures taken on different evenings are
+not comparable at all. Before every single run the machine's **load average**
+was read - roughly how many programs were queued waiting for a processor core,
+on a machine with ten of them - and the run was held back while it was above 4.
+The six repeats below all ran at a load between **3.08 and 3.96**, and the load
+is printed beside every figure in the raw output,
+`research/engine_alternatives/raw/paired_session.txt`. `paired_session.py` is
+what does this; `bench_speed.py` is the part of it that produced this table.
 
 | Engine and betting mode | Complete hands per second (min - median - max over 6 repeats) | Play-outs in a 250 ms decision, at the median |
 | --- | --- | --- |
-| **OpenSpiel `universal_poker`, menu (`fcpa`)** | **9,273 - 12,824 - 21,274** | **~3,200** |
-| `texasholdem` 0.11.0, menu | 1,633 - 2,062 - 3,485 | ~520 |
-| PokerKit 0.7.5, menu | 110 - 208 - 356 | ~50 |
-| OpenSpiel `universal_poker`, real sizing (`fullgame`) | 972 - 1,218 - 2,159 | ~300 |
-| `texasholdem` 0.11.0, real sizing | 1,153 - 2,324 - 3,515 | ~580 |
-| PokerKit 0.7.5, real sizing | 67 - 177 - 273 | ~44 |
+| **OpenSpiel `universal_poker`, menu (`fcpa`)** | **46,745 - 47,564 - 48,410** | **~11,900** |
+| `texasholdem` 0.11.0, menu | 6,311 - 8,526 - 9,095 | ~2,100 |
+| PokerKit 0.7.5, menu | 354 - 746 - 765 | ~190 |
+| PyPokerEngine 1.0.1, menu | 457 - 926 - 959 | ~230 |
+| OpenSpiel `universal_poker`, real sizing (`fullgame`) | 4,251 - 4,438 - 4,628 | ~1,100 |
+| `texasholdem` 0.11.0, real sizing | 3,986 - 8,336 - 8,394 | ~2,100 |
+| PokerKit 0.7.5, real sizing | 404 - 848 - 873 | ~210 |
+| PyPokerEngine 1.0.1, real sizing | 429 - 896 - 946 | ~220 |
 
-The last column is a *complete* hand dealt from scratch, which is why it is
-lower than the 13,131 play-outs the chooser managed in the same quarter-second
-on the menu: a play-out starts from the middle of a hand already dealt, so it
-is cheaper than a whole one. The two numbers measure different things and both
-are stated rather than blended.
+Every figure in that table is three to four times higher than the one an
+earlier draft of this document gave. Nothing about the engines changed; the
+earlier numbers were taken while the machine was busy, and nobody had written
+down how busy. That is the whole reason for the load gate described above, and
+it is why no figure here should be quoted without it.
 
-Those ranges are wide because wall-clock throughput on this laptop moves by a
-factor of two between repeats. Ratios taken **within** each repeat are far
-steadier, and they are what the comparison should rest on:
+**A note on the last column, because an earlier draft got the explanation
+wrong.** It counts *complete* hands dealt from scratch, whereas the chooser's
+play-out starts from a hand already dealt and part-played. The earlier draft
+said the second must therefore be much the cheaper of the two, and used that to
+explain a four-fold gap. Measured back to back in the same quarter-second, in
+the same repeats, the ratio of chooser play-outs to complete hands is
+**0.62 - 1.05 - 1.11**: they cost about the same, and the apparent gap was the
+machine's load, not the poker. The two are still different things and both are
+stated, but **"a play-out is cheaper because the hand is already dealt" is
+withdrawn** - what a play-out saves on dealing it spends on rebuilding the
+position from the hand's history before it can start.
+
+Ratios taken **within** each repeat are steadier than the raw rates, and they
+are what the comparison should rest on:
 
 | Like-for-like comparison | Ratio per repeat (min - median - max) |
 | --- | --- |
-| OpenSpiel vs `texasholdem`, both on the menu | 4.9 - **5.7** - 6.7 times faster |
-| OpenSpiel vs PokerKit, both on the menu | 37.7 - **69.6** - 117.1 times faster |
-| OpenSpiel vs `texasholdem`, both real sizing | 0.37 - **0.66** - 0.84, i.e. OpenSpiel is **1.5 times slower** |
-| OpenSpiel vs PokerKit, both real sizing | 4.5 - **7.5** - 15.2 times faster |
-| OpenSpiel menu vs OpenSpiel real sizing | 6.7 - **11.0** - 13.3 times faster |
+| OpenSpiel vs `texasholdem`, both on the menu | 5.3 - **5.5** - 7.5 times faster |
+| OpenSpiel vs PokerKit, both on the menu | 61.1 - **64.5** - 133.7 times faster |
+| OpenSpiel vs PyPokerEngine, both on the menu | 49.7 - **51.1** - 103.6 times faster |
+| OpenSpiel vs `texasholdem`, both real sizing | 0.51 - **0.54** - 1.16, i.e. OpenSpiel is about **1.9 times slower** |
+| OpenSpiel vs PokerKit, both real sizing | 4.9 - **5.2** - 11.5 times faster |
+| OpenSpiel vs PyPokerEngine, both real sizing | 4.5 - **5.0** - 10.8 times faster |
+| OpenSpiel menu vs OpenSpiel real sizing | 10.2 - **10.7** - 11.3 times faster |
 
 Read carefully, that says something the earlier "**9 times** faster" claim hid.
 **OpenSpiel's advantage is in menu mode, and in real-sizing mode it is actually
-slower than `texasholdem`** - because asking it for the legal moves at that
-setting means building a list of 19,803 of them at every decision. So the case
-for OpenSpiel is not raw speed at any setting; it is that the architecture we
-want **searches the menu**, and on the menu OpenSpiel is about six times faster
-than the next working candidate and seventy times faster than PokerKit. Under
-this architecture that gap is the difference between a considered decision and
-a guess. What it does not do is remove the unsolved problem of translating a
-position between the two settings.
+slower than `texasholdem`** - by about 1.9 times, because asking it for the
+legal moves at that setting means building a list of 19,803 of them at every
+decision. So the case for OpenSpiel is not raw speed at any setting; it is that
+the architecture we want **searches the menu**, and on the menu OpenSpiel is
+about five and a half times faster than the next working candidate and sixty-odd
+times faster than either PokerKit or PyPokerEngine. Under this architecture that
+gap is the difference between a considered decision and a guess. What it does
+not do is remove the unsolved problem of translating a position between the two
+settings.
 
 It is also the only candidate that still has a CFR solver we could use later
 (and one that works with more than two players), so choosing it does not close
@@ -449,9 +503,10 @@ failures** - side pots, all-ins and showdowns all paid out correctly.
 
 **Requirement 3, compute budget: yes - the only unqualified yes here.** Zero
 offline training needed; see the measured bot above. Fastest engine in the
-survey **on the four-move menu**, by 5.7 times over `texasholdem` and 70 times
-over PokerKit (medians over 6 repeats); with real sizing it is about 1.5 times
-*slower* than `texasholdem`, for the reason given in the speed section.
+survey **on the four-move menu**, by 5.5 times over `texasholdem`, 64 times over
+PokerKit and 51 times over PyPokerEngine (medians over 6 repeats); with real
+sizing it is about 1.9 times *slower* than `texasholdem`, for the reason given
+in the speed section.
 
 **Solver capability: substantial, and it works multiway.** Ships CFR, CFR+,
 discounted CFR, two sampled-CFR variants, Deep CFR, plus best-response and
@@ -482,13 +537,16 @@ rewritten in about fifteen lines of our own Python, committed at
 history into a fresh state and redraws the cards dealt to seats we cannot see,
 uniformly from the cards still unaccounted for. Measured at a 6-player 52-card
 table, `fcpa`, with the bookkeeping done once per decision rather than once per
-draw: **71,344 redraws per second at the first decision after the deal**
-(n = 713,438 draws in 10 s) and **91,078 per second at a later decision in the
-same hand** (n = 910,784 in 10 s). Wall-clock on this laptop moves by tens of
-percent between runs, which is the size of the difference between those two, so
-read it as "of the order of 70,000 to 90,000 a second" rather than as a
-difference between the two positions. The measured bot uses this workaround and
-never touches the broken code.
+draw, in the same six-repeat sitting as the speeds above and at the same machine
+loads: **102,384 - 105,119 - 105,504 redraws per second at the first decision
+after the deal**, and **91,486 - 98,074 - 98,916 per second at a later decision
+in the same hand** (ten seconds per position per repeat; lowest, middle and
+highest of the six). So **of the order of 100,000 a second**, and the later
+position is now consistently the slower of the two by about 7 per cent, which is
+the direction you would expect from a longer history to replay. An earlier draft
+had these the other way round and put the difference down to noise; taken in
+rotation on a quiet machine, the ranges no longer overlap. The measured bot uses
+this workaround and never touches the broken code.
 
 ### 2. PokerKit - **passes 1 and 2**, fails 3 for playing, excellent for checking
 
@@ -505,15 +563,16 @@ and accepted an arbitrary non-round raise to 377.
 stacks per seat (tested 100 / 500 / 20,000), which is what forces side pots and
 where weaker engines get payouts wrong.
 
-**Requirement 3: no, as the thinking engine.** On the four-move menu, **110 to
-356 complete hands a second** (median 208 over 6 repeats of 10 seconds), which
-is **37 to 117 times slower than OpenSpiel on the same menu**; with real
-sizing, 67 to 273 a second (median 177), 4.5 to 15 times slower than OpenSpiel
-there. A 250 ms decision buys of the order of 50 play-outs, which cannot choose
-between four actions: with a typical hand landing 223 big blinds from the
-average, an average over 50 of them could easily be out by about ±60 big blinds
-- that plus-or-minus is its standard error. It ships no pre-trained strategy,
-so it offers no other route to a playable bot.
+**Requirement 3: no, as the thinking engine.** On the four-move menu, **354 to
+765 complete hands a second** (median 746 over 6 repeats of 10 seconds), which
+is **61 to 134 times slower than OpenSpiel on the same menu**; with real
+sizing, 404 to 873 a second (median 848), 4.9 to 11.5 times slower than
+OpenSpiel there. A 250 ms decision buys of the order of 190 play-outs, which
+cannot choose between four actions: that is about 46 apiece, and with a typical
+hand landing 223 big blinds from the average, an average over 46 of them could
+easily be out by about ±33 big blinds - that plus-or-minus is its standard
+error, against edges that would be worth a fraction of one big blind. It ships
+no pre-trained strategy, so it offers no other route to a playable bot.
 
 **Solver capability: none.** Verified by listing everything the package exposes:
 no CFR, no search, no agents.
@@ -532,18 +591,18 @@ argument (`texasholdem/game/game.py:256`); 50 hands at each of 2 through 9, **40
 hands, zero chip-conservation failures**.
 
 **Requirement 3: marginal, and better than the earlier draft said.** On the
-four-move menu, **1,633 to 3,485 complete hands a second** (median 2,062 over 6
-repeats of 10 seconds), **4.9 to 6.7 times slower than OpenSpiel on the same
-menu** - about 520 play-outs in a 250 ms decision, against OpenSpiel's ~3,200.
-Meaningfully worse decisions for the same wait, but workable.
+four-move menu, **6,311 to 9,095 complete hands a second** (median 8,526 over 6
+repeats of 10 seconds), **5.3 to 7.5 times slower than OpenSpiel on the same
+menu** - about 2,100 play-outs in a 250 ms decision, against OpenSpiel's
+~11,900. Meaningfully worse decisions for the same wait, but workable.
 
-**With real sizing it is the faster of the two**: 1,153 to 3,515 hands a second
-(median 2,324) against OpenSpiel's 972 to 1,218 to 2,159, a per-repeat ratio of
-0.37 to 0.84 - OpenSpiel is about **1.5 times slower** there, because listing
-19,803 legal raise amounts at every decision costs more than this library's
-whole hand. If the architecture ever searches with real sizing rather than a
-menu, this is the faster engine, and that is a genuine mark in its favour that
-the earlier draft's single "9 times slower" figure concealed.
+**With real sizing it is the faster of the two**: 3,986 to 8,394 hands a second
+(median 8,336) against OpenSpiel's 4,251 to 4,438 to 4,628, a per-repeat ratio
+of 0.51 to 1.16 with a median of 0.54 - OpenSpiel is about **1.9 times slower**
+there, because listing 19,803 legal raise amounts at every decision costs more
+than this library's whole hand. If the architecture ever searches with real
+sizing rather than a menu, this is the faster engine, and that is a genuine mark
+in its favour that the earlier draft's single "9 times slower" figure concealed.
 
 No pre-trained strategy, no solver; its only bundled agents are call-only and
 random. The easiest code here to read and modify, and the natural fallback if
@@ -592,22 +651,51 @@ any case it walks the entire game tree and needs the engine's rewind feature, so
 it is usable only on toy games - which is what RLCard's own documentation
 demonstrates it on.
 
-### 5. PyPokerEngine - **passes 1 and 2**, wrong shape, fails 3
+### 5. PyPokerEngine - **passes 1 and 2**, fails 3 on speed
 
-723 stars, last push 2024-04-10, MIT licence; last actual release 2017.
+723 stars, last push 2024-04-10, MIT licence; last actual release 2017-04-02.
 
 **Requirement 1: yes** - raises are offered as a minimum/maximum range and any
-amount between is accepted (`pypokerengine/engine/action_checker.py:37-44`).
-**Requirement 2: yes**, and then some - 3-round games at 2, 3, 6, 9 and 12
-players, chips conserved every time. Side pots implemented
+amount between is accepted (`pypokerengine/engine/action_checker.py:37-44`);
+measured at a 6-player 20,000-chip table, the range at the first decision runs
+from 150 to 20,000, **19,851 distinct whole-chip amounts**.
+**Requirement 2: yes**, and then some - 50 hands at each of 2, 3, 6, 9 and 12
+players, **250 hands, zero chip-conservation failures**. Side pots implemented
 (`pypokerengine/engine/game_evaluator.py:69`).
 
-**Requirement 3: no.** No pre-trained strategy, no solver, and - fatally for a
-thinking bot - **it cannot be used for decision-time search at all.** It is a
-**tournament runner**: you register player objects, call `start_poker`, and it
-calls *you* back on your turn. There is no way to hand it a position and ask
-"what now?", no way to clone a position and play it out, and no way to set
-different starting stacks per seat. Our architecture needs exactly the opposite.
+**An earlier draft of this document rejected it for the wrong reason, and the
+correction matters.** That draft said it "cannot be used for decision-time
+search at all", on the grounds that it is a tournament runner which calls you
+back on your turn. **That is false.** Alongside the tournament runner it ships
+`pypokerengine.api.emulator.Emulator`, which does precisely the three things
+the draft said were impossible, each checked here and each committed at
+`research/engine_alternatives/pypoker_playouts.py`:
+
+- `generate_initial_game_state` takes a **stack per seat**, so seats can start
+  with different amounts - tested with 100 / 500 / 20,000, the arrangement that
+  forces side pots;
+- `generate_possible_actions` answers "what is legal in *this* position?" for a
+  position handed to it, with no callback anywhere;
+- `deepcopy_game_state` **clones a position** and `run_until_round_finish`
+  plays the clone to the end - which is a play-out, the unit a decision-time
+  search is built out of.
+
+**Requirement 3: no - but on speed and on the missing solver, not on shape.**
+Driven through that `Emulator`, cloning one mid-hand position and playing the
+clone out on the same four-move menu the other engines were given, it manages
+**895 - 1,053 - 1,136 play-outs per second** (lowest, middle and highest of six
+repeats of ten seconds, taken in the same sitting and at the same machine loads
+as every other timing here). That is about **260 play-outs in a 250 ms
+decision**, against the **12,373** the chooser gets out of OpenSpiel in the same
+quarter-second on the same menu - a factor of **29 to 59, median 47**. Split
+across eight candidate moves, 260 play-outs is 33 apiece, which as the PokerKit
+entry sets out is not enough to tell four actions apart. Complete hands from
+scratch tell the same story: 457 - 926 - 959 a second on the menu, 50 to 104
+times slower than OpenSpiel there. And it ships **no solver and no pre-trained
+strategy**, so there is no second route.
+
+So it is rejected, but for what it is: **too slow to think with, with nothing
+trained to fall back on.** It is not the wrong shape.
 
 ### 6. PokerRL - **fails requirement 2, and will not install**
 
@@ -651,20 +739,22 @@ import, there is no reason to pick it over PokerKit.
 
 ## Side by side
 
-Speeds are median complete hands per second over 6 repeats of 10 seconds,
-6-player 52-card game, 200bb, one core; the two betting modes are listed
-separately because they are not comparable to each other.
+Speeds are median complete hands per second over 6 repeats of 10 seconds, all
+taken in one sitting at a machine load between 3.08 and 3.96; 6-player 52-card
+game, 200bb, one core. The two betting modes are listed separately because they
+are not comparable to each other. "n/a" means the engine was ruled out before
+speed could decide anything, not that it was too slow to measure.
 
 | Engine | 1. Real sizing | 2. 2-9 players | 3. Playable in hours | Hands/sec, menu mode | Hands/sec, real sizing | Solver | Installs on 3.13 |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| **OpenSpiel `universal_poker`** | **yes** (19,803) | **yes** (2-10) | **yes** - no training at all | **12,824** | 1,218 | yes, multiway | yes |
-| **PokerKit** | yes (19,801) | yes (2-9) | no - 70x slower on the menu | 208 | 177 | no | yes |
-| `texasholdem` | yes (19,801) | yes (2-9) | marginal - 5.7x slower on the menu, **faster with real sizing** | 2,062 | 2,324 | no | yes |
-| PyPokerEngine | yes | yes (to 12) | **no** - cannot search | n/a | n/a | no | yes |
-| RLCard | **no** - 5 fixed actions | yes | no - only a toy model | n/a | n/a | toy games only | yes |
+| **OpenSpiel `universal_poker`** | **yes** (19,803) | **yes** (2-10) | **yes** - no training at all | **47,564** | 4,438 | yes, multiway | yes |
+| **PokerKit** | yes (19,801) | yes (2-9) | no - 64x slower on the menu | 746 | 848 | no | yes |
+| `texasholdem` | yes (19,801) | yes (2-9) | marginal - 5.5x slower on the menu, **faster with real sizing** | 8,526 | 8,336 | no | yes |
+| PyPokerEngine | yes (19,851) | yes (to 12) | **no** - 51x slower on the menu; ~260 play-outs a decision | 926 | 896 | no | yes |
+| RLCard | **no** - 5 fixed actions | yes | no - only a toy model, and it will not import here | n/a | n/a | toy games only | game code only - `rlcard.agents` and `rlcard.models` fail |
 | PokerRL | yes | **no** - heads-up CFR | no | n/a | n/a | heads-up only | **no** |
-| `clubs` | yes | yes | no | n/a | n/a | no | **no** |
-| `fedden/poker_ai` (current) | **no** - fixed-limit | 2-6 at 20 cards | **no - ~18 days + 147 GiB** | n/a | n/a | yes, but limit only | yes |
+| `clubs` | yes (19,801) | yes | no | n/a | n/a | no | **no** |
+| `fedden/poker_ai` (current) | **no** - fixed-limit | 2-6 at 20 cards | **no - 18+ days + 147 GiB** | n/a | n/a | yes, but limit only | yes |
 
 `fedden/poker_ai` is **archived** on GitHub as of 2023-04-03. Archived means
 frozen read-only - upstream cannot accept a fix even in principle.
@@ -708,8 +798,8 @@ research-grade rewrite after it. **Recommend stopping here.**
    about what it would take to make it the bot.
 3. The fifteen-line Python workaround for the multiway crash, committed at
    `research/engine_alternatives/resample_opponents.py`: **written and measured
-   at of the order of 70,000 to 90,000 redraws per second** (conditions in the
-   OpenSpiel entry above).
+   at of the order of 100,000 redraws per second** (conditions in the OpenSpiel
+   entry above).
 4. A translation layer between our table-state capture and OpenSpiel's game
    parameters - a day or two of plumbing with no poker judgment in it, which
    `CLAUDE.md`'s forefront rule permits us to write.
@@ -740,21 +830,31 @@ projects. This is a firm negative, not an unchecked assumption.
 Unabstracted, no: the single run recorded above
 (`research/engine_alternatives/raw/cfr.txt`, 45 s per configuration, seed
 20260915) is the whole evidence, and every configuration in it is still finding
-brand-new situations when the time runs out. The **pre-flop-only** game grows
-most slowly of the 6-player rows - 17.4 new situations per round after 31,936
-rounds, against 84.8 for the full 200bb game - so **a pre-flop-only strategy for a
-fixed table size is the largest thing here that looks like it might finish in
-hours.** That is a possible future improvement, not a bot on its own, and not
-where to start. It has not been run to convergence, so "might" is as strong as
-this evidence gets.
+brand-new situations when the time runs out.
+
+An earlier draft of this document nominated the **pre-flop-only** game as the
+most promising of them, on the strength of its low rate of new situations per
+round. **That nomination is withdrawn.** Compared at a matched 16,900 rounds,
+which is the only fair comparison, pre-flop-only turns up **24.0** new
+situations per round against **16.4** for the 20-card game and **19.6** for the
+24-card one. Of the 6-player games measured here the smallest decks grow most
+slowly, not the shortest hand; pre-flop-only only looked best because it runs
+more rounds per second than the others and was being judged per second.
+
+What is left standing is the negative, and it is a firm one: **none of these
+seven has converged or is close to it**, and the smallest-growing of them is
+still meeting about fifteen unseen situations every round after tens of
+thousands of rounds. Nothing here is a candidate to be run to completion in
+hours. Which game would be, if any, is not answered by this run.
 
 With an abstraction the question is open and untested; see the scoping above.
 
 There is one cheap lever worth recording, and this survey's own chooser
 measurements are what show it. Searching the four-move `fcpa` menu bought
-**13,131 play-outs per 250 ms decision** (n = 20 decisions, range
-12,451-13,279); searching the real-sizing `fullgame` bought **242** (n = 20,
-range 205-267) for the same quarter-second, a factor of 54. So the practical
+**7,370 - 12,373 - 13,285 play-outs per 250 ms decision** (lowest, middle and
+highest of six repeats of 20 decisions); searching the real-sizing `fullgame`
+bought **117 - 244 - 250** for the same quarter-second. Taken repeat by repeat,
+that is a factor of **47 to 65, median 54**. So the practical
 shape is **think against a small menu, act with real sizing** - two loadings of
 the same game with different settings, which OpenSpiel supports directly. The
 catch, unsolved here: OpenSpiel's action numbering differs between the two
