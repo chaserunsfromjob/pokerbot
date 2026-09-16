@@ -49,15 +49,22 @@ These controls are limited and mostly card-independent; random-player wins
 alone cannot pass. No trained opponent is currently integrated. Consequently a
 first-stage pass only establishes improvement against this restricted pool.
 
-Implementation limitation found during the recency work: the current
-`create_confirmation`/`run_confirmation` path serializes and reconstructs
-`EquityConfig` only. River/named-response, future turn-search and external-policy
-candidates cannot yet be submitted through this entry point. Before their
-confirmation, add a versioned policy/configuration discriminator and preserve
-legacy manifests, the frozen original, source/checkpoint hashes, profile resets,
-holdout configurations and the existing shared attempt ledger/error budget.
-Reject unsupported configurations before allocating an attempt. Passing the
-mechanics gate does not imply this candidate integration is implemented.
+Confirmation now accepts a versioned strategy specification for `equity`,
+`river` and `turn` policies. Named-response search can explicitly choose learning
+off or learned; oracle input is prohibited in confirmation. Policy identity,
+parameters and learning mode round-trip together. Unsupported types, extra
+fields and inconsistent settings fail before allocating an attempt. All policy
+types use the same existing ledger and alpha schedule; no fresh error budget is
+created for a new strategy family.
+
+Legacy flat equity configuration files and manifest formats remain readable.
+Source/runtime hashes are still strict: format compatibility is not permission
+to resume an old experiment with changed code. Use its frozen revision and
+environment. The baseline parameters and source hashes are unchanged. External
+policies, range policies and trained checkpoints are not yet supported by this
+confirmation entry point; do not represent missing adapters/artifacts as models.
+`research/example-search-candidate.json` illustrates the format and is not a
+validated candidate or an instruction to consume a confirmation attempt.
 
 Before confirmation, run the full test suites and record results. A known
 failure remains a blocker even if pytest calls it an expected failure.

@@ -1,0 +1,6456 @@
+{
+  "status": "development only; no promotion decision",
+  "hands": 8640,
+  "paired_comparisons_bb_per_100": {
+    "scripted": {
+      "turn_minus_river": {
+        "6": {
+          "mean": 0.0,
+          "low": 0.0,
+          "high": 0.0,
+          "trials": 6
+        },
+        "7": {
+          "mean": 43.75,
+          "low": -33.53258461151121,
+          "high": 121.03258461151121,
+          "trials": 6
+        },
+        "8": {
+          "mean": 0.0,
+          "low": 0.0,
+          "high": 0.0,
+          "trials": 6
+        },
+        "9": {
+          "mean": 0.0,
+          "low": 0.0,
+          "high": 0.0,
+          "trials": 6
+        }
+      },
+      "turn_minus_original": {
+        "6": {
+          "mean": -17.447916666666668,
+          "low": -62.29921431969612,
+          "high": 27.403380986362787,
+          "trials": 6
+        },
+        "7": {
+          "mean": 34.22619047619048,
+          "low": -53.37100261170397,
+          "high": 121.82338356408493,
+          "trials": 6
+        },
+        "8": {
+          "mean": 0.0,
+          "low": 0.0,
+          "high": 0.0,
+          "trials": 6
+        },
+        "9": {
+          "mean": 0.0,
+          "low": 0.0,
+          "high": 0.0,
+          "trials": 6
+        }
+      },
+      "river_minus_original": {
+        "6": {
+          "mean": -17.447916666666668,
+          "low": -62.29921431969612,
+          "high": 27.403380986362787,
+          "trials": 6
+        },
+        "7": {
+          "mean": -9.523809523809518,
+          "low": -34.005541291774406,
+          "high": 14.95792224415537,
+          "trials": 6
+        },
+        "8": {
+          "mean": 0.0,
+          "low": 0.0,
+          "high": 0.0,
+          "trials": 6
+        },
+        "9": {
+          "mean": 0.0,
+          "low": 0.0,
+          "high": 0.0,
+          "trials": 6
+        }
+      }
+    },
+    "card_aware": {
+      "turn_minus_river": {
+        "6": {
+          "mean": 21.083333333333314,
+          "low": -25.735224897129946,
+          "high": 67.90189156379657,
+          "trials": 6
+        },
+        "7": {
+          "mean": 8.803571428571422,
+          "low": -9.4438363204733,
+          "high": 27.050979177616142,
+          "trials": 6
+        },
+        "8": {
+          "mean": 39.213541666666664,
+          "low": -23.883027611578918,
+          "high": 102.31011094491225,
+          "trials": 6
+        },
+        "9": {
+          "mean": -0.23148148148148096,
+          "low": -0.82652357306396,
+          "high": 0.36356061010099805,
+          "trials": 6
+        }
+      },
+      "turn_minus_original": {
+        "6": {
+          "mean": 77.0173611111111,
+          "low": -51.38253745354628,
+          "high": 205.4172596757685,
+          "trials": 6
+        },
+        "7": {
+          "mean": 31.830357142857135,
+          "low": -29.943987409260718,
+          "high": 93.60470169497499,
+          "trials": 6
+        },
+        "8": {
+          "mean": 45.5625,
+          "low": -13.660905358681383,
+          "high": 104.78590535868139,
+          "trials": 6
+        },
+        "9": {
+          "mean": -19.446759259259263,
+          "low": -65.92088029461057,
+          "high": 27.02736177609204,
+          "trials": 6
+        }
+      },
+      "river_minus_original": {
+        "6": {
+          "mean": 55.93402777777778,
+          "low": -35.25182615752548,
+          "high": 147.11988171308104,
+          "trials": 6
+        },
+        "7": {
+          "mean": 23.02678571428571,
+          "low": -40.3681431641818,
+          "high": 86.42171459275323,
+          "trials": 6
+        },
+        "8": {
+          "mean": 6.348958333333329,
+          "low": -4.48392367512394,
+          "high": 17.181840341790597,
+          "trials": 6
+        },
+        "9": {
+          "mean": -19.215277777777782,
+          "low": -65.81191456876466,
+          "high": 27.381359013209096,
+          "trials": 6
+        }
+      }
+    }
+  },
+  "rows": [
+    {
+      "pool": "scripted",
+      "seats": 6,
+      "trial": 0,
+      "variant": "original",
+      "hands": 48,
+      "bb_per_100": 1100.8125,
+      "elapsed_seconds": 0.2666637501679361,
+      "decision_latency_ms": {
+        "p50": 0.0029997900128364563,
+        "p95": 0.7098335772752762,
+        "max": 2.4470840580761433
+      },
+      "search_latency_ms": {
+        "turn": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        },
+        "river": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        }
+      },
+      "search_diagnostics": {
+        "turn": {
+          "searched_decisions": 0,
+          "changed_actions": 0,
+          "counterfactual_branches": 0,
+          "hands_with_search": 0
+        },
+        "river": {
+          "searched_decisions": 0,
+          "changed_actions": 0,
+          "counterfactual_branches": 0,
+          "hands_with_search": 0
+        }
+      },
+      "process_peak_rss_native_units": 122650624
+    },
+    {
+      "pool": "scripted",
+      "seats": 6,
+      "trial": 0,
+      "variant": "river",
+      "hands": 48,
+      "bb_per_100": 1100.8125,
+      "elapsed_seconds": 2.3645252496935427,
+      "decision_latency_ms": {
+        "p50": 0.0028330832719802856,
+        "p95": 0.7351089268922806,
+        "max": 531.4828329719603
+      },
+      "search_latency_ms": {
+        "turn": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        },
+        "river": {
+          "count": 6,
+          "p50": 350.0018958002329,
+          "p95": 493.80613525863737,
+          "max": 531.4828329719603
+        }
+      },
+      "search_diagnostics": {
+        "turn": {
+          "searched_decisions": 0,
+          "changed_actions": 0,
+          "counterfactual_branches": 0,
+          "hands_with_search": 0
+        },
+        "river": {
+          "searched_decisions": 6,
+          "changed_actions": 0,
+          "counterfactual_branches": 512,
+          "hands_with_search": 4
+        }
+      },
+      "process_peak_rss_native_units": 122683392
+    },
+    {
+      "pool": "scripted",
+      "seats": 6,
+      "trial": 0,
+      "variant": "turn",
+      "hands": 48,
+      "bb_per_100": 1100.8125,
+      "elapsed_seconds": 4.303474708925933,
+      "decision_latency_ms": {
+        "p50": 0.002874992787837982,
+        "p95": 0.7490006275475025,
+        "max": 540.4588747769594
+      },
+      "search_latency_ms": {
+        "turn": {
+          "count": 5,
+          "p50": 431.9055830128491,
+          "p95": 468.64919178187847,
+          "max": 468.8876252621412
+        },
+        "river": {
+          "count": 6,
+          "p50": 352.73581300862134,
+          "p95": 500.8487810846418,
+          "max": 540.4588747769594
+        }
+      },
+      "search_diagnostics": {
+        "turn": {
+          "searched_decisions": 5,
+          "changed_actions": 0,
+          "counterfactual_branches": 336,
+          "hands_with_search": 5
+        },
+        "river": {
+          "searched_decisions": 6,
+          "changed_actions": 0,
+          "counterfactual_branches": 512,
+          "hands_with_search": 4
+        }
+      },
+      "process_peak_rss_native_units": 122830848
+    },
+    {
+      "pool": "scripted",
+      "seats": 6,
+      "trial": 1,
+      "variant": "original",
+      "hands": 48,
+      "bb_per_100": 372.3958333333333,
+      "elapsed_seconds": 0.25386266596615314,
+      "decision_latency_ms": {
+        "p50": 0.002874992787837982,
+        "p95": 0.7097424007952213,
+        "max": 0.8111670613288879
+      },
+      "search_latency_ms": {
+        "turn": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        },
+        "river": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        }
+      },
+      "search_diagnostics": {
+        "turn": {
+          "searched_decisions": 0,
+          "changed_actions": 0,
+          "counterfactual_branches": 0,
+          "hands_with_search": 0
+        },
+        "river": {
+          "searched_decisions": 0,
+          "changed_actions": 0,
+          "counterfactual_branches": 0,
+          "hands_with_search": 0
+        }
+      },
+      "process_peak_rss_native_units": 122830848
+    },
+    {
+      "pool": "scripted",
+      "seats": 6,
+      "trial": 1,
+      "variant": "river",
+      "hands": 48,
+      "bb_per_100": 372.3958333333333,
+      "elapsed_seconds": 1.7670812499709427,
+      "decision_latency_ms": {
+        "p50": 0.002874992787837982,
+        "p95": 0.7455171085894109,
+        "max": 353.1392081640661
+      },
+      "search_latency_ms": {
+        "turn": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        },
+        "river": {
+          "count": 7,
+          "p50": 245.76020892709494,
+          "p95": 343.1971334386617,
+          "max": 353.1392081640661
+        }
+      },
+      "search_diagnostics": {
+        "turn": {
+          "searched_decisions": 0,
+          "changed_actions": 0,
+          "counterfactual_branches": 0,
+          "hands_with_search": 0
+        },
+        "river": {
+          "searched_decisions": 7,
+          "changed_actions": 0,
+          "counterfactual_branches": 400,
+          "hands_with_search": 5
+        }
+      },
+      "process_peak_rss_native_units": 122830848
+    },
+    {
+      "pool": "scripted",
+      "seats": 6,
+      "trial": 1,
+      "variant": "turn",
+      "hands": 48,
+      "bb_per_100": 372.3958333333333,
+      "elapsed_seconds": 5.411822499707341,
+      "decision_latency_ms": {
+        "p50": 0.003000255674123764,
+        "p95": 0.8014666847884655,
+        "max": 458.2047499716282
+      },
+      "search_latency_ms": {
+        "turn": {
+          "count": 10,
+          "p50": 378.1104579102248,
+          "p95": 438.35225023794914,
+          "max": 458.2047499716282
+        },
+        "river": {
+          "count": 7,
+          "p50": 252.98424996435642,
+          "p95": 353.1474662479013,
+          "max": 362.82829102128744
+        }
+      },
+      "search_diagnostics": {
+        "turn": {
+          "searched_decisions": 10,
+          "changed_actions": 0,
+          "counterfactual_branches": 768,
+          "hands_with_search": 7
+        },
+        "river": {
+          "searched_decisions": 7,
+          "changed_actions": 0,
+          "counterfactual_branches": 400,
+          "hands_with_search": 5
+        }
+      },
+      "process_peak_rss_native_units": 122945536
+    },
+    {
+      "pool": "scripted",
+      "seats": 6,
+      "trial": 2,
+      "variant": "original",
+      "hands": 48,
+      "bb_per_100": 2588.0208333333335,
+      "elapsed_seconds": 0.2592596667818725,
+      "decision_latency_ms": {
+        "p50": 0.0029588118195533752,
+        "p95": 0.7939834147691723,
+        "max": 0.8199168369174004
+      },
+      "search_latency_ms": {
+        "turn": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        },
+        "river": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        }
+      },
+      "search_diagnostics": {
+        "turn": {
+          "searched_decisions": 0,
+          "changed_actions": 0,
+          "counterfactual_branches": 0,
+          "hands_with_search": 0
+        },
+        "river": {
+          "searched_decisions": 0,
+          "changed_actions": 0,
+          "counterfactual_branches": 0,
+          "hands_with_search": 0
+        }
+      },
+      "process_peak_rss_native_units": 122994688
+    },
+    {
+      "pool": "scripted",
+      "seats": 6,
+      "trial": 2,
+      "variant": "river",
+      "hands": 48,
+      "bb_per_100": 2483.3333333333335,
+      "elapsed_seconds": 1.4886462921276689,
+      "decision_latency_ms": {
+        "p50": 0.0029578804969787598,
+        "p95": 0.7892334833741188,
+        "max": 359.61479088291526
+      },
+      "search_latency_ms": {
+        "turn": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        },
+        "river": {
+          "count": 5,
+          "p50": 231.74716718494892,
+          "p95": 354.68595772981644,
+          "max": 359.61479088291526
+        }
+      },
+      "search_diagnostics": {
+        "turn": {
+          "searched_decisions": 0,
+          "changed_actions": 0,
+          "counterfactual_branches": 0,
+          "hands_with_search": 0
+        },
+        "river": {
+          "searched_decisions": 5,
+          "changed_actions": 1,
+          "counterfactual_branches": 288,
+          "hands_with_search": 4
+        }
+      },
+      "process_peak_rss_native_units": 123142144
+    },
+    {
+      "pool": "scripted",
+      "seats": 6,
+      "trial": 2,
+      "variant": "turn",
+      "hands": 48,
+      "bb_per_100": 2483.3333333333335,
+      "elapsed_seconds": 3.6137365410104394,
+      "decision_latency_ms": {
+        "p50": 0.0029173679649829865,
+        "p95": 0.7604418322443957,
+        "max": 425.6774578243494
+      },
+      "search_latency_ms": {
+        "turn": {
+          "count": 7,
+          "p50": 343.7728746794164,
+          "p95": 419.46947053074837,
+          "max": 425.6774578243494
+        },
+        "river": {
+          "count": 5,
+          "p50": 229.70237536355853,
+          "p95": 356.495516654104,
+          "max": 363.79100009799004
+        }
+      },
+      "search_diagnostics": {
+        "turn": {
+          "searched_decisions": 7,
+          "changed_actions": 0,
+          "counterfactual_branches": 448,
+          "hands_with_search": 6
+        },
+        "river": {
+          "searched_decisions": 5,
+          "changed_actions": 1,
+          "counterfactual_branches": 288,
+          "hands_with_search": 4
+        }
+      },
+      "process_peak_rss_native_units": 123322368
+    },
+    {
+      "pool": "scripted",
+      "seats": 6,
+      "trial": 3,
+      "variant": "original",
+      "hands": 48,
+      "bb_per_100": -550.0,
+      "elapsed_seconds": 0.2619577092118561,
+      "decision_latency_ms": {
+        "p50": 0.002874992787837982,
+        "p95": 0.7093038409948348,
+        "max": 0.8270828984677792
+      },
+      "search_latency_ms": {
+        "turn": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        },
+        "river": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        }
+      },
+      "search_diagnostics": {
+        "turn": {
+          "searched_decisions": 0,
+          "changed_actions": 0,
+          "counterfactual_branches": 0,
+          "hands_with_search": 0
+        },
+        "river": {
+          "searched_decisions": 0,
+          "changed_actions": 0,
+          "counterfactual_branches": 0,
+          "hands_with_search": 0
+        }
+      },
+      "process_peak_rss_native_units": 123322368
+    },
+    {
+      "pool": "scripted",
+      "seats": 6,
+      "trial": 3,
+      "variant": "river",
+      "hands": 48,
+      "bb_per_100": -550.0,
+      "elapsed_seconds": 2.0197956250049174,
+      "decision_latency_ms": {
+        "p50": 0.0029578804969787598,
+        "p95": 0.7498908322304483,
+        "max": 373.38004214689136
+      },
+      "search_latency_ms": {
+        "turn": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        },
+        "river": {
+          "count": 6,
+          "p50": 316.9448545668274,
+          "p95": 369.7705108206719,
+          "max": 373.38004214689136
+        }
+      },
+      "search_diagnostics": {
+        "turn": {
+          "searched_decisions": 0,
+          "changed_actions": 0,
+          "counterfactual_branches": 0,
+          "hands_with_search": 0
+        },
+        "river": {
+          "searched_decisions": 6,
+          "changed_actions": 0,
+          "counterfactual_branches": 448,
+          "hands_with_search": 4
+        }
+      },
+      "process_peak_rss_native_units": 123322368
+    },
+    {
+      "pool": "scripted",
+      "seats": 6,
+      "trial": 3,
+      "variant": "turn",
+      "hands": 48,
+      "bb_per_100": -550.0,
+      "elapsed_seconds": 5.157135833054781,
+      "decision_latency_ms": {
+        "p50": 0.003000255674123764,
+        "p95": 0.790621293708682,
+        "max": 529.4101662002504
+      },
+      "search_latency_ms": {
+        "turn": {
+          "count": 8,
+          "p50": 437.38733301870525,
+          "p95": 509.1042308369651,
+          "max": 529.4101662002504
+        },
+        "river": {
+          "count": 6,
+          "p50": 320.17910457216203,
+          "p95": 372.0473959110677,
+          "max": 375.6329999305308
+        }
+      },
+      "search_diagnostics": {
+        "turn": {
+          "searched_decisions": 8,
+          "changed_actions": 0,
+          "counterfactual_branches": 624,
+          "hands_with_search": 7
+        },
+        "river": {
+          "searched_decisions": 6,
+          "changed_actions": 0,
+          "counterfactual_branches": 448,
+          "hands_with_search": 4
+        }
+      },
+      "process_peak_rss_native_units": 123322368
+    },
+    {
+      "pool": "scripted",
+      "seats": 6,
+      "trial": 4,
+      "variant": "original",
+      "hands": 48,
+      "bb_per_100": 1832.8125,
+      "elapsed_seconds": 0.2841272917576134,
+      "decision_latency_ms": {
+        "p50": 0.003000255674123764,
+        "p95": 0.7082707015797496,
+        "max": 0.8154171518981457
+      },
+      "search_latency_ms": {
+        "turn": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        },
+        "river": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        }
+      },
+      "search_diagnostics": {
+        "turn": {
+          "searched_decisions": 0,
+          "changed_actions": 0,
+          "counterfactual_branches": 0,
+          "hands_with_search": 0
+        },
+        "river": {
+          "searched_decisions": 0,
+          "changed_actions": 0,
+          "counterfactual_branches": 0,
+          "hands_with_search": 0
+        }
+      },
+      "process_peak_rss_native_units": 123322368
+    },
+    {
+      "pool": "scripted",
+      "seats": 6,
+      "trial": 4,
+      "variant": "river",
+      "hands": 48,
+      "bb_per_100": 1832.8125,
+      "elapsed_seconds": 2.155802042223513,
+      "decision_latency_ms": {
+        "p50": 0.003000255674123764,
+        "p95": 0.7411454571411014,
+        "max": 365.10304221883416
+      },
+      "search_latency_ms": {
+        "turn": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        },
+        "river": {
+          "count": 6,
+          "p50": 350.76845809817314,
+          "p95": 363.26887540053576,
+          "max": 365.10304221883416
+        }
+      },
+      "search_diagnostics": {
+        "turn": {
+          "searched_decisions": 0,
+          "changed_actions": 0,
+          "counterfactual_branches": 0,
+          "hands_with_search": 0
+        },
+        "river": {
+          "searched_decisions": 6,
+          "changed_actions": 0,
+          "counterfactual_branches": 464,
+          "hands_with_search": 4
+        }
+      },
+      "process_peak_rss_native_units": 123322368
+    },
+    {
+      "pool": "scripted",
+      "seats": 6,
+      "trial": 4,
+      "variant": "turn",
+      "hands": 48,
+      "bb_per_100": 1832.8125,
+      "elapsed_seconds": 6.217415040824562,
+      "decision_latency_ms": {
+        "p50": 0.003000255674123764,
+        "p95": 0.7909792475402355,
+        "max": 553.6625417880714
+      },
+      "search_latency_ms": {
+        "turn": {
+          "count": 11,
+          "p50": 384.30799962952733,
+          "p95": 477.91458340361714,
+          "max": 553.6625417880714
+        },
+        "river": {
+          "count": 6,
+          "p50": 344.77643808349967,
+          "p95": 360.2580827428028,
+          "max": 362.4195409938693
+        }
+      },
+      "search_diagnostics": {
+        "turn": {
+          "searched_decisions": 11,
+          "changed_actions": 0,
+          "counterfactual_branches": 896,
+          "hands_with_search": 8
+        },
+        "river": {
+          "searched_decisions": 6,
+          "changed_actions": 0,
+          "counterfactual_branches": 464,
+          "hands_with_search": 4
+        }
+      },
+      "process_peak_rss_native_units": 123322368
+    },
+    {
+      "pool": "scripted",
+      "seats": 6,
+      "trial": 5,
+      "variant": "original",
+      "hands": 48,
+      "bb_per_100": 903.2916666666669,
+      "elapsed_seconds": 0.27131083281710744,
+      "decision_latency_ms": {
+        "p50": 0.0029578804969787598,
+        "p95": 0.7355753332376479,
+        "max": 0.8454169146716595
+      },
+      "search_latency_ms": {
+        "turn": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        },
+        "river": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        }
+      },
+      "search_diagnostics": {
+        "turn": {
+          "searched_decisions": 0,
+          "changed_actions": 0,
+          "counterfactual_branches": 0,
+          "hands_with_search": 0
+        },
+        "river": {
+          "searched_decisions": 0,
+          "changed_actions": 0,
+          "counterfactual_branches": 0,
+          "hands_with_search": 0
+        }
+      },
+      "process_peak_rss_native_units": 123322368
+    },
+    {
+      "pool": "scripted",
+      "seats": 6,
+      "trial": 5,
+      "variant": "river",
+      "hands": 48,
+      "bb_per_100": 903.2916666666669,
+      "elapsed_seconds": 1.0079748751595616,
+      "decision_latency_ms": {
+        "p50": 0.0029997900128364563,
+        "p95": 0.7892828667536377,
+        "max": 475.7075826637447
+      },
+      "search_latency_ms": {
+        "turn": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        },
+        "river": {
+          "count": 2,
+          "p50": 367.02187499031425,
+          "p95": 464.83901189640164,
+          "max": 475.7075826637447
+        }
+      },
+      "search_diagnostics": {
+        "turn": {
+          "searched_decisions": 0,
+          "changed_actions": 0,
+          "counterfactual_branches": 0,
+          "hands_with_search": 0
+        },
+        "river": {
+          "searched_decisions": 2,
+          "changed_actions": 0,
+          "counterfactual_branches": 144,
+          "hands_with_search": 2
+        }
+      },
+      "process_peak_rss_native_units": 123322368
+    },
+    {
+      "pool": "scripted",
+      "seats": 6,
+      "trial": 5,
+      "variant": "turn",
+      "hands": 48,
+      "bb_per_100": 903.2916666666669,
+      "elapsed_seconds": 5.502940375357866,
+      "decision_latency_ms": {
+        "p50": 0.003041699528694153,
+        "p95": 0.7990824989974498,
+        "max": 521.5341672301292
+      },
+      "search_latency_ms": {
+        "turn": {
+          "count": 14,
+          "p50": 385.28110389597714,
+          "p95": 511.85000697150826,
+          "max": 521.5341672301292
+        },
+        "river": {
+          "count": 2,
+          "p50": 367.8839369677007,
+          "p95": 466.51563099585474,
+          "max": 477.47470811009407
+        }
+      },
+      "search_diagnostics": {
+        "turn": {
+          "searched_decisions": 14,
+          "changed_actions": 0,
+          "counterfactual_branches": 928,
+          "hands_with_search": 9
+        },
+        "river": {
+          "searched_decisions": 2,
+          "changed_actions": 0,
+          "counterfactual_branches": 144,
+          "hands_with_search": 2
+        }
+      },
+      "process_peak_rss_native_units": 123322368
+    },
+    {
+      "pool": "scripted",
+      "seats": 7,
+      "trial": 0,
+      "variant": "original",
+      "hands": 56,
+      "bb_per_100": 2340.3750000000005,
+      "elapsed_seconds": 0.32192904222756624,
+      "decision_latency_ms": {
+        "p50": 0.002874992787837982,
+        "p95": 0.7951918058097363,
+        "max": 0.9047091007232666
+      },
+      "search_latency_ms": {
+        "turn": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        },
+        "river": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        }
+      },
+      "search_diagnostics": {
+        "turn": {
+          "searched_decisions": 0,
+          "changed_actions": 0,
+          "counterfactual_branches": 0,
+          "hands_with_search": 0
+        },
+        "river": {
+          "searched_decisions": 0,
+          "changed_actions": 0,
+          "counterfactual_branches": 0,
+          "hands_with_search": 0
+        }
+      },
+      "process_peak_rss_native_units": 123322368
+    },
+    {
+      "pool": "scripted",
+      "seats": 7,
+      "trial": 0,
+      "variant": "river",
+      "hands": 56,
+      "bb_per_100": 2340.3750000000005,
+      "elapsed_seconds": 2.6364380843006074,
+      "decision_latency_ms": {
+        "p50": 0.00287545844912529,
+        "p95": 0.8034832077100873,
+        "max": 417.6934161223471
+      },
+      "search_latency_ms": {
+        "turn": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        },
+        "river": {
+          "count": 7,
+          "p50": 368.27941704541445,
+          "p95": 413.97525388747454,
+          "max": 417.6934161223471
+        }
+      },
+      "search_diagnostics": {
+        "turn": {
+          "searched_decisions": 0,
+          "changed_actions": 0,
+          "counterfactual_branches": 0,
+          "hands_with_search": 0
+        },
+        "river": {
+          "searched_decisions": 7,
+          "changed_actions": 0,
+          "counterfactual_branches": 528,
+          "hands_with_search": 5
+        }
+      },
+      "process_peak_rss_native_units": 123322368
+    },
+    {
+      "pool": "scripted",
+      "seats": 7,
+      "trial": 0,
+      "variant": "turn",
+      "hands": 56,
+      "bb_per_100": 2340.3750000000005,
+      "elapsed_seconds": 7.184012999758124,
+      "decision_latency_ms": {
+        "p50": 0.0029578804969787598,
+        "p95": 0.8847732795402408,
+        "max": 561.3712086342275
+      },
+      "search_latency_ms": {
+        "turn": {
+          "count": 12,
+          "p50": 420.615250011906,
+          "p95": 539.488839590922,
+          "max": 561.3712086342275
+        },
+        "river": {
+          "count": 7,
+          "p50": 363.08483267202973,
+          "p95": 406.7931205499917,
+          "max": 411.45008290186524
+        }
+      },
+      "search_diagnostics": {
+        "turn": {
+          "searched_decisions": 12,
+          "changed_actions": 0,
+          "counterfactual_branches": 880,
+          "hands_with_search": 7
+        },
+        "river": {
+          "searched_decisions": 7,
+          "changed_actions": 0,
+          "counterfactual_branches": 528,
+          "hands_with_search": 5
+        }
+      },
+      "process_peak_rss_native_units": 123322368
+    },
+    {
+      "pool": "scripted",
+      "seats": 7,
+      "trial": 1,
+      "variant": "original",
+      "hands": 56,
+      "bb_per_100": 1402.232142857143,
+      "elapsed_seconds": 0.3346401248127222,
+      "decision_latency_ms": {
+        "p50": 0.002874992787837982,
+        "p95": 0.8014165796339512,
+        "max": 0.9407498873770237
+      },
+      "search_latency_ms": {
+        "turn": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        },
+        "river": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        }
+      },
+      "search_diagnostics": {
+        "turn": {
+          "searched_decisions": 0,
+          "changed_actions": 0,
+          "counterfactual_branches": 0,
+          "hands_with_search": 0
+        },
+        "river": {
+          "searched_decisions": 0,
+          "changed_actions": 0,
+          "counterfactual_branches": 0,
+          "hands_with_search": 0
+        }
+      },
+      "process_peak_rss_native_units": 123322368
+    },
+    {
+      "pool": "scripted",
+      "seats": 7,
+      "trial": 1,
+      "variant": "river",
+      "hands": 56,
+      "bb_per_100": 1402.232142857143,
+      "elapsed_seconds": 2.426688250154257,
+      "decision_latency_ms": {
+        "p50": 0.0029169023036956787,
+        "p95": 0.8048918098211288,
+        "max": 512.0962080545723
+      },
+      "search_latency_ms": {
+        "turn": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        },
+        "river": {
+          "count": 7,
+          "p50": 335.4655001312494,
+          "p95": 469.2769458517431,
+          "max": 512.0962080545723
+        }
+      },
+      "search_diagnostics": {
+        "turn": {
+          "searched_decisions": 0,
+          "changed_actions": 0,
+          "counterfactual_branches": 0,
+          "hands_with_search": 0
+        },
+        "river": {
+          "searched_decisions": 7,
+          "changed_actions": 0,
+          "counterfactual_branches": 480,
+          "hands_with_search": 5
+        }
+      },
+      "process_peak_rss_native_units": 123322368
+    },
+    {
+      "pool": "scripted",
+      "seats": 7,
+      "trial": 1,
+      "variant": "turn",
+      "hands": 56,
+      "bb_per_100": 1402.232142857143,
+      "elapsed_seconds": 5.222951292060316,
+      "decision_latency_ms": {
+        "p50": 0.0029578804969787598,
+        "p95": 0.7970753125846386,
+        "max": 567.5335410051048
+      },
+      "search_latency_ms": {
+        "turn": {
+          "count": 7,
+          "p50": 403.0226250179112,
+          "p95": 564.0885536558926,
+          "max": 567.5335410051048
+        },
+        "river": {
+          "count": 7,
+          "p50": 331.8222500383854,
+          "p95": 465.4648124705999,
+          "max": 508.85350024327636
+        }
+      },
+      "search_diagnostics": {
+        "turn": {
+          "searched_decisions": 7,
+          "changed_actions": 0,
+          "counterfactual_branches": 512,
+          "hands_with_search": 6
+        },
+        "river": {
+          "searched_decisions": 7,
+          "changed_actions": 0,
+          "counterfactual_branches": 480,
+          "hands_with_search": 5
+        }
+      },
+      "process_peak_rss_native_units": 123322368
+    },
+    {
+      "pool": "scripted",
+      "seats": 7,
+      "trial": 2,
+      "variant": "original",
+      "hands": 56,
+      "bb_per_100": 1590.625,
+      "elapsed_seconds": 0.31691924994811416,
+      "decision_latency_ms": {
+        "p50": 0.0029169023036956787,
+        "p95": 0.7894398178905248,
+        "max": 0.9562079794704914
+      },
+      "search_latency_ms": {
+        "turn": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        },
+        "river": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        }
+      },
+      "search_diagnostics": {
+        "turn": {
+          "searched_decisions": 0,
+          "changed_actions": 0,
+          "counterfactual_branches": 0,
+          "hands_with_search": 0
+        },
+        "river": {
+          "searched_decisions": 0,
+          "changed_actions": 0,
+          "counterfactual_branches": 0,
+          "hands_with_search": 0
+        }
+      },
+      "process_peak_rss_native_units": 123322368
+    },
+    {
+      "pool": "scripted",
+      "seats": 7,
+      "trial": 2,
+      "variant": "river",
+      "hands": 56,
+      "bb_per_100": 1590.625,
+      "elapsed_seconds": 0.6419537919573486,
+      "decision_latency_ms": {
+        "p50": 0.002874992787837982,
+        "p95": 0.7943400414660573,
+        "max": 221.8747497536242
+      },
+      "search_latency_ms": {
+        "turn": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        },
+        "river": {
+          "count": 2,
+          "p50": 163.64639555104077,
+          "p95": 216.05191433336586,
+          "max": 221.8747497536242
+        }
+      },
+      "search_diagnostics": {
+        "turn": {
+          "searched_decisions": 0,
+          "changed_actions": 0,
+          "counterfactual_branches": 0,
+          "hands_with_search": 0
+        },
+        "river": {
+          "searched_decisions": 2,
+          "changed_actions": 0,
+          "counterfactual_branches": 80,
+          "hands_with_search": 1
+        }
+      },
+      "process_peak_rss_native_units": 123322368
+    },
+    {
+      "pool": "scripted",
+      "seats": 7,
+      "trial": 2,
+      "variant": "turn",
+      "hands": 56,
+      "bb_per_100": 1767.4107142857142,
+      "elapsed_seconds": 2.189456708263606,
+      "decision_latency_ms": {
+        "p50": 0.0029159709811210632,
+        "p95": 0.8036666782572864,
+        "max": 480.6177499704063
+      },
+      "search_latency_ms": {
+        "turn": {
+          "count": 5,
+          "p50": 316.0961251705885,
+          "p95": 461.8110667914152,
+          "max": 480.6177499704063
+        },
+        "river": {
+          "count": 2,
+          "p50": 164.39839568920434,
+          "p95": 217.21378911752254,
+          "max": 223.08216616511345
+        }
+      },
+      "search_diagnostics": {
+        "turn": {
+          "searched_decisions": 5,
+          "changed_actions": 1,
+          "counterfactual_branches": 320,
+          "hands_with_search": 3
+        },
+        "river": {
+          "searched_decisions": 2,
+          "changed_actions": 0,
+          "counterfactual_branches": 80,
+          "hands_with_search": 1
+        }
+      },
+      "process_peak_rss_native_units": 123322368
+    },
+    {
+      "pool": "scripted",
+      "seats": 7,
+      "trial": 3,
+      "variant": "original",
+      "hands": 56,
+      "bb_per_100": -8.035714285714286,
+      "elapsed_seconds": 0.3249521250836551,
+      "decision_latency_ms": {
+        "p50": 0.002874992787837982,
+        "p95": 0.8001672104001045,
+        "max": 0.9152917191386223
+      },
+      "search_latency_ms": {
+        "turn": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        },
+        "river": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        }
+      },
+      "search_diagnostics": {
+        "turn": {
+          "searched_decisions": 0,
+          "changed_actions": 0,
+          "counterfactual_branches": 0,
+          "hands_with_search": 0
+        },
+        "river": {
+          "searched_decisions": 0,
+          "changed_actions": 0,
+          "counterfactual_branches": 0,
+          "hands_with_search": 0
+        }
+      },
+      "process_peak_rss_native_units": 123322368
+    },
+    {
+      "pool": "scripted",
+      "seats": 7,
+      "trial": 3,
+      "variant": "river",
+      "hands": 56,
+      "bb_per_100": -8.035714285714286,
+      "elapsed_seconds": 2.290573208127171,
+      "decision_latency_ms": {
+        "p50": 0.0029159709811210632,
+        "p95": 0.799042172729969,
+        "max": 414.5884998142719
+      },
+      "search_latency_ms": {
+        "turn": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        },
+        "river": {
+          "count": 6,
+          "p50": 361.37493792921305,
+          "p95": 412.77349984738976,
+          "max": 414.5884998142719
+        }
+      },
+      "search_diagnostics": {
+        "turn": {
+          "searched_decisions": 0,
+          "changed_actions": 0,
+          "counterfactual_branches": 0,
+          "hands_with_search": 0
+        },
+        "river": {
+          "searched_decisions": 6,
+          "changed_actions": 0,
+          "counterfactual_branches": 448,
+          "hands_with_search": 4
+        }
+      },
+      "process_peak_rss_native_units": 123322368
+    },
+    {
+      "pool": "scripted",
+      "seats": 7,
+      "trial": 3,
+      "variant": "turn",
+      "hands": 56,
+      "bb_per_100": -8.035714285714286,
+      "elapsed_seconds": 5.469704957678914,
+      "decision_latency_ms": {
+        "p50": 0.002874992787837982,
+        "p95": 0.80129224807024,
+        "max": 500.6570001132786
+      },
+      "search_latency_ms": {
+        "turn": {
+          "count": 7,
+          "p50": 467.8951669484377,
+          "p95": 498.8296002149582,
+          "max": 500.6570001132786
+        },
+        "river": {
+          "count": 6,
+          "p50": 358.7454790249467,
+          "p95": 409.0349063044414,
+          "max": 410.0862918421626
+        }
+      },
+      "search_diagnostics": {
+        "turn": {
+          "searched_decisions": 7,
+          "changed_actions": 0,
+          "counterfactual_branches": 592,
+          "hands_with_search": 5
+        },
+        "river": {
+          "searched_decisions": 6,
+          "changed_actions": 0,
+          "counterfactual_branches": 448,
+          "hands_with_search": 4
+        }
+      },
+      "process_peak_rss_native_units": 123322368
+    },
+    {
+      "pool": "scripted",
+      "seats": 7,
+      "trial": 4,
+      "variant": "original",
+      "hands": 56,
+      "bb_per_100": 703.5892857142857,
+      "elapsed_seconds": 0.33764312509447336,
+      "decision_latency_ms": {
+        "p50": 0.002874992787837982,
+        "p95": 0.7917089387774467,
+        "max": 0.9146668016910553
+      },
+      "search_latency_ms": {
+        "turn": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        },
+        "river": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        }
+      },
+      "search_diagnostics": {
+        "turn": {
+          "searched_decisions": 0,
+          "changed_actions": 0,
+          "counterfactual_branches": 0,
+          "hands_with_search": 0
+        },
+        "river": {
+          "searched_decisions": 0,
+          "changed_actions": 0,
+          "counterfactual_branches": 0,
+          "hands_with_search": 0
+        }
+      },
+      "process_peak_rss_native_units": 123322368
+    },
+    {
+      "pool": "scripted",
+      "seats": 7,
+      "trial": 4,
+      "variant": "river",
+      "hands": 56,
+      "bb_per_100": 703.5892857142857,
+      "elapsed_seconds": 2.8939491249620914,
+      "decision_latency_ms": {
+        "p50": 0.0029173679649829865,
+        "p95": 0.8018328808248043,
+        "max": 445.10062504559755
+      },
+      "search_latency_ms": {
+        "turn": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        },
+        "river": {
+          "count": 8,
+          "p50": 340.47466702759266,
+          "p95": 417.4070210196077,
+          "max": 445.10062504559755
+        }
+      },
+      "search_diagnostics": {
+        "turn": {
+          "searched_decisions": 0,
+          "changed_actions": 0,
+          "counterfactual_branches": 0,
+          "hands_with_search": 0
+        },
+        "river": {
+          "searched_decisions": 8,
+          "changed_actions": 0,
+          "counterfactual_branches": 608,
+          "hands_with_search": 5
+        }
+      },
+      "process_peak_rss_native_units": 123322368
+    },
+    {
+      "pool": "scripted",
+      "seats": 7,
+      "trial": 4,
+      "variant": "turn",
+      "hands": 56,
+      "bb_per_100": 789.3035714285714,
+      "elapsed_seconds": 7.06425933400169,
+      "decision_latency_ms": {
+        "p50": 0.0029588118195533752,
+        "p95": 0.8410044014453882,
+        "max": 625.152749940753
+      },
+      "search_latency_ms": {
+        "turn": {
+          "count": 12,
+          "p50": 394.8355205357075,
+          "p95": 549.2006373126059,
+          "max": 625.152749940753
+        },
+        "river": {
+          "count": 7,
+          "p50": 352.1674172952771,
+          "p95": 366.3906127214432,
+          "max": 366.55050003901124
+        }
+      },
+      "search_diagnostics": {
+        "turn": {
+          "searched_decisions": 12,
+          "changed_actions": 3,
+          "counterfactual_branches": 912,
+          "hands_with_search": 8
+        },
+        "river": {
+          "searched_decisions": 7,
+          "changed_actions": 0,
+          "counterfactual_branches": 528,
+          "hands_with_search": 4
+        }
+      },
+      "process_peak_rss_native_units": 123322368
+    },
+    {
+      "pool": "scripted",
+      "seats": 7,
+      "trial": 5,
+      "variant": "original",
+      "hands": 56,
+      "bb_per_100": 882.5,
+      "elapsed_seconds": 0.33983341697603464,
+      "decision_latency_ms": {
+        "p50": 0.002874992787837982,
+        "p95": 0.7885456550866365,
+        "max": 0.8967090398073196
+      },
+      "search_latency_ms": {
+        "turn": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        },
+        "river": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        }
+      },
+      "search_diagnostics": {
+        "turn": {
+          "searched_decisions": 0,
+          "changed_actions": 0,
+          "counterfactual_branches": 0,
+          "hands_with_search": 0
+        },
+        "river": {
+          "searched_decisions": 0,
+          "changed_actions": 0,
+          "counterfactual_branches": 0,
+          "hands_with_search": 0
+        }
+      },
+      "process_peak_rss_native_units": 123322368
+    },
+    {
+      "pool": "scripted",
+      "seats": 7,
+      "trial": 5,
+      "variant": "river",
+      "hands": 56,
+      "bb_per_100": 825.3571428571429,
+      "elapsed_seconds": 3.1237667920067906,
+      "decision_latency_ms": {
+        "p50": 0.002916436642408371,
+        "p95": 0.7948749698698521,
+        "max": 486.0414997674525
+      },
+      "search_latency_ms": {
+        "turn": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        },
+        "river": {
+          "count": 8,
+          "p50": 356.85818758793175,
+          "p95": 467.96220606192946,
+          "max": 486.0414997674525
+        }
+      },
+      "search_diagnostics": {
+        "turn": {
+          "searched_decisions": 0,
+          "changed_actions": 0,
+          "counterfactual_branches": 0,
+          "hands_with_search": 0
+        },
+        "river": {
+          "searched_decisions": 8,
+          "changed_actions": 2,
+          "counterfactual_branches": 592,
+          "hands_with_search": 5
+        }
+      },
+      "process_peak_rss_native_units": 123322368
+    },
+    {
+      "pool": "scripted",
+      "seats": 7,
+      "trial": 5,
+      "variant": "turn",
+      "hands": 56,
+      "bb_per_100": 825.3571428571429,
+      "elapsed_seconds": 7.370145999826491,
+      "decision_latency_ms": {
+        "p50": 0.0029169023036956787,
+        "p95": 0.8030406199395655,
+        "max": 544.9257497675717
+      },
+      "search_latency_ms": {
+        "turn": {
+          "count": 10,
+          "p50": 419.72612449899316,
+          "p95": 525.8473437279463,
+          "max": 544.9257497675717
+        },
+        "river": {
+          "count": 8,
+          "p50": 356.41937516629696,
+          "p95": 464.5534753333777,
+          "max": 482.6032090932131
+        }
+      },
+      "search_diagnostics": {
+        "turn": {
+          "searched_decisions": 10,
+          "changed_actions": 0,
+          "counterfactual_branches": 816,
+          "hands_with_search": 7
+        },
+        "river": {
+          "searched_decisions": 8,
+          "changed_actions": 2,
+          "counterfactual_branches": 592,
+          "hands_with_search": 5
+        }
+      },
+      "process_peak_rss_native_units": 123322368
+    },
+    {
+      "pool": "scripted",
+      "seats": 8,
+      "trial": 0,
+      "variant": "original",
+      "hands": 64,
+      "bb_per_100": 1229.6875,
+      "elapsed_seconds": 0.39431099966168404,
+      "decision_latency_ms": {
+        "p50": 0.0027921050786972046,
+        "p95": 0.8890410419553518,
+        "max": 1.0279170237481594
+      },
+      "search_latency_ms": {
+        "turn": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        },
+        "river": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        }
+      },
+      "search_diagnostics": {
+        "turn": {
+          "searched_decisions": 0,
+          "changed_actions": 0,
+          "counterfactual_branches": 0,
+          "hands_with_search": 0
+        },
+        "river": {
+          "searched_decisions": 0,
+          "changed_actions": 0,
+          "counterfactual_branches": 0,
+          "hands_with_search": 0
+        }
+      },
+      "process_peak_rss_native_units": 123322368
+    },
+    {
+      "pool": "scripted",
+      "seats": 8,
+      "trial": 0,
+      "variant": "river",
+      "hands": 64,
+      "bb_per_100": 1229.6875,
+      "elapsed_seconds": 0.3926461669616401,
+      "decision_latency_ms": {
+        "p50": 0.0027921050786972046,
+        "p95": 0.8887993404641747,
+        "max": 1.0198340751230717
+      },
+      "search_latency_ms": {
+        "turn": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        },
+        "river": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        }
+      },
+      "search_diagnostics": {
+        "turn": {
+          "searched_decisions": 0,
+          "changed_actions": 0,
+          "counterfactual_branches": 0,
+          "hands_with_search": 0
+        },
+        "river": {
+          "searched_decisions": 0,
+          "changed_actions": 0,
+          "counterfactual_branches": 0,
+          "hands_with_search": 0
+        }
+      },
+      "process_peak_rss_native_units": 123322368
+    },
+    {
+      "pool": "scripted",
+      "seats": 8,
+      "trial": 0,
+      "variant": "turn",
+      "hands": 64,
+      "bb_per_100": 1229.6875,
+      "elapsed_seconds": 0.3927209167741239,
+      "decision_latency_ms": {
+        "p50": 0.002791406586766243,
+        "p95": 0.8874107385054231,
+        "max": 0.9904578328132629
+      },
+      "search_latency_ms": {
+        "turn": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        },
+        "river": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        }
+      },
+      "search_diagnostics": {
+        "turn": {
+          "searched_decisions": 0,
+          "changed_actions": 0,
+          "counterfactual_branches": 0,
+          "hands_with_search": 0
+        },
+        "river": {
+          "searched_decisions": 0,
+          "changed_actions": 0,
+          "counterfactual_branches": 0,
+          "hands_with_search": 0
+        }
+      },
+      "process_peak_rss_native_units": 123322368
+    },
+    {
+      "pool": "scripted",
+      "seats": 8,
+      "trial": 1,
+      "variant": "original",
+      "hands": 64,
+      "bb_per_100": 457.421875,
+      "elapsed_seconds": 0.4125438751652837,
+      "decision_latency_ms": {
+        "p50": 0.002791639417409897,
+        "p95": 0.8879857370629907,
+        "max": 1.0102922096848488
+      },
+      "search_latency_ms": {
+        "turn": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        },
+        "river": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        }
+      },
+      "search_diagnostics": {
+        "turn": {
+          "searched_decisions": 0,
+          "changed_actions": 0,
+          "counterfactual_branches": 0,
+          "hands_with_search": 0
+        },
+        "river": {
+          "searched_decisions": 0,
+          "changed_actions": 0,
+          "counterfactual_branches": 0,
+          "hands_with_search": 0
+        }
+      },
+      "process_peak_rss_native_units": 123322368
+    },
+    {
+      "pool": "scripted",
+      "seats": 8,
+      "trial": 1,
+      "variant": "river",
+      "hands": 64,
+      "bb_per_100": 457.421875,
+      "elapsed_seconds": 0.41326995892450213,
+      "decision_latency_ms": {
+        "p50": 0.002750195562839508,
+        "p95": 0.894004013389349,
+        "max": 1.0071666911244392
+      },
+      "search_latency_ms": {
+        "turn": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        },
+        "river": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        }
+      },
+      "search_diagnostics": {
+        "turn": {
+          "searched_decisions": 0,
+          "changed_actions": 0,
+          "counterfactual_branches": 0,
+          "hands_with_search": 0
+        },
+        "river": {
+          "searched_decisions": 0,
+          "changed_actions": 0,
+          "counterfactual_branches": 0,
+          "hands_with_search": 0
+        }
+      },
+      "process_peak_rss_native_units": 123322368
+    },
+    {
+      "pool": "scripted",
+      "seats": 8,
+      "trial": 1,
+      "variant": "turn",
+      "hands": 64,
+      "bb_per_100": 457.421875,
+      "elapsed_seconds": 0.4148651659488678,
+      "decision_latency_ms": {
+        "p50": 0.002791173756122589,
+        "p95": 0.8953457232564687,
+        "max": 1.0272921063005924
+      },
+      "search_latency_ms": {
+        "turn": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        },
+        "river": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        }
+      },
+      "search_diagnostics": {
+        "turn": {
+          "searched_decisions": 0,
+          "changed_actions": 0,
+          "counterfactual_branches": 0,
+          "hands_with_search": 0
+        },
+        "river": {
+          "searched_decisions": 0,
+          "changed_actions": 0,
+          "counterfactual_branches": 0,
+          "hands_with_search": 0
+        }
+      },
+      "process_peak_rss_native_units": 123322368
+    },
+    {
+      "pool": "scripted",
+      "seats": 8,
+      "trial": 2,
+      "variant": "original",
+      "hands": 64,
+      "bb_per_100": 1549.21875,
+      "elapsed_seconds": 0.4129198328591883,
+      "decision_latency_ms": {
+        "p50": 0.002750195562839508,
+        "p95": 0.8942708838731048,
+        "max": 1.0103750973939896
+      },
+      "search_latency_ms": {
+        "turn": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        },
+        "river": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        }
+      },
+      "search_diagnostics": {
+        "turn": {
+          "searched_decisions": 0,
+          "changed_actions": 0,
+          "counterfactual_branches": 0,
+          "hands_with_search": 0
+        },
+        "river": {
+          "searched_decisions": 0,
+          "changed_actions": 0,
+          "counterfactual_branches": 0,
+          "hands_with_search": 0
+        }
+      },
+      "process_peak_rss_native_units": 123322368
+    },
+    {
+      "pool": "scripted",
+      "seats": 8,
+      "trial": 2,
+      "variant": "river",
+      "hands": 64,
+      "bb_per_100": 1549.21875,
+      "elapsed_seconds": 0.4118751669302583,
+      "decision_latency_ms": {
+        "p50": 0.002750195562839508,
+        "p95": 0.8926591835916041,
+        "max": 1.0061673820018768
+      },
+      "search_latency_ms": {
+        "turn": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        },
+        "river": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        }
+      },
+      "search_diagnostics": {
+        "turn": {
+          "searched_decisions": 0,
+          "changed_actions": 0,
+          "counterfactual_branches": 0,
+          "hands_with_search": 0
+        },
+        "river": {
+          "searched_decisions": 0,
+          "changed_actions": 0,
+          "counterfactual_branches": 0,
+          "hands_with_search": 0
+        }
+      },
+      "process_peak_rss_native_units": 123322368
+    },
+    {
+      "pool": "scripted",
+      "seats": 8,
+      "trial": 2,
+      "variant": "turn",
+      "hands": 64,
+      "bb_per_100": 1549.21875,
+      "elapsed_seconds": 1.7427596668712795,
+      "decision_latency_ms": {
+        "p50": 0.002791639417409897,
+        "p95": 0.897149974480271,
+        "max": 700.5618331022561
+      },
+      "search_latency_ms": {
+        "turn": {
+          "count": 2,
+          "p50": 665.2531251311302,
+          "p95": 697.0309623051435,
+          "max": 700.5618331022561
+        },
+        "river": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        }
+      },
+      "search_diagnostics": {
+        "turn": {
+          "searched_decisions": 2,
+          "changed_actions": 0,
+          "counterfactual_branches": 176,
+          "hands_with_search": 1
+        },
+        "river": {
+          "searched_decisions": 0,
+          "changed_actions": 0,
+          "counterfactual_branches": 0,
+          "hands_with_search": 0
+        }
+      },
+      "process_peak_rss_native_units": 123322368
+    },
+    {
+      "pool": "scripted",
+      "seats": 8,
+      "trial": 3,
+      "variant": "original",
+      "hands": 64,
+      "bb_per_100": 484.765625,
+      "elapsed_seconds": 0.4194050831720233,
+      "decision_latency_ms": {
+        "p50": 0.0027921050786972046,
+        "p95": 0.9046687046065927,
+        "max": 1.0352078825235367
+      },
+      "search_latency_ms": {
+        "turn": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        },
+        "river": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        }
+      },
+      "search_diagnostics": {
+        "turn": {
+          "searched_decisions": 0,
+          "changed_actions": 0,
+          "counterfactual_branches": 0,
+          "hands_with_search": 0
+        },
+        "river": {
+          "searched_decisions": 0,
+          "changed_actions": 0,
+          "counterfactual_branches": 0,
+          "hands_with_search": 0
+        }
+      },
+      "process_peak_rss_native_units": 123322368
+    },
+    {
+      "pool": "scripted",
+      "seats": 8,
+      "trial": 3,
+      "variant": "river",
+      "hands": 64,
+      "bb_per_100": 484.765625,
+      "elapsed_seconds": 1.7307905410416424,
+      "decision_latency_ms": {
+        "p50": 0.0027921050786972046,
+        "p95": 0.9020418161526322,
+        "max": 658.4845827892423
+      },
+      "search_latency_ms": {
+        "turn": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        },
+        "river": {
+          "count": 2,
+          "p50": 658.2544788252562,
+          "p95": 658.4615723928437,
+          "max": 658.4845827892423
+        }
+      },
+      "search_diagnostics": {
+        "turn": {
+          "searched_decisions": 0,
+          "changed_actions": 0,
+          "counterfactual_branches": 0,
+          "hands_with_search": 0
+        },
+        "river": {
+          "searched_decisions": 2,
+          "changed_actions": 0,
+          "counterfactual_branches": 176,
+          "hands_with_search": 1
+        }
+      },
+      "process_peak_rss_native_units": 123322368
+    },
+    {
+      "pool": "scripted",
+      "seats": 8,
+      "trial": 3,
+      "variant": "turn",
+      "hands": 64,
+      "bb_per_100": 484.765625,
+      "elapsed_seconds": 4.800549500156194,
+      "decision_latency_ms": {
+        "p50": 0.0028330832719802856,
+        "p95": 0.9016124997287989,
+        "max": 708.0427911132574
+      },
+      "search_latency_ms": {
+        "turn": {
+          "count": 7,
+          "p50": 507.62595795094967,
+          "p95": 674.7745913453399,
+          "max": 708.0427911132574
+        },
+        "river": {
+          "count": 2,
+          "p50": 663.0229789298028,
+          "p95": 664.9336222326383,
+          "max": 665.1459159329534
+        }
+      },
+      "search_diagnostics": {
+        "turn": {
+          "searched_decisions": 7,
+          "changed_actions": 0,
+          "counterfactual_branches": 448,
+          "hands_with_search": 3
+        },
+        "river": {
+          "searched_decisions": 2,
+          "changed_actions": 0,
+          "counterfactual_branches": 176,
+          "hands_with_search": 1
+        }
+      },
+      "process_peak_rss_native_units": 123322368
+    },
+    {
+      "pool": "scripted",
+      "seats": 8,
+      "trial": 4,
+      "variant": "original",
+      "hands": 64,
+      "bb_per_100": 295.3125,
+      "elapsed_seconds": 0.40670962492004037,
+      "decision_latency_ms": {
+        "p50": 0.002791639417409897,
+        "p95": 0.8900953456759453,
+        "max": 0.9895828552544117
+      },
+      "search_latency_ms": {
+        "turn": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        },
+        "river": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        }
+      },
+      "search_diagnostics": {
+        "turn": {
+          "searched_decisions": 0,
+          "changed_actions": 0,
+          "counterfactual_branches": 0,
+          "hands_with_search": 0
+        },
+        "river": {
+          "searched_decisions": 0,
+          "changed_actions": 0,
+          "counterfactual_branches": 0,
+          "hands_with_search": 0
+        }
+      },
+      "process_peak_rss_native_units": 123322368
+    },
+    {
+      "pool": "scripted",
+      "seats": 8,
+      "trial": 4,
+      "variant": "river",
+      "hands": 64,
+      "bb_per_100": 295.3125,
+      "elapsed_seconds": 0.4068012088537216,
+      "decision_latency_ms": {
+        "p50": 0.002791173756122589,
+        "p95": 0.8889625780284405,
+        "max": 0.9920001029968262
+      },
+      "search_latency_ms": {
+        "turn": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        },
+        "river": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        }
+      },
+      "search_diagnostics": {
+        "turn": {
+          "searched_decisions": 0,
+          "changed_actions": 0,
+          "counterfactual_branches": 0,
+          "hands_with_search": 0
+        },
+        "river": {
+          "searched_decisions": 0,
+          "changed_actions": 0,
+          "counterfactual_branches": 0,
+          "hands_with_search": 0
+        }
+      },
+      "process_peak_rss_native_units": 123322368
+    },
+    {
+      "pool": "scripted",
+      "seats": 8,
+      "trial": 4,
+      "variant": "turn",
+      "hands": 64,
+      "bb_per_100": 295.3125,
+      "elapsed_seconds": 1.6903970828279853,
+      "decision_latency_ms": {
+        "p50": 0.0027921050786972046,
+        "p95": 0.8867374155670404,
+        "max": 537.554208189249
+      },
+      "search_latency_ms": {
+        "turn": {
+          "count": 4,
+          "p50": 313.346104696393,
+          "p95": 530.5390707217157,
+          "max": 537.554208189249
+        },
+        "river": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        }
+      },
+      "search_diagnostics": {
+        "turn": {
+          "searched_decisions": 4,
+          "changed_actions": 0,
+          "counterfactual_branches": 224,
+          "hands_with_search": 2
+        },
+        "river": {
+          "searched_decisions": 0,
+          "changed_actions": 0,
+          "counterfactual_branches": 0,
+          "hands_with_search": 0
+        }
+      },
+      "process_peak_rss_native_units": 123322368
+    },
+    {
+      "pool": "scripted",
+      "seats": 8,
+      "trial": 5,
+      "variant": "original",
+      "hands": 64,
+      "bb_per_100": 1038.671875,
+      "elapsed_seconds": 0.40867779217660427,
+      "decision_latency_ms": {
+        "p50": 0.0027921050786972046,
+        "p95": 0.8872084319591522,
+        "max": 1.0200836695730686
+      },
+      "search_latency_ms": {
+        "turn": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        },
+        "river": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        }
+      },
+      "search_diagnostics": {
+        "turn": {
+          "searched_decisions": 0,
+          "changed_actions": 0,
+          "counterfactual_branches": 0,
+          "hands_with_search": 0
+        },
+        "river": {
+          "searched_decisions": 0,
+          "changed_actions": 0,
+          "counterfactual_branches": 0,
+          "hands_with_search": 0
+        }
+      },
+      "process_peak_rss_native_units": 123322368
+    },
+    {
+      "pool": "scripted",
+      "seats": 8,
+      "trial": 5,
+      "variant": "river",
+      "hands": 64,
+      "bb_per_100": 1038.671875,
+      "elapsed_seconds": 0.4082407089881599,
+      "decision_latency_ms": {
+        "p50": 0.002750195562839508,
+        "p95": 0.8907288312911986,
+        "max": 0.9933328256011009
+      },
+      "search_latency_ms": {
+        "turn": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        },
+        "river": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        }
+      },
+      "search_diagnostics": {
+        "turn": {
+          "searched_decisions": 0,
+          "changed_actions": 0,
+          "counterfactual_branches": 0,
+          "hands_with_search": 0
+        },
+        "river": {
+          "searched_decisions": 0,
+          "changed_actions": 0,
+          "counterfactual_branches": 0,
+          "hands_with_search": 0
+        }
+      },
+      "process_peak_rss_native_units": 123322368
+    },
+    {
+      "pool": "scripted",
+      "seats": 8,
+      "trial": 5,
+      "variant": "turn",
+      "hands": 64,
+      "bb_per_100": 1038.671875,
+      "elapsed_seconds": 0.9815554171800613,
+      "decision_latency_ms": {
+        "p50": 0.002874992787837982,
+        "p95": 0.9047750383615492,
+        "max": 424.386833794415
+      },
+      "search_latency_ms": {
+        "turn": {
+          "count": 2,
+          "p50": 283.82722940295935,
+          "p95": 410.33087335526943,
+          "max": 424.386833794415
+        },
+        "river": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        }
+      },
+      "search_diagnostics": {
+        "turn": {
+          "searched_decisions": 2,
+          "changed_actions": 0,
+          "counterfactual_branches": 96,
+          "hands_with_search": 1
+        },
+        "river": {
+          "searched_decisions": 0,
+          "changed_actions": 0,
+          "counterfactual_branches": 0,
+          "hands_with_search": 0
+        }
+      },
+      "process_peak_rss_native_units": 123322368
+    },
+    {
+      "pool": "scripted",
+      "seats": 9,
+      "trial": 0,
+      "variant": "original",
+      "hands": 72,
+      "bb_per_100": -157.63888888888889,
+      "elapsed_seconds": 0.6126402500085533,
+      "decision_latency_ms": {
+        "p50": 0.0031669624149799347,
+        "p95": 1.0351118631660938,
+        "max": 2.474833745509386
+      },
+      "search_latency_ms": {
+        "turn": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        },
+        "river": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        }
+      },
+      "search_diagnostics": {
+        "turn": {
+          "searched_decisions": 0,
+          "changed_actions": 0,
+          "counterfactual_branches": 0,
+          "hands_with_search": 0
+        },
+        "river": {
+          "searched_decisions": 0,
+          "changed_actions": 0,
+          "counterfactual_branches": 0,
+          "hands_with_search": 0
+        }
+      },
+      "process_peak_rss_native_units": 123322368
+    },
+    {
+      "pool": "scripted",
+      "seats": 9,
+      "trial": 0,
+      "variant": "river",
+      "hands": 72,
+      "bb_per_100": -157.63888888888889,
+      "elapsed_seconds": 1.4309245413169265,
+      "decision_latency_ms": {
+        "p50": 0.002874992787837982,
+        "p95": 0.9777783881872892,
+        "max": 448.8396248780191
+      },
+      "search_latency_ms": {
+        "turn": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        },
+        "river": {
+          "count": 2,
+          "p50": 438.66918748244643,
+          "p95": 447.8225811384618,
+          "max": 448.8396248780191
+        }
+      },
+      "search_diagnostics": {
+        "turn": {
+          "searched_decisions": 0,
+          "changed_actions": 0,
+          "counterfactual_branches": 0,
+          "hands_with_search": 0
+        },
+        "river": {
+          "searched_decisions": 2,
+          "changed_actions": 0,
+          "counterfactual_branches": 176,
+          "hands_with_search": 1
+        }
+      },
+      "process_peak_rss_native_units": 123322368
+    },
+    {
+      "pool": "scripted",
+      "seats": 9,
+      "trial": 0,
+      "variant": "turn",
+      "hands": 72,
+      "bb_per_100": -157.63888888888889,
+      "elapsed_seconds": 3.2465644581243396,
+      "decision_latency_ms": {
+        "p50": 0.002874992787837982,
+        "p95": 0.9843753185123205,
+        "max": 667.6851669326425
+      },
+      "search_latency_ms": {
+        "turn": {
+          "count": 3,
+          "p50": 638.8018340803683,
+          "p95": 664.796833647415,
+          "max": 667.6851669326425
+        },
+        "river": {
+          "count": 2,
+          "p50": 435.8676455449313,
+          "p95": 447.9135269066319,
+          "max": 449.25195816904306
+        }
+      },
+      "search_diagnostics": {
+        "turn": {
+          "searched_decisions": 3,
+          "changed_actions": 0,
+          "counterfactual_branches": 256,
+          "hands_with_search": 2
+        },
+        "river": {
+          "searched_decisions": 2,
+          "changed_actions": 0,
+          "counterfactual_branches": 176,
+          "hands_with_search": 1
+        }
+      },
+      "process_peak_rss_native_units": 123322368
+    },
+    {
+      "pool": "scripted",
+      "seats": 9,
+      "trial": 1,
+      "variant": "original",
+      "hands": 72,
+      "bb_per_100": -582.6388888888889,
+      "elapsed_seconds": 0.5554317501373589,
+      "decision_latency_ms": {
+        "p50": 0.002874992787837982,
+        "p95": 0.9922061581164598,
+        "max": 1.162291970103979
+      },
+      "search_latency_ms": {
+        "turn": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        },
+        "river": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        }
+      },
+      "search_diagnostics": {
+        "turn": {
+          "searched_decisions": 0,
+          "changed_actions": 0,
+          "counterfactual_branches": 0,
+          "hands_with_search": 0
+        },
+        "river": {
+          "searched_decisions": 0,
+          "changed_actions": 0,
+          "counterfactual_branches": 0,
+          "hands_with_search": 0
+        }
+      },
+      "process_peak_rss_native_units": 123322368
+    },
+    {
+      "pool": "scripted",
+      "seats": 9,
+      "trial": 1,
+      "variant": "river",
+      "hands": 72,
+      "bb_per_100": -582.6388888888889,
+      "elapsed_seconds": 0.5513663329184055,
+      "decision_latency_ms": {
+        "p50": 0.002874992787837982,
+        "p95": 0.9800181491300465,
+        "max": 1.0932083241641521
+      },
+      "search_latency_ms": {
+        "turn": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        },
+        "river": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        }
+      },
+      "search_diagnostics": {
+        "turn": {
+          "searched_decisions": 0,
+          "changed_actions": 0,
+          "counterfactual_branches": 0,
+          "hands_with_search": 0
+        },
+        "river": {
+          "searched_decisions": 0,
+          "changed_actions": 0,
+          "counterfactual_branches": 0,
+          "hands_with_search": 0
+        }
+      },
+      "process_peak_rss_native_units": 123322368
+    },
+    {
+      "pool": "scripted",
+      "seats": 9,
+      "trial": 1,
+      "variant": "turn",
+      "hands": 72,
+      "bb_per_100": -582.6388888888889,
+      "elapsed_seconds": 2.1374596669338644,
+      "decision_latency_ms": {
+        "p50": 0.002874992787837982,
+        "p95": 0.9903897764161229,
+        "max": 534.0094589628279
+      },
+      "search_latency_ms": {
+        "turn": {
+          "count": 4,
+          "p50": 460.7849584426731,
+          "p95": 531.1819463735446,
+          "max": 534.0094589628279
+        },
+        "river": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        }
+      },
+      "search_diagnostics": {
+        "turn": {
+          "searched_decisions": 4,
+          "changed_actions": 0,
+          "counterfactual_branches": 272,
+          "hands_with_search": 2
+        },
+        "river": {
+          "searched_decisions": 0,
+          "changed_actions": 0,
+          "counterfactual_branches": 0,
+          "hands_with_search": 0
+        }
+      },
+      "process_peak_rss_native_units": 123322368
+    },
+    {
+      "pool": "scripted",
+      "seats": 9,
+      "trial": 2,
+      "variant": "original",
+      "hands": 72,
+      "bb_per_100": 573.0833333333334,
+      "elapsed_seconds": 0.5736435418948531,
+      "decision_latency_ms": {
+        "p50": 0.0029997900128364563,
+        "p95": 1.03068258613348,
+        "max": 1.6893749125301838
+      },
+      "search_latency_ms": {
+        "turn": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        },
+        "river": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        }
+      },
+      "search_diagnostics": {
+        "turn": {
+          "searched_decisions": 0,
+          "changed_actions": 0,
+          "counterfactual_branches": 0,
+          "hands_with_search": 0
+        },
+        "river": {
+          "searched_decisions": 0,
+          "changed_actions": 0,
+          "counterfactual_branches": 0,
+          "hands_with_search": 0
+        }
+      },
+      "process_peak_rss_native_units": 123322368
+    },
+    {
+      "pool": "scripted",
+      "seats": 9,
+      "trial": 2,
+      "variant": "river",
+      "hands": 72,
+      "bb_per_100": 573.0833333333334,
+      "elapsed_seconds": 0.5460524577647448,
+      "decision_latency_ms": {
+        "p50": 0.002874992787837982,
+        "p95": 0.9826661087572575,
+        "max": 1.0958332568407059
+      },
+      "search_latency_ms": {
+        "turn": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        },
+        "river": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        }
+      },
+      "search_diagnostics": {
+        "turn": {
+          "searched_decisions": 0,
+          "changed_actions": 0,
+          "counterfactual_branches": 0,
+          "hands_with_search": 0
+        },
+        "river": {
+          "searched_decisions": 0,
+          "changed_actions": 0,
+          "counterfactual_branches": 0,
+          "hands_with_search": 0
+        }
+      },
+      "process_peak_rss_native_units": 123322368
+    },
+    {
+      "pool": "scripted",
+      "seats": 9,
+      "trial": 2,
+      "variant": "turn",
+      "hands": 72,
+      "bb_per_100": 573.0833333333334,
+      "elapsed_seconds": 0.8358166250400245,
+      "decision_latency_ms": {
+        "p50": 0.002874992787837982,
+        "p95": 0.9837662801146507,
+        "max": 289.91508297622204
+      },
+      "search_latency_ms": {
+        "turn": {
+          "count": 1,
+          "p50": 289.91508297622204,
+          "p95": 289.91508297622204,
+          "max": 289.91508297622204
+        },
+        "river": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        }
+      },
+      "search_diagnostics": {
+        "turn": {
+          "searched_decisions": 1,
+          "changed_actions": 0,
+          "counterfactual_branches": 48,
+          "hands_with_search": 1
+        },
+        "river": {
+          "searched_decisions": 0,
+          "changed_actions": 0,
+          "counterfactual_branches": 0,
+          "hands_with_search": 0
+        }
+      },
+      "process_peak_rss_native_units": 123322368
+    },
+    {
+      "pool": "scripted",
+      "seats": 9,
+      "trial": 3,
+      "variant": "original",
+      "hands": 72,
+      "bb_per_100": 254.51388888888889,
+      "elapsed_seconds": 0.5559684168547392,
+      "decision_latency_ms": {
+        "p50": 0.002834014594554901,
+        "p95": 0.9832251816987991,
+        "max": 1.099791843444109
+      },
+      "search_latency_ms": {
+        "turn": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        },
+        "river": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        }
+      },
+      "search_diagnostics": {
+        "turn": {
+          "searched_decisions": 0,
+          "changed_actions": 0,
+          "counterfactual_branches": 0,
+          "hands_with_search": 0
+        },
+        "river": {
+          "searched_decisions": 0,
+          "changed_actions": 0,
+          "counterfactual_branches": 0,
+          "hands_with_search": 0
+        }
+      },
+      "process_peak_rss_native_units": 123322368
+    },
+    {
+      "pool": "scripted",
+      "seats": 9,
+      "trial": 3,
+      "variant": "river",
+      "hands": 72,
+      "bb_per_100": 254.51388888888889,
+      "elapsed_seconds": 0.5542096248827875,
+      "decision_latency_ms": {
+        "p50": 0.002874992787837982,
+        "p95": 0.9749173186719418,
+        "max": 1.0944576933979988
+      },
+      "search_latency_ms": {
+        "turn": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        },
+        "river": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        }
+      },
+      "search_diagnostics": {
+        "turn": {
+          "searched_decisions": 0,
+          "changed_actions": 0,
+          "counterfactual_branches": 0,
+          "hands_with_search": 0
+        },
+        "river": {
+          "searched_decisions": 0,
+          "changed_actions": 0,
+          "counterfactual_branches": 0,
+          "hands_with_search": 0
+        }
+      },
+      "process_peak_rss_native_units": 123322368
+    },
+    {
+      "pool": "scripted",
+      "seats": 9,
+      "trial": 3,
+      "variant": "turn",
+      "hands": 72,
+      "bb_per_100": 254.51388888888889,
+      "elapsed_seconds": 0.5563835836946964,
+      "decision_latency_ms": {
+        "p50": 0.002874992787837982,
+        "p95": 0.9808997623622416,
+        "max": 1.1057080700993538
+      },
+      "search_latency_ms": {
+        "turn": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        },
+        "river": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        }
+      },
+      "search_diagnostics": {
+        "turn": {
+          "searched_decisions": 0,
+          "changed_actions": 0,
+          "counterfactual_branches": 0,
+          "hands_with_search": 0
+        },
+        "river": {
+          "searched_decisions": 0,
+          "changed_actions": 0,
+          "counterfactual_branches": 0,
+          "hands_with_search": 0
+        }
+      },
+      "process_peak_rss_native_units": 123322368
+    },
+    {
+      "pool": "scripted",
+      "seats": 9,
+      "trial": 4,
+      "variant": "original",
+      "hands": 72,
+      "bb_per_100": -301.7361111111111,
+      "elapsed_seconds": 0.5479439161717892,
+      "decision_latency_ms": {
+        "p50": 0.002874992787837982,
+        "p95": 0.9763584472239017,
+        "max": 1.0908329859375954
+      },
+      "search_latency_ms": {
+        "turn": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        },
+        "river": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        }
+      },
+      "search_diagnostics": {
+        "turn": {
+          "searched_decisions": 0,
+          "changed_actions": 0,
+          "counterfactual_branches": 0,
+          "hands_with_search": 0
+        },
+        "river": {
+          "searched_decisions": 0,
+          "changed_actions": 0,
+          "counterfactual_branches": 0,
+          "hands_with_search": 0
+        }
+      },
+      "process_peak_rss_native_units": 123322368
+    },
+    {
+      "pool": "scripted",
+      "seats": 9,
+      "trial": 4,
+      "variant": "river",
+      "hands": 72,
+      "bb_per_100": -301.7361111111111,
+      "elapsed_seconds": 0.5497155832126737,
+      "decision_latency_ms": {
+        "p50": 0.002874992787837982,
+        "p95": 0.9816580452024937,
+        "max": 1.1181673035025597
+      },
+      "search_latency_ms": {
+        "turn": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        },
+        "river": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        }
+      },
+      "search_diagnostics": {
+        "turn": {
+          "searched_decisions": 0,
+          "changed_actions": 0,
+          "counterfactual_branches": 0,
+          "hands_with_search": 0
+        },
+        "river": {
+          "searched_decisions": 0,
+          "changed_actions": 0,
+          "counterfactual_branches": 0,
+          "hands_with_search": 0
+        }
+      },
+      "process_peak_rss_native_units": 123322368
+    },
+    {
+      "pool": "scripted",
+      "seats": 9,
+      "trial": 4,
+      "variant": "turn",
+      "hands": 72,
+      "bb_per_100": -301.7361111111111,
+      "elapsed_seconds": 1.5789732499979436,
+      "decision_latency_ms": {
+        "p50": 0.002874992787837982,
+        "p95": 0.9862500242888926,
+        "max": 521.7338330112398
+      },
+      "search_latency_ms": {
+        "turn": {
+          "count": 2,
+          "p50": 514.4133542198688,
+          "p95": 521.0017851321027,
+          "max": 521.7338330112398
+        },
+        "river": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        }
+      },
+      "search_diagnostics": {
+        "turn": {
+          "searched_decisions": 2,
+          "changed_actions": 0,
+          "counterfactual_branches": 176,
+          "hands_with_search": 1
+        },
+        "river": {
+          "searched_decisions": 0,
+          "changed_actions": 0,
+          "counterfactual_branches": 0,
+          "hands_with_search": 0
+        }
+      },
+      "process_peak_rss_native_units": 123322368
+    },
+    {
+      "pool": "scripted",
+      "seats": 9,
+      "trial": 5,
+      "variant": "original",
+      "hands": 72,
+      "bb_per_100": 395.8333333333333,
+      "elapsed_seconds": 0.5470857922919095,
+      "decision_latency_ms": {
+        "p50": 0.002834014594554901,
+        "p95": 0.9939027950167656,
+        "max": 1.1325003579258919
+      },
+      "search_latency_ms": {
+        "turn": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        },
+        "river": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        }
+      },
+      "search_diagnostics": {
+        "turn": {
+          "searched_decisions": 0,
+          "changed_actions": 0,
+          "counterfactual_branches": 0,
+          "hands_with_search": 0
+        },
+        "river": {
+          "searched_decisions": 0,
+          "changed_actions": 0,
+          "counterfactual_branches": 0,
+          "hands_with_search": 0
+        }
+      },
+      "process_peak_rss_native_units": 123322368
+    },
+    {
+      "pool": "scripted",
+      "seats": 9,
+      "trial": 5,
+      "variant": "river",
+      "hands": 72,
+      "bb_per_100": 395.8333333333333,
+      "elapsed_seconds": 1.5051752086728811,
+      "decision_latency_ms": {
+        "p50": 0.002834014594554901,
+        "p95": 0.9905603481456637,
+        "max": 526.1823749169707
+      },
+      "search_latency_ms": {
+        "turn": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        },
+        "river": {
+          "count": 2,
+          "p50": 480.82920839078724,
+          "p95": 521.6470582643524,
+          "max": 526.1823749169707
+        }
+      },
+      "search_diagnostics": {
+        "turn": {
+          "searched_decisions": 0,
+          "changed_actions": 0,
+          "counterfactual_branches": 0,
+          "hands_with_search": 0
+        },
+        "river": {
+          "searched_decisions": 2,
+          "changed_actions": 0,
+          "counterfactual_branches": 176,
+          "hands_with_search": 1
+        }
+      },
+      "process_peak_rss_native_units": 123322368
+    },
+    {
+      "pool": "scripted",
+      "seats": 9,
+      "trial": 5,
+      "variant": "turn",
+      "hands": 72,
+      "bb_per_100": 395.8333333333333,
+      "elapsed_seconds": 2.131651374977082,
+      "decision_latency_ms": {
+        "p50": 0.002834014594554901,
+        "p95": 0.9882231475785374,
+        "max": 627.6602088473737
+      },
+      "search_latency_ms": {
+        "turn": {
+          "count": 1,
+          "p50": 627.6602088473737,
+          "p95": 627.6602088473737,
+          "max": 627.6602088473737
+        },
+        "river": {
+          "count": 2,
+          "p50": 480.70958349853754,
+          "p95": 521.777296019718,
+          "max": 526.3403751887381
+        }
+      },
+      "search_diagnostics": {
+        "turn": {
+          "searched_decisions": 1,
+          "changed_actions": 0,
+          "counterfactual_branches": 80,
+          "hands_with_search": 1
+        },
+        "river": {
+          "searched_decisions": 2,
+          "changed_actions": 0,
+          "counterfactual_branches": 176,
+          "hands_with_search": 1
+        }
+      },
+      "process_peak_rss_native_units": 123322368
+    },
+    {
+      "pool": "card_aware",
+      "seats": 6,
+      "trial": 0,
+      "variant": "original",
+      "hands": 48,
+      "bb_per_100": -161.37500000000003,
+      "elapsed_seconds": 0.617164374794811,
+      "decision_latency_ms": {
+        "p50": 0.8230421226471663,
+        "p95": 2.41038310341537,
+        "max": 2.448749728500843
+      },
+      "search_latency_ms": {
+        "turn": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        },
+        "river": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        }
+      },
+      "search_diagnostics": {
+        "turn": {
+          "searched_decisions": 0,
+          "changed_actions": 0,
+          "counterfactual_branches": 0,
+          "hands_with_search": 0
+        },
+        "river": {
+          "searched_decisions": 0,
+          "changed_actions": 0,
+          "counterfactual_branches": 0,
+          "hands_with_search": 0
+        }
+      },
+      "process_peak_rss_native_units": 123322368
+    },
+    {
+      "pool": "card_aware",
+      "seats": 6,
+      "trial": 0,
+      "variant": "river",
+      "hands": 48,
+      "bb_per_100": -161.37500000000003,
+      "elapsed_seconds": 2.6052202922292054,
+      "decision_latency_ms": {
+        "p50": 0.8420206140726805,
+        "p95": 2.4528064066544175,
+        "max": 179.99979201704264
+      },
+      "search_latency_ms": {
+        "turn": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        },
+        "river": {
+          "count": 13,
+          "p50": 154.35945754870772,
+          "p95": 175.9390669874847,
+          "max": 179.99979201704264
+        }
+      },
+      "search_diagnostics": {
+        "turn": {
+          "searched_decisions": 0,
+          "changed_actions": 0,
+          "counterfactual_branches": 0,
+          "hands_with_search": 0
+        },
+        "river": {
+          "searched_decisions": 13,
+          "changed_actions": 0,
+          "counterfactual_branches": 1024,
+          "hands_with_search": 12
+        }
+      },
+      "process_peak_rss_native_units": 123322368
+    },
+    {
+      "pool": "card_aware",
+      "seats": 6,
+      "trial": 0,
+      "variant": "turn",
+      "hands": 48,
+      "bb_per_100": -161.37500000000003,
+      "elapsed_seconds": 5.589233125094324,
+      "decision_latency_ms": {
+        "p50": 1.3619582168757915,
+        "p95": 145.66397510934618,
+        "max": 221.29612509161234
+      },
+      "search_latency_ms": {
+        "turn": {
+          "count": 16,
+          "p50": 198.673062492162,
+          "p95": 219.73525057546794,
+          "max": 221.29612509161234
+        },
+        "river": {
+          "count": 13,
+          "p50": 155.24304192513227,
+          "p95": 175.69507462903857,
+          "max": 179.74000005051494
+        }
+      },
+      "search_diagnostics": {
+        "turn": {
+          "searched_decisions": 16,
+          "changed_actions": 0,
+          "counterfactual_branches": 1216,
+          "hands_with_search": 13
+        },
+        "river": {
+          "searched_decisions": 13,
+          "changed_actions": 0,
+          "counterfactual_branches": 1024,
+          "hands_with_search": 12
+        }
+      },
+      "process_peak_rss_native_units": 123322368
+    },
+    {
+      "pool": "card_aware",
+      "seats": 6,
+      "trial": 1,
+      "variant": "original",
+      "hands": 48,
+      "bb_per_100": -614.4999999999999,
+      "elapsed_seconds": 0.5927292089909315,
+      "decision_latency_ms": {
+        "p50": 0.8266461081802845,
+        "p95": 2.4056355468928814,
+        "max": 2.4286252446472645
+      },
+      "search_latency_ms": {
+        "turn": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        },
+        "river": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        }
+      },
+      "search_diagnostics": {
+        "turn": {
+          "searched_decisions": 0,
+          "changed_actions": 0,
+          "counterfactual_branches": 0,
+          "hands_with_search": 0
+        },
+        "river": {
+          "searched_decisions": 0,
+          "changed_actions": 0,
+          "counterfactual_branches": 0,
+          "hands_with_search": 0
+        }
+      },
+      "process_peak_rss_native_units": 123322368
+    },
+    {
+      "pool": "card_aware",
+      "seats": 6,
+      "trial": 1,
+      "variant": "river",
+      "hands": 48,
+      "bb_per_100": -614.4999999999999,
+      "elapsed_seconds": 1.8495422913692892,
+      "decision_latency_ms": {
+        "p50": 0.8362706284970045,
+        "p95": 2.4409686448052526,
+        "max": 223.8828339613974
+      },
+      "search_latency_ms": {
+        "turn": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        },
+        "river": {
+          "count": 8,
+          "p50": 163.59808342531323,
+          "p95": 204.22457335516808,
+          "max": 223.8828339613974
+        }
+      },
+      "search_diagnostics": {
+        "turn": {
+          "searched_decisions": 0,
+          "changed_actions": 0,
+          "counterfactual_branches": 0,
+          "hands_with_search": 0
+        },
+        "river": {
+          "searched_decisions": 8,
+          "changed_actions": 1,
+          "counterfactual_branches": 624,
+          "hands_with_search": 8
+        }
+      },
+      "process_peak_rss_native_units": 123322368
+    },
+    {
+      "pool": "card_aware",
+      "seats": 6,
+      "trial": 1,
+      "variant": "turn",
+      "hands": 48,
+      "bb_per_100": -604.5833333333334,
+      "elapsed_seconds": 3.948242458049208,
+      "decision_latency_ms": {
+        "p50": 0.8685418870300055,
+        "p95": 2.4729373399168253,
+        "max": 256.60933274775743
+      },
+      "search_latency_ms": {
+        "turn": {
+          "count": 12,
+          "p50": 171.00781272165477,
+          "p95": 256.32509775459766,
+          "max": 256.60933274775743
+        },
+        "river": {
+          "count": 8,
+          "p50": 163.15556271001697,
+          "p95": 203.36046025622633,
+          "max": 222.95429185032845
+        }
+      },
+      "search_diagnostics": {
+        "turn": {
+          "searched_decisions": 12,
+          "changed_actions": 1,
+          "counterfactual_branches": 848,
+          "hands_with_search": 10
+        },
+        "river": {
+          "searched_decisions": 8,
+          "changed_actions": 1,
+          "counterfactual_branches": 624,
+          "hands_with_search": 8
+        }
+      },
+      "process_peak_rss_native_units": 123322368
+    },
+    {
+      "pool": "card_aware",
+      "seats": 6,
+      "trial": 2,
+      "variant": "original",
+      "hands": 48,
+      "bb_per_100": -497.0833333333333,
+      "elapsed_seconds": 0.5734087922610343,
+      "decision_latency_ms": {
+        "p50": 0.8319374173879623,
+        "p95": 2.410620870068669,
+        "max": 2.4650003761053085
+      },
+      "search_latency_ms": {
+        "turn": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        },
+        "river": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        }
+      },
+      "search_diagnostics": {
+        "turn": {
+          "searched_decisions": 0,
+          "changed_actions": 0,
+          "counterfactual_branches": 0,
+          "hands_with_search": 0
+        },
+        "river": {
+          "searched_decisions": 0,
+          "changed_actions": 0,
+          "counterfactual_branches": 0,
+          "hands_with_search": 0
+        }
+      },
+      "process_peak_rss_native_units": 123322368
+    },
+    {
+      "pool": "card_aware",
+      "seats": 6,
+      "trial": 2,
+      "variant": "river",
+      "hands": 48,
+      "bb_per_100": -497.0833333333333,
+      "elapsed_seconds": 1.9762211251072586,
+      "decision_latency_ms": {
+        "p50": 0.8485834114253521,
+        "p95": 2.436827542260289,
+        "max": 207.73366605862975
+      },
+      "search_latency_ms": {
+        "turn": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        },
+        "river": {
+          "count": 9,
+          "p50": 158.7063749320805,
+          "p95": 199.8965664766729,
+          "max": 207.73366605862975
+        }
+      },
+      "search_diagnostics": {
+        "turn": {
+          "searched_decisions": 0,
+          "changed_actions": 0,
+          "counterfactual_branches": 0,
+          "hands_with_search": 0
+        },
+        "river": {
+          "searched_decisions": 9,
+          "changed_actions": 1,
+          "counterfactual_branches": 720,
+          "hands_with_search": 7
+        }
+      },
+      "process_peak_rss_native_units": 123322368
+    },
+    {
+      "pool": "card_aware",
+      "seats": 6,
+      "trial": 2,
+      "variant": "turn",
+      "hands": 48,
+      "bb_per_100": -497.0833333333333,
+      "elapsed_seconds": 4.107515333220363,
+      "decision_latency_ms": {
+        "p50": 1.3635624200105667,
+        "p95": 2.4752871831879015,
+        "max": 330.2260828204453
+      },
+      "search_latency_ms": {
+        "turn": {
+          "count": 10,
+          "p50": 200.24679158814251,
+          "p95": 287.02017655596126,
+          "max": 330.2260828204453
+        },
+        "river": {
+          "count": 9,
+          "p50": 158.20870781317353,
+          "p95": 201.03867501020432,
+          "max": 208.2605417817831
+        }
+      },
+      "search_diagnostics": {
+        "turn": {
+          "searched_decisions": 10,
+          "changed_actions": 0,
+          "counterfactual_branches": 848,
+          "hands_with_search": 7
+        },
+        "river": {
+          "searched_decisions": 9,
+          "changed_actions": 1,
+          "counterfactual_branches": 720,
+          "hands_with_search": 7
+        }
+      },
+      "process_peak_rss_native_units": 123322368
+    },
+    {
+      "pool": "card_aware",
+      "seats": 6,
+      "trial": 3,
+      "variant": "original",
+      "hands": 48,
+      "bb_per_100": 177.8125,
+      "elapsed_seconds": 0.654853958170861,
+      "decision_latency_ms": {
+        "p50": 0.8229587692767382,
+        "p95": 2.4089562939479947,
+        "max": 2.4649580009281635
+      },
+      "search_latency_ms": {
+        "turn": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        },
+        "river": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        }
+      },
+      "search_diagnostics": {
+        "turn": {
+          "searched_decisions": 0,
+          "changed_actions": 0,
+          "counterfactual_branches": 0,
+          "hands_with_search": 0
+        },
+        "river": {
+          "searched_decisions": 0,
+          "changed_actions": 0,
+          "counterfactual_branches": 0,
+          "hands_with_search": 0
+        }
+      },
+      "process_peak_rss_native_units": 123322368
+    },
+    {
+      "pool": "card_aware",
+      "seats": 6,
+      "trial": 3,
+      "variant": "river",
+      "hands": 48,
+      "bb_per_100": 355.7708333333334,
+      "elapsed_seconds": 3.1803540838882327,
+      "decision_latency_ms": {
+        "p50": 0.8344589732587337,
+        "p95": 2.4859047960489984,
+        "max": 192.30145821347833
+      },
+      "search_latency_ms": {
+        "turn": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        },
+        "river": {
+          "count": 17,
+          "p50": 160.54408298805356,
+          "p95": 183.15399149432778,
+          "max": 192.30145821347833
+        }
+      },
+      "search_diagnostics": {
+        "turn": {
+          "searched_decisions": 0,
+          "changed_actions": 0,
+          "counterfactual_branches": 0,
+          "hands_with_search": 0
+        },
+        "river": {
+          "searched_decisions": 17,
+          "changed_actions": 3,
+          "counterfactual_branches": 1280,
+          "hands_with_search": 13
+        }
+      },
+      "process_peak_rss_native_units": 123322368
+    },
+    {
+      "pool": "card_aware",
+      "seats": 6,
+      "trial": 3,
+      "variant": "turn",
+      "hands": 48,
+      "bb_per_100": 467.56250000000006,
+      "elapsed_seconds": 7.1929812910966575,
+      "decision_latency_ms": {
+        "p50": 0.8353330194950104,
+        "p95": 161.76052480004716,
+        "max": 247.28920869529247
+      },
+      "search_latency_ms": {
+        "turn": {
+          "count": 21,
+          "p50": 219.85283307731152,
+          "p95": 242.66604101285338,
+          "max": 247.28920869529247
+        },
+        "river": {
+          "count": 15,
+          "p50": 160.56045796722174,
+          "p95": 185.83760866895318,
+          "max": 192.94937467202544
+        }
+      },
+      "search_diagnostics": {
+        "turn": {
+          "searched_decisions": 21,
+          "changed_actions": 2,
+          "counterfactual_branches": 1680,
+          "hands_with_search": 14
+        },
+        "river": {
+          "searched_decisions": 15,
+          "changed_actions": 3,
+          "counterfactual_branches": 1120,
+          "hands_with_search": 12
+        }
+      },
+      "process_peak_rss_native_units": 123322368
+    },
+    {
+      "pool": "card_aware",
+      "seats": 6,
+      "trial": 4,
+      "variant": "original",
+      "hands": 48,
+      "bb_per_100": 425.83333333333326,
+      "elapsed_seconds": 0.5863888328894973,
+      "decision_latency_ms": {
+        "p50": 0.8289171382784843,
+        "p95": 2.422104449942708,
+        "max": 2.4511250667274
+      },
+      "search_latency_ms": {
+        "turn": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        },
+        "river": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        }
+      },
+      "search_diagnostics": {
+        "turn": {
+          "searched_decisions": 0,
+          "changed_actions": 0,
+          "counterfactual_branches": 0,
+          "hands_with_search": 0
+        },
+        "river": {
+          "searched_decisions": 0,
+          "changed_actions": 0,
+          "counterfactual_branches": 0,
+          "hands_with_search": 0
+        }
+      },
+      "process_peak_rss_native_units": 123322368
+    },
+    {
+      "pool": "card_aware",
+      "seats": 6,
+      "trial": 4,
+      "variant": "river",
+      "hands": 48,
+      "bb_per_100": 425.83333333333326,
+      "elapsed_seconds": 2.11414304189384,
+      "decision_latency_ms": {
+        "p50": 0.8389579597860575,
+        "p95": 2.4584561120718718,
+        "max": 171.36687505990267
+      },
+      "search_latency_ms": {
+        "turn": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        },
+        "river": {
+          "count": 11,
+          "p50": 146.12291660159826,
+          "p95": 165.39968736469746,
+          "max": 171.36687505990267
+        }
+      },
+      "search_diagnostics": {
+        "turn": {
+          "searched_decisions": 0,
+          "changed_actions": 0,
+          "counterfactual_branches": 0,
+          "hands_with_search": 0
+        },
+        "river": {
+          "searched_decisions": 11,
+          "changed_actions": 1,
+          "counterfactual_branches": 848,
+          "hands_with_search": 7
+        }
+      },
+      "process_peak_rss_native_units": 123322368
+    },
+    {
+      "pool": "card_aware",
+      "seats": 6,
+      "trial": 4,
+      "variant": "turn",
+      "hands": 48,
+      "bb_per_100": 425.83333333333326,
+      "elapsed_seconds": 3.7518820827826858,
+      "decision_latency_ms": {
+        "p50": 0.831354409456253,
+        "p95": 2.454789401963353,
+        "max": 227.0210417918861
+      },
+      "search_latency_ms": {
+        "turn": {
+          "count": 9,
+          "p50": 191.6168751195073,
+          "p95": 223.39804181829095,
+          "max": 227.0210417918861
+        },
+        "river": {
+          "count": 11,
+          "p50": 146.1301250383258,
+          "p95": 164.70693750306964,
+          "max": 170.7308329641819
+        }
+      },
+      "search_diagnostics": {
+        "turn": {
+          "searched_decisions": 9,
+          "changed_actions": 0,
+          "counterfactual_branches": 688,
+          "hands_with_search": 8
+        },
+        "river": {
+          "searched_decisions": 11,
+          "changed_actions": 1,
+          "counterfactual_branches": 848,
+          "hands_with_search": 7
+        }
+      },
+      "process_peak_rss_native_units": 123322368
+    },
+    {
+      "pool": "card_aware",
+      "seats": 6,
+      "trial": 5,
+      "variant": "original",
+      "hands": 48,
+      "bb_per_100": -679.3541666666666,
+      "elapsed_seconds": 0.5713990842923522,
+      "decision_latency_ms": {
+        "p50": 0.8412916213274002,
+        "p95": 2.446517301723361,
+        "max": 2.478417009115219
+      },
+      "search_latency_ms": {
+        "turn": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        },
+        "river": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        }
+      },
+      "search_diagnostics": {
+        "turn": {
+          "searched_decisions": 0,
+          "changed_actions": 0,
+          "counterfactual_branches": 0,
+          "hands_with_search": 0
+        },
+        "river": {
+          "searched_decisions": 0,
+          "changed_actions": 0,
+          "counterfactual_branches": 0,
+          "hands_with_search": 0
+        }
+      },
+      "process_peak_rss_native_units": 123322368
+    },
+    {
+      "pool": "card_aware",
+      "seats": 6,
+      "trial": 5,
+      "variant": "river",
+      "hands": 48,
+      "bb_per_100": -521.7083333333334,
+      "elapsed_seconds": 2.16124099958688,
+      "decision_latency_ms": {
+        "p50": 0.9436248801648617,
+        "p95": 2.4916249327361566,
+        "max": 172.8922501206398
+      },
+      "search_latency_ms": {
+        "turn": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        },
+        "river": {
+          "count": 11,
+          "p50": 156.9964592345059,
+          "p95": 171.10216640867293,
+          "max": 172.8922501206398
+        }
+      },
+      "search_diagnostics": {
+        "turn": {
+          "searched_decisions": 0,
+          "changed_actions": 0,
+          "counterfactual_branches": 0,
+          "hands_with_search": 0
+        },
+        "river": {
+          "searched_decisions": 11,
+          "changed_actions": 1,
+          "counterfactual_branches": 832,
+          "hands_with_search": 7
+        }
+      },
+      "process_peak_rss_native_units": 123322368
+    },
+    {
+      "pool": "card_aware",
+      "seats": 6,
+      "trial": 5,
+      "variant": "turn",
+      "hands": 48,
+      "bb_per_100": -516.9166666666666,
+      "elapsed_seconds": 4.271023374982178,
+      "decision_latency_ms": {
+        "p50": 1.7174999229609966,
+        "p95": 103.65603324025537,
+        "max": 235.49974989145994
+      },
+      "search_latency_ms": {
+        "turn": {
+          "count": 11,
+          "p50": 204.59549967199564,
+          "p95": 228.75741636380553,
+          "max": 235.49974989145994
+        },
+        "river": {
+          "count": 11,
+          "p50": 157.8337079845369,
+          "p95": 171.31047951988876,
+          "max": 173.51695895195007
+        }
+      },
+      "search_diagnostics": {
+        "turn": {
+          "searched_decisions": 11,
+          "changed_actions": 1,
+          "counterfactual_branches": 880,
+          "hands_with_search": 8
+        },
+        "river": {
+          "searched_decisions": 11,
+          "changed_actions": 1,
+          "counterfactual_branches": 832,
+          "hands_with_search": 7
+        }
+      },
+      "process_peak_rss_native_units": 123322368
+    },
+    {
+      "pool": "card_aware",
+      "seats": 7,
+      "trial": 0,
+      "variant": "original",
+      "hands": 56,
+      "bb_per_100": -153.44642857142858,
+      "elapsed_seconds": 0.8936092089861631,
+      "decision_latency_ms": {
+        "p50": 0.8578540291637182,
+        "p95": 2.6478981832042336,
+        "max": 2.7607916854321957
+      },
+      "search_latency_ms": {
+        "turn": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        },
+        "river": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        }
+      },
+      "search_diagnostics": {
+        "turn": {
+          "searched_decisions": 0,
+          "changed_actions": 0,
+          "counterfactual_branches": 0,
+          "hands_with_search": 0
+        },
+        "river": {
+          "searched_decisions": 0,
+          "changed_actions": 0,
+          "counterfactual_branches": 0,
+          "hands_with_search": 0
+        }
+      },
+      "process_peak_rss_native_units": 123322368
+    },
+    {
+      "pool": "card_aware",
+      "seats": 7,
+      "trial": 0,
+      "variant": "river",
+      "hands": 56,
+      "bb_per_100": -7.73214285714286,
+      "elapsed_seconds": 2.6466844165697694,
+      "decision_latency_ms": {
+        "p50": 0.887187896296382,
+        "p95": 2.6052581844851375,
+        "max": 188.768208026886
+      },
+      "search_latency_ms": {
+        "turn": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        },
+        "river": {
+          "count": 12,
+          "p50": 152.41754171438515,
+          "p95": 186.683341790922,
+          "max": 188.768208026886
+        }
+      },
+      "search_diagnostics": {
+        "turn": {
+          "searched_decisions": 0,
+          "changed_actions": 0,
+          "counterfactual_branches": 0,
+          "hands_with_search": 0
+        },
+        "river": {
+          "searched_decisions": 12,
+          "changed_actions": 1,
+          "counterfactual_branches": 896,
+          "hands_with_search": 10
+        }
+      },
+      "process_peak_rss_native_units": 123322368
+    },
+    {
+      "pool": "card_aware",
+      "seats": 7,
+      "trial": 0,
+      "variant": "turn",
+      "hands": 56,
+      "bb_per_100": -7.73214285714286,
+      "elapsed_seconds": 4.897321000229567,
+      "decision_latency_ms": {
+        "p50": 1.0069794952869415,
+        "p95": 2.676522615365684,
+        "max": 245.12370815500617
+      },
+      "search_latency_ms": {
+        "turn": {
+          "count": 11,
+          "p50": 217.48074982315302,
+          "p95": 235.8684374485165,
+          "max": 245.12370815500617
+        },
+        "river": {
+          "count": 12,
+          "p50": 153.88360409997404,
+          "p95": 189.02440587989986,
+          "max": 190.59683289378881
+        }
+      },
+      "search_diagnostics": {
+        "turn": {
+          "searched_decisions": 11,
+          "changed_actions": 0,
+          "counterfactual_branches": 848,
+          "hands_with_search": 10
+        },
+        "river": {
+          "searched_decisions": 12,
+          "changed_actions": 1,
+          "counterfactual_branches": 896,
+          "hands_with_search": 10
+        }
+      },
+      "process_peak_rss_native_units": 123322368
+    },
+    {
+      "pool": "card_aware",
+      "seats": 7,
+      "trial": 1,
+      "variant": "original",
+      "hands": 56,
+      "bb_per_100": 213.10714285714286,
+      "elapsed_seconds": 0.8558389996178448,
+      "decision_latency_ms": {
+        "p50": 0.925042200833559,
+        "p95": 2.5951248593628407,
+        "max": 2.6338747702538967
+      },
+      "search_latency_ms": {
+        "turn": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        },
+        "river": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        }
+      },
+      "search_diagnostics": {
+        "turn": {
+          "searched_decisions": 0,
+          "changed_actions": 0,
+          "counterfactual_branches": 0,
+          "hands_with_search": 0
+        },
+        "river": {
+          "searched_decisions": 0,
+          "changed_actions": 0,
+          "counterfactual_branches": 0,
+          "hands_with_search": 0
+        }
+      },
+      "process_peak_rss_native_units": 123322368
+    },
+    {
+      "pool": "card_aware",
+      "seats": 7,
+      "trial": 1,
+      "variant": "river",
+      "hands": 56,
+      "bb_per_100": 213.10714285714286,
+      "elapsed_seconds": 2.6057598749175668,
+      "decision_latency_ms": {
+        "p50": 1.7057079821825027,
+        "p95": 2.6514750905334945,
+        "max": 204.18445905670524
+      },
+      "search_latency_ms": {
+        "turn": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        },
+        "river": {
+          "count": 12,
+          "p50": 146.15833340212703,
+          "p95": 189.06094843987373,
+          "max": 204.18445905670524
+        }
+      },
+      "search_diagnostics": {
+        "turn": {
+          "searched_decisions": 0,
+          "changed_actions": 0,
+          "counterfactual_branches": 0,
+          "hands_with_search": 0
+        },
+        "river": {
+          "searched_decisions": 12,
+          "changed_actions": 0,
+          "counterfactual_branches": 896,
+          "hands_with_search": 8
+        }
+      },
+      "process_peak_rss_native_units": 123322368
+    },
+    {
+      "pool": "card_aware",
+      "seats": 7,
+      "trial": 1,
+      "variant": "turn",
+      "hands": 56,
+      "bb_per_100": 256.57142857142856,
+      "elapsed_seconds": 4.99313574982807,
+      "decision_latency_ms": {
+        "p50": 1.7039580270648003,
+        "p95": 2.6607586070895195,
+        "max": 245.4285421408713
+      },
+      "search_latency_ms": {
+        "turn": {
+          "count": 11,
+          "p50": 219.50824977830052,
+          "p95": 244.77106286212802,
+          "max": 245.4285421408713
+        },
+        "river": {
+          "count": 12,
+          "p50": 156.99583268724382,
+          "p95": 188.9213938033208,
+          "max": 205.10974992066622
+        }
+      },
+      "search_diagnostics": {
+        "turn": {
+          "searched_decisions": 11,
+          "changed_actions": 2,
+          "counterfactual_branches": 912,
+          "hands_with_search": 9
+        },
+        "river": {
+          "searched_decisions": 12,
+          "changed_actions": 0,
+          "counterfactual_branches": 912,
+          "hands_with_search": 8
+        }
+      },
+      "process_peak_rss_native_units": 123322368
+    },
+    {
+      "pool": "card_aware",
+      "seats": 7,
+      "trial": 2,
+      "variant": "original",
+      "hands": 56,
+      "bb_per_100": 22.660714285714285,
+      "elapsed_seconds": 0.8158310418948531,
+      "decision_latency_ms": {
+        "p50": 1.702499808743596,
+        "p95": 2.6131851132959127,
+        "max": 2.7640839107334614
+      },
+      "search_latency_ms": {
+        "turn": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        },
+        "river": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        }
+      },
+      "search_diagnostics": {
+        "turn": {
+          "searched_decisions": 0,
+          "changed_actions": 0,
+          "counterfactual_branches": 0,
+          "hands_with_search": 0
+        },
+        "river": {
+          "searched_decisions": 0,
+          "changed_actions": 0,
+          "counterfactual_branches": 0,
+          "hands_with_search": 0
+        }
+      },
+      "process_peak_rss_native_units": 123322368
+    },
+    {
+      "pool": "card_aware",
+      "seats": 7,
+      "trial": 2,
+      "variant": "river",
+      "hands": 56,
+      "bb_per_100": 22.660714285714285,
+      "elapsed_seconds": 2.675912874750793,
+      "decision_latency_ms": {
+        "p50": 1.7122083809226751,
+        "p95": 2.6939357165247197,
+        "max": 225.77570797875524
+      },
+      "search_latency_ms": {
+        "turn": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        },
+        "river": {
+          "count": 11,
+          "p50": 164.91908300668,
+          "p95": 202.32129166834056,
+          "max": 225.77570797875524
+        }
+      },
+      "search_diagnostics": {
+        "turn": {
+          "searched_decisions": 0,
+          "changed_actions": 0,
+          "counterfactual_branches": 0,
+          "hands_with_search": 0
+        },
+        "river": {
+          "searched_decisions": 11,
+          "changed_actions": 0,
+          "counterfactual_branches": 928,
+          "hands_with_search": 10
+        }
+      },
+      "process_peak_rss_native_units": 123322368
+    },
+    {
+      "pool": "card_aware",
+      "seats": 7,
+      "trial": 2,
+      "variant": "turn",
+      "hands": 56,
+      "bb_per_100": 22.660714285714285,
+      "elapsed_seconds": 5.971818250138313,
+      "decision_latency_ms": {
+        "p50": 1.7082917038351297,
+        "p95": 2.7207533828914157,
+        "max": 343.2088331319392
+      },
+      "search_latency_ms": {
+        "turn": {
+          "count": 15,
+          "p50": 212.29562489315867,
+          "p95": 317.5695542246103,
+          "max": 343.2088331319392
+        },
+        "river": {
+          "count": 11,
+          "p50": 160.93479096889496,
+          "p95": 199.8932915739715,
+          "max": 221.59583307802677
+        }
+      },
+      "search_diagnostics": {
+        "turn": {
+          "searched_decisions": 15,
+          "changed_actions": 1,
+          "counterfactual_branches": 1280,
+          "hands_with_search": 12
+        },
+        "river": {
+          "searched_decisions": 11,
+          "changed_actions": 0,
+          "counterfactual_branches": 928,
+          "hands_with_search": 10
+        }
+      },
+      "process_peak_rss_native_units": 123322368
+    },
+    {
+      "pool": "card_aware",
+      "seats": 7,
+      "trial": 3,
+      "variant": "original",
+      "hands": 56,
+      "bb_per_100": 172.8571428571429,
+      "elapsed_seconds": 0.8405106249265373,
+      "decision_latency_ms": {
+        "p50": 0.8915623184293509,
+        "p95": 2.609866694547236,
+        "max": 2.7752919122576714
+      },
+      "search_latency_ms": {
+        "turn": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        },
+        "river": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        }
+      },
+      "search_diagnostics": {
+        "turn": {
+          "searched_decisions": 0,
+          "changed_actions": 0,
+          "counterfactual_branches": 0,
+          "hands_with_search": 0
+        },
+        "river": {
+          "searched_decisions": 0,
+          "changed_actions": 0,
+          "counterfactual_branches": 0,
+          "hands_with_search": 0
+        }
+      },
+      "process_peak_rss_native_units": 123322368
+    },
+    {
+      "pool": "card_aware",
+      "seats": 7,
+      "trial": 3,
+      "variant": "river",
+      "hands": 56,
+      "bb_per_100": 172.8571428571429,
+      "elapsed_seconds": 2.1844490827061236,
+      "decision_latency_ms": {
+        "p50": 1.021271338686347,
+        "p95": 2.6469461852684613,
+        "max": 181.7946252413094
+      },
+      "search_latency_ms": {
+        "turn": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        },
+        "river": {
+          "count": 9,
+          "p50": 165.88991601020098,
+          "p95": 179.4516415335238,
+          "max": 181.7946252413094
+        }
+      },
+      "search_diagnostics": {
+        "turn": {
+          "searched_decisions": 0,
+          "changed_actions": 0,
+          "counterfactual_branches": 0,
+          "hands_with_search": 0
+        },
+        "river": {
+          "searched_decisions": 9,
+          "changed_actions": 0,
+          "counterfactual_branches": 704,
+          "hands_with_search": 7
+        }
+      },
+      "process_peak_rss_native_units": 123322368
+    },
+    {
+      "pool": "card_aware",
+      "seats": 7,
+      "trial": 3,
+      "variant": "turn",
+      "hands": 56,
+      "bb_per_100": 182.21428571428572,
+      "elapsed_seconds": 4.595813541673124,
+      "decision_latency_ms": {
+        "p50": 1.70954130589962,
+        "p95": 2.6659521274268627,
+        "max": 249.94225008413196
+      },
+      "search_latency_ms": {
+        "turn": {
+          "count": 13,
+          "p50": 195.2936672605574,
+          "p95": 245.9185498766601,
+          "max": 249.94225008413196
+        },
+        "river": {
+          "count": 9,
+          "p50": 162.93962532654405,
+          "p95": 177.61167529970407,
+          "max": 178.84804215282202
+        }
+      },
+      "search_diagnostics": {
+        "turn": {
+          "searched_decisions": 13,
+          "changed_actions": 2,
+          "counterfactual_branches": 992,
+          "hands_with_search": 9
+        },
+        "river": {
+          "searched_decisions": 9,
+          "changed_actions": 0,
+          "counterfactual_branches": 704,
+          "hands_with_search": 7
+        }
+      },
+      "process_peak_rss_native_units": 123322368
+    },
+    {
+      "pool": "card_aware",
+      "seats": 7,
+      "trial": 4,
+      "variant": "original",
+      "hands": 56,
+      "bb_per_100": -143.87500000000003,
+      "elapsed_seconds": 0.8674464588984847,
+      "decision_latency_ms": {
+        "p50": 0.9026664774864912,
+        "p95": 2.639485546387732,
+        "max": 2.8063333593308926
+      },
+      "search_latency_ms": {
+        "turn": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        },
+        "river": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        }
+      },
+      "search_diagnostics": {
+        "turn": {
+          "searched_decisions": 0,
+          "changed_actions": 0,
+          "counterfactual_branches": 0,
+          "hands_with_search": 0
+        },
+        "river": {
+          "searched_decisions": 0,
+          "changed_actions": 0,
+          "counterfactual_branches": 0,
+          "hands_with_search": 0
+        }
+      },
+      "process_peak_rss_native_units": 123322368
+    },
+    {
+      "pool": "card_aware",
+      "seats": 7,
+      "trial": 4,
+      "variant": "river",
+      "hands": 56,
+      "bb_per_100": -156.76785714285714,
+      "elapsed_seconds": 1.7053193752653897,
+      "decision_latency_ms": {
+        "p50": 0.9065000340342522,
+        "p95": 2.628450468182564,
+        "max": 182.11091682314873
+      },
+      "search_latency_ms": {
+        "turn": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        },
+        "river": {
+          "count": 6,
+          "p50": 160.75839614495635,
+          "p95": 179.73430233541876,
+          "max": 182.11091682314873
+        }
+      },
+      "search_diagnostics": {
+        "turn": {
+          "searched_decisions": 0,
+          "changed_actions": 0,
+          "counterfactual_branches": 0,
+          "hands_with_search": 0
+        },
+        "river": {
+          "searched_decisions": 6,
+          "changed_actions": 1,
+          "counterfactual_branches": 448,
+          "hands_with_search": 6
+        }
+      },
+      "process_peak_rss_native_units": 123322368
+    },
+    {
+      "pool": "card_aware",
+      "seats": 7,
+      "trial": 4,
+      "variant": "turn",
+      "hands": 56,
+      "bb_per_100": -156.76785714285714,
+      "elapsed_seconds": 3.2231482500210404,
+      "decision_latency_ms": {
+        "p50": 1.7189579084515572,
+        "p95": 2.660316741093993,
+        "max": 227.4681250564754
+      },
+      "search_latency_ms": {
+        "turn": {
+          "count": 8,
+          "p50": 186.22385407797992,
+          "p95": 225.2066146582365,
+          "max": 227.4681250564754
+        },
+        "river": {
+          "count": 6,
+          "p50": 161.25043760985136,
+          "p95": 180.66264619119465,
+          "max": 182.55633395165205
+        }
+      },
+      "search_diagnostics": {
+        "turn": {
+          "searched_decisions": 8,
+          "changed_actions": 0,
+          "counterfactual_branches": 640,
+          "hands_with_search": 8
+        },
+        "river": {
+          "searched_decisions": 6,
+          "changed_actions": 1,
+          "counterfactual_branches": 448,
+          "hands_with_search": 6
+        }
+      },
+      "process_peak_rss_native_units": 123322368
+    },
+    {
+      "pool": "card_aware",
+      "seats": 7,
+      "trial": 5,
+      "variant": "original",
+      "hands": 56,
+      "bb_per_100": -710.1250000000001,
+      "elapsed_seconds": 0.8712432500906289,
+      "decision_latency_ms": {
+        "p50": 0.996083952486515,
+        "p95": 2.6337082497775555,
+        "max": 2.7679577469825745
+      },
+      "search_latency_ms": {
+        "turn": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        },
+        "river": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        }
+      },
+      "search_diagnostics": {
+        "turn": {
+          "searched_decisions": 0,
+          "changed_actions": 0,
+          "counterfactual_branches": 0,
+          "hands_with_search": 0
+        },
+        "river": {
+          "searched_decisions": 0,
+          "changed_actions": 0,
+          "counterfactual_branches": 0,
+          "hands_with_search": 0
+        }
+      },
+      "process_peak_rss_native_units": 123322368
+    },
+    {
+      "pool": "card_aware",
+      "seats": 7,
+      "trial": 5,
+      "variant": "river",
+      "hands": 56,
+      "bb_per_100": -704.7857142857144,
+      "elapsed_seconds": 2.15949875023216,
+      "decision_latency_ms": {
+        "p50": 1.1586658656597137,
+        "p95": 2.647507796064019,
+        "max": 226.6076668165624
+      },
+      "search_latency_ms": {
+        "turn": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        },
+        "river": {
+          "count": 8,
+          "p50": 157.94535377062857,
+          "p95": 206.68877311982212,
+          "max": 226.6076668165624
+        }
+      },
+      "search_diagnostics": {
+        "turn": {
+          "searched_decisions": 0,
+          "changed_actions": 0,
+          "counterfactual_branches": 0,
+          "hands_with_search": 0
+        },
+        "river": {
+          "searched_decisions": 8,
+          "changed_actions": 1,
+          "counterfactual_branches": 592,
+          "hands_with_search": 7
+        }
+      },
+      "process_peak_rss_native_units": 123322368
+    },
+    {
+      "pool": "card_aware",
+      "seats": 7,
+      "trial": 5,
+      "variant": "turn",
+      "hands": 56,
+      "bb_per_100": -704.7857142857144,
+      "elapsed_seconds": 4.581822624895722,
+      "decision_latency_ms": {
+        "p50": 1.6941665671765804,
+        "p95": 2.64077924657613,
+        "max": 295.03708332777023
+      },
+      "search_latency_ms": {
+        "turn": {
+          "count": 13,
+          "p50": 194.6400417946279,
+          "p95": 254.17255861684671,
+          "max": 295.03708332777023
+        },
+        "river": {
+          "count": 8,
+          "p50": 159.3143125064671,
+          "p95": 205.75350180733946,
+          "max": 227.3432081565261
+        }
+      },
+      "search_diagnostics": {
+        "turn": {
+          "searched_decisions": 13,
+          "changed_actions": 1,
+          "counterfactual_branches": 976,
+          "hands_with_search": 11
+        },
+        "river": {
+          "searched_decisions": 8,
+          "changed_actions": 1,
+          "counterfactual_branches": 592,
+          "hands_with_search": 7
+        }
+      },
+      "process_peak_rss_native_units": 123322368
+    },
+    {
+      "pool": "card_aware",
+      "seats": 8,
+      "trial": 0,
+      "variant": "original",
+      "hands": 64,
+      "bb_per_100": -414.96875,
+      "elapsed_seconds": 1.193034500349313,
+      "decision_latency_ms": {
+        "p50": 1.6965828835964203,
+        "p95": 2.799045853316784,
+        "max": 2.9739998281002045
+      },
+      "search_latency_ms": {
+        "turn": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        },
+        "river": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        }
+      },
+      "search_diagnostics": {
+        "turn": {
+          "searched_decisions": 0,
+          "changed_actions": 0,
+          "counterfactual_branches": 0,
+          "hands_with_search": 0
+        },
+        "river": {
+          "searched_decisions": 0,
+          "changed_actions": 0,
+          "counterfactual_branches": 0,
+          "hands_with_search": 0
+        }
+      },
+      "process_peak_rss_native_units": 123322368
+    },
+    {
+      "pool": "card_aware",
+      "seats": 8,
+      "trial": 0,
+      "variant": "river",
+      "hands": 64,
+      "bb_per_100": -414.96875,
+      "elapsed_seconds": 2.9267554581165314,
+      "decision_latency_ms": {
+        "p50": 1.7232918180525303,
+        "p95": 2.837049588561058,
+        "max": 192.28816591203213
+      },
+      "search_latency_ms": {
+        "turn": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        },
+        "river": {
+          "count": 13,
+          "p50": 144.06641712412238,
+          "p95": 189.94354140013456,
+          "max": 192.28816591203213
+        }
+      },
+      "search_diagnostics": {
+        "turn": {
+          "searched_decisions": 0,
+          "changed_actions": 0,
+          "counterfactual_branches": 0,
+          "hands_with_search": 0
+        },
+        "river": {
+          "searched_decisions": 13,
+          "changed_actions": 0,
+          "counterfactual_branches": 912,
+          "hands_with_search": 8
+        }
+      },
+      "process_peak_rss_native_units": 123322368
+    },
+    {
+      "pool": "card_aware",
+      "seats": 8,
+      "trial": 0,
+      "variant": "turn",
+      "hands": 64,
+      "bb_per_100": -414.96875,
+      "elapsed_seconds": 4.820653541013598,
+      "decision_latency_ms": {
+        "p50": 1.7164158634841442,
+        "p95": 2.825316460803151,
+        "max": 234.70137501135468
+      },
+      "search_latency_ms": {
+        "turn": {
+          "count": 11,
+          "p50": 178.68629191070795,
+          "p95": 228.5289375577122,
+          "max": 234.70137501135468
+        },
+        "river": {
+          "count": 13,
+          "p50": 144.8712502606213,
+          "p95": 190.08682500571012,
+          "max": 192.0797498896718
+        }
+      },
+      "search_diagnostics": {
+        "turn": {
+          "searched_decisions": 11,
+          "changed_actions": 0,
+          "counterfactual_branches": 816,
+          "hands_with_search": 9
+        },
+        "river": {
+          "searched_decisions": 13,
+          "changed_actions": 0,
+          "counterfactual_branches": 912,
+          "hands_with_search": 8
+        }
+      },
+      "process_peak_rss_native_units": 123322368
+    },
+    {
+      "pool": "card_aware",
+      "seats": 8,
+      "trial": 1,
+      "variant": "original",
+      "hands": 64,
+      "bb_per_100": -297.578125,
+      "elapsed_seconds": 1.119368250016123,
+      "decision_latency_ms": {
+        "p50": 1.7327498644590378,
+        "p95": 2.8235252015292645,
+        "max": 2.8903749771416187
+      },
+      "search_latency_ms": {
+        "turn": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        },
+        "river": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        }
+      },
+      "search_diagnostics": {
+        "turn": {
+          "searched_decisions": 0,
+          "changed_actions": 0,
+          "counterfactual_branches": 0,
+          "hands_with_search": 0
+        },
+        "river": {
+          "searched_decisions": 0,
+          "changed_actions": 0,
+          "counterfactual_branches": 0,
+          "hands_with_search": 0
+        }
+      },
+      "process_peak_rss_native_units": 123322368
+    },
+    {
+      "pool": "card_aware",
+      "seats": 8,
+      "trial": 1,
+      "variant": "river",
+      "hands": 64,
+      "bb_per_100": -297.578125,
+      "elapsed_seconds": 1.8309714999049902,
+      "decision_latency_ms": {
+        "p50": 1.7337496392428875,
+        "p95": 2.8214835561811924,
+        "max": 187.55841674283147
+      },
+      "search_latency_ms": {
+        "turn": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        },
+        "river": {
+          "count": 5,
+          "p50": 148.17029237747192,
+          "p95": 182.53607526421547,
+          "max": 187.55841674283147
+        }
+      },
+      "search_diagnostics": {
+        "turn": {
+          "searched_decisions": 0,
+          "changed_actions": 0,
+          "counterfactual_branches": 0,
+          "hands_with_search": 0
+        },
+        "river": {
+          "searched_decisions": 5,
+          "changed_actions": 0,
+          "counterfactual_branches": 352,
+          "hands_with_search": 4
+        }
+      },
+      "process_peak_rss_native_units": 123322368
+    },
+    {
+      "pool": "card_aware",
+      "seats": 8,
+      "trial": 1,
+      "variant": "turn",
+      "hands": 64,
+      "bb_per_100": -297.578125,
+      "elapsed_seconds": 2.749445500317961,
+      "decision_latency_ms": {
+        "p50": 1.7368337139487267,
+        "p95": 2.807583287358284,
+        "max": 317.2723329626024
+      },
+      "search_latency_ms": {
+        "turn": {
+          "count": 4,
+          "p50": 216.50693751871586,
+          "p95": 303.3449393231421,
+          "max": 317.2723329626024
+        },
+        "river": {
+          "count": 5,
+          "p50": 147.92920788750052,
+          "p95": 182.6908415183425,
+          "max": 187.63787485659122
+        }
+      },
+      "search_diagnostics": {
+        "turn": {
+          "searched_decisions": 4,
+          "changed_actions": 0,
+          "counterfactual_branches": 304,
+          "hands_with_search": 4
+        },
+        "river": {
+          "searched_decisions": 5,
+          "changed_actions": 0,
+          "counterfactual_branches": 352,
+          "hands_with_search": 4
+        }
+      },
+      "process_peak_rss_native_units": 123322368
+    },
+    {
+      "pool": "card_aware",
+      "seats": 8,
+      "trial": 2,
+      "variant": "original",
+      "hands": 64,
+      "bb_per_100": -165.453125,
+      "elapsed_seconds": 1.1199370422400534,
+      "decision_latency_ms": {
+        "p50": 1.7043754924088717,
+        "p95": 2.7790349675342436,
+        "max": 2.9060826636850834
+      },
+      "search_latency_ms": {
+        "turn": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        },
+        "river": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        }
+      },
+      "search_diagnostics": {
+        "turn": {
+          "searched_decisions": 0,
+          "changed_actions": 0,
+          "counterfactual_branches": 0,
+          "hands_with_search": 0
+        },
+        "river": {
+          "searched_decisions": 0,
+          "changed_actions": 0,
+          "counterfactual_branches": 0,
+          "hands_with_search": 0
+        }
+      },
+      "process_peak_rss_native_units": 123322368
+    },
+    {
+      "pool": "card_aware",
+      "seats": 8,
+      "trial": 2,
+      "variant": "river",
+      "hands": 64,
+      "bb_per_100": -165.453125,
+      "elapsed_seconds": 1.7644869997166097,
+      "decision_latency_ms": {
+        "p50": 1.7216876149177551,
+        "p95": 2.814214676618576,
+        "max": 174.16274966672063
+      },
+      "search_latency_ms": {
+        "turn": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        },
+        "river": {
+          "count": 4,
+          "p50": 168.1379375513643,
+          "p95": 173.6835434800014,
+          "max": 174.16274966672063
+        }
+      },
+      "search_diagnostics": {
+        "turn": {
+          "searched_decisions": 0,
+          "changed_actions": 0,
+          "counterfactual_branches": 0,
+          "hands_with_search": 0
+        },
+        "river": {
+          "searched_decisions": 4,
+          "changed_actions": 1,
+          "counterfactual_branches": 288,
+          "hands_with_search": 4
+        }
+      },
+      "process_peak_rss_native_units": 123322368
+    },
+    {
+      "pool": "card_aware",
+      "seats": 8,
+      "trial": 2,
+      "variant": "turn",
+      "hands": 64,
+      "bb_per_100": -21.703124999999996,
+      "elapsed_seconds": 2.9876761669293046,
+      "decision_latency_ms": {
+        "p50": 1.7359587363898754,
+        "p95": 2.832537074573338,
+        "max": 313.89225041493773
+      },
+      "search_latency_ms": {
+        "turn": {
+          "count": 7,
+          "p50": 212.267333175987,
+          "p95": 292.93256280943746,
+          "max": 313.89225041493773
+        },
+        "river": {
+          "count": 3,
+          "p50": 170.8459579385817,
+          "p95": 180.00267040915787,
+          "max": 181.02008290588856
+        }
+      },
+      "search_diagnostics": {
+        "turn": {
+          "searched_decisions": 7,
+          "changed_actions": 1,
+          "counterfactual_branches": 512,
+          "hands_with_search": 7
+        },
+        "river": {
+          "searched_decisions": 3,
+          "changed_actions": 1,
+          "counterfactual_branches": 208,
+          "hands_with_search": 3
+        }
+      },
+      "process_peak_rss_native_units": 123322368
+    },
+    {
+      "pool": "card_aware",
+      "seats": 8,
+      "trial": 3,
+      "variant": "original",
+      "hands": 64,
+      "bb_per_100": 330.46875,
+      "elapsed_seconds": 1.1311743753030896,
+      "decision_latency_ms": {
+        "p50": 1.7211246304214,
+        "p95": 2.8031086549162865,
+        "max": 2.8726253658533096
+      },
+      "search_latency_ms": {
+        "turn": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        },
+        "river": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        }
+      },
+      "search_diagnostics": {
+        "turn": {
+          "searched_decisions": 0,
+          "changed_actions": 0,
+          "counterfactual_branches": 0,
+          "hands_with_search": 0
+        },
+        "river": {
+          "searched_decisions": 0,
+          "changed_actions": 0,
+          "counterfactual_branches": 0,
+          "hands_with_search": 0
+        }
+      },
+      "process_peak_rss_native_units": 123322368
+    },
+    {
+      "pool": "card_aware",
+      "seats": 8,
+      "trial": 3,
+      "variant": "river",
+      "hands": 64,
+      "bb_per_100": 344.5625,
+      "elapsed_seconds": 2.312269041314721,
+      "decision_latency_ms": {
+        "p50": 1.731125172227621,
+        "p95": 2.8344830498099327,
+        "max": 231.7030830308795
+      },
+      "search_latency_ms": {
+        "turn": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        },
+        "river": {
+          "count": 8,
+          "p50": 152.14064600877464,
+          "p95": 214.92972676642236,
+          "max": 231.7030830308795
+        }
+      },
+      "search_diagnostics": {
+        "turn": {
+          "searched_decisions": 0,
+          "changed_actions": 0,
+          "counterfactual_branches": 0,
+          "hands_with_search": 0
+        },
+        "river": {
+          "searched_decisions": 8,
+          "changed_actions": 2,
+          "counterfactual_branches": 576,
+          "hands_with_search": 7
+        }
+      },
+      "process_peak_rss_native_units": 123322368
+    },
+    {
+      "pool": "card_aware",
+      "seats": 8,
+      "trial": 3,
+      "variant": "turn",
+      "hands": 64,
+      "bb_per_100": 355.34375,
+      "elapsed_seconds": 4.968933249823749,
+      "decision_latency_ms": {
+        "p50": 1.7472081817686558,
+        "p95": 2.8548499569296837,
+        "max": 259.42070921882987
+      },
+      "search_latency_ms": {
+        "turn": {
+          "count": 13,
+          "p50": 215.95658315345645,
+          "p95": 247.73948360234496,
+          "max": 259.42070921882987
+        },
+        "river": {
+          "count": 8,
+          "p50": 152.10820804350078,
+          "p95": 224.74929594900456,
+          "max": 249.47729194536805
+        }
+      },
+      "search_diagnostics": {
+        "turn": {
+          "searched_decisions": 13,
+          "changed_actions": 3,
+          "counterfactual_branches": 1040,
+          "hands_with_search": 9
+        },
+        "river": {
+          "searched_decisions": 8,
+          "changed_actions": 2,
+          "counterfactual_branches": 576,
+          "hands_with_search": 7
+        }
+      },
+      "process_peak_rss_native_units": 123322368
+    },
+    {
+      "pool": "card_aware",
+      "seats": 8,
+      "trial": 4,
+      "variant": "original",
+      "hands": 64,
+      "bb_per_100": 67.85937500000001,
+      "elapsed_seconds": 1.1541477907449007,
+      "decision_latency_ms": {
+        "p50": 1.7144163139164448,
+        "p95": 2.7935204561799765,
+        "max": 2.8784163296222687
+      },
+      "search_latency_ms": {
+        "turn": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        },
+        "river": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        }
+      },
+      "search_diagnostics": {
+        "turn": {
+          "searched_decisions": 0,
+          "changed_actions": 0,
+          "counterfactual_branches": 0,
+          "hands_with_search": 0
+        },
+        "river": {
+          "searched_decisions": 0,
+          "changed_actions": 0,
+          "counterfactual_branches": 0,
+          "hands_with_search": 0
+        }
+      },
+      "process_peak_rss_native_units": 123322368
+    },
+    {
+      "pool": "card_aware",
+      "seats": 8,
+      "trial": 4,
+      "variant": "river",
+      "hands": 64,
+      "bb_per_100": 91.85937499999999,
+      "elapsed_seconds": 3.0581471673212945,
+      "decision_latency_ms": {
+        "p50": 1.7332921270281076,
+        "p95": 2.8398335445672274,
+        "max": 240.8855832181871
+      },
+      "search_latency_ms": {
+        "turn": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        },
+        "river": {
+          "count": 11,
+          "p50": 179.9191669560969,
+          "p95": 219.8473745957017,
+          "max": 240.8855832181871
+        }
+      },
+      "search_diagnostics": {
+        "turn": {
+          "searched_decisions": 0,
+          "changed_actions": 0,
+          "counterfactual_branches": 0,
+          "hands_with_search": 0
+        },
+        "river": {
+          "searched_decisions": 11,
+          "changed_actions": 2,
+          "counterfactual_branches": 864,
+          "hands_with_search": 8
+        }
+      },
+      "process_peak_rss_native_units": 123322368
+    },
+    {
+      "pool": "card_aware",
+      "seats": 8,
+      "trial": 4,
+      "variant": "turn",
+      "hands": 64,
+      "bb_per_100": 91.85937499999999,
+      "elapsed_seconds": 4.887358957901597,
+      "decision_latency_ms": {
+        "p50": 1.7243954353034496,
+        "p95": 2.8305458836257458,
+        "max": 247.43616674095392
+      },
+      "search_latency_ms": {
+        "turn": {
+          "count": 10,
+          "p50": 191.86987448483706,
+          "p95": 245.7112978445366,
+          "max": 247.43616674095392
+        },
+        "river": {
+          "count": 11,
+          "p50": 179.68395818024874,
+          "p95": 219.46716657839715,
+          "max": 239.98070787638426
+        }
+      },
+      "search_diagnostics": {
+        "turn": {
+          "searched_decisions": 10,
+          "changed_actions": 1,
+          "counterfactual_branches": 704,
+          "hands_with_search": 9
+        },
+        "river": {
+          "searched_decisions": 11,
+          "changed_actions": 1,
+          "counterfactual_branches": 848,
+          "hands_with_search": 8
+        }
+      },
+      "process_peak_rss_native_units": 123322368
+    },
+    {
+      "pool": "card_aware",
+      "seats": 8,
+      "trial": 5,
+      "variant": "original",
+      "hands": 64,
+      "bb_per_100": 136.12499999999997,
+      "elapsed_seconds": 1.2533023748546839,
+      "decision_latency_ms": {
+        "p50": 1.6728125046938658,
+        "p95": 2.8033477254211894,
+        "max": 3.2689590007066727
+      },
+      "search_latency_ms": {
+        "turn": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        },
+        "river": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        }
+      },
+      "search_diagnostics": {
+        "turn": {
+          "searched_decisions": 0,
+          "changed_actions": 0,
+          "counterfactual_branches": 0,
+          "hands_with_search": 0
+        },
+        "river": {
+          "searched_decisions": 0,
+          "changed_actions": 0,
+          "counterfactual_branches": 0,
+          "hands_with_search": 0
+        }
+      },
+      "process_peak_rss_native_units": 123322368
+    },
+    {
+      "pool": "card_aware",
+      "seats": 8,
+      "trial": 5,
+      "variant": "river",
+      "hands": 64,
+      "bb_per_100": 136.12499999999997,
+      "elapsed_seconds": 3.3705910840071738,
+      "decision_latency_ms": {
+        "p50": 1.7367294058203697,
+        "p95": 2.8517226222902536,
+        "max": 232.87654155865312
+      },
+      "search_latency_ms": {
+        "turn": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        },
+        "river": {
+          "count": 14,
+          "p50": 159.35339545831084,
+          "p95": 215.23819582071155,
+          "max": 232.87654155865312
+        }
+      },
+      "search_diagnostics": {
+        "turn": {
+          "searched_decisions": 0,
+          "changed_actions": 0,
+          "counterfactual_branches": 0,
+          "hands_with_search": 0
+        },
+        "river": {
+          "searched_decisions": 14,
+          "changed_actions": 0,
+          "counterfactual_branches": 1024,
+          "hands_with_search": 11
+        }
+      },
+      "process_peak_rss_native_units": 123322368
+    },
+    {
+      "pool": "card_aware",
+      "seats": 8,
+      "trial": 5,
+      "variant": "turn",
+      "hands": 64,
+      "bb_per_100": 216.87499999999997,
+      "elapsed_seconds": 6.5558377504348755,
+      "decision_latency_ms": {
+        "p50": 1.702458132058382,
+        "p95": 2.8179164044559,
+        "max": 262.4514577910304
+      },
+      "search_latency_ms": {
+        "turn": {
+          "count": 17,
+          "p50": 209.29970778524876,
+          "p95": 242.4639584496617,
+          "max": 262.4514577910304
+        },
+        "river": {
+          "count": 13,
+          "p50": 161.3252921961248,
+          "p95": 214.78397529572246,
+          "max": 230.93537520617247
+        }
+      },
+      "search_diagnostics": {
+        "turn": {
+          "searched_decisions": 17,
+          "changed_actions": 3,
+          "counterfactual_branches": 1328,
+          "hands_with_search": 14
+        },
+        "river": {
+          "searched_decisions": 13,
+          "changed_actions": 0,
+          "counterfactual_branches": 944,
+          "hands_with_search": 10
+        }
+      },
+      "process_peak_rss_native_units": 123322368
+    },
+    {
+      "pool": "card_aware",
+      "seats": 9,
+      "trial": 0,
+      "variant": "original",
+      "hands": 72,
+      "bb_per_100": -202.26388888888889,
+      "elapsed_seconds": 1.4122777921147645,
+      "decision_latency_ms": {
+        "p50": 1.0128747671842575,
+        "p95": 2.9499424621462818,
+        "max": 3.1059999018907547
+      },
+      "search_latency_ms": {
+        "turn": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        },
+        "river": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        }
+      },
+      "search_diagnostics": {
+        "turn": {
+          "searched_decisions": 0,
+          "changed_actions": 0,
+          "counterfactual_branches": 0,
+          "hands_with_search": 0
+        },
+        "river": {
+          "searched_decisions": 0,
+          "changed_actions": 0,
+          "counterfactual_branches": 0,
+          "hands_with_search": 0
+        }
+      },
+      "process_peak_rss_native_units": 123322368
+    },
+    {
+      "pool": "card_aware",
+      "seats": 9,
+      "trial": 0,
+      "variant": "river",
+      "hands": 72,
+      "bb_per_100": -202.26388888888889,
+      "elapsed_seconds": 3.887233499903232,
+      "decision_latency_ms": {
+        "p50": 1.0794582776725292,
+        "p95": 3.0032833106815815,
+        "max": 251.52491685003042
+      },
+      "search_latency_ms": {
+        "turn": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        },
+        "river": {
+          "count": 16,
+          "p50": 166.48972895927727,
+          "p95": 199.29626083467156,
+          "max": 251.52491685003042
+        }
+      },
+      "search_diagnostics": {
+        "turn": {
+          "searched_decisions": 0,
+          "changed_actions": 0,
+          "counterfactual_branches": 0,
+          "hands_with_search": 0
+        },
+        "river": {
+          "searched_decisions": 16,
+          "changed_actions": 1,
+          "counterfactual_branches": 1184,
+          "hands_with_search": 13
+        }
+      },
+      "process_peak_rss_native_units": 123322368
+    },
+    {
+      "pool": "card_aware",
+      "seats": 9,
+      "trial": 0,
+      "variant": "turn",
+      "hands": 72,
+      "bb_per_100": -203.65277777777777,
+      "elapsed_seconds": 7.747110416647047,
+      "decision_latency_ms": {
+        "p50": 1.7025838606059551,
+        "p95": 3.0971881933510303,
+        "max": 257.68445804715157
+      },
+      "search_latency_ms": {
+        "turn": {
+          "count": 20,
+          "p50": 215.8566873986274,
+          "p95": 251.63679781835526,
+          "max": 257.68445804715157
+        },
+        "river": {
+          "count": 15,
+          "p50": 167.93870786204934,
+          "p95": 177.65599992126226,
+          "max": 181.51912512257695
+        }
+      },
+      "search_diagnostics": {
+        "turn": {
+          "searched_decisions": 20,
+          "changed_actions": 2,
+          "counterfactual_branches": 1552,
+          "hands_with_search": 16
+        },
+        "river": {
+          "searched_decisions": 15,
+          "changed_actions": 0,
+          "counterfactual_branches": 1104,
+          "hands_with_search": 12
+        }
+      },
+      "process_peak_rss_native_units": 123322368
+    },
+    {
+      "pool": "card_aware",
+      "seats": 9,
+      "trial": 1,
+      "variant": "original",
+      "hands": 72,
+      "bb_per_100": -305.6666666666667,
+      "elapsed_seconds": 1.4395624999888241,
+      "decision_latency_ms": {
+        "p50": 1.0865000076591969,
+        "p95": 2.982926974073052,
+        "max": 3.0484162271022797
+      },
+      "search_latency_ms": {
+        "turn": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        },
+        "river": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        }
+      },
+      "search_diagnostics": {
+        "turn": {
+          "searched_decisions": 0,
+          "changed_actions": 0,
+          "counterfactual_branches": 0,
+          "hands_with_search": 0
+        },
+        "river": {
+          "searched_decisions": 0,
+          "changed_actions": 0,
+          "counterfactual_branches": 0,
+          "hands_with_search": 0
+        }
+      },
+      "process_peak_rss_native_units": 123322368
+    },
+    {
+      "pool": "card_aware",
+      "seats": 9,
+      "trial": 1,
+      "variant": "river",
+      "hands": 72,
+      "bb_per_100": -305.6666666666667,
+      "elapsed_seconds": 2.872937709093094,
+      "decision_latency_ms": {
+        "p50": 1.694896025583148,
+        "p95": 2.996718278154731,
+        "max": 278.94175006076694
+      },
+      "search_latency_ms": {
+        "turn": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        },
+        "river": {
+          "count": 8,
+          "p50": 168.2599789928645,
+          "p95": 250.972404400818,
+          "max": 278.94175006076694
+        }
+      },
+      "search_diagnostics": {
+        "turn": {
+          "searched_decisions": 0,
+          "changed_actions": 0,
+          "counterfactual_branches": 0,
+          "hands_with_search": 0
+        },
+        "river": {
+          "searched_decisions": 8,
+          "changed_actions": 0,
+          "counterfactual_branches": 656,
+          "hands_with_search": 7
+        }
+      },
+      "process_peak_rss_native_units": 123322368
+    },
+    {
+      "pool": "card_aware",
+      "seats": 9,
+      "trial": 1,
+      "variant": "turn",
+      "hands": 72,
+      "bb_per_100": -305.6666666666667,
+      "elapsed_seconds": 5.391378375235945,
+      "decision_latency_ms": {
+        "p50": 1.7085212748497725,
+        "p95": 3.0072126071900125,
+        "max": 328.0795835889876
+      },
+      "search_latency_ms": {
+        "turn": {
+          "count": 12,
+          "p50": 207.4149160180241,
+          "p95": 284.37349016312504,
+          "max": 328.0795835889876
+        },
+        "river": {
+          "count": 8,
+          "p50": 168.25883300043643,
+          "p95": 248.10994411818677,
+          "max": 275.0494587235153
+        }
+      },
+      "search_diagnostics": {
+        "turn": {
+          "searched_decisions": 12,
+          "changed_actions": 0,
+          "counterfactual_branches": 960,
+          "hands_with_search": 11
+        },
+        "river": {
+          "searched_decisions": 8,
+          "changed_actions": 0,
+          "counterfactual_branches": 656,
+          "hands_with_search": 7
+        }
+      },
+      "process_peak_rss_native_units": 123322368
+    },
+    {
+      "pool": "card_aware",
+      "seats": 9,
+      "trial": 2,
+      "variant": "original",
+      "hands": 72,
+      "bb_per_100": -146.94444444444446,
+      "elapsed_seconds": 1.4450209587812424,
+      "decision_latency_ms": {
+        "p50": 0.9985002689063549,
+        "p95": 2.97525841742754,
+        "max": 3.046582918614149
+      },
+      "search_latency_ms": {
+        "turn": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        },
+        "river": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        }
+      },
+      "search_diagnostics": {
+        "turn": {
+          "searched_decisions": 0,
+          "changed_actions": 0,
+          "counterfactual_branches": 0,
+          "hands_with_search": 0
+        },
+        "river": {
+          "searched_decisions": 0,
+          "changed_actions": 0,
+          "counterfactual_branches": 0,
+          "hands_with_search": 0
+        }
+      },
+      "process_peak_rss_native_units": 123322368
+    },
+    {
+      "pool": "card_aware",
+      "seats": 9,
+      "trial": 2,
+      "variant": "river",
+      "hands": 72,
+      "bb_per_100": -146.94444444444446,
+      "elapsed_seconds": 3.221984625328332,
+      "decision_latency_ms": {
+        "p50": 1.0777907446026802,
+        "p95": 3.0113001354038715,
+        "max": 264.64595925062895
+      },
+      "search_latency_ms": {
+        "turn": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        },
+        "river": {
+          "count": 11,
+          "p50": 156.6462917253375,
+          "p95": 227.549729635939,
+          "max": 264.64595925062895
+        }
+      },
+      "search_diagnostics": {
+        "turn": {
+          "searched_decisions": 0,
+          "changed_actions": 0,
+          "counterfactual_branches": 0,
+          "hands_with_search": 0
+        },
+        "river": {
+          "searched_decisions": 11,
+          "changed_actions": 0,
+          "counterfactual_branches": 832,
+          "hands_with_search": 8
+        }
+      },
+      "process_peak_rss_native_units": 123322368
+    },
+    {
+      "pool": "card_aware",
+      "seats": 9,
+      "trial": 2,
+      "variant": "turn",
+      "hands": 72,
+      "bb_per_100": -146.94444444444446,
+      "elapsed_seconds": 5.462201166432351,
+      "decision_latency_ms": {
+        "p50": 1.089000143110752,
+        "p95": 3.015899658203125,
+        "max": 341.620999854058
+      },
+      "search_latency_ms": {
+        "turn": {
+          "count": 10,
+          "p50": 208.7249793112278,
+          "p95": 337.770349974744,
+          "max": 341.620999854058
+        },
+        "river": {
+          "count": 11,
+          "p50": 156.572625041008,
+          "p95": 225.9844581130892,
+          "max": 262.9377502016723
+        }
+      },
+      "search_diagnostics": {
+        "turn": {
+          "searched_decisions": 10,
+          "changed_actions": 0,
+          "counterfactual_branches": 752,
+          "hands_with_search": 9
+        },
+        "river": {
+          "searched_decisions": 11,
+          "changed_actions": 0,
+          "counterfactual_branches": 832,
+          "hands_with_search": 8
+        }
+      },
+      "process_peak_rss_native_units": 123322368
+    },
+    {
+      "pool": "card_aware",
+      "seats": 9,
+      "trial": 3,
+      "variant": "original",
+      "hands": 72,
+      "bb_per_100": 175.44444444444446,
+      "elapsed_seconds": 1.4192523341625929,
+      "decision_latency_ms": {
+        "p50": 0.9994795545935631,
+        "p95": 3.0155519489198923,
+        "max": 3.1668338924646378
+      },
+      "search_latency_ms": {
+        "turn": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        },
+        "river": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        }
+      },
+      "search_diagnostics": {
+        "turn": {
+          "searched_decisions": 0,
+          "changed_actions": 0,
+          "counterfactual_branches": 0,
+          "hands_with_search": 0
+        },
+        "river": {
+          "searched_decisions": 0,
+          "changed_actions": 0,
+          "counterfactual_branches": 0,
+          "hands_with_search": 0
+        }
+      },
+      "process_peak_rss_native_units": 123322368
+    },
+    {
+      "pool": "card_aware",
+      "seats": 9,
+      "trial": 3,
+      "variant": "river",
+      "hands": 72,
+      "bb_per_100": 65.70833333333331,
+      "elapsed_seconds": 4.6280810832977295,
+      "decision_latency_ms": {
+        "p50": 1.0815421119332314,
+        "p95": 3.003789484500885,
+        "max": 284.3958749435842
+      },
+      "search_latency_ms": {
+        "turn": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        },
+        "river": {
+          "count": 18,
+          "p50": 173.7891249358654,
+          "p95": 246.0291421040892,
+          "max": 284.3958749435842
+        }
+      },
+      "search_diagnostics": {
+        "turn": {
+          "searched_decisions": 0,
+          "changed_actions": 0,
+          "counterfactual_branches": 0,
+          "hands_with_search": 0
+        },
+        "river": {
+          "searched_decisions": 18,
+          "changed_actions": 6,
+          "counterfactual_branches": 1552,
+          "hands_with_search": 15
+        }
+      },
+      "process_peak_rss_native_units": 123322368
+    },
+    {
+      "pool": "card_aware",
+      "seats": 9,
+      "trial": 3,
+      "variant": "turn",
+      "hands": 72,
+      "bb_per_100": 65.70833333333331,
+      "elapsed_seconds": 8.004829540848732,
+      "decision_latency_ms": {
+        "p50": 1.6936669126152992,
+        "p95": 3.0287380330264564,
+        "max": 347.2298332490027
+      },
+      "search_latency_ms": {
+        "turn": {
+          "count": 17,
+          "p50": 221.560874953866,
+          "p95": 274.06393336132163,
+          "max": 347.2298332490027
+        },
+        "river": {
+          "count": 16,
+          "p50": 169.39985402859747,
+          "p95": 248.6619579140097,
+          "max": 284.9657079204917
+        }
+      },
+      "search_diagnostics": {
+        "turn": {
+          "searched_decisions": 17,
+          "changed_actions": 1,
+          "counterfactual_branches": 1424,
+          "hands_with_search": 15
+        },
+        "river": {
+          "searched_decisions": 16,
+          "changed_actions": 4,
+          "counterfactual_branches": 1376,
+          "hands_with_search": 14
+        }
+      },
+      "process_peak_rss_native_units": 123322368
+    },
+    {
+      "pool": "card_aware",
+      "seats": 9,
+      "trial": 4,
+      "variant": "original",
+      "hands": 72,
+      "bb_per_100": -190.2222222222222,
+      "elapsed_seconds": 1.4072062922641635,
+      "decision_latency_ms": {
+        "p50": 1.0819584131240845,
+        "p95": 2.9790996806696057,
+        "max": 3.117083106189966
+      },
+      "search_latency_ms": {
+        "turn": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        },
+        "river": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        }
+      },
+      "search_diagnostics": {
+        "turn": {
+          "searched_decisions": 0,
+          "changed_actions": 0,
+          "counterfactual_branches": 0,
+          "hands_with_search": 0
+        },
+        "river": {
+          "searched_decisions": 0,
+          "changed_actions": 0,
+          "counterfactual_branches": 0,
+          "hands_with_search": 0
+        }
+      },
+      "process_peak_rss_native_units": 123322368
+    },
+    {
+      "pool": "card_aware",
+      "seats": 9,
+      "trial": 4,
+      "variant": "river",
+      "hands": 72,
+      "bb_per_100": -195.77777777777774,
+      "elapsed_seconds": 3.0709999576210976,
+      "decision_latency_ms": {
+        "p50": 1.7144791781902313,
+        "p95": 3.017434850335121,
+        "max": 178.54070803150535
+      },
+      "search_latency_ms": {
+        "turn": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        },
+        "river": {
+          "count": 12,
+          "p50": 143.94599990919232,
+          "p95": 177.2827205248177,
+          "max": 178.54070803150535
+        }
+      },
+      "search_diagnostics": {
+        "turn": {
+          "searched_decisions": 0,
+          "changed_actions": 0,
+          "counterfactual_branches": 0,
+          "hands_with_search": 0
+        },
+        "river": {
+          "searched_decisions": 12,
+          "changed_actions": 1,
+          "counterfactual_branches": 880,
+          "hands_with_search": 10
+        }
+      },
+      "process_peak_rss_native_units": 123322368
+    },
+    {
+      "pool": "card_aware",
+      "seats": 9,
+      "trial": 4,
+      "variant": "turn",
+      "hands": 72,
+      "bb_per_100": -195.77777777777774,
+      "elapsed_seconds": 6.491075749974698,
+      "decision_latency_ms": {
+        "p50": 1.7238750588148832,
+        "p95": 3.0655685113742948,
+        "max": 358.8109170086682
+      },
+      "search_latency_ms": {
+        "turn": {
+          "count": 19,
+          "p50": 202.3755838163197,
+          "p95": 256.4714671578256,
+          "max": 358.8109170086682
+        },
+        "river": {
+          "count": 12,
+          "p50": 145.72287490591407,
+          "p95": 176.12332752905786,
+          "max": 176.61404190585017
+        }
+      },
+      "search_diagnostics": {
+        "turn": {
+          "searched_decisions": 19,
+          "changed_actions": 1,
+          "counterfactual_branches": 1376,
+          "hands_with_search": 13
+        },
+        "river": {
+          "searched_decisions": 12,
+          "changed_actions": 1,
+          "counterfactual_branches": 880,
+          "hands_with_search": 10
+        }
+      },
+      "process_peak_rss_native_units": 123322368
+    },
+    {
+      "pool": "card_aware",
+      "seats": 9,
+      "trial": 5,
+      "variant": "original",
+      "hands": 72,
+      "bb_per_100": -573.0277777777778,
+      "elapsed_seconds": 1.3825528747402132,
+      "decision_latency_ms": {
+        "p50": 1.1725416406989098,
+        "p95": 2.983657829463482,
+        "max": 3.1510419212281704
+      },
+      "search_latency_ms": {
+        "turn": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        },
+        "river": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        }
+      },
+      "search_diagnostics": {
+        "turn": {
+          "searched_decisions": 0,
+          "changed_actions": 0,
+          "counterfactual_branches": 0,
+          "hands_with_search": 0
+        },
+        "river": {
+          "searched_decisions": 0,
+          "changed_actions": 0,
+          "counterfactual_branches": 0,
+          "hands_with_search": 0
+        }
+      },
+      "process_peak_rss_native_units": 123322368
+    },
+    {
+      "pool": "card_aware",
+      "seats": 9,
+      "trial": 5,
+      "variant": "river",
+      "hands": 72,
+      "bb_per_100": -573.0277777777778,
+      "elapsed_seconds": 2.384416041895747,
+      "decision_latency_ms": {
+        "p50": 1.7114998772740364,
+        "p95": 3.001074865460396,
+        "max": 197.35616678372025
+      },
+      "search_latency_ms": {
+        "turn": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        },
+        "river": {
+          "count": 6,
+          "p50": 163.69395796209574,
+          "p95": 191.3023958913982,
+          "max": 197.35616678372025
+        }
+      },
+      "search_diagnostics": {
+        "turn": {
+          "searched_decisions": 0,
+          "changed_actions": 0,
+          "counterfactual_branches": 0,
+          "hands_with_search": 0
+        },
+        "river": {
+          "searched_decisions": 6,
+          "changed_actions": 0,
+          "counterfactual_branches": 512,
+          "hands_with_search": 5
+        }
+      },
+      "process_peak_rss_native_units": 123322368
+    },
+    {
+      "pool": "card_aware",
+      "seats": 9,
+      "trial": 5,
+      "variant": "turn",
+      "hands": 72,
+      "bb_per_100": -573.0277777777778,
+      "elapsed_seconds": 4.584265584126115,
+      "decision_latency_ms": {
+        "p50": 1.7160410061478615,
+        "p95": 3.0051827430725098,
+        "max": 247.09116714075208
+      },
+      "search_latency_ms": {
+        "turn": {
+          "count": 11,
+          "p50": 199.4182080961764,
+          "p95": 247.04639590345323,
+          "max": 247.09116714075208
+        },
+        "river": {
+          "count": 6,
+          "p50": 162.57506236433983,
+          "p95": 189.9623853387311,
+          "max": 195.6250830553472
+        }
+      },
+      "search_diagnostics": {
+        "turn": {
+          "searched_decisions": 11,
+          "changed_actions": 1,
+          "counterfactual_branches": 880,
+          "hands_with_search": 8
+        },
+        "river": {
+          "searched_decisions": 6,
+          "changed_actions": 0,
+          "counterfactual_branches": 512,
+          "hands_with_search": 5
+        }
+      },
+      "process_peak_rss_native_units": 123322368
+    }
+  ],
+  "experiment_manifest": {
+    "kind": "development-turn-screen-v1; no confirmation data",
+    "trials": 6,
+    "rotations": 8,
+    "seats": [
+      6,
+      7,
+      8,
+      9
+    ],
+    "pools": {
+      "scripted": [
+        "caller",
+        "tight",
+        "aggressive",
+        "equity"
+      ],
+      "card_aware": [
+        "card_tight",
+        "card_loose",
+        "card_pressure",
+        "equity"
+      ]
+    },
+    "learning": "off",
+    "variants": {
+      "original": {
+        "policy": "equity",
+        "parameters": {
+          "samples": 32,
+          "call_margin": 0.02,
+          "raise_margin": 0.12,
+          "bet_fraction": 0.5,
+          "adaptive": false
+        }
+      },
+      "river": {
+        "policy": "river",
+        "parameters": {
+          "worlds": 16,
+          "response_model": "equity",
+          "se_penalty": 1.96,
+          "min_gain_bb": 0.25,
+          "response_half_life": null
+        }
+      },
+      "turn": {
+        "policy": "turn",
+        "parameters": {
+          "worlds": 16,
+          "response_model": "equity",
+          "se_penalty": 1.96,
+          "min_gain_bb": 0.25,
+          "response_half_life": null
+        }
+      }
+    },
+    "provenance": {
+      "git_commit": "db9ca19692784d2251ad6dc310043dccd896c364",
+      "git_status": "M pokerbot/__main__.py\n M pokerbot/benchmark.py\n M pokerbot/policies.py\n M pokerbot/runner.py\n?? pokerbot/strategy_spec.py\n?? pokerbot/turn_search.py\n?? research/turn_screen.py\n?? tests/test_strategy_spec.py\n?? tests/test_turn_search.py",
+      "source_sha256": {
+        "pokerbot/__init__.py": "9d25d92bccf3d24419aa67731462554dde88a919ba4e0b6a6c8bb8b236a4bf8b",
+        "pokerbot/__main__.py": "aafd126239e9dd378172a1335f4a468c03075bc6f4210afe2d7c60f1bd3f2e0c",
+        "pokerbot/adapters.py": "d5b6c209c9b7c18413ce950cd0ed6ef720d4a0131bec6b926fd347d7861f4bfd",
+        "pokerbot/baseline_v1.py": "a0496890a106b3704613f044099adac9e1d13296b8bafe5fd64d85068f686020",
+        "pokerbot/benchmark.py": "2862a73ae515fbda0514fb09a4403f16c53a156a159ccdd42e9f9dd01184767a",
+        "pokerbot/card_controls.py": "389961c2cba94fae22fcb43a4fff063dbfc9a6b72acfca3a58eb998729d1bb35",
+        "pokerbot/engine.py": "df82a739c17fa382c0312e5341d5da561eaf721dd39856773cc1f456130eec2b",
+        "pokerbot/equity.py": "0473e0dfdf3f7eb8ae0909145e94e50470011b78e44b277d0e59d0a105178f0e",
+        "pokerbot/policies.py": "be450797a391dcbbdfd9f7f08682cfcf3397cee44415ee2d9799fada8026bf1e",
+        "pokerbot/profiles.py": "bdc6d4137ae754a00ff6faaf48d8b791d5031ffed6830cfbf441ebfb3152ab44",
+        "pokerbot/range_policy.py": "3dc512eb480b5065a6cd1048ae148c30898815872b2ac07ff11621fe2c2c5c82",
+        "pokerbot/ranges.py": "7fc939a84b81733a49f68d40b6c7faea1e980c0145d6ba94b63a329a9c1e44c4",
+        "pokerbot/response_profiles.py": "a1c50cacb900d278118d19ce37cceac845dc71e68b1a50b2085c07a6fc3c2b99",
+        "pokerbot/responses.py": "77a476b79cf20d592b189bfb921d71c5ea061ca19f30b116571126fd793be1a2",
+        "pokerbot/river_search.py": "4121fb922eeaeb3ae6fc1cc2b6cb7d1679db8c6d3d9793f2db8ab2ae28558e3f",
+        "pokerbot/runner.py": "e39379560a438fb548bec8fbb16ad235be216714842630d5e04b9f03f1cea2b2",
+        "pokerbot/strategy_spec.py": "6a1ca39beb6b168c763541bad6ef1ef2ba37b10b6b65b772e97e9e1333d37414",
+        "pokerbot/turn_search.py": "a44b5320cbadb3ceb244c42d64a5519132ba6328385ba0f20d23f60d2b67c223"
+      },
+      "python": "3.14.7",
+      "platform": "macOS-15.6.1-arm64-arm-64bit-Mach-O",
+      "open_spiel": "2.0.2",
+      "rules_engine": "pokerkit",
+      "pokerkit": "0.7.5",
+      "payout_rule": "fractional",
+      "numpy": "2.5.3",
+      "scipy": "1.18.1"
+    },
+    "script_sha256": "213ade825dc5972c51ae4d4658dba97a2a4cce75d33de12cf32b50677c89171b",
+    "plan_sha256": "b47f7f8c76734d088709b8def19a9230a1aa485a88f93b3879245606e9a85904"
+  },
+  "peak_rss_native_units": 123322368,
+  "rss_unit": "bytes on macOS; KiB on Linux",
+  "hypothesis": "Adding turn rollouts improves the same river-only policy",
+  "limitations": "Unadjusted exploratory intervals; fixed equity continuations and uniform hidden holdings; no equilibrium guarantee; learned responses disabled; no trained opponents or confirmation deals"
+}

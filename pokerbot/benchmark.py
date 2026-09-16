@@ -10,6 +10,7 @@ import sys
 from .engine import Decision, Hand
 from .policies import EquityConfig
 from .runner import ROOT, interval, provenance, seed_for, session
+from .strategy_spec import parse_candidate
 
 
 BASELINE = EquityConfig(samples=32, call_margin=.02, raise_margin=.12,
@@ -47,6 +48,8 @@ def write_json(path, data):
 
 
 def create_confirmation(out, candidate, *, trials=30, hands=504):
+    # Reject unsupported policies before checks, directories or ledger allocation.
+    candidate_spec, candidate = parse_candidate(candidate)
     if trials < 30 or hands < 504 or hands % 504:
         raise ValueError("Confirmation needs >=30 trials and >=504 hands per trial, in multiples of 504")
     failures = correctness_failures()
@@ -70,12 +73,13 @@ def create_confirmation(out, candidate, *, trials=30, hands=504):
         fcntl.flock(lock, fcntl.LOCK_EX)
         history = json.loads(ledger.read_text()) if ledger.exists() else []
         attempt = len(history) + 1
-        history.append({"attempt": attempt, "path": str(out.resolve()), "candidate": asdict(candidate)})
+        history.append({"attempt": attempt, "path": str(out.resolve()), "candidate": asdict(candidate),
+                        "candidate_spec": candidate_spec})
         write_json(ledger, history)
     spec = {"protocol": "first-milestone-v1", "attempt": attempt,
             "trials": trials, "hands": hands, "seats": [6, 7, 8, 9],
             "pools": HOLDOUT_POOLS, "baseline": asdict(BASELINE), "candidate": asdict(candidate),
-            "learning": "learned" if candidate.adaptive else "off",
+            "candidate_spec": candidate_spec, "learning": candidate_spec["learning"],
             "stack_bb": 100, "rake": 0, "payout_rule": "fractional",
             "family_alpha": .05 / (attempt * (attempt + 1)),
             "minimum_improvement_bb_per_100": 5,
@@ -94,6 +98,11 @@ def run_confirmation(out):
 
 def _run(out):
     spec = json.loads((out / "manifest.json").read_text())
+    candidate_spec, candidate_config = parse_candidate(spec.get("candidate_spec", spec["candidate"]))
+    if candidate_spec["parameters"] != spec["candidate"] or candidate_spec["learning"] != spec["learning"]:
+        raise RuntimeError("Candidate identity disagrees with saved legacy configuration fields")
+    if spec["baseline"] != asdict(BASELINE):
+        raise RuntimeError("Frozen baseline configuration changed")
     current = provenance()
     if current["source_sha256"] != spec["provenance"]["source_sha256"]:
         raise RuntimeError("Code changed since freeze; use a new experiment")
@@ -121,9 +130,10 @@ def _run(out):
                         digest = hashlib.sha256(log.read_bytes()).hexdigest()[:12]
                         log.rename(out / f"{stem}.partial-{digest}")
                     result = session(seats=n, hands=spec["hands"], seed=seed,
-                                     config=EquityConfig(**spec[arm]), pool=pool, log_path=log,
+                                     config=BASELINE if arm == "baseline" else candidate_config, pool=pool, log_path=log,
                                      learning=spec["learning"] if arm == "candidate" else "off",
-                                     stack_bb=spec["stack_bb"], frozen_hero=arm == "baseline")
+                                     stack_bb=spec["stack_bb"], frozen_hero=arm == "baseline",
+                                     hero_policy="equity" if arm == "baseline" else candidate_spec["policy"])
                     write_json(result_path, result)
                 pair[arm] = result["bb_per_100"]
             rows.append({"seats": n, "trial": trial, "delta": pair["candidate"] - pair["baseline"], **pair})

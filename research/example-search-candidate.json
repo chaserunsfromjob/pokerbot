@@ -1,0 +1,12 @@
+{
+  "schema": 1,
+  "policy": "turn",
+  "parameters": {
+    "worlds": 16,
+    "response_model": "equity",
+    "se_penalty": 1.96,
+    "min_gain_bb": 0.25,
+    "response_half_life": null
+  },
+  "learning": "off"
+}

@@ -88,6 +88,9 @@ class EquityPolicy:
 
 
 def make_policy(name, config=None):
+    if name == "turn":
+        from .turn_search import TurnPolicy
+        return TurnPolicy(config)
     if name == "river":
         from .river_search import RiverPolicy
         return RiverPolicy(config)

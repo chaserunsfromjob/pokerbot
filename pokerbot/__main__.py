@@ -31,7 +31,7 @@ def main():
     commands.add_parser("check-gates")
     confirm = commands.add_parser("confirm")
     confirm.add_argument("--out", required=True)
-    confirm.add_argument("--candidate", required=True, help="JSON file containing EquityConfig parameters")
+    confirm.add_argument("--candidate", required=True, help="Versioned strategy JSON or legacy EquityConfig parameters")
     confirm.add_argument("--trials", type=int, default=30)
     confirm.add_argument("--hands", type=int, default=504)
     resume = commands.add_parser("resume")
@@ -55,7 +55,7 @@ def main():
         print(json.dumps({"promotion_blockers": failures}, indent=2))
         raise SystemExit(bool(failures))
     elif args.command == "confirm":
-        config = EquityConfig(**json.loads(Path(args.candidate).read_text()))
+        config = json.loads(Path(args.candidate).read_text())
         print(json.dumps(create_confirmation(args.out, config, trials=args.trials, hands=args.hands), indent=2))
     elif args.command == "resume":
         print(json.dumps(run_confirmation(args.path), indent=2))

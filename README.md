@@ -115,7 +115,33 @@ The first command uses the fixed 64-opportunity half-life and 120 complete
 streams. The second separately compares original/prior/raw/discounted policies
 on fresh played matches. Both save source/configuration hashes and resumable
 results. See `research/RESPONSE_RECENCY_RESULTS.md` for the prediction evidence,
-and `research/TURN_SEARCH_PLAN.md` for the next, independent search extension.
+and `research/TURN_SEARCH_PLAN.md` for the prespecified independent search extension.
+
+Turn-plus-river rollouts have a separate fixed development screen:
+
+```sh
+.venv/bin/python research/turn_screen.py --out runs/my-turn-screen
+```
+
+The turn policy samples hypothetical holdings and a shuffled unseen future deck,
+uses PokerKit for all bets and payouts, and keeps the river-only policy intact.
+The screen isolates added turn search with learning off. Its search decisions
+and timing are recorded separately by street; simulated branches are not extra
+independent hands. This remains policy evaluation under assumed continuations,
+not an equilibrium solver.
+
+Confirmation accepts either the old flat equity parameters or a versioned
+`schema`/`policy`/`parameters`/`learning` object. Supported types are `equity`,
+`river` and `turn`; see `research/example-search-candidate.json`. Unknown types
+and oracle learning fail before an attempt is allocated. Every supported type
+shares the same frozen baseline, held-out protocol and repeated-attempt ledger.
+Examples are unvalidated; development results must justify confirmation first.
+
+A pinned native NoRegrets probe now reproduces a short-all-in reopening defect.
+That engine needs repair before adoption; our active PokerKit referee is
+unaffected. See `research/NOREGRETS_COMPATIBILITY.md` for the reproduction and
+the conditional training/adapter pilot. Native seven-to-nine-seat support and
+trained artifacts remain absent.
 
 What the borrowed poker engine is, how to run it, and what it would cost to move
 it from its 20-card deck to a normal 52-card one: `REFERENCE_NOTES.md`.

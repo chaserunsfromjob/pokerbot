@@ -1,4 +1,4 @@
-# Research checkpoint — September 16, 2026, recency prediction and poker returns
+# Research checkpoint — September 16, 2026, turn search and native rules probe
 
 ## Current state
 
@@ -47,7 +47,7 @@ select the legacy backend, and old replay verification still passes.
 
 ## Validation
 
-- **143 root tests passed; no expected failures in the root suite.**
+- **177 root tests passed; no expected failures in the root suite.**
 - **53 vendor tests passed, 2 existing expected failures.** The three historical
   CLI tests still do not assert command success.
 - All **680 design arithmetic checks passed**.
@@ -419,28 +419,97 @@ Results: `results/2026-09-16-response-recency-001.json` and
 mechanics, synthetic opportunities, toy training and hypothetical branches.
 No held-out confirmation attempt has been allocated or passed.
 
+## Search-policy confirmation support and turn search
+
+Confirmation now saves an explicit versioned policy identity for equity,
+river-only or turn-plus-river configurations. Named-response learning can be
+off or learned; oracle input and unsupported policies fail before checks,
+output directories or attempt allocation. Legacy equity JSON/manifest formats
+remain readable, with strict source/runtime matching. All families share the
+existing attempt ledger and alpha schedule. Tests exercise exact dispatch,
+matched deals, partial-log preservation, trial-memory resets and resume without
+replaying completed sessions. No real confirmation ledger has been created.
+External/trained and range-policy confirmation remain unsupported.
+
+`TurnPolicy` samples joint hypothetical holdings and shuffles the unseen deck
+before reconstructing the public turn state. The known four board cards and
+hero's cards remain fixed. Root actions share worlds and random seeds; each
+branch is cloned and uses fixed equity-policy continuations through PokerKit
+settlement. Preflop/flop and river-only behavior, including RNG consumption,
+are regression tested. The existing river implementation is unchanged.
+Independent fixed-deck completion, 2–9-seat royal-flush values, unequal-stack
+side pots, folded-card ineligibility, short all-ins, runouts and actual-hidden-
+card invariance pass. Search timing is recorded separately by street.
+
+The unchanged `TURN_SEARCH_PLAN.md` screen completed **144 sessions / 8,640
+hands** with original, river-only and turn-plus-river arms, two development
+pools, 6–9 seats, six independent sessions per cell and eight rotations.
+Learning stayed off. No return comparison established improvement.
+
+| Card-aware pool: turn-plus-river minus river-only | Mean bb/100 | Exploratory 95% interval |
+| --- | ---: | ---: |
+| 6 seats | +21.08 | [-25.74, 67.90] |
+| 7 seats | +8.80 | [-9.44, 27.05] |
+| 8 seats | +39.21 | [-23.88, 102.31] |
+| 9 seats | -0.23 | [-0.83, 0.36] |
+
+Every interval includes zero, as do turn-versus-original and the scripted-pool
+comparisons. Some scripted cells have identical sampled returns, not proven
+population equivalence. Turn search evaluated 435 decisions and changed 27;
+its later river searches evaluated 321 and changed 22. The river-only arm
+evaluated 329 and changed 26. All 82,496 hypothetical branches are computation,
+not independent played hands.
+
+Runtime was **337.54 simulation seconds**, peak RSS **117.61 MiB**, maximum
+observed decision **708.04 ms**. The largest session-level turn-search p95 was
+697.03 ms; timing expensive search separately avoids hiding it among cheap
+opponent moves. Another 72 nine-seat turn-policy hands replayed exactly.
+Completed-screen resume preserved the report byte-for-byte and source/plan/
+baseline hashes match. Root tests: 177 pass; vendor: 53 pass, two existing
+expected failures. Summary: `results/2026-09-16-turn-screen-001.json`.
+
+## Native NoRegrets rules failure reproduced
+
+The source review was advanced to a runnable native probe at commit
+`757f7692738069522195d2b486eec60a8b010c0c`. An isolated Rust wrapper imports
+the unmodified native engine/cards/evaluator modules and compares two sequences
+with PokerKit. After raise-to-200, call, short all-in to 250, native NoRegrets
+offers raises from 350 to 10000 and accepts 350; PokerKit correctly forbids
+reopening. The separate cumulative-short-raise case agrees with PokerKit.
+
+This blocks using the pinned native rules engine until repair and validation;
+it does not affect the active arena. No native model was trained or integrated.
+The probe stores compiler/dependency/source/reference hashes, builds in its
+own directory and resumes unchanged. It produced **zero played evaluation
+hands**. See `NOREGRETS_COMPATIBILITY.md` and
+`results/2026-09-16-noregrets-rules-probe.json` for reproduction, action-unit,
+checkpoint and six-seat compatibility requirements.
+
+Cumulative played strategy-evaluation hands are now **98,868**, including
+historical screens and excluding mechanics, synthetic streams, native probes,
+replays, toy training and hypothetical branches. The strength benchmark remains
+unmet. No strategy was promoted and no held-out attempt was allocated.
+
 ## Next bounded work
 
-1. Extend confirmation to versioned policy/configuration types: its current
-   implementation rebuilds only `EquityConfig`, so river/named/turn candidates
-   are not supported yet. Preserve legacy manifests, frozen baseline, holdout
-   mixes and the shared repeated-attempt error budget. Reject unsupported
-   candidates before touching the attempt ledger; do not run confirmation yet.
-2. Implement the separately specified `TURN_SEARCH_PLAN.md` with sampled unseen
-   future cards and existing engine payouts. Its fixed first screen isolates
-   turn-plus-river from river-only search with learning off. A public-event audit
-   of existing baseline logs found only 48 additional affected scripted hands
-   and 35 card-aware hands out of 1,440 per pool. Coverage is broader but still
-   limited; this is a hypothesis, not a promised strength improvement.
+1. Repair the pinned NoRegrets raising-rights defect in an isolated, attributed
+   patch. Validate single and cumulative short all-ins, checks before opening
+   bets, side pots and exact postflop amounts against PokerKit. Preserve the
+   unpatched failure. Account explicitly for native integer versus benchmark
+   fractional tied payouts instead of calling different conventions identical.
+2. After native rules checks pass, run the bounded three-seed six-seat training
+   and checkpoint-resume pilot specified in `NOREGRETS_COMPATIBILITY.md`.
+   Record real artifacts and fallback coverage. Then validate a sanitized policy
+   bridge on development deals. Seven-to-nine-seat use remains unsupported.
 3. Investigate concentrated range weights and replicate position effects on fresh
    development sessions with more independent trials. Maintain scripted-pool
    regression checks. Consider evaluation variance reduction only after its
    prerequisites and zero-mean corrections are independently validated.
-4. Build one native policy/component bridge or a bounded hold'em training pilot
-   with real saved artifacts and independent seeds. NoRegrets is limited to
-   2–6 seats upstream; dickreuter needs local strategy config and a policy bridge;
-   the newly reviewed Deep CFR project needs artifacts and six-seat compatibility
-   work. Do not disguise missing models with randomly initialized networks.
+4. Continue alternative native/component or training work: dickreuter needs
+   local strategy config and a policy bridge; Deep CFR needs real artifacts and
+   compatibility work. Test more realistic card-conditioned response/range
+   assumptions as separate interventions; more rollout depth alone is unproven.
+   Do not disguise missing models with randomly initialized networks.
 5. Freeze a promising candidate and execute the existing 6–9-seat confirmation
    protocol. On passage, preserve the result and specify the next harder stage
    before looking at its results.

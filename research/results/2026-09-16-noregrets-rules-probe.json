@@ -1,0 +1,55 @@
+{
+  "status": "native mechanics disagreement",
+  "native": {
+    "single": {
+      "actor": 2,
+      "call": 50,
+      "min": 350,
+      "max": 10000
+    },
+    "after_illegal_reraise": {
+      "contribution": 350
+    },
+    "cumulative": {
+      "actor": 2,
+      "call": 100,
+      "min": 400,
+      "max": 10000
+    }
+  },
+  "pokerkit_reference": {
+    "single": {
+      "actor": 2,
+      "call": 50,
+      "min": 0,
+      "max": 0
+    },
+    "cumulative": {
+      "actor": 2,
+      "call": 100,
+      "min": 400,
+      "max": 10000
+    }
+  },
+  "manifest": {
+    "source_commit": "757f7692738069522195d2b486eec60a8b010c0c",
+    "source_url": "https://github.com/conorarmstrong/noregrets",
+    "source_sha256": {
+      "src/engine.rs": "3943f52a73a23aaebda6e5e490388c07cfbcc24156760f0ece452c02ae892572",
+      "src/cards.rs": "d4554a48738b341836e9cedd60fd514325852ee331daed4542184fde7f621ad0",
+      "src/eval.rs": "7021de9f97cbc2724d160030337dc022281aa6b397772a4ebb5b451bd85d0847",
+      "Cargo.lock": "d2d7178232388569fb3e4a58ede68b6b185a7cca60d372fdc0733bd4120a619f"
+    },
+    "script_sha256": "4e36d91914c827b3e83c5374022b68f2f655d7a1427d2227a6f40e694ff816f6",
+    "python": "3.14.7",
+    "pokerkit": "0.7.5",
+    "reference_engine_sha256": "df82a739c17fa382c0312e5341d5da561eaf721dd39856773cc1f456130eec2b",
+    "rustc": "rustc 1.98.0 (88d9e12ae 2026-08-18)",
+    "rand": "0.9.4"
+  },
+  "elapsed_seconds_including_build": 4.081742291804403,
+  "cargo_lock_sha256": "6e89c2f86c34276b76bc6961ed3d44346b83d8dc7db051f306be52d90f21e304",
+  "wrapper_sha256": "d83ccba05d97e46346fa6c25f177a4af2741aeeb8fd9021255961c82e585257b",
+  "played_evaluation_hands": 0,
+  "limitations": "Two targeted betting sequences only; no full-engine, ranking, training, policy strength or bridge validation"
+}

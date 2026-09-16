@@ -63,11 +63,12 @@ def session(*, seats, hands, seed, config, pool, log_path=None,
     policies.update({name: FrozenEquityV1() if style == "equity" else make_policy(style)
                      for name, style in styles.items()})
     profiles = Profiles(profile_path, session_id)
-    use_responses = hero_policy == "river" and getattr(config, "response_model", None) == "named"
+    use_responses = hero_policy in ("river", "turn") and getattr(config, "response_model", None) == "named"
     responses = (ResponseProfiles(profile_path, session_id, half_life=config.response_half_life)
                  if use_responses else None)
     total = 0.0
     latency = []
+    search_latency = {"turn": [], "river": []}
     hand_log = Path(log_path).open("x") if log_path else None
     started = time.perf_counter()
     try:
@@ -93,7 +94,12 @@ def session(*, seats, hands, seed, config, pool, log_path=None,
                 rng = random.Random(seed_for("policy", seed, h, name, len(hand.events)))
                 begin = time.perf_counter()
                 result = policies[name].decide(obs, model if name == "hero" else {}, rng)
-                latency.append(time.perf_counter() - begin)
+                duration = time.perf_counter() - begin
+                latency.append(duration)
+                if name == "hero":
+                    for street in search_latency:
+                        if result.diagnostics.get(f"{street}_search"):
+                            search_latency[street].append(duration * 1000)
                 if responses is not None:
                     observations.append(public_response(obs, result))
                 hand.apply(result)
@@ -114,6 +120,10 @@ def session(*, seats, hands, seed, config, pool, log_path=None,
                                         "p95": float(np.quantile(latency, .95) * 1000),
                                         "max": max(latency) * 1000},
                 "public_profiles": profiles.view(),
+                "search_latency_ms": {street: {"count": len(values),
+                    "p50": float(np.quantile(values,.5)) if values else None,
+                    "p95": float(np.quantile(values,.95)) if values else None,
+                    "max": max(values) if values else None} for street,values in search_latency.items()},
                 **({"response_profiles": responses.view()} if responses is not None else {})}
     finally:
         profiles.close()
