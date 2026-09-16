@@ -897,9 +897,9 @@ material, but that
 document reports several of them as diagnostics explicitly *not* fed into a
 decision, so it would have to say which become policy inputs. **Supported
 today**: the rollout policy in `research/engine_alternatives/chooser.py` is one
-function that already receives the acting seat; replacing uniform choice with
-per-seat weights changes nothing else. Cost: one weighted draw per node, paid
-directly out of the rollout count.
+loop that already has the acting seat in hand (`state.current_player()`);
+replacing the uniform choice with per-seat weights changes nothing else. Cost:
+one weighted draw per node, paid directly out of the rollout count.
 
 **Hook B - hole-card resampling, per seat.** Each opponent's *cards* are drawn
 from the range their model says they would still hold, given how they have
