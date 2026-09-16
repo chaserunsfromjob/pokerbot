@@ -1,0 +1,120 @@
+{
+  "status": "legacy defects reproduced; corrected engine rejects all three",
+  "reference": "https://www.pokertda.com/view-poker-tda-rules/",
+  "python": "3.14.7",
+  "pokerkit": "0.7.5",
+  "source_sha256": {
+    "research/pokerkit_reopening_probe.py": "92010b42e2dff5b665a7689df20801866144c14e5660053e35313e9ff66dca12",
+    "pokerbot/engine.py": "3bd573b28ba179581f091d7e19d98f2db16d452dd8319c3f747393a1a953c729",
+    "pokerbot/pokerkit_rules.py": "03117cfc8e027acda52724f7bad7972e9949cac19ee8fc0679c03c979640cbfa",
+    "pokerbot/benchmark.py": "55bbad4e7139ad251b04b708a22d450186a04bcad626cf34367c637ea58193fc"
+  },
+  "cases": [
+    {
+      "name": "limp-short-allin",
+      "stacks": [
+        1000,
+        180,
+        10000
+      ],
+      "actions": [
+        1,
+        1,
+        180
+      ],
+      "prohibited_whole_hand_raise_to": 280,
+      "unpatched": {
+        "engine": "pokerkit-0.7.5",
+        "actor": 2,
+        "call": 80,
+        "min": 280,
+        "max": 10000,
+        "native_state_accepts": true,
+        "applied": true
+      },
+      "corrected": {
+        "engine": "pokerkit-0.7.5-reopening-v1",
+        "actor": 2,
+        "call": 80,
+        "min": null,
+        "max": null,
+        "native_state_accepts": false,
+        "applied": false
+      }
+    },
+    {
+      "name": "later-caller-cumulative",
+      "stacks": [
+        300,
+        10000,
+        10000,
+        250,
+        10000
+      ],
+      "actions": [
+        200,
+        250,
+        1,
+        300,
+        1,
+        1
+      ],
+      "prohibited_whole_hand_raise_to": 400,
+      "unpatched": {
+        "engine": "pokerkit-0.7.5",
+        "actor": 4,
+        "call": 50,
+        "min": 400,
+        "max": 10000,
+        "native_state_accepts": true,
+        "applied": true
+      },
+      "corrected": {
+        "engine": "pokerkit-0.7.5-reopening-v1",
+        "actor": 4,
+        "call": 50,
+        "min": null,
+        "max": null,
+        "native_state_accepts": false,
+        "applied": false
+      }
+    },
+    {
+      "name": "checked-short-opening",
+      "stacks": [
+        10000,
+        150,
+        10000
+      ],
+      "actions": [
+        1,
+        1,
+        1,
+        1,
+        150,
+        1
+      ],
+      "prohibited_whole_hand_raise_to": 250,
+      "unpatched": {
+        "engine": "pokerkit-0.7.5",
+        "actor": 0,
+        "call": 50,
+        "min": 250,
+        "max": 10000,
+        "native_state_accepts": true,
+        "applied": true
+      },
+      "corrected": {
+        "engine": "pokerkit-0.7.5-reopening-v1",
+        "actor": 0,
+        "call": 50,
+        "min": null,
+        "max": null,
+        "native_state_accepts": false,
+        "applied": false
+      }
+    }
+  ],
+  "played_evaluation_hands": 0,
+  "limitations": "Targeted fixtures only; class-app rules have not been observed"
+}

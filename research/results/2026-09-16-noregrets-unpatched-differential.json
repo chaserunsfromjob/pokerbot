@@ -1,0 +1,319 @@
+{
+  "status": "mechanics disagreement",
+  "manifest": {
+    "protocol": "native-differential-v1",
+    "source_commit": "757f7692738069522195d2b486eec60a8b010c0c",
+    "source_sha256": {
+      "src/engine.rs": "3943f52a73a23aaebda6e5e490388c07cfbcc24156760f0ece452c02ae892572",
+      "src/cards.rs": "d4554a48738b341836e9cedd60fd514325852ee331daed4542184fde7f621ad0",
+      "src/eval.rs": "7021de9f97cbc2724d160030337dc022281aa6b397772a4ebb5b451bd85d0847",
+      "Cargo.lock": "d2d7178232388569fb3e4a58ede68b6b185a7cca60d372fdc0733bd4120a619f"
+    },
+    "patch_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "script_sha256": "4f8f2da24ea76637cf0841e9e0f2a144600212d49ac4dfe4262a5c7338ecf80f",
+    "wrapper_sha256": "1eef78c2d0b091c01e253f5952db4dcd2930000bbced304ae147529803f278bb",
+    "reference_sha256": "3bd573b28ba179581f091d7e19d98f2db16d452dd8319c3f747393a1a953c729",
+    "reference_patch_sha256": "03117cfc8e027acda52724f7bad7972e9949cac19ee8fc0679c03c979640cbfa",
+    "reference_engine_id": "pokerkit-0.7.5-reopening-v1",
+    "python": "3.14.7",
+    "pokerkit": "0.7.5",
+    "treys": "0.1.8",
+    "rustc": "rustc 1.98.0 (88d9e12ae 2026-08-18)",
+    "seed": 190907,
+    "hands_per_size": 200,
+    "rand": "0.9.4"
+  },
+  "cases": 1010,
+  "cases_by_seats": {
+    "3": 206,
+    "4": 201,
+    "5": 202,
+    "2": 201,
+    "6": 200
+  },
+  "reference_states": 9006,
+  "declared_integer_fractional_payout_differences": [
+    "fractional-three-way-tie",
+    "n4-arbitrary-34",
+    "n4-allin-159",
+    "n5-allin-7",
+    "n5-passive-65",
+    "n5-allin-79",
+    "n5-allin-175",
+    "n5-allin-195",
+    "n6-passive-9",
+    "n6-allin-11",
+    "n6-allin-123",
+    "n6-passive-129",
+    "n6-passive-137",
+    "n6-passive-185"
+  ],
+  "elapsed_seconds_including_build": 16.741443916689605,
+  "native_execution_seconds": 0.16146170906722546,
+  "driver_peak_rss_bytes": 199114752,
+  "cargo_lock_sha256": "680a7590ad693254bf3dc29860ea0645dcd6bc550625cedee5e2143e39f34682",
+  "cases_sha256": "7a2dff21682708330d7ec96e55364c0232300b97d8834679b800032c4e9aaa80",
+  "native_module_tests_log_sha256": "99a5508696090fbcdcfc6256f4d36a288e1c112f505d3b47acc691955250e5b4",
+  "native_output_sha256": "8129379bdf95ba58b267b2bfc9668241fcc7d2d1be3fc71d53137810cdf9a858",
+  "played_evaluation_hands": 0,
+  "limitations": [
+    "2\u20136 seats only; finite test coverage",
+    "TDA reopening profile; class-app convention unverified",
+    "Native integer odd chips go to lowest seat; arena uses fractional payouts",
+    "No policy adapter, hidden-state isolation, native training or strength validation"
+  ],
+  "failure_count": 351,
+  "failure_fields": {
+    "max": 351,
+    "min": 351,
+    "actor": 27,
+    "all_in": 27,
+    "board": 27,
+    "call": 27,
+    "fold": 27,
+    "folded": 27,
+    "pot": 27,
+    "returns": 27,
+    "stacks": 27,
+    "street": 27,
+    "terminal": 27
+  },
+  "targeted_failures": [
+    {
+      "name": "single-short",
+      "issues": [
+        {
+          "step": 3,
+          "field": "max",
+          "reference": null,
+          "native": 10000
+        },
+        {
+          "step": 3,
+          "field": "min",
+          "reference": null,
+          "native": 350
+        }
+      ],
+      "stacks": [
+        10000,
+        250,
+        10000
+      ],
+      "actions": [
+        200,
+        1,
+        250,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "name": "postflop-short",
+      "issues": [
+        {
+          "step": 6,
+          "field": "max",
+          "reference": null,
+          "native": 10000
+        },
+        {
+          "step": 6,
+          "field": "min",
+          "reference": null,
+          "native": 550
+        }
+      ],
+      "stacks": [
+        10000,
+        350,
+        10000
+      ],
+      "actions": [
+        1,
+        1,
+        1,
+        300,
+        350,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "name": "check-short-opening",
+      "issues": [
+        {
+          "step": 6,
+          "field": "max",
+          "reference": null,
+          "native": 10000
+        },
+        {
+          "step": 6,
+          "field": "min",
+          "reference": null,
+          "native": 250
+        }
+      ],
+      "stacks": [
+        10000,
+        150,
+        10000
+      ],
+      "actions": [
+        1,
+        1,
+        1,
+        1,
+        150,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "name": "limp-short-allin",
+      "issues": [
+        {
+          "step": 3,
+          "field": "max",
+          "reference": null,
+          "native": 10000
+        },
+        {
+          "step": 3,
+          "field": "min",
+          "reference": null,
+          "native": 280
+        }
+      ],
+      "stacks": [
+        1000,
+        180,
+        10000
+      ],
+      "actions": [
+        1,
+        1,
+        180,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "name": "late-caller-cumulative",
+      "issues": [
+        {
+          "step": 6,
+          "field": "max",
+          "reference": null,
+          "native": 10000
+        },
+        {
+          "step": 6,
+          "field": "min",
+          "reference": null,
+          "native": 400
+        }
+      ],
+      "stacks": [
+        300,
+        10000,
+        10000,
+        250,
+        10000
+      ],
+      "actions": [
+        200,
+        250,
+        1,
+        300,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "name": "dry-side-pot",
+      "issues": [
+        {
+          "step": 1,
+          "field": "max",
+          "reference": null,
+          "native": 10000
+        },
+        {
+          "step": 1,
+          "field": "min",
+          "reference": null,
+          "native": 400
+        }
+      ],
+      "stacks": [
+        10000,
+        250,
+        250
+      ],
+      "actions": [
+        250,
+        1,
+        1
+      ]
+    },
+    {
+      "name": "heads-up-short-bb",
+      "issues": [
+        {
+          "step": 0,
+          "field": "max",
+          "reference": null,
+          "native": 10000
+        },
+        {
+          "step": 0,
+          "field": "min",
+          "reference": null,
+          "native": 200
+        }
+      ],
+      "stacks": [
+        10000,
+        100
+      ],
+      "actions": [
+        1
+      ]
+    }
+  ],
+  "full_report_sha256": "0281ac2f8f63797f7be5c22489610d4762eb5469ba9a83918235962c05e67df2",
+  "full_report_location": "runs/noregrets-differential-unpatched-001/report.json",
+  "note": "Compact negative-control record; all failed cases and traces remain in the saved run."
+}

@@ -34,7 +34,7 @@ def provenance():
     return {"git_commit": git("rev-parse", "HEAD"), "git_status": git("status", "--porcelain"),
             "source_sha256": hashes, "python": platform.python_version(),
             "platform": platform.platform(), "open_spiel": version("open-spiel"),
-            "rules_engine": "pokerkit", "pokerkit": version("pokerkit"),
+            "rules_engine": Hand.engine_id, "pokerkit": version("pokerkit"),
             "payout_rule": "fractional",
             "numpy": version("numpy"), "scipy": version("scipy")}
 

@@ -37,6 +37,21 @@ def correctness_failures():
     obs = hand.observation()
     if obs.actor != 2 or obs.legal.min_raise_to != 400:
         failures.append("Referee fails cumulative short-all-in reopening")
+    # Independent TDA rule 47 fixtures, not differential engine consensus.
+    for label, stacks, actions, actor, call in (
+        ("limp then short all-in", [1000,180,10000], [1,1,180], 2, 80),
+        ("later caller facing cumulative short all-ins", [300,10000,10000,250,10000],
+         [200,250,1,300,1,1], 4, 50),
+        ("check then short opening all-in", [10000,150,10000],
+         [1,1,1,1,150,1], 0, 50),
+    ):
+        hand = Hand([f"p{i}" for i in range(len(stacks))], stacks)
+        for action in actions:
+            hand.apply(Decision(action, {}))
+        obs = hand.observation()
+        if (obs.actor != actor or obs.legal.call_cost != call
+                or obs.legal.min_raise_to is not None or obs.legal.max_raise_to is not None):
+            failures.append("Referee fails " + label)
     return failures
 
 
@@ -76,7 +91,7 @@ def create_confirmation(out, candidate, *, trials=30, hands=504):
         history.append({"attempt": attempt, "path": str(out.resolve()), "candidate": asdict(candidate),
                         "candidate_spec": candidate_spec})
         write_json(ledger, history)
-    spec = {"protocol": "first-milestone-v1", "attempt": attempt,
+    spec = {"protocol": "first-milestone-v2-reopening", "attempt": attempt,
             "trials": trials, "hands": hands, "seats": [6, 7, 8, 9],
             "pools": HOLDOUT_POOLS, "baseline": asdict(BASELINE), "candidate": asdict(candidate),
             "candidate_spec": candidate_spec, "learning": candidate_spec["learning"],

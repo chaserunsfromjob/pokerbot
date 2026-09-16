@@ -1,9 +1,12 @@
-# Research checkpoint — September 16, 2026, turn search and native rules probe
+# Research checkpoint — September 16, 2026, reopening repairs
 
 ## Current state
 
-The standard 52-card simulation now uses **PokerKit 0.7.5 for betting and
-payouts**. OpenSpiel 2.0.2 remains the frozen Monte Carlo equity sampler and
+The standard 52-card simulation now uses **PokerKit 0.7.5 with isolated
+reopening corrections (`pokerkit-0.7.5-reopening-v1`)** for betting and payouts.
+Unpatched PokerKit fails three newly added gates. See `REOPENING_REPAIR.md` and
+the latest section below; earlier strategy results are historical and need
+fresh evaluation. OpenSpiel 2.0.2 remains the frozen Monte Carlo equity sampler and
 historical replay backend. Original policy and equity sampler hashes are
 unchanged. No held-out strength benchmark has passed.
 
@@ -526,3 +529,58 @@ in the original conversation. There is no morning cutoff, and passing a stage
 starts harder research. Inspect running jobs/locks before starting experiments;
 never edit their source while they run. Save evidence and notify on meaningful
 results or blockers. Local runs require the machine and app to remain running.
+
+## Expanded mechanics checks and repaired PokerKit reopening
+
+The native NoRegrets repair exposed three additional failures in the reference
+PokerKit 0.7.5: a limper can re-raise a short all-in; a later caller can re-raise
+without personally facing a full increment; and a prior checker can raise a
+short opening all-in. Independent TDA rule 47 fixtures now define the intended
+reopening profile. The small recorded probe actually applies all three
+prohibited raises in the historical engine and verifies rejection in both
+current State legality and host action application.
+
+`pokerbot/pokerkit_rules.py` supplies narrow, version-guarded State overrides.
+The current engine is **pokerkit-0.7.5-reopening-v1**. It retains PokerKit's other
+rules, payouts and ranking, preserves fractional split pots, and does not edit
+the installed dependency. Prior PokerKit logs use `LegacyPokerKitHand`; 384
+saved hands from the turn-search screen replayed exactly. OpenSpiel historical
+replay remains available. New confirmation gates reject unpatched PokerKit
+before creating output or consuming an attempt.
+
+An isolated MIT-attributed NoRegrets patch fixes individual raising rights,
+raise availability when opponents cannot match any additional chips, and
+unnecessary checks when all further betting is impossible. The exported patch
+reconstructs the tested source exactly. A first complete-hand differential run
+also exposed the reference defects above; they were repaired rather than
+copied into the native patch. Draft disagreements remain in local run logs.
+
+Final validation used 5,010 fresh complete hands / 44,971 states at 2–6 seats,
+with unequal stacks, passive/arbitrary/all-in play and targeted regressions.
+All matched. Independent treys rankings and layered pots validate each engine's
+own payout convention; 61 tied-payout rounding differences are explicitly
+accounted for, not ignored. The unpatched negative control failed 351 of 1,010
+cases despite passing all 18 upstream module tests. Those 18 tests also pass
+for the repaired modules. Neither a full native application training run nor
+a policy bridge was exercised.
+
+The final differential run took 56.86 seconds including reference generation,
+build and tests; native execution took 0.333 seconds. Python driver peak RSS
+was 301.4 MiB. Saved resume was byte-identical. Root tests: **192 pass**; vendor:
+**53 pass, two existing expected failures**. Source/runtime/patch/case/output
+hashes and positive/negative results are under `research/results/`. See
+`REOPENING_REPAIR.md` and `NOREGRETS_COMPATIBILITY.md` for reproduction.
+
+The previous **98,868 played evaluation hands** remain historical under their
+original rules. These mechanics probes add zero policy-evaluation hands.
+The defects' effect on earlier strategy comparisons is unknown; any promotion
+candidate needs fresh evaluation. The confirmation protocol is explicitly
+renamed **first-milestone-v2-reopening**, keeping the exact frozen baseline,
+opponent pools, acceptance targets, sample minimum and shared alpha ledger.
+No real attempt has been allocated; no strength milestone has passed.
+
+Next bounded work: run the already specified three-seed six-seat native
+checkpoint pilot (10,000 traversals then 10,000 resumed per seed), verify
+configuration/artifact/distribution consistency and fallback coverage, then
+add the sanitized policy adapter. Continue the range/response research on fresh
+corrected-engine deals. Native 7–9-seat support remains absent.

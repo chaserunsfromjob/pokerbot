@@ -4,6 +4,11 @@ Each entry is a hypothesis, not a promised improvement. Record rejected ideas
 as well as successes. Expected benefit and readiness are judgments to revise
 from measured evidence. Research is not limited to these candidates.
 
+**Current rules update:** `REOPENING_REPAIR.md` supersedes earlier claims that
+unpatched PokerKit passes all required reopening behavior. The corrected referee
+passes the expanded gates. Historical strength screens below need fresh runs
+before promotion; their original results remain preserved.
+
 | Priority | Experiment / hypothesis | Benefit / readiness | Judge it by | Main unresolved risk |
 | --- | --- | --- | --- | --- |
 | Done | Replace faulty OpenSpiel betting referee with PokerKit | Implemented / 73 root tests pass | Single and cumulative short all-ins, postflop translation, independent side-pot payouts at 2–9 seats | Benchmark uses fractional tied payouts; class-app integer chip rules remain separate |
@@ -11,7 +16,7 @@ from measured evidence. Research is not limited to these candidates.
 | 2 | Position-aware preflop and preflop-action ranges improve decision quality | Implemented; fresh 28,800-hand factorial screen complete | No cell establishes gain over frozen original; position helps versus equal-sample uniform in selected card-aware cells; range effects inconclusive | Unadjusted comparisons, uncalibrated likelihoods, rare very low effective sample sizes, shared evaluator |
 | 3 | Named-player shrinkage improves decisions over the exact same unadapted policy | Optional recency implemented; 122,880-opportunity prediction pilot passes; fresh 11,520-hand comparison complete | No discounted-minus-prior gain established; discounted-minus-raw negative in passive 8/9-seat exploratory intervals; retain raw default | Sparse predictions after wrong history remain poor; fixed forgetting trades stationary accuracy for recovery; no bet-size/card conditioning |
 | 4 | Restricted rollout search improves multiway postflop choices | Turn-plus-river implemented; fixed 8,640-hand screen complete | No turn-minus-river or turn-minus-original interval excludes zero; 27 changes in 435 turn decisions | Uniform holdings, wrong response models, fixed hero continuation, sampling noise; no held-out strength passage |
-| 5 | NoRegrets yields a useful trained/search policy component | Native probe at 757f769 reproduces illegal short-all-in reopening; adapter/checkpoint absent | Repair and differentially test rules before the bounded three-seed checkpoint pilot; then compare 2–6 players | Wrong native action tree blocks adoption; 7–9 unsupported; fallback coverage and checkpoint config must be measured |
+| 5 | NoRegrets yields a useful trained/search policy component | Isolated native repair passes 5,010 fresh full-hand checks; adapter/checkpoint absent | Run bounded three-seed checkpoint pilot, verify real distributions/resume, then compare 2–6 players | Finite mechanics coverage; 7–9 unsupported; fallback coverage and checkpoint config must be measured |
 | 6 | Isolated dickreuter components offer a useful equity-threshold baseline | Tie accounting and engine-ranking patches pass 8 fixtures + 400 ranking comparisons; full policy bridge still missing | Local strategy configuration and exact action translation must pass before tournament entry | Original evaluator also misranks quads; GUI/service dependencies and six-player assumptions remain |
 | 7 | CFR variants, NFSP or Deep CFR supply a trainable baseline | Existing external-sampling MCCFR validated on Kuhn; other algorithms and NLHE adaptation unimplemented | Three toy training seeds reach exact NashConv below .05; next requires explicit standard-NLHE state/action abstraction and a held-out pool | Toy-game convergence does not establish multiway no-limit strength |
 | 8 | Population-based training reduces overfitting to one opponent pool | High / requires trainable base policy | Held-out populations outperform single-pool training at equal measured compute | Cycling, training instability, weak response learners |
@@ -24,7 +29,7 @@ from measured evidence. Research is not limited to these candidates.
 
 The fixed turn intervention in `TURN_SEARCH_PLAN.md` is complete and remains
 inconclusive. Current recency evidence is in `RESPONSE_RECENCY_RESULTS.md`.
-The next concrete native work and its reproduced blocker are in
+The next concrete native work and its repaired betting defects are in
 `NOREGRETS_COMPATIBILITY.md`.
 
 ## Primary starting points

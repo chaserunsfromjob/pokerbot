@@ -6,15 +6,24 @@ and add a harder stage. Do not rewrite a failed test until it appears to pass.
 
 ## First milestone: validated improvement in simulation
 
+Current protocol: **first-milestone-v2-reopening**. The isolated PokerKit
+reopening repair changes the action tree, so older engine results are historical,
+not evidence for the current referee. The frozen policy, opponent pools, +5
+target, sample minimum and shared repeated-attempt ledger are unchanged. No
+real v1 confirmation attempt was allocated. A future engine change must remain
+explicitly versioned, with fresh evaluation rather than reusing old returns.
+
 This is a project acceptance target, not an industry-standard certificate of
 poker strength, a GTO claim, or evidence that the bot beats classmates.
 
 1. **Correctness gate.** Independent payout/hand-ranking fixtures, side pots,
    folded-player eligibility, exact bet amounts, short all-ins, 2–9-player
    mechanics, secret-free observations, legal actions and reproducible replay.
-   No known correctness failure may be waived for promotion. PokerKit now
-   passes the short-all-in and cumulative-reopening gates that blocked the
-   original OpenSpiel rules path. Keep these regressions mandatory.
+   No known correctness failure may be waived for promotion. Corrected PokerKit
+   passes single and cumulative short all-ins, limps facing short all-ins,
+   each caller's individual reopening threshold, and checks facing short
+   opening bets. Unpatched PokerKit 0.7.5 fails the last three gates and is
+   retained only for historical replay. Keep these regressions mandatory.
 2. **Frozen baseline.** Original equity policy v0.1: 32 samples, .02 call
    margin, .12 raise margin, half-pot sizing, learning off. Freeze its code
    and parameters before candidate tuning. Changing its behavior requires a

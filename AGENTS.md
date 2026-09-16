@@ -10,7 +10,9 @@ setup, `REFERENCE_NOTES.md` for the current engine's limitations, and
 - `vendor/poker_ai/` is a source copy of the reference engine, not a submodule.
   It currently uses a 20-card deck and fixed-limit betting. Do not describe it
   as a finished standard 52-card no-limit bot.
-- `pokerbot/` uses PokerKit for rules and OpenSpiel for frozen equity sampling. Check
+- `pokerbot/` uses PokerKit with isolated reopening repairs for rules and
+  OpenSpiel for frozen equity sampling. Historical unpatched engines are only
+  for replay; see `research/REOPENING_REPAIR.md`. Check
   `research/PROGRESS.md` for implemented features and unvalidated claims.
 - Original coded strategies and trained models are authorized. Engines retain
   rules and hand ranking; `treys` remains a test oracle.

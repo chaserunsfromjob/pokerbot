@@ -9,6 +9,7 @@ import random
 
 import pyspiel
 from pokerkit import Automation, NoLimitTexasHoldem
+from .pokerkit_rules import ENGINE_ID, ReopeningNoLimitTexasHoldem
 
 RANKS = "23456789TJQKA"
 SUITS = "cdhs"
@@ -199,7 +200,7 @@ class OpenSpielHand:
                 "returns": self.state.returns()}
 
 
-class Hand:
+class LegacyPokerKitHand:
     """PokerKit rules with the original whole-hand raise-to policy contract.
 
     Host seat 0 posts SB, seat 1 BB; seat 0 is the button heads-up. PokerKit
@@ -207,6 +208,9 @@ class Hand:
     Hole/board cards follow the saved shuffled deck. Unknown burn placeholders
     preserve the original marginal deal distribution without leaking a card.
     """
+    game_class = NoLimitTexasHoldem
+    engine_id = "pokerkit-0.7.5"
+
     def __init__(self, names, stacks=None, deck=None, seed=0):
         n = len(names)
         self.names = tuple(names)
@@ -231,7 +235,7 @@ class Hand:
                        Automation.BLIND_OR_STRADDLE_POSTING,
                        Automation.HOLE_CARDS_SHOWING_OR_MUCKING, Automation.HAND_KILLING,
                        Automation.CHIPS_PUSHING, Automation.CHIPS_PULLING)
-        self.state = NoLimitTexasHoldem.create_state(
+        self.state = self.game_class.create_state(
             automations, True, 0, (50, 100), 100,
             tuple(self.stacks[i] for i in self._seat_map), n, divmod=fractional_split)
         for host_seat in self._seat_map:
@@ -331,18 +335,25 @@ class Hand:
     def record(self):
         if not self.terminal:
             raise ValueError("Can only save completed hands")
-        return {"schema": 2, "engine": "pokerkit-0.7.5", "payout_rule": "fractional",
+        return {"schema": 2, "engine": self.engine_id, "payout_rule": "fractional",
                 "names": self.names,
                 "stacks": self.stacks, "deck": self.deck, "decisions": self.decisions,
                 "events": [asdict(e) for e in self.events], "returns": self.returns()}
 
 
+class Hand(LegacyPokerKitHand):
+    """Current NLHE referee with isolated, versioned reopening corrections."""
+    game_class = ReopeningNoLimitTexasHoldem
+    engine_id = ENGINE_ID
+
+
 def replay(record):
     backend = record.get("engine", "openspiel-2.0.2")
-    engines = {"openspiel-2.0.2": OpenSpielHand, "pokerkit-0.7.5": Hand}
+    engines = {"openspiel-2.0.2": OpenSpielHand, "pokerkit-0.7.5": LegacyPokerKitHand,
+               ENGINE_ID: Hand}
     if backend not in engines:
         raise ValueError(f"Unknown replay engine: {backend}")
-    if backend == "pokerkit-0.7.5" and record.get("payout_rule") != "fractional":
+    if backend.startswith("pokerkit-") and record.get("payout_rule") != "fractional":
         raise ValueError("Unsupported PokerKit payout rule")
     hand = engines[backend](record["names"], record["stacks"], record["deck"])
     for decision in record["decisions"]:

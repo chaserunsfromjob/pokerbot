@@ -26,11 +26,16 @@ replay logs are privileged host data; the policy interface receives only its
 own cards and public state. Profiles are stored separately and isolated by
 session. Runs record parameters, source hashes, versions, seeds and latency.
 
-PokerKit now referees betting and payouts after independent tests exposed an
-OpenSpiel short-all-in reopening defect. OpenSpiel still supplies the frozen
+PokerKit with isolated reopening corrections now referees betting and payouts.
+Independent fixtures exposed reopening defects in both original OpenSpiel and
+unpatched PokerKit 0.7.5. OpenSpiel still supplies the frozen
 equity sampler and replays old logs. The benchmark retains fractional split-pot
 payouts; integer odd-chip allocation requires a separate class-app rules profile.
 Run `python -m pokerbot check-gates` for the focused mechanics checks.
+The current engine ID is `pokerkit-0.7.5-reopening-v1`; historical logs retain
+their original engines. See `research/REOPENING_REPAIR.md` for the reproduced
+failures, independent rulebook fixtures and validation. Previous strategy
+screens used older rules and need fresh evaluation before strength claims.
 
 **Not yet validated for strength:** mechanics tests pass, but no candidate has
 passed the held-out performance benchmark. Generic process adapters are
@@ -137,11 +142,12 @@ and oracle learning fail before an attempt is allocated. Every supported type
 shares the same frozen baseline, held-out protocol and repeated-attempt ledger.
 Examples are unvalidated; development results must justify confirmation first.
 
-A pinned native NoRegrets probe now reproduces a short-all-in reopening defect.
-That engine needs repair before adoption; our active PokerKit referee is
-unaffected. See `research/NOREGRETS_COMPATIBILITY.md` for the reproduction and
-the conditional training/adapter pilot. Native seven-to-nine-seat support and
-trained artifacts remain absent.
+A pinned native NoRegrets probe reproduces betting defects in the unpatched
+engine. An isolated MIT patch now passes 5,010 complete-hand comparisons with
+the corrected referee, checking payouts independently under each rounding
+convention. See `research/NOREGRETS_COMPATIBILITY.md` for the preserved failures,
+repair and next checkpoint pilot. Native training, policy integration and
+seven-to-nine-seat support remain unfinished.
 
 What the borrowed poker engine is, how to run it, and what it would cost to move
 it from its 20-card deck to a normal 52-card one: `REFERENCE_NOTES.md`.

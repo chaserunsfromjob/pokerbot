@@ -1,10 +1,12 @@
 # NoRegrets native compatibility probe — September 16, 2026
 
 Pinned source: [`757f7692738069522195d2b486eec60a8b010c0c`](https://github.com/conorarmstrong/noregrets/tree/757f7692738069522195d2b486eec60a8b010c0c).
-The unmodified native betting engine fails a targeted short-all-in reopening
-probe. Do not train/adopt this revision as a validated rules engine until the
-defect is repaired and independent regression checks pass. This source is not
-used by the active PokerKit arena, whose checks still pass.
+The unmodified native betting engine fails targeted and complete-hand probes.
+The isolated `patches/noregrets-betting-rights.patch` now passes the finite
+validation below. The original failure remains recorded. No native model or
+policy bridge has been integrated. Broader checking also exposed unpatched
+PokerKit reopening defects; the active arena now has separate versioned repairs
+described in `REOPENING_REPAIR.md`.
 
 ## Reproduced failure
 
@@ -69,12 +71,36 @@ output directory. It does not install anything in the arena's Python environment
 
 ## Next bounded native pilot
 
-First add an isolated MIT-compatible patch for raising rights and test single
-and cumulative short all-ins, unopened action, checks before short opening
-bets, side pots and postflop amount translation against PokerKit. Preserve this
-unpatched failure as evidence; patch success must not erase it.
+The isolated MIT patch and finite rules validation are complete. It restricts
+reopening by the amount each player faces, forbids raises when nobody can
+match additional chips, and ends betting when only one player has chips and
+owes nothing. This uses TDA-style short-opening rules, correcting the earlier
+draft that preserved PokerKit's permissive behavior after a check.
 
-After rules validation, use three independent training seeds (101, 211, 307),
+`noregrets_differential.py` checks complete seeded hands using unequal stacks,
+passive/arbitrary/all-in action sequences and targeted fixtures. The wrapper
+imports actual pinned Rust modules and rejects invalid translated actions
+before native coercion. The fresh validation seed 291011 passed **5,010 hands /
+44,971 states** across 2–6 seats, plus 18 upstream module tests. Each terminal
+payout is checked using independent treys ranks and explicit layered pots.
+The 61 cases with different integer/fractional payouts are separately checked
+under both conventions; they are not asserted equal. The unpatched negative
+control failed 351 of 1,010 hands, while its 18 existing unit tests still passed.
+
+The saved passing report resumes byte-for-byte. It took 56.86 seconds including
+reference generation, builds and tests; native execution was 0.333 seconds.
+Python driver peak RSS was 301.4 MiB, not a native training memory estimate.
+Source, patch, wrapper, dependencies, cases and outputs are hashed. These are
+mechanics hands, not policy-evaluation hands. Results are in
+`results/2026-09-16-noregrets-differential.json` and the unpatched companion.
+
+Apply the patch to the pinned checkout, then run:
+
+```
+.venv/bin/python research/noregrets_differential.py --source /path/to/patched-noregrets --out runs/native-validation --hands-per-size 1000 --seed 291011
+```
+
+Next use three independent training seeds (101, 211, 307),
 six seats, 100bb, one worker, four raw-equity buckets and 16 equity rollouts.
 Start with 10,000 traversals per seed to test actual artifact creation, then
 resume each for 10,000 more with an immutable configuration. Record node counts,

@@ -1,4 +1,29 @@
-# Isolated dickreuter/Poker equity repairs
+# Isolated third-party repairs
+
+## NoRegrets betting rights
+
+`noregrets-betting-rights.patch` applies to
+https://github.com/conorarmstrong/noregrets at
+`757f7692738069522195d2b486eec60a8b010c0c`. It corrects short-all-in reopening,
+dry-side-pot raise availability and unnecessary checks after betting ends.
+`noregrets-LICENSE` preserves the original MIT notice. The exported patch was
+applied to a clean source file and matched the tested file byte-for-byte.
+See `../NOREGRETS_COMPATIBILITY.md` for validation and remaining integration work.
+
+```
+git apply /path/to/pokerbot/research/patches/noregrets-betting-rights.patch
+```
+
+## PokerKit reopening overrides
+
+`pokerbot/pokerkit_rules.py` subclasses PokerKit 0.7.5 with narrow corrections.
+It does not edit the installed package or alter historical replay behavior.
+Its state-construction forwarding follows upstream `Poker.__call__`; retain
+`pokerkit-LICENSE`, the unmodified MIT notice. The private hooks are guarded
+against unreviewed version upgrades. See `../REOPENING_REPAIR.md` for fixtures,
+limitations and the new engine identity.
+
+## dickreuter/Poker equity repairs
 
 Source: https://github.com/dickreuter/Poker, commit
 `cae3a108b6cbf22ed8ef90bc0e70f790346289a4`.

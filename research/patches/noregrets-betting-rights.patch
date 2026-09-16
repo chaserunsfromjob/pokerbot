@@ -1,0 +1,43 @@
+diff --git a/src/engine.rs b/src/engine.rs
+index 8a6f15b..e065f05 100644
+--- a/src/engine.rs
++++ b/src/engine.rs
+@@ -384,6 +384,17 @@ impl Hand {
+             self.terminal = true;
+             return;
+         }
++        let active: Vec<usize> = (0..self.n)
++            .filter(|&p| !self.folded[p] && !self.allin[p])
++            .collect();
++        if active.is_empty()
++            || (active.len() == 1 && self.street_commit[active[0]] >= self.current_bet)
++        {
++            // The only player with chips has nothing to call and nobody can
++            // contest another bet. Do not request an extra check.
++            self.fast_forward_to_showdown();
++            return;
++        }
+         if !self.street_over() {
+             self.to_act = self
+                 .next_actor(just_acted)
+@@ -516,6 +527,20 @@ impl Hand {
+     /// raising is impossible (calling would already be all-in or match exactly).
+     pub fn raise_bounds(&self) -> Option<(u32, u32)> {
+         let p = self.to_act;
++        // No raise into a dry side pot. Calls against all-ins remain legal.
++        if !(0..self.n).any(|q| q != p && !self.folded[q]
++            && self.street_commit[q] + self.stacks[q] > self.current_bet)
++        {
++            return None;
++        }
++        // A caller/bettor needs a full increment since its own last wager.
++        // Full raises reset acted; several short raises can reopen cumulatively.
++        // This includes a prior check facing a short opening bet (TDA rule 47).
++        if self.acted[p]
++            && self.current_bet - self.street_commit[p] < self.min_raise_inc
++        {
++            return None;
++        }
+         let max_to = self.street_commit[p] + self.stacks[p];
+         if max_to <= self.current_bet {
+             return None;
