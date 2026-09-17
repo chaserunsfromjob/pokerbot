@@ -1,0 +1,19 @@
+{
+  "_comment": "OPPONENT_MODEL_DESIGN.md section 4.5's worked example, exactly as its table of counts gives it. Every number here is invented by that document to illustrate the report's format; none of it is data about any player. The three rows below the rule in that table are here because section 4.4's flags read them, so their absence from the printed block is checked rather than assumed.",
+  "player": "seat3_alias",
+  "band": "all",
+  "hands": 412,
+  "stats": {
+    "vpip":                {"k": 177, "n": 412, "baseline": 0.30, "baseline_source": "OPPONENT_MODEL_DESIGN.md Table C anchor"},
+    "pfr":                 {"k": 41,  "n": 412, "baseline": 0.20, "baseline_source": "OPPONENT_MODEL_DESIGN.md Table C anchor"},
+    "limp":                {"k": 106, "n": 250, "baseline": 0.15, "baseline_source": "section 4.5, assumed"},
+    "three_bet":           {"k": 0,   "n": 63,  "baseline": 0.07, "baseline_source": "OPPONENT_MODEL_DESIGN.md Table C anchor"},
+    "check_raise":         {"k": 0,   "n": 140, "baseline": 0.06, "baseline_source": "section 4.5, assumed"},
+    "afq":                 {"k": 92,  "n": 768, "baseline": 0.30, "baseline_source": "section 4.5, assumed"},
+    "afq[flop]":           {"k": 27,  "n": 168, "baseline": 0.30, "baseline_source": "section 4.5, assumed"},
+    "wtsd":                {"k": 89,  "n": 205, "baseline": 0.25, "baseline_source": "OPPONENT_MODEL_DESIGN.md Table C anchor"},
+    "fold_to_three_bet":   {"k": 5,   "n": 9,   "baseline": 0.60, "baseline_source": "OPPONENT_MODEL_DESIGN.md Table C anchor"},
+    "fold_to_cbet[flop]":  {"k": 14,  "n": 62,  "baseline": 0.50, "baseline_source": "OPPONENT_MODEL_DESIGN.md Table C anchor"},
+    "fold_to_steal":       {"k": 19,  "n": 55,  "baseline": 0.50, "baseline_source": "section 4.5, assumed"}
+  }
+}

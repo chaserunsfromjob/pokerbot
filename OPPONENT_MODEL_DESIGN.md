@@ -681,8 +681,8 @@ downstream number.**
 
 | `stat_name` | Numerator increments when… | Denominator increments when… | Context key |
 | --- | --- | --- | --- |
-| `vpip` | opponent voluntarily put chips in preflop (call or raise; a posted blind alone does not count) | opponent was dealt in | — |
-| `pfr` | opponent raised preflop | opponent was dealt in | — |
+| `vpip` | opponent voluntarily put chips in preflop (call or raise; a posted blind alone does not count) | opponent was dealt in and the hand was not a walk ([§4.7](#47-edge-cases-a-coding-task-will-hit) row 2) | — |
+| `pfr` | opponent raised preflop | opponent was dealt in and the hand was not a walk ([§4.7](#47-edge-cases-a-coding-task-will-hit) row 2) | — |
 | `limp` | opponent called exactly the big blind, first voluntary action, no prior raise | opponent was dealt in and had the option to limp | — |
 | `open_raise` | opponent made the first raise preflop | opponent was first-in with no prior raiser | seat bucket: `EP`/`MP`/`LP`/`SB`/`BB` |
 | `three_bet` | opponent reraised over an open | opponent faced exactly one open raise with chips behind | — |
@@ -731,8 +731,11 @@ figure was found for how often a real multiway table hands a given player those
 spots, and none is invented here: 0.08 and 0.15 are round order-of-magnitude
 placeholders for "rare" and "occasional". Only `vpip` and `pfr` carry a rate of
 1.00, and they carry it because their [§4.2](#42-the-stat-table) denominator is
-literally "opponent was dealt in" — one opportunity per hand by definition, not
-an estimate. **Every row that is neither measured nor forced takes a
+"opponent was dealt in and the hand was not a walk"
+([§4.7](#47-edge-cases-a-coding-task-will-hit) row 2). That makes 1.00 an
+**upper bound**, not an estimate: the true rate is 1.00 minus the walk rate,
+the share of hands nobody enters, and Table C keeps 1.00 as that bound and says
+so in its last column. **Every row that is neither measured nor forced takes a
 placeholder**, because every other denominator in [§4.2](#42-the-stat-table) is
 a spot the game has to hand the player: `three_bet`'s is "faced exactly one open
 raise with chips behind", `fold_to_three_bet`'s is "had open-raised and then
@@ -748,9 +751,9 @@ ordering is what the rest of this document leans on.
 
 | Stat | Anchor `p̂` (illustrative) | Opportunities per hand | Target width | Opportunities needed | **Hands needed** | Where the rate comes from |
 | --- | --- | --- | --- | --- | --- | --- |
-| `vpip` | 0.30 | 1.00 | ±5pp | 323 | **323** | one per hand by definition |
-| `vpip` | 0.30 | 1.00 | ±3pp | 896 | **896** | one per hand by definition |
-| `pfr` | 0.20 | 1.00 | ±5pp | 246 | **246** | one per hand by definition |
+| `vpip` | 0.30 | 1.00 | ±5pp | 323 | **323** | one per hand dealt, less the walk rate: an upper bound (§4.7 row 2) |
+| `vpip` | 0.30 | 1.00 | ±3pp | 896 | **896** | one per hand dealt, less the walk rate: an upper bound (§4.7 row 2) |
+| `pfr` | 0.20 | 1.00 | ±5pp | 246 | **246** | one per hand dealt, less the walk rate: an upper bound (§4.7 row 2) |
 | `three_bet` | 0.07 | 0.15 | ±2pp | 625 | **4,168** | illustrative placeholder |
 | `fold_to_three_bet` | 0.60 | 0.08 | ±10pp | 92 | **1,152** | illustrative placeholder |
 | `fold_to_cbet` | 0.50 | 0.030 | ±10pp | 96 | **3,201** | measured, `OPPONENT_BASELINE.md` §2, nine-handed |
@@ -1504,7 +1507,7 @@ test.
 | Case | Required handling |
 | --- | --- |
 | Posting the blind | Does **not** count toward `vpip`. A player who checks their option in the big blind has not voluntarily put money in |
-| Walk (everyone folds to the big blind) | Increments `hands_dealt` only. No `vpip` opportunity for anyone |
+| Walk (everyone folds to the big blind) | Increments `hands_dealt` only: no opportunity for `vpip`, `pfr` or any other preflop stat, for anyone, so `vpip` and `pfr` share one denominator and `gap` stays coherent. Escalation `241e2f235c94` is the authority for this row, over [§4.2](#42-the-stat-table)'s "opponent was dealt in" |
 | Player sits out or is dealt out | No `hands_dealt` increment |
 | All-in for less than a full raise | Counts as a raise for `pfr`/`afq`; the incomplete-raise rule must not reopen action in the state model |
 | Straddle / ante structures | Must be recorded; `vpip` opportunity definitions shift. If the target table has straddles, this is a schema question, not an afterthought |
@@ -1872,7 +1875,7 @@ inputs, never from another figure's printed value.
 | --- | --- |
 | Tables A, B, C, D, E, the flag margin-versus-interval table in [§4.4](#44-bucketing-an-opponent), and the inline `0.5^(1/3) ≈ 0.794` reading of them | Computed by `tools/check_design_numbers.py`, 2026-09-15, which also re-checks them on every run. Formulas are stated inline beside each table; all are elementary arithmetic (binomial standard error, independent-event products, Beta posterior means) |
 | Table C's anchor `p̂` column (0.30, 0.20, 0.07, 0.60, 0.50, 0.25) | **Illustrative anchors, not measured or cited.** Labelled as such beside the table; the interval width barely moves across `p̂` in 0.2–0.8 |
-| Table C's opportunities-per-hand column (`three_bet` 0.15, `fold_to_three_bet` 0.08, `fold_to_cbet` 0.030, `wtsd` 0.187) | **Two measured, two illustrative.** `fold_to_cbet` 0.030 and `wtsd` 0.187 are the nine-handed pooled rates in [`OPPONENT_BASELINE.md` §2](OPPONENT_BASELINE.md#2-corpus-a-the-2009-no-limit-population-per-table-size) — its "FtCB chances per hand" and "Flops seen per hand" columns, over 70,685 nine-handed hands — measured on the sample its §1 describes, which lacks PartyPoker and leans high-stakes; adopting them is that document's §5 recommendation 2. `three_bet` 0.15 and `fold_to_three_bet` 0.08 are **illustrative estimates, not measured or cited**, because that measurement does not reach their denominators; no source exists for them, and they are labelled as such beside the table. Each of the four is to be replaced by `denominator / hands_dealt` from the bot's own logged hands. The "Hands needed" column scales inversely with them. Only `vpip` and `pfr` escape the placeholder, at 1.00, and only because their [§4.2](#42-the-stat-table) denominator is "opponent was dealt in" |
+| Table C's opportunities-per-hand column (`three_bet` 0.15, `fold_to_three_bet` 0.08, `fold_to_cbet` 0.030, `wtsd` 0.187) | **Two measured, two illustrative.** `fold_to_cbet` 0.030 and `wtsd` 0.187 are the nine-handed pooled rates in [`OPPONENT_BASELINE.md` §2](OPPONENT_BASELINE.md#2-corpus-a-the-2009-no-limit-population-per-table-size) — its "FtCB chances per hand" and "Flops seen per hand" columns, over 70,685 nine-handed hands — measured on the sample its §1 describes, which lacks PartyPoker and leans high-stakes; adopting them is that document's §5 recommendation 2. `three_bet` 0.15 and `fold_to_three_bet` 0.08 are **illustrative estimates, not measured or cited**, because that measurement does not reach their denominators; no source exists for them, and they are labelled as such beside the table. Each of the four is to be replaced by `denominator / hands_dealt` from the bot's own logged hands. The "Hands needed" column scales inversely with them. Only `vpip` and `pfr` escape the placeholder, at 1.00, and only because their [§4.2](#42-the-stat-table) denominator is "opponent was dealt in and the hand was not a walk" ([§4.7](#47-edge-cases-a-coding-task-will-hit) row 2). That 1.00 is an upper bound, not a measurement: the true rate is 1.00 minus the walk rate, and Table C keeps the bound, saying so in its last column |
 | The bucket boundary's noise exposure — ±12.4pp raw and ±6.2pp shrunk on `vpip` at the `0.5` gate, ±19.6pp and ±9.8pp on `afq`, and the 1,835 hands / 2,351 opportunities a `0.02`-tight gate would need ([§4.4](#44-bucketing-an-opponent)) | Computed by `tools/check_design_numbers.py` from `VPIP_SPLIT`, `AFQ_SPLIT`, `PRIOR_STRENGTH`, the `0.5` gate and the `0.02` band, by the same `n = s·c/(1−c)` and `w = 1.96·√(p̂(1−p̂)/n)` used for the flag margins |
 | **Hours on one laptop for the whole offline build, no multi-day computing** ([§4.5](#45-tiers-what-to-build-in-what-order), [E5](#engine-requirements)) | **The operator's stated cap, 2026-09-15**, not a derived or negotiable figure. It is what E5's answer has to clear, and what makes Tier 1's 32 runs conditional on a minutes-long single solve |
 | The table-size priority — 6-handed first, then 8- and 9-handed as one band, then the rest ([§4.5](#45-tiers-what-to-build-in-what-order)) | **The operator's stated priority, 2026-09-15**, recorded as heater task `65bba741bf40` and quoted verbatim at its point of use. Not derived and not negotiable here; it fixes only the order of the solve plan, never which seat counts are required |
