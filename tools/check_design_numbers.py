@@ -1555,8 +1555,14 @@ class Checker:
             "WARMUP_HANDS wherever §5.2 argues about it without naming it",
             r"what (\d+) buys|(\d+) is \*\*not\*\* a convergence point|"
             r"At (\d+) hands the same formula|the width (\d+) actually buys|"
-            r"§5\), also per opponent\. (\d+) is a deliberately shorter",
+            r"§5\), also per opponent\. (\d+) is a deliberately shorter|"
+            r"from (\d+) on, neither",
             str(WARMUP_HANDS),
+        )
+        self.every_occurrence(
+            "MIN_CLASSIFY_HANDS wherever §5.2 argues about it without naming it",
+            r"Below (\d+) hands\s+both gates refuse|at that same\s+(\d+) the Tier A",
+            str(MIN_CLASSIFY_HANDS),
         )
         # The two gates clear at different hand counts, and §4.5 and §5.2 both
         # state where each one binds. Those boundaries are MIN_CLASSIFY_HANDS and
@@ -1575,7 +1581,7 @@ class Checker:
         )
         self.every_occurrence(
             "the two gates' clearing points where §5.2 sets them side by side",
-            r"(\d+) hands against (\d+)",
+            r"clear at different\s+points — (\d+) hands against (\d+)",
             str(WARMUP_HANDS),
             str(MIN_CLASSIFY_HANDS),
         )

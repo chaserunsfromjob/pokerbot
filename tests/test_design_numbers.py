@@ -106,6 +106,42 @@ def test_checker_reports_a_drifted_gate_comparison(tmp_path):
     assert "sets them side by side" in result.stdout
 
 
+def test_checker_reports_a_drifted_warmup_release_point(tmp_path):
+    """The hand count from which neither gate binds is derived; drift must fail."""
+    text = DOCUMENT.read_text(encoding="utf-8")
+    broken = text.replace("from 200 on, neither", "from 300 on, neither", 1)
+    assert broken != text, "the sentence this test edits has moved"
+    target = tmp_path / "OPPONENT_MODEL_DESIGN.md"
+    target.write_text(broken, encoding="utf-8")
+    result = run_checker(str(target))
+    assert result.returncode == 1
+    assert "WARMUP_HANDS wherever §5.2 argues about it without naming it" in result.stdout
+
+
+def test_checker_reports_a_drifted_both_gates_refuse_point(tmp_path):
+    """The hand count below which both gates refuse is derived; drift must fail."""
+    text = DOCUMENT.read_text(encoding="utf-8")
+    broken = text.replace("Below 50 hands", "Below 80 hands", 1)
+    assert broken != text, "the sentence this test edits has moved"
+    target = tmp_path / "OPPONENT_MODEL_DESIGN.md"
+    target.write_text(broken, encoding="utf-8")
+    result = run_checker(str(target))
+    assert result.returncode == 1
+    assert "MIN_CLASSIFY_HANDS wherever §5.2 argues about it without naming it" in result.stdout
+
+
+def test_checker_reports_a_drifted_confidence_gate_coincidence(tmp_path):
+    """The hand count at which the Tier A confidence gate is met too is derived."""
+    text = DOCUMENT.read_text(encoding="utf-8")
+    broken = text.replace("50 the Tier A", "80 the Tier A", 1)
+    assert broken != text, "the sentence this test edits has moved"
+    target = tmp_path / "OPPONENT_MODEL_DESIGN.md"
+    target.write_text(broken, encoding="utf-8")
+    result = run_checker(str(target))
+    assert result.returncode == 1
+    assert "MIN_CLASSIFY_HANDS wherever §5.2 argues about it without naming it" in result.stdout
+
+
 def test_missing_document_is_reported():
     result = run_checker("no/such/document.md")
     assert result.returncode == 2
