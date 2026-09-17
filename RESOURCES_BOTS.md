@@ -764,7 +764,7 @@ Two rules about the marks themselves:
   a separate Python attempt with no trained strategy.
 - Strategy shipped: only the 20-card short-deck blueprint pickles referenced
   in its README. Already known from the project's own work: the 52-card path
-  is ~18 days and ~147 GiB (`REFERENCE_NOTES.md:414` for 18.4 days, `:427` for
+  is ~18 days and ~147 GiB (`REFERENCE_NOTES.md:415` for 18.4 days, `:428` for
   146.5 GiB).
 - Ratings: a ~ · b ✗ (fixed-limit as vendored) · c ✗ · d ✗ · e ✓.
 
