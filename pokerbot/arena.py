@@ -432,10 +432,33 @@ def run(
                     run_rule=False,
                     logs=None,
                 )
+                # Whose fault a disagreement is. A search the clock cut short
+                # is not reproducible from its seed -- `Decision.truncated`
+                # says exactly that -- so once one of those has happened the
+                # replay may differ for a reason that is nothing to do with
+                # the table. The run still stops; it must not stop blaming the
+                # adapter for a laptop that was too slow on the day.
+                truncated_so_far = sum(1 for log in logs if log.truncated)
+                if truncated_so_far:
+                    reason = (
+                        f"hand {index} replayed from seed {hand_seed} to "
+                        f"different bytes, and the clock had already cut "
+                        f"{truncated_so_far} of the bot's searches short. A "
+                        f"search the clock ends does not depend on its seed "
+                        f"alone, so this says the {budget_s * 1000:.0f} ms "
+                        f"budget is too small on this machine, not that the "
+                        f"table replays differently. Give it a longer budget "
+                        f"or fewer finishes a move and run it again."
+                    )
+                else:
+                    reason = (
+                        f"hand {index} replayed from seed {hand_seed} to "
+                        f"different bytes"
+                    )
                 require(
                     again.record.to_bytes() == payload,
                     "I6",
-                    f"hand {index} replayed from seed {hand_seed} to different bytes",
+                    reason,
                     payload.decode("utf-8"),
                 )
                 replay_checks += 1

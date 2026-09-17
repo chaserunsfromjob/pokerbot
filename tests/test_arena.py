@@ -28,7 +28,9 @@ from pokerbot.arena import (
     run,
     seat_opponents,
 )
+from pokerbot import arena as arena_module
 from pokerbot.baselines import OPPONENTS, always_call, always_fold, uniform_random
+from pokerbot.search import Decision
 
 REPO_ROOT = pathlib.Path(__file__).resolve().parent.parent
 SMALL = dict(seats=6, hands=8, seed=4242, replay_check_every=4, resamples=200)
@@ -157,6 +159,59 @@ def test_a_doctored_record_is_caught():
     with pytest.raises(InvariantViolation) as caught:
         check_invariants(broken)
     assert caught.value.invariant == "I5"
+
+
+def _decide_that_never_repeats_itself(truncated: bool):
+    """A stand-in search that answers differently every time it is asked.
+
+    It is the only way to force the I6 sampled replay to disagree without
+    breaking the table, which is the whole point: the runner has to say which
+    of the two it was.
+    """
+    calls = {"n": 0}
+
+    def fake_decide(view, *, seed, budget_s, playouts_per_candidate):
+        calls["n"] += 1
+        menu = list(view.menu)
+        return Decision(
+            action=menu[calls["n"] % len(menu)],
+            means={},
+            counts={},
+            playouts=0,
+            elapsed_s=0.001,
+            truncated=truncated,
+            starved=False,
+        )
+
+    return fake_decide
+
+
+def test_a_replay_that_disagrees_after_the_clock_cut_a_search_blames_the_clock(monkeypatch):
+    """A search the clock ended is not reproducible, and the table is not to blame.
+
+    `Decision.truncated` means the budget, not the finish count, stopped the
+    search -- so the same seed need not give the same move, and the sampled I6
+    replay can differ for a reason that has nothing to do with the table. The
+    run still stops, but it has to name the clock, or the next person reads a
+    slow laptop as a broken adapter.
+    """
+    monkeypatch.setattr(arena_module, "decide", _decide_that_never_repeats_itself(True))
+    with pytest.raises(InvariantViolation) as caught:
+        run(seats=6, hands=3, seed=99, replay_check_every=1, resamples=50, run_rule=False)
+    assert caught.value.invariant == "I6"
+    assert "clock" in caught.value.message, (
+        f"the abort blamed the table, not the clock: {caught.value.message}"
+    )
+    assert "budget" in caught.value.message
+
+
+def test_a_replay_that_disagrees_with_no_truncation_still_blames_the_table(monkeypatch):
+    """The other half: nothing cut the search short, so the table is the suspect."""
+    monkeypatch.setattr(arena_module, "decide", _decide_that_never_repeats_itself(False))
+    with pytest.raises(InvariantViolation) as caught:
+        run(seats=6, hands=3, seed=99, replay_check_every=1, resamples=50, run_rule=False)
+    assert caught.value.invariant == "I6"
+    assert "clock" not in caught.value.message, caught.value.message
 
 
 def test_the_runner_stops_rather_than_reporting_a_violation(tmp_path):
