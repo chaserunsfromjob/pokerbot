@@ -1009,9 +1009,10 @@ section records that **no abstraction sized to a few hours was attempted
 there**, so it does not close the train-in-advance road either; it reports that
 road unstarted, not disproved. `CLAUDE.md` no longer weighs against a blueprint
 either: its opening now names OpenSpiel's `universal_poker` as the engine road,
-and its Plan records stage 1 as superseded by the reconciliation. Neither the
-opening nor stage 1 speaks to whether the strategy is trained in advance or
-computed while the hand is played, so that objection no longer stands on its own.
+and its Plan records stage 1 as superseded, with what replaces it left to the
+reconciliation. Neither the opening nor stage 1 speaks to whether the strategy
+is trained in advance or computed while the hand is played, so that objection
+no longer stands on its own.
 Choosing between a strategy trained in advance and one computed while the hand
 is being played is a decision for the **reconciliation of `ENGINE_ALTERNATIVES.md`,
 `RESOURCES_BOTS.md`, `RESOURCES_SOLVERS.md` and `RESOURCES_EXPLOITATION.md`**,
