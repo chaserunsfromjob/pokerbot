@@ -30,18 +30,27 @@ appears once.
 
 What this script does and does not promise. Each check below names what it pins,
 and that naming is the whole promise -- there is no blanket claim on top of it.
-Concretely: a check written with `every_occurrence` pins every copy of its figure
-in the document, so mutating any one of them exits 1; a check written with
-`prose` pins only the one phrasing it quotes, and a second copy of the same
-figure worded differently is pinned only if some other check quotes that wording
-too. `tests/test_evaluation_numbers.py` mutates one copy per pin to prove each.
+Concretely: a check written with `every_occurrence` pins every place its pattern
+matches and reaches only the wordings that pattern spells out, so mutating any
+matched copy exits 1 while a copy worded differently is pinned only if some other
+check reaches that wording; a check written with `prose` pins only the one
+phrasing it quotes. `tests/test_evaluation_numbers.py` mutates one copy per pin
+to prove each.
 
-It does NOT promise that every number in the document is pinned, and one block is
-deliberately left unpinned: the per-seat and per-persona win rates and confidence
-intervals in the example `arena report` of section 3.5. The document's own
-provenance table records that this output is invented and only illustrates the
-report's format, so there is no constant they could be derived from; what IS
-pinned in that block is listed in `check_example_report` and `check_release_gate`.
+It does NOT promise that every number in the document is pinned. Section 3.6's
+arithmetic is pinned in the sentences the checks quote, not wherever the section
+restates a figure in passing, and the 10-hour cap is pinned only inside those
+quoted sentences. Of the provenance table's budget row only the full grid, the
+nightly run and the pooled headline are pinned, and of the placeholder row above
+it only the 28,800 hands/hour, which `check_provenance_rows` requires the table
+to go on containing. The superseded-throughput guard covers the three phrasings
+listed in `check_engine_throughput` and no others.
+
+One block is deliberately left unpinned: every win rate and confidence interval
+the example `arena report` of section 3.5 prints. The document's own provenance
+table records that this output is invented and only illustrates the report's
+format, so there is no constant they could be derived from; what IS pinned in
+that block is listed in `check_example_report` and `check_release_gate`.
 For any other number, the honest way to find out whether it is pinned is to
 change it and run this.
 

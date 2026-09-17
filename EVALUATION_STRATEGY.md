@@ -2005,37 +2005,77 @@ value that disagrees. What it checks, exactly:
 - **every row of the rotation-night table** — its Σwᵢ², its effective sample
   size, the effect it detects, and the rotating seat its weights column names;
 - **the today's-engine table's** cells, total hands, wall clock and family size
-  on both sides, its hands per cell, and the seat counts today's engine can
-  deal;
-- **every hand count and hour in
-  [§3.6](#36-the-run-budget-turning-hands-into-hours)**, including the worker
-  breakeven and the headroom under the cap;
+  on both sides, its hands per cell on today's-engine side, and the seat counts
+  today's engine can deal;
+- **in [§3.6](#36-the-run-budget-turning-hands-into-hours)**: every count in the
+  full grid's axis table; every figure in the "Value used here" column of the
+  wall-clock placeholder table except the machine row — the seconds per
+  decision, the decisions per hand, the bot-seconds per hand, the worker count,
+  the hands per hour and the arithmetic printed under it; and the section's
+  arithmetic sentences, each pinned as the one sentence the check quotes — the
+  5 × 4 × 1 = 20 cell count, the full grid's cost per cell and total hands, its
+  hours and days and its multiple of the cap, the nightly and routine totals
+  restated under the budget table, the rotating-seat variant the routine check
+  does not run, the headroom line, and the worker breakeven with the run at 4
+  workers and at 3. Where §3.6 restates one of those figures in a neighbouring
+  sentence that no check quotes or matches, that copy is not pinned: the 141,280
+  in the worker paragraph above the budget table, and the 141,280, the 70,640,
+  the 14,128 and the 3.9 h → 4.9 h in the paragraph that derives the pooled
+  headline, can each be changed on their own and the script still exits 0. The
+  10-hour cap is pinned only inside the quoted sentences — as "23.5 times the
+  10-hour cap", as the (3,600 × 10) of the breakeven and as the (10 − 4.9) of
+  the headroom — and not
+  where the run-length table says "at most 10 hours" or the worker paragraph
+  says "the 10-hour ceiling";
 - **in the example `arena report` block of
   [§3.5](#35-the-decision-rule-is-this-change-an-improvement)**: the cell count,
   the budget and elapsed hours, the fixed seats and the rotation cycle, the
   whole weights line, the pooled and per-cell effects it is powered to detect,
   the multiple-comparison family size, and the four-run window;
 - **both engine throughput figures**, in every place this document states
-  either of them, and the superseded figure's absence from every phrasing that
-  would print it as a live throughput;
-- **the budget figures the provenance table below restates**;
+  either of them — the five copies of 4,438 and the two of 47,564 — and the
+  absence of the superseded 56,414 from the three phrasings
+  `check_engine_throughput` names, which are that figure written after
+  `it deals **`, before `complete hands per`, and before
+  `engine hands/second`. The provenance table's labelled quotation of 56,414 is
+  left standing on purpose, and a fourth phrasing would fall outside the guard;
+- **three lines of the provenance table's budget row below** — the full grid
+  (240 cells; 6,781,440 hands; 235 h ≈ 9.8 days), the nightly run (20 cells;
+  141,280 hands; 4.9 h) and the pooled headline (n_eff 44,851 giving
+  Δ = 28.1 mbb/hand) — plus four phrases that table has to go on containing
+  somewhere: the engine survey's commit, the superseded draft's commit,
+  "four-run", and "28,800 hands/hour". The rest of that budget row is not
+  pinned — the 23.5×, the ≈11 ms, the 16 routine cells, the 28,256, the 0.98 h,
+  the 1.23 h, the Σwᵢ² = 0.315, the 3.92 and the 10-hour ceiling — and neither
+  is the placeholder row above it apart from its 28,800: its 4 bot decisions per
+  hand, its 8 parallel workers and its 1.0 bot-second per hand each leave the
+  script at exit 0 when changed;
 - **and the five copies of the release gate, which it checks are byte-identical.**
 
 **Where a figure is stated in more than one place, the check that pins it says
 whether it pins every copy.** The script asks in two ways: one quotes a single
-sentence and pins that sentence only; the other matches every place the document
-states the figure and fails if any copy disagrees. The second is used for the
-figures this document repeats most — the engine's two throughput figures, the
-release gate's four-run window, the machine's cores, the nightly and full-grid
-budget figures, and the pooled headline — because asking only that some copy is
-right lets the others go stale, and the test suite proves each by changing one
-copy and requiring the script to fail.
+sentence and pins that sentence only; the other matches a pattern across the
+whole document and fails if any place that pattern matches disagrees. The second
+way is used for the engine's two throughput figures, the release gate's window,
+the machine's core split, the full grid's cells and days where
+[§4.1](#41-table-size-is-an-axis-not-a-setting) restates them, the report
+block's cells / budget / elapsed line and its powered-to-detect, per-cell and
+family-size figures, the pooled headline where §3.6 names it and where the
+four-seat comparison rounds back to it, and the three provenance lines above.
+**A pattern reaches only the wordings it spells out.** The window is matched as
+"within the last four nightly acceptance runs" and as "passed within the last 4
+nightly runs", so §3.6's "four-night window" and the decisions table's
+"four-run length of the window" fall outside it; the core split is matched as
+"10 cores (4 performance, 6 efficiency)" and as "(4P + 6E)", so the "10"
+standing beside the abbreviated form — in the placeholder table's machine row
+and in the provenance table's machine row — falls outside it. The test suite
+proves each pattern by changing one copy and requiring the script to fail.
 
 What the script does **not** claim is that every number here is pinned, and one
-block is left unpinned deliberately: the per-seat and per-persona win rates and
-confidence intervals in that same example report — the win-rate line printed for
-each seat count and each persona, and the bracketed interval beside it. As the
-table below records, that output is **invented and only
+block is left unpinned deliberately: **every win rate and interval the example
+report block prints** — the primary line's `+34.2` and its `[ +11.8, +56.9 ]`,
+and the win rate and bracketed interval on every per-seat and per-persona line
+below it. As the table below records, that output is **invented and only
 illustrates the report's format**, so no constant derives it, no check names it,
 and changing those numbers leaves the script at exit 0. Anywhere else, a figure
 no check in the script names is not checked at all, and the way to find out
