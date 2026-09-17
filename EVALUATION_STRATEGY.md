@@ -2020,7 +2020,8 @@ value that disagrees. What it checks, exactly:
   workers and at 3. Where §3.6 restates one of those figures in a neighbouring
   sentence that no check quotes or matches, that copy is not pinned: the 141,280
   in the worker paragraph above the budget table, and the 141,280, the 70,640,
-  the 14,128 and the 3.9 h → 4.9 h in the paragraph that derives the pooled
+  the second 14,128 (the copy fed into Σwᵢ²; "each gets 14,128 per arm" is
+  pinned) and the 3.9 h → 4.9 h in the paragraph that derives the pooled
   headline, can each be changed on their own and the script still exits 0. The
   10-hour cap is pinned only inside the quoted sentences — as "23.5 times the
   10-hour cap", as the (3,600 × 10) of the breakeven and as the (10 − 4.9) of
