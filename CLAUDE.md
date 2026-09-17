@@ -1,14 +1,22 @@
 # pokerbot
 
 A multiway no-limit hold'em poker bot for a class project. Goal: consistently
-beat real human players at a table of 3 or more, not chase a theoretical
-optimum that does not exist at that table size.
+beat real human players at every table size from 2 to 9 players, and be judged
+mostly at 6, 8 and 9 seats, which is how `EVALUATION_STRATEGY.md` §3.5 weights
+them; not chase a theoretical optimum that does not exist once three or more
+players are in the pot.
 
 The engine road is OpenSpiel's `universal_poker`: real, tested game code we call
 rather than hand-roll. `fedden/poker_ai` stays vendored in `vendor/poker_ai` as
 a reference only, not as this project's basis; its fixed-limit short deck is the
 wrong shape to convert. `dickreuter/Poker` is the reference for table-state
 capture.
+
+## Firm requirements
+
+- Play every table size from 2 to 9 players; treat no size in that range as out of scope.
+- Play true no-limit hold'em: allow any legal bet size, from a minimum raise to all-in, and never restrict the bot to a fixed ladder of raise amounts.
+- Play exploitatively against the named player in each seat, keyed to that player's measured tendencies, rather than settling for unexploitable play alone.
 
 ## The forefront rule
 
