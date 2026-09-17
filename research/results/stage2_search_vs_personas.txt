@@ -1,0 +1,173 @@
+scoreboard  bot B=search  bot A=always_call  engine=open_spiel.universal_poker  commit=2a3ad420872bd9171fc152bb18aae05eb4eb76c9
+mode: acceptance   hands: 500 per cell per arm   cells: 52   seats: 2 6 8 9
+deviation from pre-registration: 500 hands per cell per arm, not the registered 1000 (league_config.toml hands). Every interval below is wider than the registered design, which makes the per-persona BLOCK test less likely to fire, not more.
+config: /Users/chasethompson/.heater/worktrees/pokerbot/41aac718851b/pokerbot/league_config.toml (pre-registered; reprinted here, not chosen after the run)
+  weights: n2=0.200  n6=0.500  n8=0.150  n9=0.150
+    bands: [6] at 0.50, [8, 9] together at 0.30, everything else that ran at 0.20 split equally
+    (a design choice implementing the operator's stated ordering of table
+     sizes, 2026-09-15 -- mostly six-handed, then eight or nine; the three
+     numbers are EVALUATION_STRATEGY.md section 3.5's, not the operator's)
+  hand strength: 24 engine showdowns per lookup;  preflop ranking: 600 engine showdowns per class
+  bootstrap: 2000 resamples, 95% percentile interval, blocks of 20 hands for a persona with memory
+  decision: accept only if the weighted headline interval lies wholly above
+            zero and no persona's own interval lies wholly below it
+  development half (tuning may use these): calling_station, nit, maniac, never_bluffs, fit_or_fold
+  held back (accept/reject only):          tag, lag, tilter, sizing_tell
+  calibration agents (both modes):         always_fold, always_call, always_raise, call_raise_50_50
+machine: load average 3.48 3.41 3.54 at the start of the run
+
+personas drawn this session (seed 20260917). Section 3.2 draws these afresh every session
+rather than fixing them, because a bot tuned against one exact parameter point looks
+better than it is.
+  always_fold: no parameters (fixed behaviour)
+  always_call: no parameters (fixed behaviour)
+  always_raise: no parameters (fixed behaviour)
+  call_raise_50_50: no parameters (fixed behaviour)
+  calling_station: raise_equity=0.787  stick_equity=0.274
+  nit: tight_fraction=0.117  value_equity=0.859
+  maniac: raise_p=0.637
+  never_bluffs: fold_equity=0.346  value_threshold=0.636
+  fit_or_fold: bet_equity=0.574  fit_equity=0.604  play_fraction=0.367
+  tag: aggression=0.867  fold_equity=0.388  tight_fraction=0.224  value_equity=0.669
+  lag: aggression=0.676  bluff_p=0.235  fold_equity=0.255  value_equity=0.575  wide_fraction=0.558
+  tilter: fold_equity=0.361  tight_fraction=0.205  tilt_duration=9.000  tilt_raise_p=0.824  tilt_trigger_bb=32.078  value_equity=0.674
+  sizing_tell: fold_equity=0.217  play_fraction=0.419  strong_equity=0.763  strong_fraction=0.102  weak_equity=0.486
+
+big blinds per hundred hands for search, by persona and table size
+  persona           n  bb/100 [95% interval]            hands    secs
+  always_fold       2      +54.9 [    +50.5,    +59.1]    500     7.5
+  always_fold       6      +84.9 [    +78.9,    +90.8]    500    21.0
+  always_fold       8      +84.7 [    +78.6,    +90.6]    500    24.5
+  always_fold       9      +86.0 [    +80.0,    +91.8]    500    26.2
+  always_call       2    +3353.2 [  +1921.2,  +4783.7]    500    20.3
+  always_call       6    +4889.7 [  +1859.1,  +8023.6]    500    42.7
+  always_call       8    +3175.4 [   -137.2,  +6929.2]    500    47.0
+  always_call       9    +5502.7 [  +1869.0,  +9345.7]    500    50.3
+  always_raise      2    +2369.1 [   +960.2,  +3730.0]    500    19.5
+  always_raise      6    +1327.2 [  -1611.0,  +4592.4]    500    20.0
+  always_raise      8    +4404.6 [   +768.4,  +8328.0]    500    19.0
+  always_raise      9    +2128.2 [  -1521.0,  +5937.0]    500    18.6
+  call_raise_50_50  2    +1812.8 [   +404.3,  +3211.9]    500    20.2
+  call_raise_50_50  6     +810.8 [  -1844.9,  +3888.2]    500    27.8
+  call_raise_50_50  8    +2866.8 [   -464.7,  +6476.1]    500    25.0
+  call_raise_50_50  9    +1285.8 [  -2008.8,  +4880.1]    500    24.9
+  calling_station   2    +3076.2 [  +1807.5,  +4359.4]    500    21.1
+  calling_station   6    +4371.2 [  +1453.1,  +7250.4]    500    42.5
+  calling_station   8    +1045.0 [  -2094.9,  +4196.3]    500    46.1
+  calling_station   9    +3140.6 [   -239.7,  +6613.6]    500    44.9
+  nit               2     -705.6 [  -1154.9,   -296.9]    500    10.4
+  nit               6     -343.5 [  -1235.6,   +541.7]    500    23.8
+  nit               8     -965.9 [  -2023.3,   +113.2]    500    28.0
+  nit               9    -1504.6 [  -2656.1,   -227.4]    500    31.2
+  maniac            2    +2755.6 [  +1404.4,  +4090.9]    500    19.5
+  maniac            6    +3450.1 [   +354.9,  +6596.0]    500    25.3
+  maniac            8    +1494.1 [  -1867.2,  +4841.7]    500    22.8
+  maniac            9    +2632.2 [  -1180.0,  +6299.6]    500    21.6
+  never_bluffs      2      -12.2 [  -1131.8,  +1108.7]    500    14.9
+  never_bluffs      6     +184.7 [  -1973.9,  +2269.7]    500    29.5
+  never_bluffs      8     -377.7 [  -2937.3,  +2316.9]    500    30.3
+  never_bluffs      9      -63.4 [  -2919.1,  +2949.0]    500    28.7
+  fit_or_fold       2     -142.8 [   -893.7,   +584.9]    500    12.4
+  fit_or_fold       6     +232.7 [  -1142.3,  +1671.8]    500    34.8
+  fit_or_fold       8     -758.3 [  -2365.5,   +869.2]    500    38.8
+  fit_or_fold       9     -955.6 [  -2569.8,   +766.2]    500    40.2
+  tag               2    -1047.0 [  -1732.2,   -366.6]    500    10.0
+  tag               6    -1622.5 [  -2861.4,   -303.6]    500    27.6
+  tag               8    -1500.8 [  -3048.3,   +134.8]    500    32.8
+  tag               9    -2162.0 [  -3791.3,   -439.3]    500    31.7
+  lag               2     +245.6 [   -717.9,  +1188.7]    500    14.9
+  lag               6    -1433.5 [  -3435.8,   +519.5]    500    30.6
+  lag               8     -470.5 [  -2674.9,  +1973.4]    500    31.2
+  lag               9    -1103.5 [  -3696.3,  +1470.1]    500    29.0
+  tilter            2     +397.6 [   -726.3,  +1573.0]    500    18.7
+  tilter            6    +2234.3 [   -801.5,  +5799.9]    500    21.7
+  tilter            8    +2870.2 [   -921.1,  +5978.5]    500    20.1
+  tilter            9    +3867.3 [   +270.0,  +8139.6]    500    20.1
+  sizing_tell       2     -194.9 [  -1107.0,   +649.8]    500    12.6
+  sizing_tell       6    -1331.4 [  -3200.3,   +617.9]    500    28.6
+  sizing_tell       8      -37.7 [  -2328.1,  +2201.7]    500    28.6
+  sizing_tell       9     -677.0 [  -2924.5,  +1654.8]    500    29.4
+
+paired difference, search minus always_call, same deals and same seats
+  persona           n  bb/100 [95% interval]            hands
+  always_fold       2      +31.5 [    +24.2,    +39.0]    500
+  always_fold       6      +56.0 [    +45.6,    +65.9]    500
+  always_fold       8      +51.8 [    +41.2,    +62.3]    500
+  always_fold       9      +62.5 [    +51.5,    +73.2]    500
+  always_call       2    +3353.4 [  +2047.7,  +4712.9]    500
+  always_call       6    +4886.4 [  +1819.2,  +7955.5]    500
+  always_call       8    +3183.1 [   -161.2,  +6789.7]    500
+  always_call       9    +5502.3 [  +1706.0,  +9219.1]    500
+  always_raise      2    +2142.3 [  +1221.4,  +3038.7]    500
+  always_raise      6    +2327.2 [    -31.0,  +4434.1]    500
+  always_raise      8    +3604.6 [   +853.0,  +6203.1]    500
+  always_raise      9    +2808.2 [   -192.7,  +5553.8]    500
+  call_raise_50_50  2    +1832.8 [   +547.3,  +3176.6]    500
+  call_raise_50_50  6    +1730.8 [   -891.6,  +4260.9]    500
+  call_raise_50_50  8    +2786.8 [    -77.0,  +5581.8]    500
+  call_raise_50_50  9     +905.7 [  -2606.0,  +4026.6]    500
+  calling_station   2    +3328.4 [  +2039.8,  +4584.7]    500
+  calling_station   6    +8793.3 [  +6310.0, +11405.6]    500
+  calling_station   8    +9571.4 [  +7356.4, +11994.4]    500
+  calling_station   9    +9257.6 [  +6680.3, +11863.9]    500
+  nit               2     -546.3 [   -960.9,   -150.5]    500
+  nit               6     +437.8 [   -349.8,  +1217.8]    500
+  nit               8     +368.3 [   -664.2,  +1328.2]    500
+  nit               9     +149.3 [   -969.3,  +1252.8]    500
+  maniac            2    +2680.4 [  +1437.4,  +3929.9]    500
+  maniac            6    +2610.1 [   +259.6,  +4734.6]    500
+  maniac            8    +5160.8 [  +2636.7,  +7388.9]    500
+  maniac            9     +432.2 [  -3237.4,  +3512.1]    500
+  never_bluffs      2     +723.1 [   -308.0,  +1741.5]    500
+  never_bluffs      6    +5491.4 [  +3677.8,  +7257.6]    500
+  never_bluffs      8    +5032.1 [  +2941.8,  +6908.6]    500
+  never_bluffs      9    +1869.5 [   -728.6,  +4386.1]    500
+  fit_or_fold       2      -52.0 [   -782.3,   +669.7]    500
+  fit_or_fold       6     +809.5 [   -601.3,  +2134.2]    500
+  fit_or_fold       8       +3.7 [  -1369.2,  +1484.6]    500
+  fit_or_fold       9     +175.5 [  -1357.6,  +1682.3]    500
+  tag               2     -684.2 [  -1285.8,    -56.8]    500
+  tag               6     +926.4 [   -250.4,  +2075.8]    500
+  tag               8    +1738.1 [   +329.2,  +3115.4]    500
+  tag               9    +1637.8 [    +45.2,  +3156.4]    500
+  lag               2     +482.4 [   -436.2,  +1437.7]    500
+  lag               6    +3238.2 [  +1639.6,  +4839.7]    500
+  lag               8    +4962.9 [  +3053.2,  +6648.8]    500
+  lag               9    +2330.7 [    +97.7,  +4570.5]    500
+  tilter            2     +643.4 [   -479.4,  +1728.9]    500
+  tilter            6    +2014.5 [   -128.8,  +3803.8]    500
+  tilter            8    +2270.2 [   -791.6,  +5056.3]    500
+  tilter            9     +861.6 [  -2416.6,  +3890.8]    500
+  sizing_tell       2     +332.0 [   -452.8,  +1132.1]    500
+  sizing_tell       6    +1982.6 [   +482.4,  +3307.5]    500
+  sizing_tell       8    +2578.1 [   +837.6,  +4203.6]    500
+  sizing_tell       9    +1187.7 [   -966.1,  +3166.9]    500
+
+primary endpoint (weighted pool, paired, B minus A)    +2367.7 [  +2027.5,  +2692.3] bb/100   ACCEPT
+  weighted over the seat counts that produced a cell: n2=0.200  n6=0.500  n8=0.150  n9=0.150
+  cross-check, ordinary t-interval: [+1992.9,+2548.1] bb/100 (a material disagreement with the bootstrap means the data is wrong, not the test)
+  by table size, unweighted (Benjamini-Hochberg q=0.05, family size 52 cells; * survives the correction)
+    n=2    +1097.5 [   +821.1,  +1400.5] bb/100  *
+    n=6    +2715.7 [  +2135.5,  +3282.6] bb/100  *
+    n=8    +3177.8 [  +2529.0,  +3801.6] bb/100  *
+    n=9    +2090.8 [  +1294.4,  +2791.2] bb/100  *
+  by persona (non-inferiority; an interval wholly below zero BLOCKS)
+    always_call         +4231.3 [  +2692.0,  +5825.0] bb/100
+    always_fold           +50.5 [    +45.6,    +55.3] bb/100
+    always_raise        +2720.6 [  +1526.3,  +3852.9] bb/100
+    call_raise_50_50    +1814.1 [   +545.6,  +3021.8] bb/100
+    calling_station     +7737.7 [  +6628.6,  +8852.5] bb/100
+    fit_or_fold          +234.2 [   -401.6,   +858.5] bb/100
+    lag                 +2753.6 [  +1906.6,  +3544.5] bb/100
+    maniac              +2720.9 [  +1437.7,  +3889.1] bb/100
+    never_bluffs        +3279.0 [  +2346.8,  +4257.1] bb/100
+    nit                  +102.3 [   -317.5,   +529.2] bb/100
+    sizing_tell         +1520.1 [   +697.2,  +2277.7] bb/100
+    tag                  +904.5 [   +277.1,  +1509.4] bb/100
+    tilter              +1447.5 [   +285.0,  +2664.5] bb/100
+  overrides in force: none
+
+verdict: ACCEPT
+  because the headline interval   +2367.7 [  +2027.5,  +2692.3] bb/100 lies entirely above zero and no persona's interval lies wholly below it
+
+elapsed: 1390.5s   machine load average 3.48 3.41 3.54 at the start, 4.15 4.36 4.21 at the end

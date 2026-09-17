@@ -4,14 +4,14 @@
         --bot search --opponents random
 
 What it does, in plain words. It deals complete hands on the T1 table, with the
-bot in one seat and one of `baselines.py`'s three non-players in each of the
-others, moving the dealer button one seat every hand so nobody sits in the
-blinds more often than anybody else. After every hand it checks the table's
-seven invariants -- the statements that have to be true or no score measured
-here means anything -- and if one of them fails it stops the run there and then
-rather than finishing and reporting a number. At the end it prints how many
-hands were played, how long the bot's slowest decision took, and how much it
-won, with a range around it.
+bot in one seat and one of `personas.py`'s three trivial agents -- always fold,
+always call, draw from the menu at random -- in each of the others, moving the
+dealer button one seat every hand so nobody sits in the blinds more often than
+anybody else. After every hand it checks the table's seven invariants -- the
+statements that have to be true or no score measured here means anything -- and
+if one of them fails it stops the run there and then rather than finishing and
+reporting a number. At the end it prints how many hands were played, how long
+the bot's slowest decision took, and how much it won, with a range around it.
 
 The range is the important part. Poker is noisy enough that a bare win rate
 means nothing, so the score is printed as a 95% interval worked out by
@@ -52,7 +52,7 @@ import statistics
 import sys
 import time
 
-from . import baselines, equity_rule
+from . import equity_rule, personas
 from .invariants import InvariantViolation, require
 from .provenance import commit_id
 from .record import HandRecord
@@ -209,7 +209,7 @@ def play_hand(
     seed: int,
     button: int,
     bot_seat: int,
-    opponents: dict[int, object],
+    opponents: dict[int, personas.Persona],
     budget_s: float,
     playouts_per_candidate: int,
     run_rule: bool,
@@ -223,7 +223,13 @@ def play_hand(
     replays the same hand, move for move, which is invariant I6.
     """
     hand = table.new_hand(seed=seed, button=button)
-    opponent_rng = {s: random.Random(seed * 7919 + s) for s in opponents}
+    # Every opponent's coin flips are wound back to the start of its own stream
+    # here, at the top of each hand. The arithmetic is the one this runner has
+    # always used -- `seed * 7919 + seat` -- because the recorded thousand-hand
+    # run in `tests/data/arena_6seat_1000hands.json` was played under it, and a
+    # changed stream would change every number in it.
+    for opponent_seat, opponent in opponents.items():
+        opponent.rng.seed(seed * 7919 + opponent_seat)
     decisions = 0
     while not hand.is_finished:
         seat = hand.current_seat()
@@ -282,7 +288,7 @@ def play_hand(
                 )
             decisions += 1
         else:
-            action = opponents[seat](menu, opponent_rng[seat])
+            action = opponents[seat](hand, seat)
         # I4 -- nothing is ever applied that the engine did not offer. The
         # adapter refuses an illegal move as well; this is the belt to its
         # braces, and it names the player that tried it.
@@ -349,9 +355,45 @@ def bootstrap_interval(
     return (percentile(means, low), percentile(means, 1.0 - low))
 
 
+#: What each trivial opponent is called on this command line, and which of
+#: `personas.py`'s agents it is. There is one always-fold, one always-call and
+#: one uniform-random player in this package, and they live in `personas.py`,
+#: because two copies of a player is two things to keep in step and the
+#: personas are the ones the scoreboard measures a bot against. The names on
+#: the left are this command line's own and are not the personas' names.
+OPPONENT_PERSONAS = {
+    "fold": "always_fold",
+    "call": "always_call",
+    "random": "uniform_random",
+}
+
+#: The names `--opponents` accepts, in the order they are documented.
+OPPONENTS = tuple(OPPONENT_PERSONAS)
+
+
+def opponent_by_name(name: str) -> personas.Persona:
+    """One trivial opponent, by the name the command line uses.
+
+    Each call builds its own, because each seat needs its own coin flips; what
+    it is seeded with here does not matter, since `play_hand` winds every
+    opponent's stream to `seed * 7919 + seat` at the top of every hand.
+
+    A name that is not one of the three is a mistake in the command, not a
+    table that has gone wrong, so it raises `ValueError` rather than an
+    invariant violation -- the invariants are statements about a dealt hand and
+    must not be spent on a typo.
+    """
+    if name not in OPPONENT_PERSONAS:
+        raise ValueError(
+            f"there is no opponent called {name!r}; the three are "
+            f"{sorted(OPPONENT_PERSONAS)}"
+        )
+    return personas.build_persona(OPPONENT_PERSONAS[name], session_seed=0)
+
+
 def seat_opponents(
     seats: int, bot_seat: int, names: list[str]
-) -> tuple[dict[int, object], dict[int, str]]:
+) -> tuple[dict[int, personas.Persona], dict[int, str]]:
     """Which non-player sits in each seat that is not the bot's.
 
     One name fills every other seat with the same opponent; a list of names
@@ -362,7 +404,7 @@ def seat_opponents(
         names = names * len(others)
     if len(names) != len(others):
         raise ValueError(f"{len(names)} opponents were named for {len(others)} seats")
-    seated = {seat: baselines.by_name(name) for seat, name in zip(others, names)}
+    seated = {seat: opponent_by_name(name) for seat, name in zip(others, names)}
     return seated, dict(zip(others, names))
 
 

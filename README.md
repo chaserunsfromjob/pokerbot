@@ -199,6 +199,35 @@ the run. The settings live in `pokerbot/league_config.toml`, which the report
 reprints in full, and `EVALUATION_STRATEGY.md` sections 3.2 and 3.5 are what
 they implement.
 
+**What the first real run of it says.** That run is kept, in full, at
+`research/results/stage2_search_vs_personas.txt`: the bot against all thirteen
+opponents at tables of two, six, eight and nine, five hundred hands in each of
+the fifty-two squares of that grid for each of the two versions compared. It
+took twenty-three minutes, which is why it is five hundred hands a square and
+not the thousand the settings ask for. The verdict is ACCEPT: the bot finished
+about 2,370 big blinds per hundred hands ahead of the version it was measured
+against, with the whole range around that figure above zero. That 2,370 is how
+much better the bot did than the call-everything version on the very same
+deals, while "beats" and "loses to" below mean something else: simply whether
+the bot finished with more money than it started with. It beats seven of the
+thirteen -- the one that gives up every hand, the one that calls everything,
+the one that raises everything, the coin-flipper, the player who calls too
+much, the one who bets wildly, and the one who plays badly after losing a big
+pot. Each of those seven wins is bigger than the shuffle could account for at
+at least one table size, and at the two-handed table six of the seven are,
+before allowing for the fact that fifty-two squares were looked at and the best
+one picked. It loses to two: the player who waits all night for a premium hand,
+and one of the two competent players, the tight and aggressive one. Against the
+remaining four -- the one who only ever bets a real hand, the one who gives up
+when the flop misses, the other competent player, and the one whose bet size
+tells you what he has -- the result is too close to call, meaning the range
+around it still contains zero. The caveat, and it is the big one: these
+opponents are caricatures who put their money in far more freely than people
+do, and the version the bot is measured against is one that calls every bet, so
+a figure in the thousands of big blinds is a statement about how bad that
+opposition is and not about how good the bot is. Nothing has been adjusted on
+the strength of it.
+
 ## Checking the design document's arithmetic
 
 `OPPONENT_MODEL_DESIGN.md` states a small number of settings and then works out
