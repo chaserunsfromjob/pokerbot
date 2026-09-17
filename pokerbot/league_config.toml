@@ -22,16 +22,29 @@ secondary = 0.30
 other = 0.20                  # whichever other seat counts ran, split equally
 
 [run]
-# The seat counts BUILD_PLAN.md T3 requires a cell for. The band weights above
-# never move; only the split inside the "other" band does, and the report prints
-# whatever split was in force.
+# The seat counts BUILD_PLAN.md T3 requires a cell for. The split inside the
+# "other" band moves with whichever other seat counts ran, and the report prints
+# whatever split was in force. The three band weights hold as long as every band
+# has a seat count in it: a run that skips a whole band -- one with no heads-up
+# cell, say -- would otherwise leave the weights summing to less than one and
+# silently shrink the headline by the missing band's share, so the band that is
+# left out drops out and the rest are rescaled to sum to one. That does move the
+# remaining band weights, and the report says so when it happens.
 seats = [2, 6, 8, 9]
 hands = 1000                  # per cell, per arm; the CLI's --hands overrides it
 small_blind = 50              # chips; 0.5 big blinds
 big_blind = 100               # chips; the unit every result is reported in
 starting_stack_bb = 200       # ENGINE_ALTERNATIVES.md measured at 200 bb deep
 equity_rollouts = 24          # engine showdowns per persona hand-strength lookup
-preflop_rollouts = 120        # engine showdowns per preflop class, for "top X%"
+# Engine showdowns per preflop class, for "top X%". Read by `build_persona` and
+# printed in the report. It is 600 and not less because the ranking has to be
+# the engine's and not the sampler's: at 120 the engine separates only 85 of the
+# 169 classes and the rest are settled by the tie-break, and a class moves by
+# more than five points of "top X%" between one count and another. At 600 it
+# separates 146 of them, the largest tie is three classes wide, and the anchors
+# `tests/test_personas.py` asserts hold. It is computed once per process and
+# cached, and costs about 1.1 seconds there -- a whole run is minutes.
+preflop_rollouts = 600
 
 [bootstrap]
 # Section 3.5: percentile bootstrap, not a t-interval, because per-hand poker

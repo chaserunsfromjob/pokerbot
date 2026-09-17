@@ -47,6 +47,42 @@ def test_playing_a_hand_never_loads_a_hand_evaluator():
     )
 
 
+_ARENA_PROBE = """
+import sys
+import pokerbot
+from pokerbot.replay import play_scripted_hand
+
+table = pokerbot.Table(pokerbot.TableConfig(seats=6))
+hand = play_scripted_hand(table, seed=909)
+assert hand.is_finished
+arena = sorted(
+    m for m in sys.modules
+    if m in {"pokerbot.personas", "pokerbot.league", "pokerbot.scoreboard"}
+)
+print("|".join(arena))
+"""
+
+
+def test_playing_a_hand_never_loads_the_arena():
+    """The arena ships inside `pokerbot/` and must stay outside the bot's graph.
+
+    `EVALUATION_STRATEGY.md` section 3.1 put the arena under `tests/` and guarded
+    the boundary by walking the import graph. The modules moved into the package
+    -- section 3.1 and section 3.3 record why -- so the guard cannot be a path
+    check any more. The boundary itself is unchanged and is what this asserts: a
+    fresh process that imports the bot's entry point and plays a hand must not
+    have `pokerbot.personas` or `pokerbot.league` in `sys.modules`. A bot that can
+    reach persona code has smuggled hand-rolled poker judgement into itself.
+    """
+    done = subprocess.run(
+        [sys.executable, "-c", _ARENA_PROBE], cwd=REPO_ROOT, capture_output=True,
+        check=False,
+    )
+    assert done.returncode == 0, done.stderr.decode("utf-8", "replace")
+    loaded = [m for m in done.stdout.decode().strip().split("|") if m]
+    assert not loaded, f"playing a hand loaded the arena: {loaded}"
+
+
 def test_the_package_offers_the_fchpa_menu_and_nothing_else():
     """Five moves, the ones ACTION_TRANSLATION.md section 7 settles on."""
     assert [a.value for a in Action] == ["fold", "call", "half_pot", "pot", "all_in"]

@@ -16,7 +16,7 @@ import io
 
 import pytest
 
-from pokerbot import Action, Table, TableConfig
+from pokerbot import Action, Table, TableConfig, deal_check
 from pokerbot import league, personas, scoreboard
 from pokerbot.league import (
     Cell,
@@ -399,3 +399,163 @@ def test_a_registered_bot_joins_the_league_under_its_own_name():
         assert cell.hands == 6
     finally:
         league._BOT_FACTORIES.pop("test_caller", None)
+
+
+# --------------------------------------------------------------------------
+# The p-value, the header, and the NOT RUN cell
+# --------------------------------------------------------------------------
+
+
+def test_a_difference_of_exactly_zero_is_not_significant():
+    """A run in which nothing changed must not be starred as a discovery.
+
+    Every resampled mean of an all-zero vector is zero, so the honest two-sided
+    answer is "as unsurprising as a result can be": p = 1. Counting only the
+    resamples on one side of zero gives p = 1/1001 instead, and the
+    Benjamini-Hochberg step then stars a difference of nothing at all.
+    """
+    nothing = bootstrap_interval([0.0] * 60, CONFIG, seed=1)
+    assert nothing.p_value == pytest.approx(1.0)
+    # And the other side of it: a clear, one-signed difference is still small.
+    clearly_better = bootstrap_interval([2.0, 2.5, 1.5, 3.0] * 15, CONFIG, seed=1)
+    assert clearly_better.p_value < 0.01
+
+
+def test_the_report_never_stars_an_interval_that_contains_zero():
+    """The star says "this survived the correction". An interval straddling zero
+    has not shown a difference in either direction, whatever its p-value."""
+    cells_b = [_cell("calling_station", 6, [0.0] * 60)]
+    cells_a = [_cell("calling_station", 6, [0.0] * 60)]
+    verdict = decide(cells_b, cells_a, CONFIG, seed=3)
+    out = io.StringIO()
+    scoreboard.print_verdict(out, verdict, [6])
+    starred = [
+        line for line in out.getvalue().splitlines()
+        if line.strip().startswith("n=6") and line.rstrip().endswith("*")
+    ]
+    assert not starred, f"a zero difference was starred: {starred}"
+
+
+def test_the_verdict_prints_the_weights_the_headline_actually_used():
+    """The header's weights come from the seat counts that were ASKED for; the
+    headline is weighted over the seat counts that produced a cell. When a seat
+    count produces nothing, those are two different sets of weights, and the one
+    the reader needs is the one the number was actually computed with."""
+    out = io.StringIO()
+    code = scoreboard.main(
+        ["--bot", "always_call", "--compare", "always_fold", "--hands", "6",
+         "--seed", "3", "--seats", "6,12", "--personas", "always_raise"],
+        out=out,
+    )
+    report = out.getvalue()
+    assert code in (0, 1)
+    # Asked for 6 and 12; only 6 dealt, so the headline is 100% the six-seat cell.
+    assert "weights: n6=0.714  n12=0.286" in report, "the header reports what was asked for"
+    assert "n6=1.000" in report.split("primary endpoint")[1], (
+        "the verdict must print the weights the headline was computed with"
+    )
+    assert "12" in report.split("primary endpoint")[1], (
+        "the verdict must name the seat count that produced no cell"
+    )
+
+
+def test_a_seat_count_the_engine_will_not_deal_prints_its_whole_reason():
+    """Truncating the engine's refusal to 25 characters cuts it mid-sentence, and
+    a reason a reader cannot finish is not a reason. The cell says NOT RUN; the
+    reason goes underneath the table in full, as T1's seat-count table does it."""
+    _, reason = deal_check(12)
+    assert reason and len(reason) > 25, "this test needs a reason long enough to be cut"
+    out = io.StringIO()
+    code = scoreboard.main(
+        ["--bot", "always_call", "--compare", "always_fold", "--hands", "6",
+         "--seed", "4", "--seats", "6,12", "--personas", "always_raise"],
+        out=out,
+    )
+    report = out.getvalue()
+    assert code in (0, 1)
+    assert "NOT RUN" in report
+    assert reason in report, f"the engine's reason was cut short; wanted {reason!r}"
+
+
+def test_the_preflop_rollout_count_in_the_config_is_the_one_that_is_used():
+    """A pre-registered number nothing reads is not pre-registered. The config's
+    `preflop_rollouts` has to reach the ranking the personas play on, and the
+    report has to print it."""
+    configured = int(CONFIG.run["preflop_rollouts"])
+    nit = league.build_persona(
+        "nit", 1,
+        rollouts=int(CONFIG.run["equity_rollouts"]),
+        preflop_rollouts=configured,
+    )
+    assert nit.preflop_rollouts == configured
+    table = Table(TableConfig(seats=6))
+    hand = table.new_hand(seed=21, button=0)
+    view = personas.seat_view(hand, hand.current_seat())
+    assert nit.top_fraction(view) == personas.preflop_top_fraction(
+        view.hole, configured
+    )
+    out = io.StringIO()
+    scoreboard.main(["--bot", "always_call", "--list-bots"], out=out)
+    header = io.StringIO()
+    scoreboard.main(
+        ["--bot", "always_call", "--compare", "always_fold", "--hands", "4",
+         "--seed", "5", "--seats", "6", "--personas", "always_raise"],
+        out=header,
+    )
+    assert f"preflop ranking: {configured} engine showdowns" in header.getvalue()
+
+
+# --------------------------------------------------------------------------
+# The bot's own state
+# --------------------------------------------------------------------------
+
+
+class _MemoryBot:
+    """A bot that carries something between hands, to prove the harness tells it
+    when a cell starts and what each hand did. `tilter` is the real one."""
+
+    has_memory = True
+
+    def __init__(self):
+        self.sessions = 0
+        self.results: list[float] = []
+
+    def new_session(self) -> None:
+        self.sessions += 1
+        self.results = []
+
+    def hand_finished(self, net_bb: float) -> None:
+        self.results.append(net_bb)
+
+    def __call__(self, hand, seat):
+        return Action.CALL if Action.CALL in hand.legal_actions() else Action.FOLD
+
+
+def test_a_bot_with_a_memory_is_told_when_a_cell_starts_and_how_each_hand_went():
+    """`--bot tilter` never tilts unless the harness reports its own results back
+    to it, and a stateful bot that is never given `new_session` runs the whole
+    grid on one cell's bootstrap."""
+    bot = _MemoryBot()
+    cell = run_cell(bot, "memory_bot", "always_call", 6, hands=12, run_seed=13, config=CONFIG)
+    assert bot.sessions == 1, "the bot was never told the cell had started"
+    assert len(bot.results) == 12, "the bot was never told how its hands went"
+    assert cell.values == pytest.approx(bot.results)
+    assert cell.has_memory, "a cell whose bot carries state needs a block bootstrap"
+
+
+def test_one_cell_played_alone_is_the_same_cell_played_inside_a_longer_run():
+    """A cell has to be reproducible on its own. The bot's own coin flips carry
+    across cells unless the harness restarts them, so re-running one cell to
+    chase a number down gives a different number from the one in the report."""
+    alone = run_cell(
+        resolve_bot("call_raise_50_50", 17, CONFIG), "call_raise_50_50",
+        "always_call", 6, hands=20, run_seed=17, config=CONFIG,
+    )
+    shared = resolve_bot("call_raise_50_50", 17, CONFIG)
+    run_cell(shared, "call_raise_50_50", "always_raise", 6, hands=20, run_seed=17, config=CONFIG)
+    inside = run_cell(
+        shared, "call_raise_50_50", "always_call", 6, hands=20, run_seed=17, config=CONFIG,
+    )
+    assert inside.values == pytest.approx(alone.values), (
+        "the cell played differently because the bot's coin flips carried over"
+    )

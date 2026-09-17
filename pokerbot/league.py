@@ -286,6 +286,20 @@ def run_cell(
     The deals are a function of `run_seed`, the persona name and the seat count
     alone -- never of which bot is playing -- so two arms of a comparison meet
     the same cards in the same seats. That is section 3.5's "pair everything".
+
+    **The cell starts clean, the bot included.** The opponents are built fresh
+    here and told `new_session()`; the bot is handed in already built, so it is
+    told the same thing, which winds a persona's coin flips back to where they
+    began. That is what makes one cell reproducible on its own: without it, the
+    cells before this one in the same run would have drawn from the bot's random
+    stream and re-running this cell alone would give a different number from the
+    one the report printed. **A bot registered through `register_bot` that
+    carries any state of its own -- a random stream, a count of hands, an
+    opponent model -- must offer `new_session()` to get the same treatment.** It
+    is also told `hand_finished(net)` after every hand, so a bot that adapts
+    actually gets to; and if it declares `has_memory`, the cell does, and the
+    interval is computed with a block bootstrap rather than by resampling single
+    hands.
     """
     dealable, reason = deal_check(seats)
     if not dealable:
@@ -293,12 +307,20 @@ def run_cell(
 
     session_seed = run_seed if session_seed is None else session_seed
     rollouts = int(config.run["equity_rollouts"])
+    preflop_rollouts = int(config.run["preflop_rollouts"])
     opponents = [
-        build_persona(persona_name, session_seed, rollouts=rollouts, stream=seat)
+        build_persona(
+            persona_name,
+            session_seed,
+            rollouts=rollouts,
+            preflop_rollouts=preflop_rollouts,
+            stream=seat,
+        )
         for seat in range(1, seats)
     ]
     for opponent in opponents:
         opponent.new_session()
+    _start_session(bot)
     agents: list[Agent] = [bot, *opponents]
     table = Table(
         TableConfig(
@@ -318,6 +340,7 @@ def run_cell(
         # closed-form check on `always_fold` depends on this.
         nets = play_hand(agents, table, seed=seed, button=index % seats)
         values.append(nets[0])
+        _report_hand(bot, nets[0])
         for seat, opponent in enumerate(opponents, start=1):
             opponent.hand_finished(nets[seat])
     return Cell(
@@ -325,9 +348,28 @@ def run_cell(
         persona=persona_name,
         seats=seats,
         values=values,
-        has_memory=any(o.has_memory for o in opponents),
+        has_memory=bool(getattr(bot, "has_memory", False))
+        or any(o.has_memory for o in opponents),
         seconds=time.monotonic() - started,
     )
+
+
+def _start_session(bot: Agent) -> None:
+    """Tell the bot a cell is starting, if it is the sort of bot that cares.
+
+    A bot is any callable with the adapter's signature, so this is asked for
+    rather than required. A plain function has nothing to forget.
+    """
+    start = getattr(bot, "new_session", None)
+    if callable(start):
+        start()
+
+
+def _report_hand(bot: Agent, net_bb: float) -> None:
+    """Tell the bot what its hand did, if it is the sort of bot that cares."""
+    finished = getattr(bot, "hand_finished", None)
+    if callable(finished):
+        finished(net_bb)
 
 
 # --------------------------------------------------------------------------
@@ -393,6 +435,29 @@ def _resample(values: Sequence[float], rng: random.Random, block: int) -> float:
     return statistics.fmean(drawn[:len(values)])
 
 
+def _bootstrap_p_value(means: Sequence[float], resamples: int) -> float:
+    """How surprising this result would be if the true difference were zero.
+
+    Two-sided, and the "two-sided" has to be done by taking the SMALLER of the
+    two tails and doubling it, not by counting whichever side the estimate is
+    not on. A run in which nothing changed resamples to exactly zero every time:
+    every resample is then on both sides at once, the smaller tail is the whole
+    distribution, and the answer is 1 -- as unsurprising as a result can be.
+    Counting one side gives 1/(resamples+1) instead and stars a difference of
+    nothing as a discovery.
+
+    The +1 in each term is the standard correction (Davison and Hinkley): a
+    bootstrap p-value of exactly zero claims more than `resamples` draws can
+    support, so the observed statistic is counted in on both sides.
+
+    Used only by the Benjamini-Hochberg step on the per-table-size tests.
+    """
+    at_or_below = sum(1 for m in means if m <= 0)
+    at_or_above = sum(1 for m in means if m >= 0)
+    smaller_tail = min(at_or_below, at_or_above)
+    return min(1.0, (2.0 * smaller_tail + 1.0) / (resamples + 1))
+
+
 def bootstrap_interval(
     values: Sequence[float],
     config: Config,
@@ -421,11 +486,7 @@ def bootstrap_interval(
     low = means[max(0, int(math.floor(tail * resamples)) - 1)]
     high = means[min(resamples - 1, int(math.ceil((1.0 - tail) * resamples)) - 1)]
     estimate = statistics.fmean(values)
-    # A two-sided bootstrap p-value: how much of the resampled distribution sits
-    # on the other side of zero from the estimate. Used only by the
-    # Benjamini-Hochberg step on the per-table-size tests.
-    on_the_other_side = sum(1 for m in means if (m <= 0) == (estimate > 0))
-    p_value = min(1.0, 2.0 * (on_the_other_side + 1) / (resamples + 1))
+    p_value = _bootstrap_p_value(means, resamples)
     t_low, t_high = _t_interval(values, confidence)
     return Interval(
         estimate=100.0 * estimate,
@@ -624,6 +685,20 @@ def decide(
 
 
 def _pool(paired, keep) -> tuple[list[float], bool]:
+    """Every per-hand difference from the cells `keep` selects, laid end to end.
+
+    **The approximation this makes, stated rather than hidden.** The cells are
+    concatenated, so a block the moving-block bootstrap draws near a join spans
+    the end of one cell and the start of the next -- hands that are not
+    consecutive and, across a cell boundary, not dependent on each other at all.
+    Those straddling blocks are a fraction of roughly (block length - 1) divided
+    by (cell length) of all blocks drawn, so at the configured 20-hand block and
+    1000-hand cells they are under 2% of them, and each one understates rather
+    than overstates the dependence, which widens nothing it should narrow. The
+    honest fix is to draw blocks within a cell and never across a join; it is
+    not done here because the effect is smaller than the bootstrap's own
+    resampling error at these sizes.
+    """
     values: list[float] = []
     memory = False
     for key, (differences, has_memory) in paired.items():
@@ -667,14 +742,13 @@ def _weighted_primary(paired, weights: Mapping[int, float], config: Config, seed
     high = draws[min(resamples - 1, int(math.ceil((1.0 - tail) * resamples)) - 1)]
     pooled = [v for values, _ in per_seat.values() for v in values]
     t_low, t_high = _t_interval(pooled, confidence)
-    on_the_other_side = sum(1 for d in draws if (d <= 0) == (estimate > 0))
     return Interval(
         estimate=100.0 * estimate,
         low=100.0 * low,
         high=100.0 * high,
         t_low=100.0 * t_low,
         t_high=100.0 * t_high,
-        p_value=min(1.0, 2.0 * (on_the_other_side + 1) / (resamples + 1)),
+        p_value=_bootstrap_p_value(draws, resamples),
     )
 
 
@@ -697,6 +771,10 @@ def resolve_bot(name: str, session_seed: int, config: Config) -> Agent:
 
     if name in _CLASSES:
         return build_persona(
-            name, session_seed, rollouts=int(config.run["equity_rollouts"]), stream="bot"
+            name,
+            session_seed,
+            rollouts=int(config.run["equity_rollouts"]),
+            preflop_rollouts=int(config.run["preflop_rollouts"]),
+            stream="bot",
         )
     raise KeyError(f"no bot called {name!r}; have {available_bots()}")

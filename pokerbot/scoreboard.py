@@ -98,6 +98,10 @@ def print_header(
             f"remaining weights were rescaled to sum to 1"
         )
     write(
+        f"  hand strength: {config.run['equity_rollouts']} engine showdowns per lookup;  "
+        f"preflop ranking: {config.run['preflop_rollouts']} engine showdowns per class"
+    )
+    write(
         f"  bootstrap: {config.bootstrap['resamples']} resamples, "
         f"{float(config.bootstrap['confidence']) * 100:.0f}% percentile interval, "
         f"blocks of {config.bootstrap['block_hands']} hands for a persona with memory"
@@ -136,7 +140,14 @@ def print_cells(
     title: str,
     rows: Sequence[tuple[str, int, str, str]],
     last_column: str,
+    notes: Sequence[tuple[int, str]] = (),
 ) -> None:
+    """The table, and beneath it the full reason for every NOT RUN in it.
+
+    A cell is one column wide and an engine's refusal is a sentence, so the
+    reason goes underneath rather than being cut to fit -- the same shape T1's
+    seat-count table uses. A reason a reader cannot finish is not a reason.
+    """
     print(file=out)
     print(title, file=out)
     print(
@@ -145,6 +156,8 @@ def print_cells(
     )
     for persona, seats, cell, extra in rows:
         print(f"  {persona:<17}{seats:>2}  {cell:<31} {extra}", file=out)
+    for seats, reason in notes:
+        print(f"  NOT RUN at n={seats}: {reason}", file=out)
 
 
 def print_verdict(out: TextIO, verdict: Verdict, seats: Sequence[int]) -> None:
@@ -154,6 +167,20 @@ def print_verdict(out: TextIO, verdict: Verdict, seats: Sequence[int]) -> None:
         f"primary endpoint (weighted pool, paired, B minus A)  "
         f"{verdict.primary} bb/100   {verdict.label}"
     )
+    # Not the header's weights. The header prints what was ASKED for; these are
+    # the weights the headline above was actually computed with, over the seat
+    # counts that produced a cell in both arms. When a seat count produces
+    # nothing the two differ, and the reader needs this one.
+    write(
+        "  weighted over the seat counts that produced a cell: "
+        + "  ".join(f"n{n}={w:.3f}" for n, w in sorted(verdict.weights.items()))
+    )
+    absent = [n for n in seats if n not in verdict.weights]
+    if absent:
+        write(
+            f"    seat count(s) {', '.join(str(n) for n in absent)} were asked for "
+            f"and produced no cell, so they carry no weight in this number"
+        )
     write(
         f"  cross-check, ordinary t-interval: "
         f"[{verdict.primary.t_low:+.1f},{verdict.primary.t_high:+.1f}] bb/100 "
@@ -165,8 +192,14 @@ def print_verdict(out: TextIO, verdict: Verdict, seats: Sequence[int]) -> None:
         f"{verdict.family_size} cells; * survives the correction)"
     )
     for n in sorted(verdict.by_seats):
-        mark = "*" if verdict.by_seats_significant.get(n) else " "
-        write(f"    n={n:<2} {verdict.by_seats[n]} bb/100  {mark}")
+        interval = verdict.by_seats[n]
+        # Both conditions, not just the correction. The star says a difference
+        # was shown; an interval that contains zero has shown one in neither
+        # direction, whatever the p-value beside it says.
+        survives = verdict.by_seats_significant.get(n)
+        separated = interval.above_zero or interval.below_zero
+        mark = "*" if survives and separated else " "
+        write(f"    n={n:<2} {interval} bb/100  {mark}")
     write("  by persona (non-inferiority; an interval wholly below zero BLOCKS)")
     for name in sorted(verdict.by_persona):
         interval = verdict.by_persona[name]
@@ -206,7 +239,12 @@ def run(
     load_at_start = _load_average()
     weights = league.table_size_weights(seats, config)
     drawn = [
-        build_persona(name, seed, rollouts=int(config.run["equity_rollouts"]))
+        build_persona(
+            name,
+            seed,
+            rollouts=int(config.run["equity_rollouts"]),
+            preflop_rollouts=int(config.run["preflop_rollouts"]),
+        )
         for name in persona_names
     ]
     print_header(
@@ -223,12 +261,17 @@ def run(
     rows_b: list[tuple[str, int, str, str]] = []
     rows_diff: list[tuple[str, int, str, str]] = []
     block = int(config.bootstrap["block_hands"])
+    not_run: dict[int, str] = {}
     for name in persona_names:
         for n in seats:
             dealable, reason = deal_check(n)
             if not dealable:
-                rows_b.append((name, n, f"NOT RUN: {reason}"[:25], ""))
-                rows_diff.append((name, n, f"NOT RUN: {reason}"[:25], ""))
+                # The cell says NOT RUN and nothing else; the engine's reason is
+                # a sentence and goes underneath the table in full, never cut to
+                # the width of a column.
+                not_run[n] = reason
+                rows_b.append((name, n, "NOT RUN", ""))
+                rows_diff.append((name, n, "NOT RUN", ""))
                 continue
             cell_b = league.run_cell(bot_b, bot_name, name, n, hands, seed, config)
             cell_a = league.run_cell(bot_a, compare_name, name, n, hands, seed, config)
@@ -247,17 +290,20 @@ def run(
             rows_b.append((name, n, _interval_cell(interval_b), f"{cell_b.hands:>6}  {seconds:>6.1f}"))
             rows_diff.append((name, n, _interval_cell(interval_d), f"{cell_b.hands:>6}"))
 
+    notes = sorted(not_run.items())
     print_cells(
         out,
         f"big blinds per hundred hands for {bot_name}, by persona and table size",
         rows_b,
         f"{'hands':>6}  {'secs':>6}",
+        notes,
     )
     print_cells(
         out,
         f"paired difference, {bot_name} minus {compare_name}, same deals and same seats",
         rows_diff,
         f"{'hands':>6}",
+        notes,
     )
     verdict = league.decide(cells_b, cells_a, config, seed=seed)
     print_verdict(out, verdict, seats)

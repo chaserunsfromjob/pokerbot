@@ -78,6 +78,13 @@ COMBOS_SUITED = 4
 COMBOS_OFFSUIT = 12
 TOTAL_COMBOS = 1326
 
+#: What `build_persona` falls back to when a caller does not name a preflop
+#: rollout count. **The league never falls back**: it passes `preflop_rollouts`
+#: from `league_config.toml`, which is the pre-registered number every reported
+#: result is computed at, and the report prints it. This value is here for
+#: ad-hoc use at a prompt and for tests that do not care which count they get.
+DEFAULT_PREFLOP_ROLLOUTS = 120
+
 
 # --------------------------------------------------------------------------
 # Hand strength, asked of the engine
@@ -197,15 +204,18 @@ def class_combos(name: str) -> int:
 
 
 @functools.lru_cache(maxsize=4)
-def _preflop_ranking(rollouts: int) -> dict[str, float]:
-    """Every starting-hand class in the order the engine's showdowns put them.
+def preflop_equities(rollouts: int) -> dict[str, float]:
+    """What the engine's showdowns say each of the 169 starting classes is worth.
 
-    The value is the fraction of all starting hands that are at least this
-    strong, counted in combinations: 0.0 is the best hand there is and 1.0 the
-    worst. "The top 15% of hands" is then simply "this number is at most 0.15".
+    One representative two-card combination per class -- suit isomorphism is
+    ours to do, and every combination in a class is the same hand up to the
+    suits -- dealt out against random opponents on the engine `rollouts` times.
+    The number is how often the engine's own showdown said the class won.
 
-    The ordering is not ours. Each class is dealt out against random hands on
-    the engine and scored by how often the engine's own showdown says it won.
+    This is the map the ranking is built from, and it is exposed separately
+    because it is the thing worth asserting on: the cumulative fractions the
+    ranking returns rise at every step whatever the engine says, so they cannot
+    tell anyone whether the engine separated two classes or not.
     """
     equities: dict[str, float] = {}
     for i, high in enumerate(reversed(RANKS)):
@@ -219,7 +229,32 @@ def _preflop_ranking(rollouts: int) -> dict[str, float]:
                 equities[name] = showdown_equity(cards, (), rollouts)
                 name, cards = f"{high}{low}o", (high + "s", low + "h")
             equities[name] = showdown_equity(cards, (), rollouts)
-    ordered = sorted(equities, key=lambda n: -equities[n])
+    return equities
+
+
+@functools.lru_cache(maxsize=4)
+def _preflop_ranking(rollouts: int) -> dict[str, float]:
+    """Every starting-hand class in the order the engine's showdowns put them.
+
+    The value is the fraction of all starting hands that are at least this
+    strong, counted in combinations: 0.0 is the best hand there is and 1.0 the
+    worst. "The top 15% of hands" is then simply "this number is at most 0.15".
+
+    The ordering is not ours. Each class is dealt out against random hands on
+    the engine and scored by how often the engine's own showdown says it won.
+
+    **The tie-break, written down because a sample produces ties.** `rollouts`
+    showdowns can only tell two classes apart to within one showdown, so at the
+    count the league runs some classes land on exactly the same equity. Those
+    are settled **by class name, alphabetically** -- an arbitrary rule, chosen
+    only because it is fixed: without it the order of a tie would depend on the
+    order the loop above happened to build the map in, and reordering that loop
+    would silently move a persona's range. How many ties there are at the
+    configured count is asserted in `tests/test_personas.py`, so a count too
+    small to separate the classes fails the suite rather than passing quietly.
+    """
+    equities = preflop_equities(rollouts)
+    ordered = sorted(equities, key=lambda n: (-equities[n], n))
     cumulative: dict[str, float] = {}
     seen = 0
     for name in ordered:
@@ -228,8 +263,14 @@ def _preflop_ranking(rollouts: int) -> dict[str, float]:
     return cumulative
 
 
-def preflop_top_fraction(hole: Sequence[str], rollouts: int = 120) -> float:
-    """Where these two cards sit in the ranking: 0.02 means "top 2% of hands"."""
+def preflop_top_fraction(hole: Sequence[str], rollouts: int) -> float:
+    """Where these two cards sit in the ranking: 0.02 means "top 2% of hands".
+
+    `rollouts` has no default on purpose. It is `preflop_rollouts` in
+    `league_config.toml`, it decides how much of the order is the engine and how
+    much is sampling noise, and a default here would be a second place for that
+    pre-registered number to live and drift.
+    """
     return _preflop_ranking(rollouts)[hand_class(hole)]
 
 
@@ -330,11 +371,23 @@ class Persona:
     #: True for the four calibration agents of group A.
     calibration = False
 
-    def __init__(self, name: str, params: dict[str, float], rng: random.Random, rollouts: int = 24):
+    def __init__(
+        self,
+        name: str,
+        params: dict[str, float],
+        rng: random.Random,
+        rollouts: int = 24,
+        preflop_rollouts: int = DEFAULT_PREFLOP_ROLLOUTS,
+        rng_seed: int | None = None,
+    ):
         self.name = name
         self.params = dict(params)
         self.rng = rng
         self.rollouts = rollouts
+        self.preflop_rollouts = preflop_rollouts
+        # Kept so `new_session` can restart the coin flips where they began. A
+        # cell has to play the same way alone as it does inside a longer run.
+        self.rng_seed = rng_seed
 
     def __call__(self, hand: Hand, seat: int) -> Action:
         return self.act(seat_view(hand, seat))
@@ -346,13 +399,25 @@ class Persona:
         """Told what this seat won or lost, in big blinds, after each hand."""
 
     def new_session(self) -> None:
-        """Forget anything carried between hands. Called at the start of a cell."""
+        """Start a fresh cell: forget anything carried between hands, and wind
+        this persona's coin flips back to where they began.
+
+        Called at the top of every cell, on the opponents and on the bot under
+        measurement alike. Rewinding the flips is what makes one cell
+        reproducible on its own: without it, re-running a single cell to chase a
+        number down gives a different number from the one the report printed,
+        because the run before it had drawn from the same stream. A subclass
+        that carries something between hands overrides this and calls
+        `super().new_session()` first.
+        """
+        if self.rng_seed is not None:
+            self.rng.seed(self.rng_seed)
 
     def equity(self, view: SeatView) -> float:
         return showdown_equity(view.hole, view.board, self.rollouts)
 
     def top_fraction(self, view: SeatView) -> float:
-        return preflop_top_fraction(view.hole)
+        return preflop_top_fraction(view.hole, self.preflop_rollouts)
 
     def describe(self) -> str:
         if not self.params:
@@ -568,6 +633,7 @@ class Tilter(Persona):
         self._tilt_hands_left = 0
 
     def new_session(self) -> None:
+        super().new_session()
         self._tilt_hands_left = 0
 
     @property
@@ -751,7 +817,11 @@ def draw_parameters(name: str, rng: random.Random) -> dict[str, float]:
 
 
 def build_persona(
-    name: str, session_seed: int, rollouts: int = 24, stream: object = 0
+    name: str,
+    session_seed: int,
+    rollouts: int = 24,
+    preflop_rollouts: int = DEFAULT_PREFLOP_ROLLOUTS,
+    stream: object = 0,
 ) -> Persona:
     """One persona with this session's parameters drawn and recorded on it.
 
@@ -768,16 +838,32 @@ def build_persona(
     # flips at the table, so a persona that flips more coins one night does not
     # shift another persona's drawn parameters.
     draw_rng = random.Random(stable_seed(session_seed, name, "draw"))
-    play_rng = random.Random(stable_seed(session_seed, name, "play", stream))
+    play_seed = stable_seed(session_seed, name, "play", stream)
+    play_rng = random.Random(play_seed)
     params = draw_parameters(name, draw_rng)
-    return _CLASSES[name](name=name, params=params, rng=play_rng, rollouts=rollouts)
+    return _CLASSES[name](
+        name=name,
+        params=params,
+        rng=play_rng,
+        rollouts=rollouts,
+        preflop_rollouts=preflop_rollouts,
+        rng_seed=play_seed,
+    )
 
 
 def draw_session(
-    names: Iterable[str] = ALL_PERSONAS, session_seed: int = 0, rollouts: int = 24
+    names: Iterable[str] = ALL_PERSONAS,
+    session_seed: int = 0,
+    rollouts: int = 24,
+    preflop_rollouts: int = DEFAULT_PREFLOP_ROLLOUTS,
 ) -> dict[str, Persona]:
     """Every named persona, with its parameters drawn for this session."""
-    return {name: build_persona(name, session_seed, rollouts=rollouts) for name in names}
+    return {
+        name: build_persona(
+            name, session_seed, rollouts=rollouts, preflop_rollouts=preflop_rollouts
+        )
+        for name in names
+    }
 
 
 def parameter_log(personas: Iterable[Persona]) -> list[str]:

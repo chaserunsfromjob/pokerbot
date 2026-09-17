@@ -12,7 +12,7 @@ import random
 import pytest
 
 from pokerbot import Action, Table, TableConfig
-from pokerbot import personas
+from pokerbot import league, personas
 from pokerbot.personas import (
     ALL_PERSONAS,
     BEHAVIOURAL_PERSONAS,
@@ -173,18 +173,77 @@ def test_hand_strength_comes_from_the_engines_own_showdown():
     assert aces > rags
 
 
-def test_the_preflop_ranking_has_all_169_classes_in_a_strict_order():
-    """We count the classes; the engine ranks them."""
-    ranking = personas._preflop_ranking(120)
+#: The rollout count the league actually runs the preflop ranking at, read from
+#: the pre-registered config rather than written down twice. Every assertion
+#: below is about the ranking AT THAT COUNT: a ranking that is only stable at
+#: some other number of rollouts is not the one the personas play on.
+PREFLOP_ROLLOUTS = int(league.load_config().run["preflop_rollouts"])
+
+#: The thirteen suited connectors, 32s through AKs.
+SUITED_CONNECTORS = tuple(
+    f"{personas.RANKS[i + 1]}{personas.RANKS[i]}s"
+    for i in range(len(personas.RANKS) - 1)
+)
+
+
+def test_the_engines_showdowns_separate_the_169_classes_at_the_rollout_count_used():
+    """The ranking has to be an ordering of the engine's *equities*, not of a
+    running total that increases whatever the engine says.
+
+    The cumulative "top X%" figure rises by a class's combination count at every
+    step, so asserting that its 169 values differ asserts nothing at all: it is
+    true even if every class has the identical equity. What has to be checked is
+    the equity map underneath it, and it has to be checked at the rollout count
+    the league actually uses, because that count is what decides how much of the
+    order is engine and how much is sampling noise.
+    """
+    equities = personas.preflop_equities(PREFLOP_ROLLOUTS)
+    assert len(equities) == 169
+    distinct = len(set(equities.values()))
+    # Rollouts are a sample, so some classes land on the identical equity and
+    # the tie-break below settles them. Two bounds, and both matter: far too few
+    # distinct values would mean the order is mostly tie-break rather than
+    # engine, and 169 of them would mean this test had stopped being able to see
+    # a tie at all.
+    assert 140 <= distinct < 169, (
+        f"{distinct} distinct equities at {PREFLOP_ROLLOUTS} rollouts"
+    )
+    order = list(personas._preflop_ranking(PREFLOP_ROLLOUTS))
+    # Anchors. Not poker knowledge asserted here -- these are the engine's own
+    # showdowns, and the test fails if the wiring to them breaks or the sample
+    # gets too small to resolve them.
+    assert order[0] == "AA", f"the engine did not put AA first: {order[:5]}"
+    assert preflop_top_fraction(("7d", "2c"), PREFLOP_ROLLOUTS) > 0.90, (
+        "seven-deuce offsuit must land in the bottom tenth of the order"
+    )
+    worst_big_pair = min(equities[p + p] for p in "AKQ")
+    best_connector = max(equities[name] for name in SUITED_CONNECTORS)
+    assert worst_big_pair > best_connector, (
+        f"a suited connector outranked a pair QQ+: {worst_big_pair} vs {best_connector}"
+    )
+
+
+def test_the_preflop_ranking_covers_the_169_classes_and_breaks_ties_the_same_way_twice():
+    """We count the classes; the engine ranks them; the tie-break is written down."""
+    ranking = personas._preflop_ranking(PREFLOP_ROLLOUTS)
     assert len(ranking) == 169
-    assert len(set(ranking.values())) == 169, "two classes share a place in the order"
+    # The cumulative fractions are distinct because they are a running total, not
+    # because the engine separated every class. That is arithmetic, not a result.
+    assert len(set(ranking.values())) == 169
     # The combination counts have to add up to the whole deck's worth of hands.
     assert sum(personas.class_combos(name) for name in ranking) == personas.TOTAL_COMBOS
     assert hand_class(("As", "Ah")) == "AA"
     assert hand_class(("Ks", "Qs")) == "KQs"
     assert hand_class(("Ks", "Qh")) == "KQo"
-    assert preflop_top_fraction(("As", "Ah")) < preflop_top_fraction(("7d", "2c"))
-    assert preflop_top_fraction(("As", "Ah")) < 0.02
+    assert preflop_top_fraction(("As", "Ah"), PREFLOP_ROLLOUTS) < preflop_top_fraction(
+        ("7d", "2c"), PREFLOP_ROLLOUTS
+    )
+    assert preflop_top_fraction(("As", "Ah"), PREFLOP_ROLLOUTS) < 0.02
+    # The documented tie-break: equal equity is settled by class name, so the
+    # order does not depend on the order the loop happened to build the map in.
+    equities = personas.preflop_equities(PREFLOP_ROLLOUTS)
+    order = list(ranking)
+    assert order == sorted(order, key=lambda n: (-equities[n], n))
 
 
 def test_a_handicapped_bot_gives_up_more_often_than_the_bot_it_wraps():
