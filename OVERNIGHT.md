@@ -91,7 +91,8 @@ figure; and the rule correctly rejects a bot deliberately made worse.*
 
 1. Run `git fetch origin` before anything else, and `gh pr list` to see what
    others are working on.
-2. Branch from `main`, never from another open branch.
+2. JOB 1 continues on the existing `codex/tonight`. For JOB 2, cut the new
+   branch from `main`, never from `codex/tonight` or any other open branch.
 3. Within the first hour, push the branch (`git push -u origin <branch>`) and
    open a draft pull request (`gh pr create --draft`) titled with the job.
 4. Push at least once an hour after that, not once at the end.
