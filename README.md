@@ -234,8 +234,11 @@ The notebook is the bot's memory of the people it plays against. It watches
 every hand and writes down, for each player by name, how often the game offered
 them a particular spot and how often they did a particular thing in it: how
 often they put money in before the flop, how often they raised, how often they
-folded when someone bet at them, and a dozen more of the same shape. It changes
-nothing about how the bot plays. It only counts.
+folded when someone bet at them, and a dozen more of the same shape. The one
+hand it does not treat as a chance to put money in is the one where everybody
+folds and the last player left wins without playing, because nobody there was
+offered a pot worth entering; that hand counts as a hand watched and nothing
+more. It changes nothing about how the bot plays. It only counts.
 
 Two things stop it fooling itself. A player who has raised four times out of six
 is not a wild raiser, so every rate is pulled towards the average of everyone

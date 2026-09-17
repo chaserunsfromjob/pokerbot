@@ -10,11 +10,15 @@ is touched, so card-blindness is a property of the code rather than of a test.
 
 Where every rule in here comes from:
 
-* the stat definitions, literally: `OPPONENT_MODEL_DESIGN.md` section 4.2;
+* the stat definitions: `OPPONENT_MODEL_DESIGN.md` section 4.2, word for word
+  except where section 4.7 names a hand and hands it a different rule -- the
+  walk, where 4.7 row 2 overrides 4.2's `vpip` denominator, is the one such
+  place, and it is commented where it is coded;
 * `rate = (BASELINE*s + k)/(s + n)` and `confidence = n/(n + s)`, with `s` the
   stat's `PRIOR_STRENGTH`: section 4.3;
 * buckets, splits, hysteresis and the exploit flags: section 4.4;
-* the awkward hands: section 4.7;
+* the awkward hands, the walk that gives nobody a `vpip` opportunity among
+  them: section 4.7;
 * the identifier is the player's name, never the seat: section 7 Q2;
 * `BASELINE` is observed, never seeded from an archive: `OPPONENT_BASELINE.md`
   section 5;
@@ -457,8 +461,19 @@ def hand_counts(
     # -- preflop: vpip, pfr, limp, open_raise, three_bet, fold_to_three_bet --
     voluntary = {m.seat for m in preflop if m.kind in (CALL, BET, RAISE)}
     raised = {m.seat for m in preflop if m.kind == RAISE}
+    # A walk is a hand nobody entered: every seat that could act folded, so
+    # the big blind won the blinds without acting. Section 4.7 row 2 gives it
+    # one handling -- "increments `hands_dealt` only. No `vpip` opportunity
+    # for anyone" -- and that named row is what is implemented here, in
+    # preference to section 4.2's and Table C's general wording for `vpip`'s
+    # denominator, "opponent was dealt in" / "one per hand by definition".
+    # The two readings disagree only on this hand, and only about `vpip`; the
+    # stoker settled it on escalation 241e2f235c94 in favour of the named row.
+    # "For anyone" is read as written: the folders lose the opportunity too.
+    walk = not voluntary
     for seat in seats:
-        add(seat, "vpip", 1.0 if seat in voluntary else 0.0, 1.0)
+        if not walk:
+            add(seat, "vpip", 1.0 if seat in voluntary else 0.0, 1.0)
         add(seat, "pfr", 1.0 if seat in raised else 0.0, 1.0)
 
     first_preflop: dict[int, Move] = {}

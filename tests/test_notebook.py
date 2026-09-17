@@ -286,15 +286,24 @@ def test_edge_case_posting_the_blind_is_not_vpip():
     assert counted(book, "p2", "afq") == (0.0, 0.0)
 
 
-def test_edge_case_walk_counts_the_hand_and_nothing_positional():
+def test_edge_case_walk_counts_the_hand_and_gives_nobody_a_vpip_opportunity():
     """Row 2. Everyone folds to the big blind, who never gets to act.
 
-    `hands_dealt` still increments for everybody, and so does `vpip`'s
-    denominator, which section 4.2 and Table C both define as "opponent was
-    dealt in" -- one opportunity per hand by definition, which is also what
-    section 4.5's worked example counts (177 of 412). What the walk gives
-    nobody is a postflop spot, and it gives the big blind no chance to act at
-    all: no limp opportunity, no `three_bet` spot, no flop.
+    `hands_dealt` still increments for everybody. `vpip`'s denominator does
+    not: row 2 says a walk "increments `hands_dealt` only. No `vpip`
+    opportunity for anyone", and that named row is what this code follows,
+    over section 4.2's and Table C's general "opponent was dealt in" wording.
+    The stoker settled that reading on escalation 241e2f235c94. It is the
+    folders' opportunity that goes as well as the big blind's -- "for anyone"
+    is the whole of the row's point, since none of the five folders was
+    offered a pot worth entering either.
+
+    Only `vpip` is affected. The row names `vpip` and no other stat, so `pfr`
+    and everything else keep the denominator section 4.2 gives them.
+
+    What the walk gives nobody is a postflop spot, and it gives the big blind
+    no chance to act at all: no limp opportunity, no `three_bet` spot, no
+    flop.
     """
     record = make_record(
         6,
@@ -312,12 +321,41 @@ def test_edge_case_walk_counts_the_hand_and_nothing_positional():
     assert book.observe(record, SIX)
     for seat in range(6):
         assert book.hands(f"p{seat}") == 1.0
-        assert counted(book, f"p{seat}", "vpip") == (0.0, 1.0)
+        assert counted(book, f"p{seat}", "vpip") == (0.0, 0.0)
+        assert counted(book, f"p{seat}", "pfr") == (0.0, 1.0)
         assert counted(book, f"p{seat}", "wtsd") == (0.0, 0.0)
     # The big blind never acted, so nothing that needs a decision is recorded.
     assert counted(book, "p2", "limp") == (0.0, 0.0)
     assert counted(book, "p2", "three_bet") == (0.0, 0.0)
     assert counted(book, "p2", "afq") == (0.0, 0.0)
+
+
+def test_a_hand_that_is_not_a_walk_still_gives_every_seat_a_vpip_opportunity():
+    """Row 2 reaches walks and nothing else.
+
+    One limp is enough to make the hand a hand: the four players who folded
+    behind it each passed up a pot they could have entered, so each of them
+    gets the `vpip` opportunity section 4.2 gives them, and so does the big
+    blind who was allowed to check their option.
+    """
+    record = make_record(
+        6,
+        0,
+        [
+            (0, 3, "call", 100),
+            (0, 4, "fold", 0),
+            (0, 5, "fold", 0),
+            (0, 0, "fold", 0),
+            (0, 1, "fold", 0),
+            (0, 2, "call", 0),
+        ],
+        streets_dealt=(1, 2, 3),
+        net=[0, -50, 100, -100, 0, 0],
+    )
+    book = Notebook()
+    assert book.observe(record, SIX)
+    for seat in range(6):
+        assert counted(book, f"p{seat}", "vpip") == (1.0 if seat == 3 else 0.0, 1.0)
 
 
 def test_edge_case_player_dealt_out_gets_no_hands_dealt():
@@ -380,21 +418,26 @@ def test_edge_case_straddle_is_recorded_and_is_not_voluntary():
     Section 4.7 calls the shift in the opportunity definitions "a schema
     question, not an afterthought". This fixture pins what is counted today --
     the straddle survives into the record as a blind and buys its poster no
-    `vpip` -- so that a later change to the definitions is visible rather than
-    silent.
+    `vpip`, and neither does checking the option behind it -- so that a later
+    change to the definitions is visible rather than silent.
+
+    Seat 4 calls the straddle so that somebody has entered the pot. Without
+    that the hand would be a walk to the straddler, and row 2 would take the
+    `vpip` opportunity away before row 5 could say anything about it.
     """
     record = make_record(
         6,
         0,
         [
-            (0, 4, "fold", 0),
+            (0, 4, "call", 200),
             (0, 5, "fold", 0),
             (0, 0, "fold", 0),
             (0, 1, "fold", 0),
             (0, 2, "fold", 0),
+            (0, 3, "call", 0),
         ],
         extra_blinds=[(3, 200.0)],
-        net=[0, -50, -100, 150, 0, 0],
+        net=[0, -50, -100, 350, -200, 0],
     )
     view = blind_view(record)
     posts = {e.seat: e.amount for e in view.events if e.kind == "blind"}
@@ -990,11 +1033,14 @@ def test_hysteresis_holds_a_bucket_until_the_new_one_has_stood_for_ten_hands():
     """
     config = NotebookConfig(min_classify_hands=5, classify_confidence=0.05, hold_hands=3)
     book = Notebook(config)
+    # Seat 4 limps so the hand is not a walk; a walk would leave p3 with no
+    # `vpip` opportunity at all (section 4.7 row 2), and a player with no
+    # opportunities cannot clear the confidence gate to be classified.
     folds = make_record(
         6, 0,
-        [(0, 3, "fold", 0), (0, 4, "fold", 0), (0, 5, "fold", 0),
-         (0, 0, "fold", 0), (0, 1, "fold", 0)],
-        net=[0, -50, 50, 0, 0, 0],
+        [(0, 3, "fold", 0), (0, 4, "call", 100), (0, 5, "fold", 0),
+         (0, 0, "fold", 0), (0, 1, "fold", 0), (0, 2, "call", 0)],
+        net=[0, -50, 150, 0, -100, 0],
     )
     raises = make_record(
         6, 0,
