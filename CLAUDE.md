@@ -35,11 +35,12 @@ capture.
 
 ## Plan
 
-1. Superseded by the reconciliation the four surveys feed; the engine road is
-   OpenSpiel `universal_poker`.
+1. Superseded; the engine road is OpenSpiel `universal_poker`. What replaces this
+   stage is settled by the reconciliation of the four survey documents, which is
+   still to come.
 2. Layer in opponent modeling: track each player's tendencies and adjust
    against them specifically. This is the part that actually beats humans.
-3. Only if time remains: refine with a trained model on top of stages 1-2.
+3. Only if time remains: refine with a trained model on top of stage 2.
 
 ## Compute budget
 
@@ -58,7 +59,7 @@ capture.
 ## Licence
 
 - Keep pokerbot public at `github.com/chaserunsfromjob/pokerbot` so classmates can collaborate on it.
-- License pokerbot under GPL-3.0, whose full text is `LICENSE` at the root, because the vendored engine is GPL-3.0 and publishing is distribution.
+- License pokerbot under the GNU General Public License version 3 — GPL-3.0 — whose full text is `LICENSE` at the root, because the vendored engine is GPL-3.0 and publishing is distribution.
 - Keep every derived work under GPL-3.0 with its source published; the vendored engine's terms bind whatever is built on or combined with its code, not a separate program that merely ships beside it.
 - Take any move to close the repository, or to a different licence, to the operator first.
 

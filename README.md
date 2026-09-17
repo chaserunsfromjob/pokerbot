@@ -6,7 +6,11 @@ goal, the rules this project works under, and the plan.
 This project is published under the GNU General Public License version 3, whose
 full terms are in `LICENSE`, because the borrowed poker engine in
 `vendor/poker_ai` carries that licence and publishing this repository counts as
-distributing it.
+distributing it. That permission cannot be taken back: anyone who has already
+taken a copy under this licence keeps those rights permanently, so long as they
+keep to the licence's conditions, and making the repository private later or
+putting it under a different licence would only change what people get from that
+point on.
 
 What the borrowed poker engine is, how to run it, and why converting it to a
 normal 52-card deck was ruled out: `REFERENCE_NOTES.md`.
