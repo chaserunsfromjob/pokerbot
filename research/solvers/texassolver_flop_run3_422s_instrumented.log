@@ -1,0 +1,47 @@
+wall (clock):      422.5 s
+wall (monotonic):  422.5 s
+cpu:               462.2 s  (1.09 cores busy of 10)
+max rss:           5.41 GiB
+major page faults: 1653   (disk-backed page-ins by the solver itself)
+minor page faults: 47400390
+ru_nswap:          0
+ctx switches:      voluntary 1070957, involuntary 4861014
+iterations printed:[0, 2, 3]
+exploitability:    ['226.38864', '221.72139']
+solver's own timer:['109.958']
+killed by deadline:True
+
+machine-wide samples (shared laptop; other agents run here too):
+     t  load1     Pageouts     Swapouts      Swapins swapusage
+     0   3.75      7923783     59021038     55370170  total = 6144.00M  used = 4559.19M  free = 1584.81M  (encrypted)
+    15   5.26      7923812     59021038     55375631  total = 6144.00M  used = 4479.19M  free = 1664.81M  (encrypted)
+    30   6.36      7923877     59174082     55387276  total = 7168.00M  used = 6670.19M  free = 497.81M  (encrypted)
+    45   6.89      7923955     59598882     55763825  total = 8192.00M  used = 7429.88M  free = 762.12M  (encrypted)
+    60   6.23      7924118     59846126     55995750  total = 9216.00M  used = 7690.31M  free = 1525.69M  (encrypted)
+    75   6.06      7924204     60098230     56275097  total = 9216.00M  used = 7247.50M  free = 1968.50M  (encrypted)
+    90   5.65      7924283     60356834     56494769  total = 8192.00M  used = 7810.50M  free = 381.50M  (encrypted)
+   105   5.24      7924334     60568022     56677866  total = 9216.00M  used = 8253.81M  free = 962.19M  (encrypted)
+   120   4.44      7924396     60768470     56844742  total = 9216.00M  used = 8762.81M  free = 453.19M  (encrypted)
+   135   5.23      7924576     60971854     57051654  total = 10240.00M  used = 8722.50M  free = 1517.50M  (encrypted)
+   150   5.12      7924600     61171478     57244647  total = 10240.00M  used = 8832.00M  free = 1408.00M  (encrypted)
+   166   6.33      7924676     61353878     57413607  total = 10240.00M  used = 9027.62M  free = 1212.38M  (encrypted)
+   181   6.40      7924760     61536454     57605751  total = 10240.00M  used = 8888.31M  free = 1351.69M  (encrypted)
+   196   5.51      7924813     61735518     57802164  total = 10240.00M  used = 8918.12M  free = 1321.88M  (encrypted)
+   211   5.08      7924900     61902622     57985905  total = 10240.00M  used = 8655.62M  free = 1584.38M  (encrypted)
+   226   5.75      7924935     62135754     58191712  total = 10240.00M  used = 9088.62M  free = 1151.38M  (encrypted)
+   241   5.72      7925028     62314538     58356562  total = 10240.00M  used = 9312.44M  free = 927.56M  (encrypted)
+   256   5.85      7925165     62492914     58499434  total = 10240.00M  used = 9888.94M  free = 351.06M  (encrypted)
+   271   6.26      7925245     62680206     58677370  total = 11264.00M  used = 10018.56M  free = 1245.44M  (encrypted)
+   286   5.75      7925319     62842802     58836450  total = 11264.00M  used = 10055.00M  free = 1209.00M  (encrypted)
+   301   6.02      7925388     63015950     59008573  total = 11264.00M  used = 10063.69M  free = 1200.31M  (encrypted)
+   316   5.86      7925423     63207018     59174965  total = 11264.00M  used = 10472.19M  free = 791.81M  (encrypted)
+   331   5.36      7925545     63372858     59324729  total = 11264.00M  used = 10718.19M  free = 545.81M  (encrypted)
+   346   5.99      7925572     63553650     59478180  total = 12288.00M  used = 11147.19M  free = 1140.81M  (encrypted)
+   361   5.82      7925605     63694606     59605112  total = 12288.00M  used = 11362.25M  free = 925.75M  (encrypted)
+   376   5.26      7925809     63848554     59762035  total = 12288.00M  used = 11326.31M  free = 961.69M  (encrypted)
+   391   5.25      7925862     63996754     59899445  total = 12288.00M  used = 11488.94M  free = 799.06M  (encrypted)
+   406   4.99      7925893     64158878     60079942  total = 12288.00M  used = 11198.31M  free = 1089.69M  (encrypted)
+   421   4.74      7925979     64292970     60183388  total = 12288.00M  used = 11684.69M  free = 603.31M  (encrypted)
+   422   4.44      7925979     64293006     60183768  total = 12288.00M  used = 11676.94M  free = 611.06M  (encrypted)
+
+delta over the run: pageouts 2196, swapouts 5271968, swapins 4813598 (16 KiB pages, whole machine)
