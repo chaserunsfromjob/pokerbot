@@ -147,14 +147,19 @@ and nobody has built it.** Whether an hours-sized abstraction exists is untested
 and is **not** ruled out here.
 
 Keep `fedden/poker_ai` in the repository for reference only, and spend no more
-time adapting it - but that sentence is an edit to `CLAUDE.md`, and it is
-flagged here rather than slipped past. `CLAUDE.md:7-9` makes
-`fedden/poker_ai` the stated basis of the whole project, and `CLAUDE.md:35-37`
-makes "find out what it takes to move it off the default 20-card short deck"
-stage 1 of the plan. Stopping work on it reverses both. **This document does not
-make that edit.** It is made, or refused, by the operator at the same
-reconciliation of `ENGINE_ALTERNATIVES.md`, `RESOURCES_BOTS.md` and
-`RESOURCES_SOLVERS.md` that decides the rule question above.
+time adapting it. When an earlier draft of this document said that, it was an
+edit to `CLAUDE.md` that this document had no authority to make: that file's
+opening paragraph then made `fedden/poker_ai` "this project's basis", and its
+"## Plan" stage 1 was "find out what it takes to move it off the default
+20-card short deck". **The operator has since made the edit.** `CLAUDE.md`'s
+opening paragraph now reads "The engine road is OpenSpiel's `universal_poker`"
+with `fedden/poker_ai` "a reference only, not as this project's basis", and
+"## Plan" stage 1 now reads "Superseded; the engine road is OpenSpiel
+`universal_poker`", with what replaces it left to the reconciliation of
+`ENGINE_ALTERNATIVES.md`, `RESOURCES_BOTS.md` and `RESOURCES_SOLVERS.md`.
+So this recommendation no longer contradicts `CLAUDE.md`; what that
+reconciliation still owes is the replacement stage 1, and the rule question
+above.
 
 ## Why - the measurement that carries the recommendation
 
@@ -236,10 +241,10 @@ distance is the **standard deviation** described above - measured over
 n = 100,000 random hands, `bench_play.py variance 100000`. That is the number
 that governs every claim about how well anything plays. It means a result
 measured over 300 hands could easily be wrong by about **±25 big blinds a
-hand**, which is many times larger than any plausible edge. An earlier draft of this document reported **+3.87 big
-blinds a hand over 300 hands**. That figure is **withdrawn**: at that sample
-size it was indistinguishable from zero, and quoting it without its interval
-made noise look like evidence.
+hand**, which is many times larger than any plausible edge. An earlier draft
+of this document reported **+3.87 big blinds a hand over 300 hands**. That
+figure is **withdrawn**: at that sample size it was indistinguishable from
+zero, and quoting it without its interval made noise look like evidence.
 
 Rerun properly, with the interval:
 
@@ -275,9 +280,9 @@ own candidate rankings are inside their own noise.
 
 **What it costs to answer the real question.** With a typical hand landing 223
 big blinds from the average, bounding a result to ±10 big blinds takes about
-**1,900 hands** and to ±1 big blind about **190,000**. Against a slow opponent the hands come slower
-too. Any future strength claim in this project should carry its hand count and
-its interval, or it is not a claim.
+**1,900 hands** and to ±1 big blind about **190,000**. Against a slow
+opponent the hands come slower too. Any future strength claim in this project
+should carry its hand count and its interval, or it is not a claim.
 
 What this establishes, and only this: **a playable 52-card no-limit bot for 2 to
 9 players on one laptop is reachable in hours by computing at decision time,
@@ -353,11 +358,11 @@ the train-in-advance road cannot simply be started.
   cost of *that* approach, **not a lower bound on every possible abstraction**.
 - `RESOURCES_BOTS.md` (under review, not accepted) reports that **NoRegrets**'
   README claims a blueprint for 2 to 6 players from 200 million iterations in
-  about an hour on 16 cores (400 million in 1 h 56 m). That is an **unverified claim under
-  review** - not built, not run, not timed on this machine, and its macOS build
-  is unverified too. But it is a live claim that training in advance can fit in
-  hours, and it is enough to rule out saying that road is closed for every
-  engine.
+  about an hour on 16 cores (400 million in 1 h 56 m). That is an **unverified
+  claim under review** - not built, not run, not timed on this machine, and
+  its macOS build is unverified too. But it is a live claim that training in
+  advance can fit in hours, and it is enough to rule out saying that road is
+  closed for every engine.
 
 So the honest scope: decision-time computing **needs no abstraction**, because
 it never needs a strategy for a situation it is not currently in, and that is
@@ -398,6 +403,23 @@ The six repeats below all ran at a load between **3.08 and 3.96**, and the load
 is printed beside every figure in the raw output,
 `research/engine_alternatives/raw/paired_session.txt`. `paired_session.py` is
 what does this; `bench_speed.py` is the part of it that produced this table.
+
+**Checked again a day later, on a busier machine, and it reproduces.** A second
+sitting on 2026-09-16 ran the same four programs in the same rotation, two
+repeats of eight seconds a row, at loads of **3.39 to 4.66** - this time without
+waiting for the load to fall, because the laptop was shared all evening and it
+never settled; every figure in that run is recorded with the load it was taken
+at, in `research/engine_alternatives/raw/paired_session_2.txt`. The result is
+the one to expect: **the ratios held and the absolute speeds came out lower.**
+The chooser got 11,535 - 13,108 play-outs per `fcpa` decision and 202 - 245 per
+`fullgame` decision; OpenSpiel ran 42,541 - 48,572 complete `fcpa` hands a
+second, about 12 per cent under the quieter sitting at its worst. Every ratio
+this document argues from was at least as favourable as the figure quoted
+below: OpenSpiel over `texasholdem` on the menu 5.7 - 6.8 (quoted 5.5),
+over PokerKit 71 - 74 (quoted 64.5), over PyPokerEngine 55 - 61 (quoted 51).
+**This is why the document argues from ratios within a sitting and not from the
+absolute speeds:** the absolute speeds move with whatever else the laptop is
+doing, and the ratios do not.
 
 | Engine and betting mode | Complete hands per second (min - median - max over 6 repeats) | Play-outs in a 250 ms decision, at the median |
 | --- | --- | --- |
@@ -554,7 +576,10 @@ draw, in the same six-repeat sitting as the speeds above and at the same machine
 loads: **102,384 - 105,119 - 105,504 redraws per second at the first decision
 after the deal**, and **91,486 - 98,074 - 98,916 per second at a later decision
 in the same hand** (ten seconds per position per repeat; lowest, middle and
-highest of the six). So **of the order of 100,000 a second**, and the later
+highest of the six). The busier second sitting gave **79,850 - 85,010** and
+**74,712 - 84,387** for the same two positions at loads of 3.39 to 4.66, which
+is the same story slowed down. So **of the order of 100,000 a second on a quiet
+machine and not far under it on a busy one**, and the later
 position is now consistently the slower of the two by about 7 per cent, which is
 the direction you would expect from a longer history to replay. An earlier draft
 had these the other way round and put the difference down to noise; taken in
@@ -698,9 +723,11 @@ Driven through that `Emulator`, cloning one mid-hand position and playing the
 clone out on the same four-move menu the other engines were given, it manages
 **895 - 1,053 - 1,136 play-outs per second** (lowest, middle and highest of six
 repeats of ten seconds, taken in the same sitting and at the same machine loads
-as every other timing here). That is about **260 play-outs in a 250 ms
-decision**, against the **12,373** the chooser gets out of OpenSpiel in the same
-quarter-second on the same menu - a factor of **29 to 59, median 47**. Split
+as every other timing here; the busier second sitting gave **878 - 958** at
+loads of 3.68 to 4.66, so the rejection does not turn on which evening it was
+measured). That is about **260 play-outs in a 250 ms decision**, against the
+**12,373** the chooser gets out of OpenSpiel in the same quarter-second on the
+same menu - a factor of **29 to 59, median 47**. Split
 across eight candidate moves, 260 play-outs is 33 apiece, which as the PokerKit
 entry sets out is not enough to tell four actions apart. Complete hands from
 scratch tell the same story: 457 - 926 - 959 a second on the menu, 50 to 104
@@ -773,6 +800,33 @@ speed could decide anything, not that it was too slow to measure.
 | PokerRL | yes | **no** - heads-up CFR | no | n/a | n/a | heads-up only | **no** |
 | `clubs` | yes (19,801) | yes | no | n/a | n/a | no | **no** |
 | `fedden/poker_ai` (current) | **no** - fixed-limit | 2-6 at 20 cards | **no - 18+ days + 147 GiB** | n/a | n/a | yes, but limit only | yes |
+
+### Does the licence fit?
+
+This project is now a **public** repository under the **GNU General Public
+License version 3** (*GPL-3.0*, full text in `LICENSE` at the root), so the
+question a licence has to answer here is no longer "may we use this privately?"
+but **"may we ship it inside a published GPL-3.0 project?"**. A licence permits
+that if it asks nothing of us beyond publishing our own source, which we are
+doing anyway. `RESOURCES_BOTS.md` section 2 judges its own criterion (e) on
+exactly this standard.
+
+Every candidate above passes, and none of them was a close call:
+
+| Engine | Licence | Fits a public GPL-3.0 repository? |
+| --- | --- | --- |
+| OpenSpiel `universal_poker` | Apache-2.0 | yes - Apache-2.0 code may be combined into a GPL-3.0 work |
+| PokerKit | MIT | yes - MIT asks only that its notice travel with the code |
+| `texasholdem` | MIT | yes - same |
+| PyPokerEngine | MIT | yes - same |
+| RLCard | MIT | yes - same |
+| PokerRL | MIT | yes - same |
+| `clubs` | GPL-3.0 | yes - the same licence this project is under |
+| `fedden/poker_ai` (vendored) | GPL-3.0 | yes - the same licence, which is why vendoring it was safe |
+
+So **no engine was rejected on its licence, and none could have been.** The
+recommendation would be unchanged if this repository were private. Licences
+read from each package's own metadata and from `vendor/poker_ai/LICENSE`.
 
 `fedden/poker_ai` is **archived** on GitHub as of 2023-04-03. Archived means
 frozen read-only - upstream cannot accept a fix even in principle.

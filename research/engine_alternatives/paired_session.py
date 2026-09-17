@@ -30,6 +30,7 @@ the machine to sleep part way through; if a banner still reports a sleep, the
 figures under it are discarded.
 
 Usage:  caffeinate -i python paired_session.py [repeats] [seconds_per_speed_row]
+                                              [max_seconds_to_wait_for_quiet]
 
 Research artefact. Not the bot, not on the bot's import path.
 """
@@ -44,7 +45,7 @@ import time
 HERE = os.path.dirname(os.path.abspath(__file__))
 PYTHON = sys.executable
 MAX_LOAD = 4.0
-MAX_WAIT_S = 1800
+MAX_WAIT_S = 1800  # default; the third argument overrides it, 0 = never wait
 DECISIONS = 20
 BUDGET_S = 0.25
 PYPOKER_POSITION = "first decision after the deal"
@@ -55,11 +56,15 @@ def load_average():
     return os.getloadavg()[0]
 
 
-def wait_for_quiet():
-    """Wait until the machine is idle enough to time on, or give up saying so."""
+def wait_for_quiet(max_wait_s=MAX_WAIT_S):
+    """Wait until the machine is idle enough to time on, or give up saying so.
+
+    `max_wait_s=0` means do not wait at all: run under whatever load there is
+    and record it, which is what a shared machine sometimes forces.
+    """
     waited = 0
     load = load_average()
-    while load > MAX_LOAD and waited < MAX_WAIT_S:
+    while load > MAX_LOAD and waited < max_wait_s:
         print(f"    [load {load:.2f} > {MAX_LOAD}, waiting 60s "
               f"({waited}s waited so far)]", flush=True)
         time.sleep(60)
@@ -76,7 +81,7 @@ def clock():
     return time.strftime("%H:%M:%S")
 
 
-def run(args, label):
+def run(args, label, max_wait_s=MAX_WAIT_S):
     """Run one measuring program, with the load average recorded beside it.
 
     The banners also carry the time of day, and the end banner says if the
@@ -85,7 +90,7 @@ def run(args, label):
     run the machine slept through looks fine to the program and is wrong. Any
     figure under a banner that reports a sleep is to be discarded.
     """
-    load = wait_for_quiet()
+    load = wait_for_quiet(max_wait_s)
     print(f"--- {label} [1-minute load average at start: {load:.2f}, "
           f"{clock()}] ---", flush=True)
     wall0, mono0 = time.time(), time.monotonic()
@@ -143,30 +148,33 @@ def spread(xs):
 def main():
     repeats = int(sys.argv[1]) if len(sys.argv) > 1 else 6
     speed_seconds = float(sys.argv[2]) if len(sys.argv) > 2 else 10.0
+    max_wait_s = int(sys.argv[3]) if len(sys.argv) > 3 else MAX_WAIT_S
     print(f"paired session: {repeats} repeats, each running chooser fcpa, "
           f"chooser fullgame, bench_speed {speed_seconds:.0f}s per row, "
           f"resample_opponents {speed_seconds:.0f}s per position, back to back")
     print(f"load gate: wait while the 1-minute load average is above "
-          f"{MAX_LOAD}, up to {MAX_WAIT_S}s")
+          f"{MAX_LOAD}, up to {max_wait_s}s"
+          + (" (0 = run under whatever load there is, and record it)"
+             if max_wait_s == 0 else ""))
     print(f"python={PYTHON}")
     rows = []
     for r in range(1, repeats + 1):
         print(f"\n=== repeat {r} ===", flush=True)
         fcpa_out, fcpa_load = run(
             ["chooser.py", "fcpa", str(DECISIONS), str(BUDGET_S)],
-            f"repeat {r}: chooser fcpa")
+            f"repeat {r}: chooser fcpa", max_wait_s)
         full_out, full_load = run(
             ["chooser.py", "fullgame", str(DECISIONS), str(BUDGET_S)],
-            f"repeat {r}: chooser fullgame")
+            f"repeat {r}: chooser fullgame", max_wait_s)
         speed_out, speed_load = run(
             ["bench_speed.py", str(speed_seconds)],
-            f"repeat {r}: bench_speed")
+            f"repeat {r}: bench_speed", max_wait_s)
         res_out, res_load = run(
             ["resample_opponents.py", str(speed_seconds)],
-            f"repeat {r}: resample_opponents")
+            f"repeat {r}: resample_opponents", max_wait_s)
         pyp_out, pyp_load = run(
             ["pypoker_playouts.py", str(speed_seconds)],
-            f"repeat {r}: pypoker_playouts")
+            f"repeat {r}: pypoker_playouts", max_wait_s)
         rows.append({
             "fcpa": parse_chooser(fcpa_out), "fcpa_load": fcpa_load,
             "fullgame": parse_chooser(full_out), "fullgame_load": full_load,
