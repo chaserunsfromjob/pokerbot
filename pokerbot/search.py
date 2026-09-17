@@ -63,10 +63,12 @@ BUDGET_S = 0.25
 #: result impossible to reproduce. The clock is still there, as the cap that
 #: `BUILD_PLAN.md` requires; this number is set low enough that on the machine
 #: `DECISION_LAYER_SEARCH.md` measured -- about 2,400 finishes per 250 ms at
-#: six seats -- the count is reached first with room to spare. Measured here:
-#: five moves x 200 finishes takes about 60 ms at six seats at load 4.2, a
-#: quarter of the budget, so the machine has to be four times slower than it
-#: was measured on before the clock, rather than the count, ends a search.
+#: six seats -- the count is reached first with room to spare. Measured here,
+#: over the thousand hands in `tests/data/arena_6seat_1000hands.json` at six
+#: seats at load 3.6: a decision takes 34 ms at the median and 82 ms at its
+#: slowest, against a 250 ms budget. So the machine has to be three times
+#: slower than that before the clock, rather than the count, ends a search,
+#: and in that run none was ended by the clock.
 PLAYOUTS_PER_CANDIDATE = 200
 
 #: How much of the budget is held back so that the finish already under way
