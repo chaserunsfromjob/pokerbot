@@ -206,6 +206,99 @@ def _acpc_cards(state, seats: int) -> tuple[list[set[str]], list[str]]:
     return holes, board
 
 
+@dataclasses.dataclass(frozen=True)
+class EngineView:
+    """The engine's own position, as the seat to act is allowed to see it.
+
+    This is the one window the adapter opens onto `pyspiel`, and it exists so
+    that a decision layer (task T2's search) can look ahead in *the engine's*
+    tree instead of a tree written here, which `CLAUDE.md`'s forefront rule
+    requires. It carries no judgement of its own: no hand strength, no ranking,
+    no advice about what to do.
+
+    What makes it safe to hand out is `history`. The engine's own history is
+    the list of everything that has been applied to the game from the deal
+    onwards, hole cards included -- every seat's. Here each card the seat to
+    act has *not* seen is replaced by `None`, so a search built on this view
+    cannot read an opponent's cards even by accident: it has to deal the
+    unseen slots itself out of the cards it can account for, which is the
+    ordinary card bookkeeping `CLAUDE.md` puts on our side of the line.
+
+    The history is not all cards. Past the hole cards it holds the board *and*
+    every bet made, and the two are not told apart by their values: under
+    `fchpa` the five moves are numbered 0 to 4 and so are the first five cards
+    of the deck, so a call and the deuce of diamonds are both the integer 1.
+    `card_slots` is how anyone reading this view knows which is which, and it
+    is recorded by the `Hand` as it deals rather than guessed at afterwards.
+
+    * `game_string`   the ACPC game definition, so the searcher can load its
+                      own copy of the same game and replay into it.
+    * `player`        engine seat index of the seat to act.
+    * `seat`          the same seat in table numbering.
+    * `hole_slots`    how many of the leading history entries are hole cards.
+    * `card_slots`    which history positions the engine dealt a card at; every
+                      other position is a bet, not a card.
+    * `history`       the masked history described above.
+    * `menu`          what that seat may do, the five-move menu.
+    """
+
+    game_string: str
+    seats: int
+    player: int
+    seat: int
+    hole_slots: int
+    card_slots: tuple[int, ...]
+    history: tuple[int | None, ...]
+    menu: tuple[Action, ...]
+
+    def unseen_slots(self) -> tuple[int, ...]:
+        """Which history positions are cards this seat has not been shown."""
+        return tuple(i for i in self.card_slots if self.history[i] is None)
+
+    def seen_cards(self) -> frozenset[int]:
+        """Every card this seat can account for: its own two and the board.
+
+        Only the positions a card was dealt at are read. Taking every non-None
+        entry instead counts bets as cards, and so strikes real cards out of
+        the deck a search deals from -- one of the first five, whenever anyone
+        folds, calls or bets.
+        """
+        return frozenset(
+            self.history[i] for i in self.card_slots if self.history[i] is not None
+        )
+
+
+def engine_menu(state) -> dict[Action, int]:
+    """The five-move menu for whichever seat is to act in `state`.
+
+    Module level rather than a method because a decision layer searching the
+    engine's own tree (task T2) reaches states of its own, built by replaying
+    a hand into a fresh copy of the game, and has to read the same menu off
+    them. Translating the engine's move names into the menu is adapter work:
+    it decides nothing, it only says what the engine is offering.
+    """
+    player = state.current_player()
+    menu: dict[Action, int] = {}
+    for engine_action in state.legal_actions():
+        text = state.action_to_string(player, engine_action)
+        move = _MOVE_RE.search(text)
+        require(
+            move is not None,
+            "I4",
+            f"the engine described an action as {text!r}",
+            text,
+        )
+        name = move.group(1)
+        require(
+            name in _ENGINE_MOVE_TO_ACTION,
+            "I4",
+            f"the engine offered {name!r}, which is not in the fchpa menu",
+            text,
+        )
+        menu[_ENGINE_MOVE_TO_ACTION[name]] = engine_action
+    return menu
+
+
 class Hand:
     """One hand at one table, from the deal to the payouts.
 
@@ -236,6 +329,10 @@ class Hand:
         self._hole: list[list[str]] = [[] for _ in range(n)]
         self._board: list[str] = []
         self._deals_seen = 0
+        #: Where in the engine's history each card was dealt. Kept as the deal
+        #: happens because nothing after it can tell a card from a bet: see
+        #: `EngineView`.
+        self._card_slots: list[int] = []
         self._folded = [False] * n
         self._record: HandRecord | None = None
         self._advance_chance()
@@ -266,6 +363,7 @@ class Hand:
         while not self._state.is_terminal() and self._state.is_chance_node():
             legal = self._state.legal_actions()
             card = legal[self._rng.randrange(len(legal))]
+            self._card_slots.append(len(self._state.history()))
             self._state.apply_action(card)
             self._note_card(card)
 
@@ -334,33 +432,74 @@ class Hand:
         return self.seat_of(self._state.current_player())
 
     def _menu(self) -> dict[Action, int]:
-        state = self._state
-        player = state.current_player()
-        menu: dict[Action, int] = {}
-        for engine_action in state.legal_actions():
-            text = state.action_to_string(player, engine_action)
-            move = _MOVE_RE.search(text)
-            require(
-                move is not None,
-                "I4",
-                f"the engine described an action as {text!r}",
-                text,
-            )
-            name = move.group(1)
-            require(
-                name in _ENGINE_MOVE_TO_ACTION,
-                "I4",
-                f"the engine offered {name!r}, which is not in the fchpa menu",
-                text,
-            )
-            menu[_ENGINE_MOVE_TO_ACTION[name]] = engine_action
-        return menu
+        return engine_menu(self._state)
 
     def legal_actions(self) -> list[Action]:
         """What the seat to act may do, taken from the engine's own list."""
         if self._state.is_terminal():
             return []
         return [a for a in Action if a in self._menu()]
+
+    def engine_view(self) -> EngineView:
+        """Open the one window onto the engine, for the seat to act.
+
+        Task T2's search needs the engine's own tree to look ahead in; this
+        hands it the position with every card the acting seat has not seen
+        blanked out. See `EngineView`. Nothing in this method chooses or
+        scores an action.
+        """
+        state = self._state
+        require(
+            not state.is_terminal(),
+            "I7",
+            "the engine was asked for a view of a hand that is already over",
+        )
+        require(
+            not state.is_chance_node(),
+            "I7",
+            "the engine was asked for a view while cards were still to come",
+        )
+        # The deal order the adapter attributes cards by -- two cards to
+        # engine seat 0, two to engine seat 1, and so on -- is the same one
+        # `_check_cards_against_engine` proves against the engine's own ACPC
+        # string, so prove it here too before masking anything by it.
+        self._check_cards_against_engine()
+        player = state.current_player()
+        hole_slots = 2 * self.config.seats
+        history = list(state.history())
+        require(
+            len(history) >= hole_slots,
+            "I7",
+            f"the engine has dealt {len(history)} cards, fewer than the "
+            f"{hole_slots} hole cards {self.config.seats} seats need",
+        )
+        masked = [
+            card if i >= hole_slots or i // 2 == player else None
+            for i, card in enumerate(history)
+        ]
+        # The recorded card positions are what the view's readers tell a card
+        # from a bet by, so check them against what was actually dealt before
+        # handing them out: the hole cards come first and in order, and there
+        # is one position per card this hand has seen.
+        card_slots = tuple(self._card_slots)
+        require(
+            len(card_slots) == self._deals_seen
+            and card_slots[:hole_slots] == tuple(range(hole_slots))
+            and all(slot < len(history) for slot in card_slots),
+            "I7",
+            f"the deal was recorded at history positions {card_slots} for "
+            f"{self._deals_seen} cards in a history of {len(history)}",
+        )
+        return EngineView(
+            game_string=self.game_string,
+            seats=self.config.seats,
+            player=player,
+            seat=self.seat_of(player),
+            hole_slots=hole_slots,
+            card_slots=card_slots,
+            history=tuple(masked),
+            menu=tuple(self.legal_actions()),
+        )
 
     def apply_action(self, action: Action) -> None:
         """Carry out one seat's move, refusing anything the engine disallows."""
