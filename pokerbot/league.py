@@ -31,7 +31,8 @@ and section 3.5 is the rule it implements, in that document's own order:
 
 **What a bot is, here.** Any callable `bot(hand, seat) -> Action`: the adapter's
 own view of a decision. Every persona is one, and so is anything else with that
-signature -- T2's search bot plugs in by being registered under a name.
+signature -- T2's search bot plugs in by being registered under a name, which
+`SearchBot` at the foot of this file does under the name `search`.
 """
 
 from __future__ import annotations
@@ -52,13 +53,18 @@ from .personas import (
     build_persona,
     stable_seed,
 )
+# Renamed on the way in: this module's own `decide` is the verdict, and the
+# search's is one move. Two different questions, and neither may shadow the
+# other.
+from .search import BUDGET_S, PLAYOUTS_PER_CANDIDATE, decide as search_decide
 from .table import Action, Hand, Table, TableConfig, deal_check
 
 CONFIG_PATH = Path(__file__).with_name("league_config.toml")
 
 #: Bots the scoreboard can be pointed at that are not personas. A factory takes
-#: the session seed and returns an `Agent`. T2's search bot joins the league by
-#: calling `register_bot("search", factory)`; nothing else has to change.
+#: the session seed and returns an `Agent`. T2's search bot is in here under
+#: the name `search`, registered at the foot of this file by `SearchBot`;
+#: anything else joins the same way, and nothing else has to change.
 _BOT_FACTORIES: dict[str, Callable[[int], Agent]] = {}
 
 
@@ -754,6 +760,81 @@ def _weighted_primary(paired, weights: Mapping[int, float], config: Config, seed
         p_value=_bootstrap_p_value(draws, resamples),
     )
 
+
+# --------------------------------------------------------------------------
+# T2's search bot, wearing the adapter's signature
+# --------------------------------------------------------------------------
+
+
+class SearchBot:
+    """`search.decide` seen through the league's `(hand, seat)` view.
+
+    A shim and nothing else. It changes no part of how the bot plays: the
+    number of finishes per candidate move and the clock are `search.py`'s own
+    module defaults, which are the ones `arena.py` runs with, so the bot the
+    scoreboard measures is the bot the arena measured. The only work done here
+    is turning the league's `(hand, seat)` call into the `EngineView` the
+    search takes, and picking the seed for it.
+
+    **The seed.** `search.decide` is reproducible from its seed, so the seed
+    has to be a function of the hand and of how many times the bot has already
+    acted in *that* hand -- never of how many hands or cells came before it.
+    That is what lets one cell be re-run on its own and give the number the
+    report printed, which is what `run_cell` asks of any bot registered here.
+    A fresh `Hand` object means a fresh hand, so the counter restarts whenever
+    the hand it is handed is not the one it was handed last.
+
+    `truncated`, `starved` and `decisions` are tallies kept for the run's own
+    record: how often the clock, rather than the finish count, ended a search
+    (which would make that decision unreproducible), and how often it ended one
+    before a single hand had been finished. They are read, never acted on, so
+    they cannot change a move; `new_session` leaves them alone for that reason.
+    """
+
+    #: No hand's play depends on an earlier hand: the search starts from the
+    #: position in front of it every time. The block bootstrap is not needed.
+    has_memory = False
+
+    def __init__(
+        self,
+        session_seed: int,
+        budget_s: float = BUDGET_S,
+        playouts_per_candidate: int = PLAYOUTS_PER_CANDIDATE,
+    ):
+        self.session_seed = int(session_seed)
+        self.budget_s = budget_s
+        self.playouts_per_candidate = playouts_per_candidate
+        self._hand = None
+        self._acted_this_hand = 0
+        self.decisions = 0
+        self.truncated = 0
+        self.starved = 0
+
+    def new_session(self) -> None:
+        """Start a fresh cell. There is nothing carried between hands to drop."""
+        self._hand = None
+        self._acted_this_hand = 0
+
+    def __call__(self, hand: Hand, seat: int) -> Action:
+        if hand is not self._hand:
+            self._hand = hand
+            self._acted_this_hand = 0
+        decision = search_decide(
+            hand.engine_view(),
+            seed=stable_seed(
+                "search", self.session_seed, hand.seed, seat, self._acted_this_hand
+            ),
+            budget_s=self.budget_s,
+            playouts_per_candidate=self.playouts_per_candidate,
+        )
+        self._acted_this_hand += 1
+        self.decisions += 1
+        self.truncated += int(decision.truncated)
+        self.starved += int(decision.starved)
+        return decision.action
+
+
+register_bot("search", SearchBot)
 
 # --------------------------------------------------------------------------
 # Naming a bot on the command line

@@ -17,7 +17,7 @@ import io
 import pytest
 
 from pokerbot import Action, Table, TableConfig, deal_check
-from pokerbot import league, personas, scoreboard
+from pokerbot import league, personas, scoreboard, search
 from pokerbot.league import (
     Cell,
     HeldBackPersonaError,
@@ -559,3 +559,43 @@ def test_one_cell_played_alone_is_the_same_cell_played_inside_a_longer_run():
     assert inside.values == pytest.approx(alone.values), (
         "the cell played differently because the bot's coin flips carried over"
     )
+
+
+# --------------------------------------------------------------------------
+# T2's search bot in the league
+# --------------------------------------------------------------------------
+
+
+def test_the_search_bot_is_in_the_league_under_its_own_name():
+    """`--bot search` is the bot BUILD_PLAN.md T2 built, not a stand-in."""
+    assert "search" in league.available_bots()
+    assert isinstance(resolve_bot("search", 5, CONFIG), league.SearchBot)
+
+
+def test_the_search_bot_plays_the_arena_s_budget_and_finish_count():
+    """The shim changes no part of how the bot plays; if it did, the scoreboard
+    would be measuring a different bot from the one the arena measured."""
+    bot = resolve_bot("search", 5, CONFIG)
+    assert bot.budget_s == search.BUDGET_S
+    assert bot.playouts_per_candidate == search.PLAYOUTS_PER_CANDIDATE
+
+
+def test_one_search_cell_played_alone_is_the_same_cell_inside_a_longer_run():
+    """The same reproducibility `run_cell` asks of every registered bot, for the
+    search: its seed is a function of the hand alone, so what came before it in
+    the run cannot move its numbers."""
+    alone = run_cell(
+        resolve_bot("search", 11, CONFIG), "search",
+        "always_call", 6, hands=4, run_seed=11, config=CONFIG,
+    )
+    shared = resolve_bot("search", 11, CONFIG)
+    run_cell(shared, "search", "always_raise", 6, hands=4, run_seed=11, config=CONFIG)
+    inside = run_cell(
+        shared, "search", "always_call", 6, hands=4, run_seed=11, config=CONFIG,
+    )
+    assert inside.values == pytest.approx(alone.values), (
+        "the cell played differently because the search's seed depended on "
+        "what it had already been asked"
+    )
+    assert shared.truncated == 0, "the clock, not the finish count, ended a search"
+    assert shared.starved == 0
