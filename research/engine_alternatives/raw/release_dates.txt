@@ -1,0 +1,12 @@
+# Which candidates are still being released? Asked of the Python Package Index
+# directly, on 2026-09-16T00:27:10Z, because the survey claimed only one was.
+# command, once per package name:
+#   curl -s https://pypi.org/pypi/<name>/json | python3 -c "import json,sys; d=json.load(sys.stdin); print(d['info']['version'], d['urls'][0]['upload_time'])"
+
+pokerkit         0.7.5 2026-08-22T07:14:52
+open-spiel       2.0.2 2026-08-12T18:57:12
+texasholdem      0.11.0 2024-09-21T16:49:39
+pypokerengine    1.0.1 2017-04-02T03:59:02
+rlcard           1.2.0 2023-04-19T16:44:06
+clubs            0.1.4 2021-11-16T17:04:35
+PokerRL          0.0.3 2019-04-19T13:16:52

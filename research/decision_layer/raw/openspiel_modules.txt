@@ -1,0 +1,18 @@
+open_spiel 2.0.2, python 3.13.15, load1 4.34
+
+OK                                                           open_spiel.python.algorithms.ismcts  (Information Set MCTS, Python)
+OK                                                           open_spiel.python.algorithms.mcts  (plain MCTS, Python)
+OK                                                           open_spiel.python.algorithms.mcts_agent  (MCTS wrapped as an RL agent)
+OK                                                           open_spiel.python.algorithms.best_response  (best response to a fixed policy)
+OK                                                           open_spiel.python.algorithms.exploitability  (how exploitable a policy is)
+OK                                                           open_spiel.python.algorithms.evaluate_bots  (play bots against each other)
+OK                                                           open_spiel.python.bots.policy  (a fixed policy driven as a bot)
+OK                                                           open_spiel.python.bots.uniform_random  (the random baseline bot)
+OK                                                           open_spiel.python.policy  (the policy container the above take)
+OK                                                           pyspiel.ISMCTSBot  (Information Set MCTS, C++ (the fast one))
+OK                                                           pyspiel.MCTSBot  (plain MCTS, C++)
+OK                                                           pyspiel.RandomRolloutEvaluator  (leaf evaluator: play the rest out at random)
+OK                                                           pyspiel.Evaluator  (the leaf-evaluator base class a blueprint would subclass)
+OK                                                           pyspiel.ISMCTSFinalPolicyType  (how IS-MCTS turns visit counts into a move)
+OK                                                           universal_poker calcOddsNumSims: AA vs 72o = 0.871 win, 0.004 tie (published: ~0.877 win, ~0.004 tie)
+CRASHES: exit -11 (SIGSEGV)                                  universal_poker.resample_from_infostate at 3 players (IS-MCTS needs it; universal_poker.cc:1111 returns an empty handle above 2 players)

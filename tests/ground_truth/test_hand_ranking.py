@@ -2,8 +2,11 @@
 
 Why this file exists
 --------------------
-CLAUDE.md forbids letting an AI model evaluate a hand or read a board. So the
-answers here come from two places, and neither of them is a model:
+CLAUDE.md's forefront rule lets an AI assistant write this project's poker code,
+and forbids a model call on the live decision path or a decision whose content
+comes from stored model output; hand evaluation comes from the engine, never
+hand-rolled. So the answers here come from two places, and neither of them is a
+model:
 
 1. The hands themselves are textbook cases whose correct ranking is fixed by
    the published rules of poker (a royal flush beats a full house, a straight
