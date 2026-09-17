@@ -26,8 +26,15 @@ Second rule, taken from `tools/check_design_numbers.py` on `main`, which pins
 `OPPONENT_MODEL_DESIGN.md` the same way: a figure the document states in more
 than one place has to be checked in *every* place. `Checker.every_occurrence` is
 how that question is asked; `Checker.prose` is only safe for a phrase that
-appears once. The standard this file is held to is that mutating any derived
-figure in the document, anywhere, makes this script exit 1.
+appears once.
+
+What this script does and does not promise. It promises that for every figure a
+check below names, mutating ANY copy of that figure anywhere in the document
+makes this script exit 1 -- that is what `every_occurrence` is for, and
+`tests/test_evaluation_numbers.py` mutates one copy of each to prove it. It does
+NOT promise that every number in the document is pinned: a figure no check names
+is not checked at all, and the honest way to find out whether one is pinned is
+to change it and run this.
 
 This checker is deliberately standalone: the branch it was written on predates
 trunk's checker, so it shares no code with it. Once both have landed the two
@@ -123,12 +130,12 @@ LBR_GRID_BASE = 0.05
 LBR_GRID_RATIO = 1.15
 LBR_GRID_K_MAX = 54
 
-# ENGINE_ALTERNATIVES.md on branch worker/7f09949cb56f at commit 52bd81d:
+# ENGINE_ALTERNATIVES.md on branch worker/7f09949cb56f at commit 6720c8a:
 # median complete hands per second over six repeats, six-handed, one core, by
 # betting mode. The superseded figure is the one an earlier draft (54afe67)
 # gave; it is held here only so the document cannot quietly go back to it.
 ENGINE_SURVEY_BRANCH = "worker/7f09949cb56f"
-ENGINE_SURVEY_COMMIT = "52bd81d"
+ENGINE_SURVEY_COMMIT = "6720c8a"
 ENGINE_SUPERSEDED_COMMIT = "54afe67"
 ENGINE_HANDS_PER_SEC_REAL_SIZING = 4438
 ENGINE_HANDS_PER_SEC_MENU = 47564
@@ -255,6 +262,30 @@ def detectable_delta(n_eff: float, sigma: float = BUDGET_SIGMA) -> float:
     return math.sqrt(2.0 * sigma * sigma * Z_SUM_SQ_FULL / n_eff)
 
 
+def nightly_totals() -> tuple[int, int, float]:
+    """Section 3.6's nightly acceptance run: its cells, hands and hours."""
+    seats = len(NIGHTLY_FIXED_SEATS) + 1
+    cells = seats * REDUCED_COMPOSITIONS * REDUCED_STACK_DEPTHS
+    hands = cells * 2 * hands_per_arm(BUDGET_SIGMA, NIGHTLY_DELTA)
+    return cells, hands, hands / hands_per_hour()
+
+
+def nightly_pooled() -> tuple[float, float]:
+    """Section 3.6's weighted headline on a five-seat night: n_eff and Delta."""
+    seats = len(NIGHTLY_FIXED_SEATS) + 1
+    _, hands, _ = nightly_totals()
+    per_seat_per_arm = hands / 2 / seats
+    n_eff = per_seat_per_arm / sum_of_squared_weights(NIGHTLY_FIXED_SEATS + [ROTATION_CYCLE[0]])
+    return n_eff, detectable_delta(n_eff)
+
+
+def full_grid_totals() -> tuple[int, int, float]:
+    """Section 3.6's full grid as specified: its cells, hands and hours."""
+    cells = len(SEAT_COUNTS) * FULL_GRID_COMPOSITIONS * FULL_GRID_STACK_DEPTHS
+    hands = cells * 2 * hands_per_arm(BUDGET_SIGMA, FULL_GRID_DELTA)
+    return cells, hands, hands / hands_per_hour()
+
+
 # ---------------------------------------------------------------------------
 # Formatting: half-up to the precision the document prints at.
 # ---------------------------------------------------------------------------
@@ -270,6 +301,12 @@ def fmt(x: float, places: int = 0, thousands: bool = False) -> str:
 
 def grouped(n: float) -> str:
     return fmt(n, 0, thousands=True)
+
+
+def hours_to_hm(hours: float) -> str:
+    """Hours as the example report block prints an elapsed time: 4.906 -> 4h54m."""
+    minutes = int(Decimal(repr(hours * 60.0)).quantize(Decimal(1), rounding=ROUND_HALF_UP))
+    return f"{minutes // 60}h{minutes % 60:02d}m"
 
 
 def pct(x: float, places: int = 0) -> str:
@@ -532,6 +569,43 @@ class Checker:
             str(GATE_WINDOW_RUNS),
         )
 
+    # -- Section 3.5: the example report block -----------------------------
+    def check_example_report(self) -> None:
+        """The example report prints figures section 3.6 derives, so it is pinned too.
+
+        Every figure here also appears elsewhere in the document, so each is
+        asked for with `every_occurrence`: a copy that drifts anywhere fails.
+        """
+        cells, _, hours = nightly_totals()
+        _, pooled_delta = nightly_pooled()
+        self.every_occurrence(
+            "the report block's cell count, hour budget and elapsed time",
+            r"cells: (\d+) budget: (\d+)h elapsed: (\d+h\d+m)",
+            str(cells),
+            str(ACCEPTANCE_CAP_HOURS),
+            hours_to_hm(hours),
+        )
+        self.every_occurrence(
+            "the pooled effect the nightly run is powered to detect, everywhere",
+            r"powered to detect:? (?:a )?([\d.]+) mbb/hand",
+            fmt(pooled_delta, 1),
+        )
+        self.every_occurrence(
+            "the per-cell effect stated beside it in the report block",
+            r"mbb/hand pooled, (\d+) mbb/hand per cell",
+            str(NIGHTLY_DELTA),
+        )
+        self.every_occurrence(
+            "the multiple-comparison family size, everywhere it is a nightly run's",
+            r"family size (\d+)\)|family of the (\d+) cells that run buys",
+            str(cells),
+        )
+        self.every_occurrence(
+            "the nightly cell count where section 3.5 restates it",
+            r"\*\*(\d+)\*\* on a nightly run|\*\*(\d+) is the five-seat nightly grid",
+            str(cells),
+        )
+
     def check_weights(self) -> None:
         rows = self.doc.table_after("| Band | Seat counts | Headline weight |")[1:]
         self.equal("weight band count", 3, len(rows))
@@ -590,6 +664,13 @@ class Checker:
             f"**{fmt(float(grouped(hours).replace(',', '')) / ACCEPTANCE_CAP_HOURS, 1)} times** "
             "the 10-hour cap",
         )
+        # Section 4.1 restates the same grid in a sentence of its own.
+        self.every_occurrence(
+            "the full grid's cells and days wherever a sentence restates them",
+            r"is ([\d,]+) cells and about ([\d.]+) days of laptop time",
+            grouped(cells),
+            fmt(hours / HOURS_PER_DAY, 1),
+        )
 
     def check_placeholders(self) -> None:
         rows = self.doc.table_after("| Quantity | Value used here | Status |")[1:]
@@ -646,7 +727,10 @@ class Checker:
             ("Nightly acceptance", nightly_cells, nightly_per_cell, NIGHTLY_DELTA),
             ("Full grid (aspirational)", full_cells, full_per_cell, FULL_GRID_DELTA),
         ]
-        for (name, cells, per_cell, delta), row in zip(expected, rows):
+        # Only the nightly run pools its cells into a weighted headline; the
+        # other two rows print an em dash in that last column.
+        pooled = [None, nightly_pooled()[1], None]
+        for (name, cells, per_cell, delta), row, pool in zip(expected, rows, pooled):
             hands = cells * per_cell
             hours = hands / hands_per_hour()
             self.equal(f"{name} cells", grouped(cells), row[2])
@@ -655,6 +739,11 @@ class Checker:
             places = 0 if hours >= 100 else (1 if hours >= 1 else 2)
             self.equal(f"{name} wall clock", f"{fmt(hours, places, thousands=True)} h", row[5])
             self.equal(f"{name} detects per cell", f"{delta} mbb/hand", row[6])
+            self.equal(
+                f"{name} detects pooled",
+                "—" if pool is None else f"{fmt(pool, 1)} mbb/hand",
+                row[7],
+            )
 
         nightly_hands = nightly_cells * nightly_per_cell
         routine_hands = routine_cells * routine_per_cell
@@ -788,6 +877,18 @@ class Checker:
             f"raise the effective size to the full {grouped(proportional)} and the "
             f"headline to Δ = {fmt(detectable_delta(proportional), 1)}",
         )
+        # The rounded headline is restated in prose on either side of the table
+        # as well, so it is asked for wherever it appears.
+        self.every_occurrence(
+            "the pooled headline where the section names it",
+            r"the pooled ([\d.]+) comes from",
+            fmt(detectable_delta(n_eff_five), 1),
+        )
+        self.every_occurrence(
+            "the pooled headline where the four-seat comparison rounds back to it",
+            r"which is the ([\d.]+) in the table above before rounding",
+            fmt(detectable_delta(n_eff_five), 1),
+        )
 
     # -- The engine requirements section ----------------------------------
     def check_deck_arithmetic(self) -> None:
@@ -842,6 +943,7 @@ class Checker:
         self.equal("today's-engine total hands", grouped(hands), body[4][2])
         self.equal("today's-engine wall clock", f"{fmt(hours, 3)} h", body[5][2])
         self.equal("today's-engine family size", str(cells), body[6][2])
+        self.equal("nightly family size in the same table", str(nightly_cells), body[6][1])
         self.equal("nightly cell count in the same table", str(nightly_cells), body[2][1])
         self.equal("nightly total hands in the same table", grouped(nightly_hands), body[4][1])
         self.equal(
@@ -925,6 +1027,32 @@ class Checker:
                 phrase in flat,
                 "no row mentions it",
             )
+        # The budget row restates figures section 3.6 derives; every copy of a
+        # figure has to agree, and this is the last place they are copied to.
+        full_cells, full_hands, full_hours = full_grid_totals()
+        nightly_cells, nightly_hands, nightly_hours = nightly_totals()
+        n_eff, pooled_delta = nightly_pooled()
+        self.every_occurrence(
+            "the full grid where the provenance table restates it",
+            r"The budget arithmetic: ([\d,]+) cells; ([\d,]+) hands; ([\d,]+) h ≈ ([\d.]+) days",
+            grouped(full_cells),
+            grouped(full_hands),
+            grouped(full_hours),
+            fmt(full_hours / HOURS_PER_DAY, 1),
+        )
+        self.every_occurrence(
+            "the nightly run where the provenance table restates it",
+            r"\*\*([\d,]+) nightly cells; ([\d,]+) hands; ([\d.]+) h\*\*",
+            str(nightly_cells),
+            grouped(nightly_hands),
+            fmt(nightly_hours, 1),
+        )
+        self.every_occurrence(
+            "the pooled headline where the provenance table restates it",
+            r"pooled n_eff ([\d,]+) ⇒ Δ = ([\d.]+) mbb/hand",
+            grouped(n_eff),
+            fmt(pooled_delta, 1),
+        )
 
     # -- Everything ------------------------------------------------------
     def run(self) -> None:
@@ -938,6 +1066,7 @@ class Checker:
             ("duplicate factorials", self.check_factorial_table),
             ("LBR bet-size grid", self.check_lbr_grid),
             ("release gate", self.check_release_gate),
+            ("example report block", self.check_example_report),
             ("table-size weights", self.check_weights),
             ("full grid", self.check_full_grid),
             ("wall-clock placeholders", self.check_placeholders),
@@ -987,11 +1116,11 @@ def main(argv: list[str]) -> int:
     checker = Checker(Document(path))
     checker.run()
     if checker.failures:
-        print(f"{len(checker.failures)} of {checker.checked} figures in {path.name} do not match:")
+        print(f"{len(checker.failures)} of {checker.checked} checks on {path.name} do not match:")
         for failure in checker.failures:
             print(f"  - {failure}")
         return 1
-    print(f"{checker.checked} figures in {path.name} all match the constants they derive from.")
+    print(f"{checker.checked} checks on {path.name} all match the constants they derive from.")
     return 0
 
 

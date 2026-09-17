@@ -279,8 +279,8 @@ and they differ enormously in what they demand of you. In cost order:
 **(a) Common random numbers / duplicate.** Deal the *same* cards to both things
 you are comparing. In two-player poker "duplicate" means replaying each deal
 with the two players' hole cards swapped, and averaging the pair; the Annual
-Computer Poker Competition plays "hundreds of millions of duplicate poker hands"
-to separate entrants ([Davidson et al. 2013](#s-baseline), §5.2;
+Computer Poker Competition (ACPC) plays "hundreds of millions of duplicate
+poker hands" to separate entrants ([Davidson et al. 2013](#s-baseline), §5.2;
 [Bard et al. 2013](#s-acpc)). In three-player it means averaging over all six
 ways of assigning three players to three sets of hole cards
 ([Davidson et al. 2013](#s-baseline), §5.2). Cost: a deterministic dealer and a
@@ -304,16 +304,21 @@ domain. No hand-crafted value function, no knowledge of anyone's strategy.
   note that baseline "eliminates the complexity involved with creating duplicate
   matches" in games with more than two agents.
 
-**(c) MIVAT.** Control variates applied to *chance* events — subtract a value
-estimate for the cards that were dealt, so a good hand is not automatically a
-good result. Requires an arbitrary heuristic value function defined after chance
-events, and stays unbiased regardless of how bad that function is
-([Burch et al. 2018](#s-aivat), §"MIVAT and Imaginary Observations").
-*(**MIVAT** is a name, not an abbreviation this document can expand: neither
-[Burch et al. 2018](#s-aivat) nor the White and Bowling 2009 paper it credits
-writes the letters out, and inventing an expansion would be inventing a fact.
-Read it as "the chance-event correction", which is what it does. The related
-**AIVAT**, which *is* expanded by its authors, is at (d) below.)*
+**(c) The correction for lucky and unlucky cards — its authors call it the
+Informed Value Assessment Tool, MIVAT.** Control variates applied to *chance*
+events — subtract a value estimate for the cards that were dealt, so a good hand
+is not automatically a good result. Requires an arbitrary heuristic value
+function defined after chance events, and stays unbiased regardless of how bad
+that function is ([Burch et al. 2018](#s-aivat), §"MIVAT and Imaginary
+Observations").
+*(The expansion is the inventors' own, stated twice in
+[White & Bowling 2009](#s-mivat): §3, "We call this general approach and
+closed-form solution to the optimization MIVAT, the Informed Value Assessment
+Tool", and the conclusion, "We introduced MIVAT, the Informed Value Assessment
+Tool". The same paper's §2 calls its hand-crafted predecessor DIVAT "the
+Ignorant Value Assessment Tool". [Burch et al. 2018](#s-aivat), which is where
+everything else here about MIVAT comes from, uses the letters without ever
+writing them out. The related **AIVAT** is at (d) below.)*
 
 **(d) AIVAT** — the technique the brief asks us to verify, and the one Pluribus
 used.
@@ -378,8 +383,8 @@ used.
 | --- | --- | --- | --- |
 | Common random numbers | Seeded dealer | Yes | Not separately reported |
 | Duplicate | Seeded dealer + replay with permuted seats | Degrades — see [§4.2](#42-why-duplicate-dies-past-three-seats) | 3-player: sometimes negative, worst −40.41% ([Davidson 2013](#s-baseline), Table 1) |
-| Baseline | Seeded dealer + any control agent | Yes, designed for it | 3-player: 21.78%–49.68% SE reduction ([Davidson 2013](#s-baseline), Table 1) |
-| MIVAT | Heuristic value function after chance events | In principle | Heads-up no-limit hold'em (HUNL): 18% SD ([Burch 2018](#s-aivat), §"No-limit Texas Hold'em with Bots") |
+| Baseline | Seeded dealer + any control agent | Yes, designed for it | 3-player: 21.78%–49.68% standard-error (SE) reduction ([Davidson 2013](#s-baseline), Table 1) |
+| MIVAT | Heuristic value function after chance events | In principle | Heads-up no-limit hold'em (HUNL): 18% standard-deviation (SD) reduction ([Burch 2018](#s-aivat), §"No-limit Texas Hold'em with Bots") |
 | AIVAT | Value function + explicit strategy of a player subset + public-state partition | Yes — Pluribus used it 6-handed | HUNL: 68%, or 85% with good value functions |
 
 ### 2.5 Win rate with honest statistics
@@ -587,8 +592,9 @@ Two groups, with different jobs.
 
 **Group A — calibration agents.** Trivial, literature-attested strategies whose
 job is to prove the harness works, not to challenge the bot. Their exploitability
-in heads-up *limit* hold'em is published and exact, which makes them the only
-opponents in the harness with a known right answer:
+in heads-up *limit* hold'em — HULHE, for heads-up limit Texas hold'em — is
+published and exact, which makes them the only opponents in the harness with a
+known right answer:
 
 | Persona | Exploitability in HULHE | Harness job |
 | --- | --- | --- |
@@ -810,6 +816,10 @@ because a later coding task should implement it literally.
    window after a break in the cycle, or after a seat count fails on the night
    it ran.
 
+   A word on the gate's wording. The short fingerprint that identifies one exact
+   version of the code, so that two runs can be shown to have used the same one,
+   is what the rule above and the rest of this document call a **SHA**.
+
    The pass a seat count carries from an earlier run was earned by a different
    build of the bot, and that is a real weakness rather than a technicality: it
    is written down as one of the ways this harness lies
@@ -880,9 +890,9 @@ because a later coding task should implement it literally.
   [§3.6](#36-the-run-budget-turning-hands-into-hours) actually bought — **20**
   on a nightly run — and the report states it; correcting for five when twenty
   were run is cheating. **20 is the five-seat nightly grid and nothing more
-  general**: a run on today's engine buys 24 cells and must correct for 24
-  ([Engine requirements](#engine-requirements), "The today's-engine grid,
-  sized").
+  general**: a run on the vendored engine buys 24 cells and must correct for 24
+  ([Engine requirements](#engine-requirements), "What the vendored code can
+  exercise, sized").
 - **Non-inferiority, per persona.** Report the interval against each persona
   separately. **A change that wins overall by beating one persona harder while
   losing to another is a red flag, not a pass** — it is the signature of
@@ -916,7 +926,7 @@ Do not implement it until the simple version is working and measured.
 
 ```
 arena report  bot A=<sha> B=<sha>  engine=<sha>  seed=<n>  2026-XX-XX
-tier: nightly acceptance   cells: 20   budget: 10h   elapsed: 4h51m
+tier: nightly acceptance   cells: 20   budget: 10h   elapsed: 4h54m
 seats: 6 8 9 2 fixed + 3 rotating (cycle 3>4>5>7; night 1 of 4)
 weights: n6=0.50  n8=0.15 n9=0.15  n2=0.10 n3=0.10
          (config; design choice here, implementing the operator's stated ordering
@@ -992,7 +1002,7 @@ both pending, and what they imply for the same grid differs by a factor of about
 **550** — 25 minutes against 235 hours:
 
 - **Engine throughput.** `ENGINE_ALTERNATIVES.md` (on branch
-  `worker/7f09949cb56f` at commit `52bd81d`, under review and not on main at the
+  `worker/7f09949cb56f` at commit `6720c8a`, under review and not on main at the
   time of writing) measures OpenSpiel `universal_poker` on one core, six-handed,
   and **a throughput figure means nothing without saying what the engine was
   allowed to bet**, so both of its modes are quoted here. Offering a four-move
@@ -1004,9 +1014,12 @@ both pending, and what they imply for the same grid differs by a factor of about
   **4,438 is the figure that applies here.** At that rate the full grid takes
   6,781,440 ÷ 4,438 = **1,528 seconds, about 25 minutes**; at the menu-mode
   figure it would be 143 seconds. Both are pending: that document is in review,
-  and its own earlier draft gave figures three to four times lower because they
-  were taken while the machine was busy, which is exactly why the commit and the
-  betting mode are printed beside the number here.
+  and its own earlier draft (`54afe67`) gave one unlabelled **56,414** for this
+  engine, with no betting mode and no machine load written down beside it. The
+  current draft gates every timing on the machine's load and separates the two
+  betting modes, so the two drafts' figures are not comparable and no ratio
+  between them is quoted here. That is exactly why the commit and the betting
+  mode are printed beside the number here.
 - **The bot's own thinking time.** The same document's recommended architecture
   is decision-time computing with a **250 ms budget per decision**. That, not the
   engine, is the binding term: the engine is idle while the bot thinks.
@@ -1187,11 +1200,17 @@ harness lies.
 ### 3.7 Tiers: what to build, in what order
 
 **Tier 0 — the harness can run a legal game.** `deal`, `seats`, `runner`,
-`invariants`. Every check in
-[§4.5](#45-correctness-invariants-that-come-before-any-strength-number) passes at
-every n from 2 to 9. No strength measurement at all. **Nothing else in this
-document is worth building until Tier 0 is green**, because a strength number
-from a harness that mis-awards side pots is a fiction.
+`invariants`. No strength measurement at all. **Green means every check in
+[§4.5](#45-correctness-invariants-that-come-before-any-strength-number) passes
+at every seat count the engine can actually deal, with every seat count it
+cannot deal recorded as NOT RUN — never as passed.** On the engine vendored
+today that is n = 2 to 7: its cut-down deck cannot seat eight or nine at all
+([engine requirements](#engine-requirements)), so n = 8 and n = 9 stay NOT RUN
+until an engine deals them, exactly as that section already requires of strength
+results. Green is therefore reachable today, and reaching it does not mean the
+two missing seat counts have been tested. **Nothing else in this document is
+worth building until Tier 0 is green**, because a strength number from a harness
+that mis-awards side pots is a fiction.
 
 **Tier 1 — the persona league.** Group A and Group B personas; raw win rate with
 bootstrap confidence intervals; the report. At this point the harness can answer
@@ -1436,8 +1455,14 @@ rather than optional.
 
 ### 4.5 Correctness invariants that come before any strength number
 
-Cheap, deterministic, and non-negotiable. These run at every n from 2 to 9 on
-every run, and a failure aborts the run rather than being reported.
+Cheap, deterministic, and non-negotiable. These run at every seat count the
+engine can deal on every run — every n from 2 to 9 on an engine that deals all
+of them, n = 2 to 7 on the engine vendored today
+([engine requirements](#engine-requirements)) — and a failure aborts the run
+rather than being reported. A seat count the engine cannot deal is recorded as
+**NOT RUN**, never as passed, and Tier 0
+([§3.7](#37-tiers-what-to-build-in-what-order)) is green when every invariant
+passes at every seat count that did run.
 
 | # | Invariant | Why |
 | --- | --- | --- |
@@ -1583,8 +1608,9 @@ not have to rediscover them.
 ## Engine requirements
 
 What the harness needs from the vendored engine. Each is stated so it can be
-answered yes or no. Three of them are **partly** answered already, on `main`, by
-`REFERENCE_NOTES.md`, which read the engine's source and ran it; this section
+answered yes or no. Three of them — **X1, X2 and X6** — have an answer already,
+on `main`, from `REFERENCE_NOTES.md`, which read the engine's source and ran it:
+X2 is a flat **no**, and X1 and X6 are answered only **partly**. This section
 reconciles with that file rather than restating it. **Partly** is the operative
 word: reading a feature in the source and watching a run finish without
 crashing are both weaker than the requirement, and where that is the case the
@@ -1634,33 +1660,46 @@ the rules, hand ranking and payouts. (All of that is `REFERENCE_NOTES.md` on
 to the normal 52-card deck, and `REFERENCE_NOTES.md` costs that at **at least
 18.4 days of computing and 146.5 GiB of memory claimed in one piece**, against
 a budget of hours; it is ruled out there. Which engine the project runs on
-instead is a live question that four surveys now under way will settle between
-them, and **this document does not answer it and must not be read as
-answering it.** What it does is split the work in two, so that either outcome
-is usable:
+instead has since been decided by the operator, on 2026-09-16: **stop basing the
+bot on the short-deck engine and move to OpenSpiel's `universal_poker`, keeping
+the vendored `fedden/poker_ai` as a reference only and `dickreuter/Poker` as the
+screen-capture reference. Only who chooses the action on top of that engine
+stays open.** That is **the operator's recorded decision, not yet a fact about
+this repository**: it is recorded in the fleet repository at commit `fb353c6`
+and in `CLAUDE.md` on branch `worker/114e5b3f5b1b`, while `CLAUDE.md` on trunk
+still says the project is built on `fedden/poker_ai`. **This document did not
+make that decision and does not answer the engine question; it must not be read
+as answering it.** What it does is split the work in two, so the harness can be
+built while that move happens:
 
-- **Buildable now, on the engine on `main`:** everything that needs only 2 to 7
-  seats and fixed-size bets — the harness skeleton of
+- **Exercisable now, on the code vendored on `main`:** everything that needs
+  only 2 to 7 seats and fixed-size bets — the harness skeleton of
   [§3.1](#31-architecture-and-module-boundaries), the personas, the deal
-  controller, the estimators and statistics, the invariants, and nightly cells
-  at n = 2, 3, 4, 5, 6 and 7.
-- **Waits on the engine decision:** every cell at **n = 8 and n = 9**, the
+  controller, the estimators and statistics, the invariants, and cells at
+  n = 2, 3, 4, 5, 6 and 7.
+- **Waits on the move to OpenSpiel:** every cell at **n = 8 and n = 9**, the
   whole of [§4.3](#43-true-no-limit-sizing-and-the-biggest-measured-weakness-in-published-bots),
   X2, and the 8- and 9-handed part of X1. The nightly grid of
   [§3.6](#36-the-run-budget-turning-hands-into-hours) is specified in full
   below and is correct once an engine can deal those seats; until one can, the
   two seats it cannot play are recorded as **not run**, never as passed, and a
   release gated on all eight seat counts ([§3.5](#35-the-decision-rule-is-this-change-an-improvement)
-  point 2) cannot be reached on today's engine at all.
+  point 2) cannot be reached on the vendored engine at all.
 
-**The today's-engine grid, sized.** The bullet above names a different set of
-seat counts from the five that [§3.6](#36-the-run-budget-turning-hands-into-hours)
-sizes, so it has to be put through §3.6's arithmetic in its own right — that
-section's rule is that **no sample size in this document may be quoted without
-going through it**, and this is a sample size. Everything below uses the same
-per-cell hand count, the same four compositions, the same single stack depth and
-the same 28,800 hands/hour placeholder as the nightly acceptance run, so the two
-grids differ only in how many seat counts they carry:
+**What the vendored code can exercise, sized.** This is **not a nightly
+acceptance run** and must not be mistaken for one: no release can be gated on
+it, because the seat counts carrying 0.30 of the headline do not deal. It is the
+largest honest shakedown of the harness that the currently vendored engine
+supports while the move to OpenSpiel is under way — how many cells it buys, how
+long it takes, and what family size its multiple-comparison correction needs.
+The bullet above names a different set of seat counts from the five that
+[§3.6](#36-the-run-budget-turning-hands-into-hours) sizes, so it has to be put
+through §3.6's arithmetic in its own right — that section's rule is that **no
+sample size in this document may be quoted without going through it**, and this
+is a sample size. Everything below uses the same per-cell hand count, the same
+four compositions, the same single stack depth and the same 28,800 hands/hour
+placeholder as the nightly acceptance run, so the two grids differ only in how
+many seat counts they carry:
 
 | What the run buys | Nightly acceptance, as designed | The same run on today's engine |
 | --- | --- | --- |
@@ -1710,7 +1749,7 @@ therefore decides which tiers are affordable. **Its binding term is (b) × (c),
 not (a).** The engine is idle while the bot thinks, so engine hands per second —
 the headline figure engine surveys report — is the wrong number to budget with
 and will understate the cost by orders of magnitude. `ENGINE_ALTERNATIVES.md`
-(branch `worker/7f09949cb56f` at commit `52bd81d`, under review at the time of
+(branch `worker/7f09949cb56f` at commit `6720c8a`, under review at the time of
 writing) measures OpenSpiel `universal_poker` at **4,438 engine hands/second at
 real no-limit sizing**, six-handed on one core, and a 250 ms decision-time budget
 for the bot; between those two,
@@ -1766,6 +1805,20 @@ identity. An earlier four-author preprint of the same work is arXiv:1612.06915v2
 (19 January 2017); its HUNL figures are identical, and it does not contain the
 human-evaluation sections. Where a figure appears in both, this document cites
 the AAAI version.
+
+<a id="s-mivat"></a>**[White & Bowling 2009]** Martha White and Michael Bowling,
+"Learning a Value Analysis Tool For Agent Evaluation", *International Joint
+Conference on Artificial Intelligence (IJCAI)*, 2009, pp. 1976–1981 (the page
+numbers printed on the PDF's own pages).
+`https://webdocs.cs.ualberta.ca/~bowling/papers/09ijcai-mivat.pdf`
+**Retrieved 2026-09-17**, and read only for the one thing
+[§2.4](#24-variance-reduction-duplicate-baseline-mivat-aivat) cites it for: what
+the letters of MIVAT stand for. §3 is titled "Our Approach: MIVAT" and says "We
+call this general approach and closed-form solution to the optimization MIVAT,
+the Informed Value Assessment Tool"; the conclusion repeats it as "We introduced
+MIVAT, the Informed Value Assessment Tool"; §2 gives DIVAT as "the Ignorant
+Value Assessment Tool". This is the paper [Burch et al. 2018](#s-aivat) credits
+MIVAT to. No figure in this document comes from it.
 
 <a id="s-brown2020"></a>**[Brown 2020]** Noam Brown, *Equilibrium Finding for
 Large Adversarial Imperfect-Information Games*, PhD thesis, Carnegie Mellon
@@ -1910,9 +1963,10 @@ Hypotheses", *The Annals of Mathematical Statistics* 16(2):117–186, 1945. DOI
 t-test used as a cross-check on the bootstrap.
 
 **Deliberately not cited.** Poker tracking-software population statistics —
-typical VPIP ranges, "standard" win-rate standard deviations for online cash
-games, and similar — circulate widely but no verifiable source for them was found
-in this survey, so no persona parameter and no σ in this document rests on one.
+typical ranges for how often a player voluntarily puts money in the pot (VPIP),
+"standard" win-rate standard deviations for online cash games, and similar —
+circulate widely but no verifiable source for them was found in this survey, so
+no persona parameter and no σ in this document rests on one.
 Every σ in [§2.5](#25-win-rate-with-honest-statistics) is derived from a figure
 printed in a cited paper, and the derivations are in the provenance table below.
 
@@ -1934,14 +1988,20 @@ the per-decision and per-hand placeholders, the worker count, the two run-length
 caps, the short deck's size, the LBR bet-size grid and the engine survey's two
 throughput figures — in one place and recomputes from them, naming any printed
 value that disagrees: **every cell of the sample-size table, the paired-ρ table,
-the variance-reduction multipliers, the duplicate factorials, the budget table,
-the rotation-night table and the today's-engine table, every hand count and hour
-in [§3.6](#36-the-run-budget-turning-hands-into-hours), and the five copies of
-the release gate, which it checks are byte-identical.** A figure that appears in
-more than one place is checked in every place, because asking only that some
-copy is right lets the others go stale. The table below says where each constant
-itself came from; the script says whether the arithmetic on top of it still
-holds.
+the variance-reduction multipliers, the duplicate factorials, every column of
+the budget table, the rotation-night table and the today's-engine table, every
+hand count and hour in [§3.6](#36-the-run-budget-turning-hands-into-hours),
+every figure the example `arena report` block of
+[§3.5](#35-the-decision-rule-is-this-change-an-improvement) prints, the budget
+figures the table below restates, and the five copies of the release gate, which
+it checks are byte-identical.** **Where the script pins a figure that this
+document states in more than one place, it checks every place**, because asking
+only that some copy is right lets the others go stale — and the test suite
+proves that by changing one copy of each and requiring the script to fail. What
+it does **not** claim is that every number here is pinned: a figure no check in
+it names is not checked at all, and the way to find out which a number is, is to
+change it and run the script. The table below says where each constant itself
+came from; the script says whether the arithmetic on top of it still holds.
 
 *(There are now two such checkers in the project — this one and
 `tools/check_design_numbers.py`, which pins `OPPONENT_MODEL_DESIGN.md` — and they
@@ -1983,7 +2043,7 @@ is filed as a finding, not done here.)*
 | The specific run-length limits: **10 hours** for a full acceptance run, **1 hour** for a routine check | **Design choices made here implementing that position, not quantities the operator gave** — the same status as the table-size weights. "Multi-day never" is the operator's. Both limits live in config and are revisable without touching this document |
 | The release gate's shape: the **four-run** window, the **nightly** cadence, the fixed **3 → 4 → 5 → 7** rotation cycle, and the decision **not** to require a matching bot SHA inside the window | **Design choices made in this document, not the operator's**, on the same footing as the 0.50 / 0.30 / 0.20 weights and the 10-hour and 1-hour caps. The operator gave the table-size *ordering* and nothing about windows, cadence or rotation. Four runs is what one pass of the four-seat rotation cycle takes, so the window is the shortest one that can hold every seat count; requiring a matching SHA instead would mean four consecutive nights before any release, which is days rather than hours ([§3.5](#35-the-decision-rule-is-this-change-an-improvement), point 2). All four live in config and are revisable without touching this document |
 | The machine the hours are measured on: Apple M4, 16 GB RAM, 10 cores (4P + 6E) | **Recorded 2026-09-15** from the laptop these runs are planned for. Memory per worker is **unmeasured** ([X8](#engine-requirements)); the 8-worker figure assumes 8 of the 10 cores and nothing about RAM |
-| 4,438 engine hands/second at real no-limit sizing (`fullgame`) and 47,564 in menu mode (`fcpa`), both OpenSpiel `universal_poker`, 6-player, one core, median of six repeats; the 250 ms per-decision budget | `ENGINE_ALTERNATIVES.md` on branch `worker/7f09949cb56f` at commit **`52bd81d`**, **under review and not on main at the time of writing**. The commit and the betting mode are part of the citation because an earlier draft of that document (`54afe67`) gave 56,414 hands/second, measured on a busy machine and in menu mode; that figure is superseded. Cited as pending: if that document changes further or is rejected, every hour in [§3.6](#36-the-run-budget-turning-hands-into-hours) must be recomputed |
+| 4,438 engine hands/second at real no-limit sizing (`fullgame`) and 47,564 in menu mode (`fcpa`), both OpenSpiel `universal_poker`, 6-player, one core, median of six repeats; the 250 ms per-decision budget | `ENGINE_ALTERNATIVES.md` on branch `worker/7f09949cb56f` at commit **`6720c8a`**, **under review and not on main at the time of writing**. The commit and the betting mode are part of the citation because an earlier draft of that document (`54afe67`) gave a single unlabelled 56,414 hands/second for this engine, with neither a betting mode nor a machine load recorded beside it; that figure is superseded, and because the two drafts measured under different conditions no ratio between them is quoted anywhere in this document. Cited as pending: if that document changes further or is rejected, every hour in [§3.6](#36-the-run-budget-turning-hands-into-hours) must be recomputed |
 | 4 bot decisions per hand; 8 parallel workers; ⇒ 1.0 bot-second per hand and 28,800 hands/hour | **Placeholders, explicitly marked as such at the point of use. Nothing sources them.** They are [X7](#engine-requirements)(c) and [X8](#engine-requirements) and must be measured before any budget in [§3.6](#36-the-run-budget-turning-hands-into-hours) is relied on |
 | The budget arithmetic: 240 cells; 6,781,440 hands; 235 h ≈ 9.8 days; 23.5× the cap; ≈11 ms/decision needed to fit; **20 nightly cells; 141,280 hands; 4.9 h**; 16 routine cells; 28,256 hands; 0.98 h (and 1.23 h if the routine check carried the rotating seat, which is why it does not); **Σwᵢ² = 0.315; pooled n_eff 44,851 ⇒ Δ = 28.1 mbb/hand**; the 3.92-worker breakeven against the 10-hour ceiling | **Computed by script on 2026-09-15** from the σ = 1,500 row of [§2.5](#25-win-rate-with-honest-statistics) and the placeholders above. σ = 1,500 is post-AIVAT and this harness has no AIVAT before Tier 4, so every hour is a **floor**; ρ = 0 is assumed, which pushes the other way. Both caveats are stated in [§3.6](#36-the-run-budget-turning-hands-into-hours) |
 | The personas' 169-class preflop ranking table | **Not in this document and not reproduced here.** To be transcribed from [Chen & Ankenman 2006](#s-chen), which was **not retrieved in this survey**; the transcription must be checked against that edition before use ([§3.3](#33-the-forefront-rule-and-the-personas)) |

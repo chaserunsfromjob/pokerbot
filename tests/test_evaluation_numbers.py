@@ -88,6 +88,54 @@ def test_checker_reports_a_stale_todays_engine_figure(tmp_path):
     assert "today's-engine" in result.stdout
 
 
+def test_checker_reports_a_stale_cell_count_in_the_example_report(tmp_path):
+    """The example report block prints the nightly run's cell count."""
+    target = broken_copy(tmp_path, "cells: 20   budget", "cells: 25   budget")
+    result = run_checker(str(target))
+    assert result.returncode == 1
+    assert "report block's cell count" in result.stdout
+
+
+def test_checker_reports_a_stale_powered_to_detect(tmp_path):
+    """The pooled effect the nightly run can detect is stated in several places."""
+    target = broken_copy(
+        tmp_path,
+        "powered to detect: 28.1 mbb/hand pooled",
+        "powered to detect: 28.7 mbb/hand pooled",
+    )
+    result = run_checker(str(target))
+    assert result.returncode == 1
+    assert "powered to detect" in result.stdout
+
+
+def test_checker_reports_a_stale_elapsed_time(tmp_path):
+    """The example report's elapsed time is the nightly run's wall clock."""
+    target = broken_copy(tmp_path, "elapsed: 4h54m", "elapsed: 4h59m")
+    result = run_checker(str(target))
+    assert result.returncode == 1
+    assert "elapsed time" in result.stdout
+
+
+def test_checker_reports_a_stale_pooled_detect_in_the_budget_table(tmp_path):
+    """The budget table's last column is the same pooled figure, and is checked."""
+    target = broken_copy(
+        tmp_path,
+        "| 100 mbb/hand | **28.1 mbb/hand** |",
+        "| 100 mbb/hand | **28.7 mbb/hand** |",
+    )
+    result = run_checker(str(target))
+    assert result.returncode == 1
+    assert "detects pooled" in result.stdout
+
+
+def test_checker_reports_a_stale_cell_count_in_section_4_1(tmp_path):
+    """Section 4.1 restates the full grid's size in a sentence of its own."""
+    target = broken_copy(tmp_path, "stack depths, is 240\ncells", "stack depths, is 260\ncells")
+    result = run_checker(str(target))
+    assert result.returncode == 1
+    assert "cells and days" in result.stdout
+
+
 def test_checker_reports_a_drifted_release_gate(tmp_path):
     """The gate is stated in five places and every copy must be identical."""
     target = broken_copy(
