@@ -1063,6 +1063,36 @@ def test_r2_the_baseline_falls_back_band_then_global_then_unqualified():
     assert empty.baseline("vpip") == (0.0, "no-observations")
 
 
+def test_r8_the_size_cuts_are_the_ones_the_sizing_notes_place():
+    """R8 and `TABLE_SIZE_AND_SIZING_NOTES.md` section 2.5: two, then four.
+
+    One opponent gets a two-way small-versus-large split at 0.70 of pot,
+    because a single opponent cannot pay the fragmentation cost of four. The
+    population baseline can, and its boundaries are section 2.2's `<= 0.40`,
+    `(0.40, 0.70]`, `(0.70, 1.10]`, `> 1.10`, placed to straddle
+    `OPPONENT_MODEL_DESIGN.md` Table A's rows. All-in is its own bucket in
+    both, whatever fraction of the pot it happened to be.
+    """
+    config = NotebookConfig()
+    assert config.opponent_size_cuts == (0.70,)
+    assert config.population_size_cuts == (0.40, 0.70, 1.10)
+
+    assert notebook.size_buckets(config.opponent_size_cuts) == (
+        "small", "large", "allin",
+    )
+    assert notebook.size_buckets(config.population_size_cuts) == (
+        "tiny", "small", "medium", "large", "allin",
+    )
+
+    cuts = config.population_size_cuts
+    for ratio, bucket in [
+        (0.25, "tiny"), (0.40, "tiny"), (0.50, "small"), (0.70, "small"),
+        (1.00, "medium"), (1.10, "medium"), (1.50, "large"),
+    ]:
+        assert notebook.size_bucket(ratio * 100.0, 100.0, False, cuts) == bucket
+    assert notebook.size_bucket(25.0, 100.0, True, cuts) == "allin"
+
+
 def test_the_splits_are_the_design_defaults_until_the_pool_replaces_them():
     """Section 4.4: 0.28 and 0.50, then the observed population's median."""
     book = Notebook()

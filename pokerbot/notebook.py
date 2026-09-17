@@ -117,10 +117,15 @@ class NotebookConfig:
     flag_confidence: float = 0.6
     never_raises_confidence: float = 0.7
     # R8: two size buckets for one opponent, four for the population, the
-    # split at 0.70 of pot, all-in its own bucket. The other three cuts are
-    # `OPPONENT_MODEL_DESIGN.md` Table A rows.
+    # two-way split at 0.70 of pot, all-in its own bucket. The population's
+    # four are `TABLE_SIZE_AND_SIZING_NOTES.md` section 2.2's `<= 0.40`,
+    # `(0.40, 0.70]`, `(0.70, 1.10]`, `> 1.10`, which that section and section
+    # 2.5 place to straddle `OPPONENT_MODEL_DESIGN.md` Table A's rows rather
+    # than on them. Nothing at Tier 0 reads the population cuts yet; they are
+    # here because section 2.2 puts the boundaries in config, and a wrong
+    # value sitting unread is a trap for whoever reads it first.
     opponent_size_cuts: tuple[float, ...] = (0.70,)
-    population_size_cuts: tuple[float, ...] = (0.33, 0.70, 1.00)
+    population_size_cuts: tuple[float, ...] = (0.40, 0.70, 1.10)
 
 
 CONFIG = NotebookConfig()
