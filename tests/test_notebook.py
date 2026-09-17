@@ -1093,6 +1093,69 @@ def test_r8_the_size_cuts_are_the_ones_the_sizing_notes_place():
     assert notebook.size_bucket(25.0, 100.0, True, cuts) == "allin"
 
 
+def _limped_pot(seats=6, button=0):
+    """One hand: seat 3 opens, seat 4 calls, everybody else folds."""
+    return make_record(
+        seats,
+        button,
+        [
+            (0, 3, "pot", 300),
+            (0, 4, "call", 300),
+            (0, 5, "fold", 0),
+            (0, 0, "fold", 0),
+            (0, 1, "fold", 0),
+            (0, 2, "fold", 0),
+        ],
+        net=[0, -50, -100, 450, -300, 0],
+    )
+
+
+def test_a_lone_player_is_not_their_own_baseline():
+    """The unqualified rung pools everyone *else*, so shrinkage still bites.
+
+    With one name on file the old pool was that one name, `BASELINE` came out
+    as the player's own rate, and `(BASELINE*s + k)/(s + n)` returned `k/n`
+    unchanged -- the shrinkage silently switched itself off exactly where the
+    evidence was thinnest. Dropping the subject leaves nobody, so the chain
+    runs on to its last rung, 0.0 at `no-observations`, and nine loud hands
+    read as the quiet number they rest on.
+    """
+    book = Notebook()
+    for _ in range(9):
+        book.observe(_limped_pot(), {3: "p3"})
+    assert book.tally("p3", "vpip") == (9.0, 9.0)
+
+    value, source = book.baseline("vpip", subject="p3")
+    assert (value, source) == (0.0, "no-observations")
+
+    reading = book.profile("p3").reading("vpip")
+    assert reading.rate == pytest.approx(9 / 59)
+    assert reading.rate != pytest.approx(9 / 9)
+
+
+def test_a_table_of_named_seats_still_has_a_pool_to_shrink_towards():
+    """Six names on file, and the subject is the only one left out of theirs.
+
+    Seat 3 raises and seat 4 calls every hand, so seat 3's own rate is 1.0 and
+    the other five together are 9 of 45. That 0.2 is what seat 3 is pulled
+    towards, and it is a number about other people.
+    """
+    book = Notebook()
+    for _ in range(9):
+        book.observe(_limped_pot(), SIX)
+
+    value, source = book.baseline("vpip", subject="p3")
+    assert value == pytest.approx(9 / 45)
+    assert source == "pooled-unqualified"
+    # Without the subject named, the pool is everyone, which is what a caller
+    # asking for the population's own rate wants.
+    assert book.baseline("vpip")[0] == pytest.approx(18 / 54)
+
+    reading = book.profile("p3").reading("vpip")
+    assert reading.baseline == pytest.approx(9 / 45)
+    assert reading.rate == pytest.approx((0.2 * 50 + 9) / 59)
+
+
 def test_the_splits_are_the_design_defaults_until_the_pool_replaces_them():
     """Section 4.4: 0.28 and 0.50, then the observed population's median."""
     book = Notebook()
@@ -1134,6 +1197,11 @@ def test_hysteresis_holds_a_bucket_until_the_new_one_has_stood_for_ten_hands():
     """
     config = NotebookConfig(min_classify_hands=5, classify_confidence=0.05, hold_hands=3)
     book = Notebook(config)
+    # Five stored opponents at a `vpip` of 0.25, so that p3 has a population
+    # to be shrunk towards that is not p3. Without one the baseline is 0.0,
+    # p3's rate never reaches the 0.28 split, and this test would be about
+    # the baseline rather than about hysteresis.
+    _seed_pool(book, [f"q{i}" for i in range(5)], 250, 0.25)
     # Seat 4 limps so the hand is not a walk; a walk would leave p3 with no
     # `vpip` opportunity at all (section 4.7 row 2), and a player with no
     # opportunities cannot clear the confidence gate to be classified.
@@ -1154,7 +1222,7 @@ def test_hysteresis_holds_a_bucket_until_the_new_one_has_stood_for_ten_hands():
     assert book.classification("p3")[0] == "ROCK"
 
     seen = []
-    for _ in range(12):
+    for _ in range(20):
         book.observe(raises, {3: "p3"})
         seen.append(book.classification("p3"))
     turned = next(index for index, row in enumerate(seen) if row[1] != "ROCK")

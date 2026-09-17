@@ -242,14 +242,19 @@ more. It changes nothing about how the bot plays. It only counts.
 
 Two things stop it fooling itself. A player who has raised four times out of six
 is not a wild raiser, so every rate is pulled towards the average of everyone
-the notebook has ever watched -- not the people at the table right now, which
-would be a different and much shakier thing -- and the pull only lets go as the
-number of hands grows, so a number resting on six hands reads close to that
-average and one resting on six hundred reads close to what was actually seen. And beside every number it
-prints how much of it is the player and how much is still that average, as a
-figure between nought and one. It also never looks at anybody's cards: the
-account of the hand is copied without the cards in it before a single number is
-counted, so no count can be about a card even by accident.
+else the notebook has watched: everyone it has on file and not just the people
+at the table right now, which would be a different and much shakier thing, and
+never the player themselves, which would be a pull towards the very number it
+is meant to steady. The pull only lets go as the number of hands grows, so a
+number resting on six hands reads close to that average and one resting on six
+hundred reads close to what was actually seen. That makes it weak until several
+people are on file: with one name and nobody to compare them to there is no
+average to pull towards, so the rate is pulled towards nought rather than
+towards the player's own figure. And beside every number it prints how much of
+it is the player and how much is still that average, as a figure between nought
+and one. It also never looks at anybody's cards: the account of the hand is
+copied without the cards in it before a single number is counted, so no count
+can be about a card even by accident.
 
 To see what it has on somebody, give it a file of recorded hands and a name:
 

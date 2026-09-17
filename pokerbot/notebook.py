@@ -1016,14 +1016,34 @@ class Notebook:
         floor = self.config.min_pool_hands
         return [p for p in self.players() if self.hands(p, band) >= floor]
 
-    def baseline(self, key: str, band: str | None = None) -> tuple[float, str]:
+    def baseline(
+        self, key: str, band: str | None = None, subject: str | None = None
+    ) -> tuple[float, str]:
         """`BASELINE[stat, band]`, with R2's fallback chain, and where it came from.
 
-        Band baseline, then the global one pooled over all bands, then the rate
-        pooled over everyone observed whether or not they qualify. That last
-        rung stands in for section 4.3's "the blueprint's own action frequency",
-        which Tier 0 has no blueprint to ask; it is marked as unqualified so a
-        reader never mistakes it for a pooled population baseline.
+        Four rungs, tried in order, each returning the value and the name of
+        the rung it came from:
+
+        1. `band=<label>`: the pool of opponents with `MIN_POOL_HANDS` hands
+           inside this band, once `MIN_POOL_OPPONENTS` of them qualify.
+        2. `global`: the same pool requirement, over every band at once.
+        3. `pooled-unqualified`: everybody observed, qualified or not. This
+           rung stands in for section 4.3's "the blueprint's own action
+           frequency", which Tier 0 has no blueprint to ask, and is named so
+           a reader never mistakes it for a pooled population baseline.
+        4. `no-observations`: **0.0**, when nothing at all has been counted.
+
+        `subject` is the player this baseline is being computed *for*, and
+        they are left out of rung 3. They have to be: that rung has no floor
+        on how few people are in it, so with one name on file the pool is that
+        one name, `BASELINE` comes out as their own rate, and
+        `(BASELINE*s + k)/(s + n)` collapses to `k/n` -- the shrinkage turns
+        itself off exactly where the evidence is thinnest, which is the
+        opposite of what section 4.3 asks it for. Rungs 1 and 2 keep the
+        subject, because their floors of twenty qualifying opponents bound how
+        much of the pool any one person can be, and because the observed
+        population is the whole database, seated rows included. A subject who
+        is the only name on file falls to rung 4 and is pulled towards 0.0.
         """
         scopes: list[tuple[str | None, str]] = []
         if band is not None:
@@ -1041,6 +1061,8 @@ class Notebook:
                     return k / n, source
         k = n = 0.0
         for player in self.players():
+            if player == subject:
+                continue
             pk, pn = self.tally(player, key, band)
             k += pk
             n += pn
@@ -1099,7 +1121,7 @@ class Notebook:
         readings = []
         for key in self.keys(player):
             k, n = self.tally(player, key, band)
-            base, source = self.baseline(key, band)
+            base, source = self.baseline(key, band, subject=player)
             readings.append(reading(key, k, n, base, baseline_source=source))
         profile = build_profile(
             player,
@@ -1146,10 +1168,10 @@ class Notebook:
         vpip_split = self.split("vpip")
         afq_split = self.split("afq")
         k, n = self.tally(player, "vpip")
-        base, _ = self.baseline("vpip")
+        base, _ = self.baseline("vpip", subject=player)
         vpip = reading("vpip", k, n, base)
         k, n = self.tally(player, "afq")
-        base, _ = self.baseline("afq")
+        base, _ = self.baseline("afq", subject=player)
         afq = reading("afq", k, n, base)
         hands = self.hands(player)
         if vpip.confidence < cfg.classify_confidence or hands < cfg.min_classify_hands:
