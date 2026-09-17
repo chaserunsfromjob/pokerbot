@@ -3,9 +3,9 @@
 Researched 15 September 2026, revised through 17 September 2026. Machine used
 for every timing below: the
 operator's Mac laptop (Apple M4, 10 cores, macOS 15, Python 3.13). Everything
-marked **measured** was run on this machine today; everything marked
-**quoted** is a number the vendor or author publishes; **UNVERIFIED** means I
-could not confirm it by visiting the source.
+marked **measured** was run on this machine on 15 September 2026; everything
+marked **quoted** is a number the vendor or author publishes; **UNVERIFIED**
+means I could not confirm it by visiting the source.
 
 The engine survey (OpenSpiel, RLCard, PyPokerEngine, PokerKit, clubs, PokerRL)
 lives in `ENGINE_ALTERNATIVES.md`; this file does not repeat it.
@@ -36,10 +36,12 @@ appear:
   is **Monte-Carlo**.
 - A sharing licence that lets anyone use and change the code but requires
   those changes to be published if the program is offered to others over a
-  network. This project's own source is already public and licensed GPL-3.0,
-  so publishing the changes is not the cost; the extra network clause is, and
-  it is a clause GPL-3.0 does not carry. The name is **AGPL**, the Affero
-  General Public Licence.
+  network. This project's own source is already public and licensed GPL-3.0
+  (the repository is already public; the GPL-3.0 licence is change
+  114e5b3f5b1b, not yet landed: as of 2026-09-17 LICENSE is not on main and
+  GitHub reports no licence), so publishing the changes is not the cost; the
+  extra network clause is, and it is a clause GPL-3.0 does not carry. The
+  name is **AGPL**, the Affero General Public Licence.
 
 Four findings drive the recommendation:
 
@@ -93,23 +95,24 @@ Four findings drive the recommendation:
    same loop written in plain Python on phevaluator was never measured here,
    and the arithmetic below rests on an **assumption, not a measurement**:
    that such a loop deals of the order of ten thousand play-outs, a figure no
-   measurement in this file supplies and no source here cites. The play-out
-   counts in `ENGINE_ALTERNATIVES.md` are not that figure and do not supply
-   it: those count the rest of an already part-played hand being played out to
-   the end inside a quarter-second of thinking, where these count deals of the
-   remaining cards to settle one
-   hand's equity in a Python loop. On that assumption, and counting one hand
-   ranking per play-out, 10,000 rankings at the measured 2.6 million a second
-   take 10,000 ÷ 2,600,000 = **3.8 ms**, and at the measured 0.9 million a
-   second 10,000 ÷ 900,000 = **11 ms**: a few milliseconds to about ten, not a
-   sub-millisecond job.
+   measurement in this file supplies and no source here cites.
+   `ENGINE_ALTERNATIVES.md` reports two counts and distinguishes them at its
+   own :418-428: the engine table's last column, complete hands dealt from
+   scratch, and the chooser's play-outs per 250 ms decision, which continue a
+   hand already part-played. Neither is this file's ten-thousand figure: both
+   play a hand out to a showdown inside a game engine, where these count deals
+   of the remaining cards to settle one hand's equity in a Python loop. On
+   that assumption, and counting one hand ranking per play-out, 10,000
+   rankings at the measured 2.6 million a second take 10,000 ÷ 2,600,000 =
+   **3.8 ms**, and at the measured 0.9 million a second 10,000 ÷ 900,000 =
+   **11 ms**: a few milliseconds to about ten, not a sub-millisecond job.
 4. **Only one open-source project explicitly does what the operator wants,
    opponent-specific exploitation across 2 to 9 seats, and it is preflop-only
-   for multiway**: GTOpen (Rust, active this week, no licence file). It
-   compiled on this Mac in 1 min 53 s to 3 min 20 s across two builds, and its
-   own small web server — it takes requests in the same way a web browser
-   makes them, over the **HyperText Transfer Protocol**, **HTTP** — answered
-   on `127.0.0.1:3737` with a CPU-only solver, so
+   for multiway**: GTOpen (Rust, pushed 15 Sep 2026, no licence file; read
+   2026-09-15). It compiled on this Mac in 1 min 53 s to 3 min 20 s across
+   two builds, and its own small web server — it takes requests in the same
+   way a web browser makes them, over the **HyperText Transfer Protocol**,
+   **HTTP** — answered on `127.0.0.1:3737` with a CPU-only solver, so
    "Windows/Linux only" in its README is just missing documentation. Its
    author's own experiments — results he got from his older fixed opponent
    profiles, which a note on his own page says are not predictions for the app
@@ -168,13 +171,16 @@ reference implementation, not a product).
   macOS or callable from a Mac.
 - **(e) fits a public GPL-3.0 project** — licence or price acceptable for a
   bot that is itself licensed GPL-3.0 and publishes its source at
-  `github.com/chaserunsfromjob/pokerbot`. GPL-compatible code is fine,
-  because every derived work here is published under GPL-3.0 anyway. Paid
-  tools are fine, because the operator buys them for their own use and buying
-  a tool is not publishing it. The ones to watch are AGPL, which adds a
-  network clause GPL-3.0 does not carry; licences that are incompatible with
-  GPL-3.0; code with no licence at all, which may not be copied into a
-  published project; and a terms-of-service clause banning automated play.
+  `github.com/chaserunsfromjob/pokerbot` (the repository is already public;
+  the GPL-3.0 licence is change 114e5b3f5b1b, not yet landed: as of
+  2026-09-17 LICENSE is not on main and GitHub reports no licence).
+  GPL-compatible code is fine, because every derived work here is published
+  under GPL-3.0 anyway. Paid tools are fine, because the operator buys them
+  for their own use and buying a tool is not publishing it. The ones to watch
+  are AGPL, which adds a network clause GPL-3.0 does not carry; licences that
+  are incompatible with GPL-3.0; code with no licence at all, which may not be
+  copied into a published project; and a terms-of-service clause banning
+  automated play.
 
 ---
 
@@ -365,8 +371,8 @@ second above.
   heads-up postflop CFR (CPU or CUDA), a **2 to 9 player Preflop Lab** with
   limps and any sizings, and **player profiling with maximum-exploitation
   solves**.
-- Last activity: created 13 Jun 2026; pushed **15 Sep 2026** (today);
-  14 stars, one author.
+- Last activity: created 13 Jun 2026; pushed **15 Sep 2026** (read
+  2026-09-15); 14 stars, one author.
 - Licence: **none** (no LICENSE file in the repo). Legally that means all
   rights reserved, and this project publishes its own source under GPL-3.0,
   so none of this code may lawfully be copied into it. Running the published
@@ -815,7 +821,8 @@ second above.
   postflop.
 - GTO+: prices read off https://gtoplus.com/purchase on 2026-09-17 and quoted
   from it — "Main License: $75  Second License: $40  Upgrade from CREV: $50"
-  and "The registration fee is one-time. All future updates are included."
+  and "The registration fee is one-time. All future updates are included.
+  Taxes may still be added depending on your location."
   The $375 top end an earlier draft gave appears nowhere on that page.
   Windows, heads-up, scripting for batch databases.
 - Jesolver (https://jesolver.com/cmdref.html): price **UNVERIFIED**. On
@@ -860,7 +867,8 @@ second above.
 - API/scripting: none mentioned. Licence: unstated. Vendor and origin:
   UNVERIFIED beyond the site itself.
 - Ratings: (a) 3 — (b) 3 — (c) 0 (nothing documented) — (d) 2 (runs on this
-  Mac, but only by hand) — (e) 2 (free now, terms unknown).
+  Mac, but only by hand) — (e) 2 (free now, terms unknown; a closed tool we
+  run, not code we copy).
 
 ### 21. HoldemResources Calculator (HRC)
 
@@ -1164,8 +1172,8 @@ nothing if the reconciliation ever decided to. The open parts
 cost at most an optional $69 to $319 range pack
 and, if the reconciliation goes the way of the tools measured here, add AGPL
 code (TexasSolver, postflop-solver), which GPL-3.0 may take in — but the AGPL
-network clause would then ride along with that part, and this repository is
-public.
+network clause would then ride along with that part, and it would bite if the
+bot were ever offered to others over a network.
 
 ---
 
