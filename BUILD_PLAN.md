@@ -239,6 +239,15 @@ opponents — always-fold, always-call, uniform-random — and run the same
 measurement against those instead; the arena only saves the day it would take
 to write them.
 
+*Settled while building it.* The search stops after a fixed number of finished
+hands per candidate move rather than when the clock runs out, so the same seed
+always gives the same move: a search that ran to the clock would do more work
+on a quiet laptop than on a busy one and could answer differently for the same
+hand, which no result could be reproduced from. The 250 ms budget stays as the
+ceiling this task requires and is never reached — over the recorded thousand
+hands a decision took 34 ms at the median and 82 ms at its slowest, and no
+search was ended by the clock (`pokerbot/search.py`:59).
+
 **T3 — The scoreboard.** Build `EVALUATION_STRATEGY.md` §3.7 Tiers 1 and 2: the
 four calibration agents, the nine behavioural personas of §3.2 with parameters
 drawn per session and the set split into a development half and a held-back

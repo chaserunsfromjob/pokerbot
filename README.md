@@ -99,6 +99,55 @@ and in each square either PASS or NOT RUN. NOT RUN means that check was not made
 not exist at that table size -- and the reason is printed underneath. A NOT RUN
 is never counted as a pass. Nothing should ever say FAIL.
 
+### The first bot, and how it is scored
+
+The bot thinks at the table rather than remembering a book of answers. When it
+is its turn it takes each move the engine is offering -- fold, call, half the
+pot, the pot, all of its chips -- and imagines the hand finishing a few hundred
+times for each one: it deals the other players a hand out of the cards nobody
+has shown, plays out the rest of the current round of betting, and from there
+hands every player one of four fixed ways of playing on -- one that gives up
+easily, one that calls everything, one that raises constantly, and one in
+between -- and lets the engine run the hand to the end. It then makes the move
+that finished with the most chips on average. That is called *depth-limited
+search*, and it is the shape of the only published bot that has beaten top
+humans at a six-player table.
+
+Beside it, and never instead of it, a much simpler sum runs: how often would
+this hand win if everyone stayed to the end, against what it costs to stay in.
+Both answers are written down every time, with whether they agreed. Only the
+search's answer is played.
+
+To watch it play a thousand hands against five opponents that pick moves at
+random:
+
+    .venv/bin/python -m pokerbot.arena --seats 6 --hands 1000 --seed 20260917 \
+        --bot search --opponents random
+
+`--opponents` also takes `fold` (an opponent that gives up whenever it is asked
+for money) and `call` (one that never folds and never raises), or a
+comma-separated list to seat a different one in each chair.
+
+It prints how many hands were played, how many of the table's seven statements
+were broken -- which should always be none, and the run stops dead if one is --
+how long its slowest decision took, and how much it won. The winnings are
+counted in big blinds per hundred hands: the big blind is the forced bet one
+player puts in before any cards are dealt, and is the usual unit for saying how
+much a poker player wins. It comes with a range around it, because poker is
+noisy enough that a single number means nothing; if that range does not include
+zero, the win is not something the shuffle could have produced on its own.
+
+What that score does not cover, said plainly: against opponents who bet at
+random almost every hand is over before the three shared cards are turned face
+up -- the *flop* -- so this measures the bot's first decision and little else,
+and T3's personas will test the rest. The printed report says how many
+decisions fell on each round of betting, so the caveat is visible in the number
+itself.
+
+The run that was recorded as evidence is kept, in summary, at
+`tests/data/arena_6seat_1000hands.json`, and `tests/test_arena_summary.py`
+checks it still says what it has to say.
+
 ## The scoreboard: how good is a bot?
 
 A poker result over a few hundred hands is mostly luck, so this project never
