@@ -1,6 +1,7 @@
 # Solvers, equity calculators and paid services that could supply the bot's poker judgment
 
-Research date: 15 September 2026. Machine used for every timing below: the
+Researched 15 September 2026, revised through 17 September 2026. Machine used
+for every timing below: the
 operator's Mac laptop (Apple M4, 10 cores, macOS 15, Python 3.13). Everything
 marked **measured** was run on this machine today; everything marked
 **quoted** is a number the vendor or author publishes; **UNVERIFIED** means I
@@ -35,8 +36,10 @@ appear:
   is **Monte-Carlo**.
 - A sharing licence that lets anyone use and change the code but requires
   those changes to be published if the program is offered to others over a
-  network. It costs a private bot that is never distributed nothing. The name
-  is **AGPL**, the Affero General Public Licence.
+  network. This project's own source is already public and licensed GPL-3.0,
+  so publishing the changes is not the cost; the extra network clause is, and
+  it is a clause GPL-3.0 does not carry. The name is **AGPL**, the Affero
+  General Public Licence.
 
 Four findings drive the recommendation:
 
@@ -65,8 +68,9 @@ Four findings drive the recommendation:
    and free.** TexasSolver (C++, ships a macOS binary, text-command driven)
    solved a turn-and-river spot with the full 6-max ranges — 93 and 95 hand
    classes, which expand to 606 card combinations on each side — to 0.74%
-   exploitability in 0.56 to 0.71 s of solver time (5.5 to 8 s wall including
-   tree build and writing the answer out as text another program can read
+   exploitability in 0.56 to 0.71 s of solver time (5.5 s wall measured, the
+   earlier run's wall clock noted only as about 8 s, including tree build and
+   writing the answer out as text another program can read
    back, in the **JavaScript Object Notation** format, **JSON**).
    postflop-solver (Rust library,
    AGPL) solved a comparable turn spot to 0.46% of the pot in 0.19 to 0.23 s
@@ -91,8 +95,9 @@ Four findings drive the recommendation:
    that such a loop deals of the order of ten thousand play-outs, a figure no
    measurement in this file supplies and no source here cites. The play-out
    counts in `ENGINE_ALTERNATIVES.md` are not that figure and do not supply
-   it: those count whole hands played out to the end inside a quarter-second
-   of thinking, where these count deals of the remaining cards to settle one
+   it: those count the rest of an already part-played hand being played out to
+   the end inside a quarter-second of thinking, where these count deals of the
+   remaining cards to settle one
    hand's equity in a Python loop. On that assumption, and counting one hand
    ranking per play-out, 10,000 rankings at the measured 2.6 million a second
    take 10,000 ÷ 2,600,000 = **3.8 ms**, and at the measured 0.9 million a
@@ -161,9 +166,15 @@ reference implementation, not a product).
   (nodelocking, profiles, player types) or does it only give equilibrium?
 - **(d) reachable in hours on one laptop** — no multi-day compute, runs on
   macOS or callable from a Mac.
-- **(e) fits private use** — licence or price acceptable for a private,
-  never-distributed bot. (AGPL and GPL are fine here; a terms-of-service
-  clause banning automated play is not.)
+- **(e) fits a public GPL-3.0 project** — licence or price acceptable for a
+  bot that is itself licensed GPL-3.0 and publishes its source at
+  `github.com/chaserunsfromjob/pokerbot`. GPL-compatible code is fine,
+  because every derived work here is published under GPL-3.0 anyway. Paid
+  tools are fine, because the operator buys them for their own use and buying
+  a tool is not publishing it. The ones to watch are AGPL, which adds a
+  network clause GPL-3.0 does not carry; licences that are incompatible with
+  GPL-3.0; code with no licence at all, which may not be copied into a
+  published project; and a terms-of-service clause banning automated play.
 
 ---
 
@@ -283,7 +294,8 @@ reference implementation, not a product).
 - Limits: heads-up only; the GPU successor (TexasSolverGPU) is Windows-only,
   NVIDIA-only and closed source, so it is irrelevant on a Mac.
 - Ratings: (a) 0 — (b) 3 — (c) 1 (you can hand it a biased range for the
-  opponent, but you cannot lock the opponent's actions) — (d) 3 — (e) 3.
+  opponent, but you cannot lock the opponent's actions) — (d) 3 — (e) 2
+  (AGPL: GPL-3.0 may take it in, but the network clause rides along).
 
 Practical note: at decision time keep the tree small (one bet size per
 street, start from the current street), which is exactly what the author's
@@ -302,7 +314,7 @@ second above.
 - Licence: AGPL-3.0.
 - Price: free.
 - macOS / Python: Rust library; **verified to compile and run on this Mac**,
-  and re-verified today, once two things are pinned: the compiler at
+  and re-verified on 2026-09-15, once two things are pinned: the compiler at
   **`rustc 1.85.0 (4d91de4e4 2025-02-17)`** (the 2026 compiler, 1.98.1, breaks
   it) and `bincode` at exactly `2.0.0-rc.3` — one line in `Cargo.toml`
   (line 12, `bincode = { version = "=2.0.0-rc.3", optional = true }`), because
@@ -343,7 +355,8 @@ second above.
 - Ratings: (a) 0 — (b) 3 — (c) 2 (has **node locking** in the library:
   `examples/node_locking.rs` lets you fix the opponent's strategy at chosen
   nodes and re-solve, which is how you turn an opponent read into an
-  exploitative strategy) — (d) 3 — (e) 3.
+  exploitative strategy) — (d) 3 — (e) 2
+  (AGPL: GPL-3.0 may take it in, but the network clause rides along).
 
 ### 3. GTOpen (MatthewPDingle)
 
@@ -355,8 +368,9 @@ second above.
 - Last activity: created 13 Jun 2026; pushed **15 Sep 2026** (today);
   14 stars, one author.
 - Licence: **none** (no LICENSE file in the repo). Legally that means all
-  rights reserved; for a private, never-distributed bot this is a practical
-  non-issue but it is not open source in the formal sense.
+  rights reserved, and this project publishes its own source under GPL-3.0,
+  so none of this code may lawfully be copied into it. Running the published
+  binary as a separate tool is a different question and is fine.
 - Price: free.
 - macOS / Python: Rust workspace (`crates/solver`, `crates/server`). README
   documents Windows, Linux and WSL only, but **it builds and runs on this
@@ -426,7 +440,8 @@ second above.
 - Limits: single-author, brand new, no licence, no Mac instructions,
   multiway is preflop only.
 - Ratings: (a) 2 (preflop 2-9, postflop 2) — (b) 3 — (c) 3 — (d) 3
-  (builds and serves on this Mac) — (e) 2 (no licence).
+  (builds and serves on this Mac) — (e) 1 (no licence, so nothing of it may
+  be copied into a published project; usable only as a separate tool).
 
 ### 4. slumbot2019 (Eric Jackson)
 
@@ -453,7 +468,8 @@ second above.
 - Requirements: C++11, blueprint trained 3 to 4 days on a 48-core, 512 GB
   workstation. Heads-up only.
 - Ratings: (a) 0 — (b) 3 — (c) 0 — (d) 1 (download the blueprint, do not
-  retrain) — (e) 3.
+  retrain) — (e) 2
+  (AGPL: GPL-3.0 may take it in, but the network clause rides along).
 
 ### 6. amaster97/poker_solver
 
@@ -660,10 +676,11 @@ second above.
   street with any number of players", with abstraction to keep trees small.
 - Price: **EUR 499 one-time**; free version limited to turn and river.
   Price, platform and the multiway claim were re-read off the vendor page
-  itself today: "€499", "Solve Omaha and Hold'em from any street with any
-  number of players", "Windows 64-bit or Mac OS X with atleast 8 GB RAM".
+  itself on 2026-09-15: "€499", "Solve Omaha and Hold'em from any street with
+  any number of players", "Windows 64-bit or Mac OS X with atleast 8 GB RAM".
 - Platform: native Windows 64-bit or macOS, 8 GB RAM minimum. The vendor page
-  was re-read today: it documents a tree builder, a solution viewer, a GUI,
+  was re-read again on 2026-09-16: it documents a tree builder, a solution
+  viewer, a GUI,
   abstraction and the export formats, and **no API and no scripting
   interface** — there is nothing on it that offers a way for one program to
   drive the solver. An earlier draft of this file rested that conclusion on a
@@ -701,7 +718,8 @@ second above.
 - URL: https://gtowizard.com/
 - What: a browser library of pre-solved spots plus an on-demand AI solver.
   Every capability line below was re-read off the vendor's own patch notes
-  today (`blog.gtowizard.com/tag/patch-notes/`) and is quoted, not summarised:
+  on 2026-09-16 (`blog.gtowizard.com/tag/patch-notes/`) and is quoted, not
+  summarised:
   - **Multiway preflop up to 9 players.** Patch note dated **February 03,
     2026**, "Introducing Multiway Preflop Solving": "Today, we're launching
     our biggest solver upgrade yet: custom Multiway Preflop Solving for up to
@@ -722,10 +740,11 @@ second above.
     Roadmap ... We've got major upgrades in development": "Multiway Postflop
     Expansion – Scaling postflop multiway solving up to 9 players."
 - Price: **every Ultra figure is vendor-confirmed; the other three tiers are
-  not.** The vendor's own pricing page was fetched again today and returns a
+  not.** The vendor's own pricing page was fetched again on 2026-09-16 and
+  returned a
   518-byte page that builds its prices in the browser, so nothing could be
   read from it. The patch notes carry the Ultra prices in plain text instead,
-  and all four were read off them today:
+  and all four were read off them on 2026-09-16:
   - The **February 03, 2026** patch note, under "Pricing", gives the
     introductory rate — it calls it an "Early Bird discount" — as "Annual
     Plan: $229/month" and "Monthly Plan: $279/month".
@@ -782,18 +801,35 @@ second above.
 
 ### 19. PioSOLVER, GTO+, Jesolver (heads-up scriptable solvers, Windows)
 
-- PioSOLVER (https://piosolver.com/): Pro $249, Edge $475 one-time; Windows
+- PioSOLVER: prices read off the vendor's own product page,
+  https://piosolver.com/products, on 2026-09-17 and quoted from it —
+  "PioSOLVER 3.0 Pro … € 450.00 (+applicable taxes)" and "PioSOLVER 3.0
+  Edge … € 800.00 (+applicable taxes)". Both list "1 year of software
+  updates" and "Can be used on two computers"; Edge adds "Preflop solver (for
+  heads-up spots)" and "Support for up to 64 cores" where Pro has 16. That is
+  euros, not dollars, and roughly twice what an earlier draft of this file
+  said ("Pro $249, Edge $475 one-time"), which it took from the site root —
+  a page that carries no prices at all. Windows
   only (Mac users run Parallels). **UPI** text protocol lets a script drive
   it (https://piosolver.com/docs/upi/); nodelocking supported. Heads-up
-  postflop; Edge adds a heads-up-style preflop solver.
-- GTO+ (https://gtoplus.com/): $75 to $375 one-time, Windows, heads-up,
-  scripting for batch databases.
-- Jesolver (https://jesolver.com/cmdref.html): $200, a UPI-compatible engine
-  that replaces Pio's, several times faster and lower memory; Windows.
+  postflop.
+- GTO+: prices read off https://gtoplus.com/purchase on 2026-09-17 and quoted
+  from it — "Main License: $75  Second License: $40  Upgrade from CREV: $50"
+  and "The registration fee is one-time. All future updates are included."
+  The $375 top end an earlier draft gave appears nowhere on that page.
+  Windows, heads-up, scripting for batch databases.
+- Jesolver (https://jesolver.com/cmdref.html): price **UNVERIFIED**. On
+  2026-09-17 the site root and `/index.html` each returned a one-byte page,
+  and `/cmdref.html` is a command list that names no price, so the "$200" an
+  earlier draft carried has no live source. Treat it the way entry 17's
+  unconfirmed GTO Wizard tiers are treated: a figure that may be stale, to be
+  confirmed on the site before any money is spent. It is a UPI-compatible
+  engine that replaces Pio's, several times faster and lower memory; Windows.
 - Ratings for all three: (a) 0 — (b) 3 — (c) 2 (nodelocking) — (d) 1
-  (Windows VM on a Mac) — (e) 2. TexasSolver and postflop-solver give the
+  (Windows VM on a Mac) — (e) 2. **The corrected prices do not move this
+  entry's verdict.** TexasSolver and postflop-solver give the
   same capability free and natively on macOS, so none of these are worth
-  buying for this project.
+  buying for this project at any price.
 
 ### 20. Holdem Solver (holdemsolver.com) — new, free beta
 
@@ -807,7 +843,8 @@ second above.
   multiway, running on your own hardware with results stored locally.
 - Price: **free during open beta (v0.79), pricing TBA**.
 - Platform: **Windows x64 and macOS Apple Silicon**.
-- Speed, **quoted from the vendor's own front page**, re-read today, with the
+- Speed, **quoted from the vendor's own front page**, re-read on 2026-09-16,
+  with the
   caption it carries there. Under a strategy grid the page prints the run's
   own readout, "20,050,063 iterations · 9m 05s  Δ 0.0010 · precision low", and
   captions it "Real solver output": "LJ's opening strategy in a 63-entry PKO,
@@ -849,9 +886,9 @@ second above.
   Enterprise $6,750, unlimited, no overage). The same $0.025 a calculation is
   also sold outright on that page as an On-Demand tier, "Sold in packs of $250
   for 10,000 calculations". The separate consumer plans are on
-  https://deepsolver.com/pricing, not on the API page, and that page today
-  shows two: Pro $69 a month ($41.40 billed yearly) and Essential $49 a month
-  ($29.40 billed yearly); neither lists API access among its features.
+  https://deepsolver.com/pricing, not on the API page, and on 2026-09-16 that
+  page showed two: Pro $69 a month ($41.40 billed yearly) and Essential $49 a
+  month ($29.40 billed yearly); neither lists API access among its features.
 - Multiway: **not supported** ("multi-way is not supported").
 - Ratings: (a) 0 — (b) 3 — (c) 1 — (d) 3 — (e) 0 (price).
 
@@ -901,14 +938,15 @@ second above.
 ## Part 4. Free or cheap precomputed preflop ranges, 2 to 9 handed
 
 Preflop for 9 players is the one multiway problem that is genuinely solved
-and cheap. Sources checked today:
+and cheap. Sources checked 2026-09-15, except where a row carries its own read
+date:
 
 | Source | Coverage | Format | Price |
 | --- | --- | --- | --- |
-| Preflop Wizard blog https://www.preflopwizard.app/blog/9-max-preflop-chart | 9-max and 6-max charts for opening when everyone ahead has folded (**raise first in**, **RFI**) and for defending the big blind, at 100bb, 2.5x open; updated Jul 2026 | web page / printable PDF | free |
+| Preflop Wizard blog https://www.preflopwizard.app/blog/9-max-preflop-chart | 9-max and 6-max charts for opening when everyone ahead has folded (**raise first in**, **RFI**) and for defending the big blind, at 100bb, 2.5x open; updated Jul 2026 | web page only (the ranges are tables inside the article); no download and no PDF — the only downloads offered are the vendor's iOS and Android apps, and the article argues against printing charts. Read 2026-09-17 | free |
 | preflopranges.app https://preflopranges.app/ | "15,000+ charts": 9-max MTT 10 to 200bb, 6-max cash, 3-max spins, with per-hand frequencies; open beta, no account | web only, no export found | free |
 | PokerCoaching https://pokercoaching.com/preflop-charts/ | 6-max and full-ring cash, MTT 15/75bb, push-fold; GTO **and exploitative** versions | PDF, email required | free |
-| MonkerGuy https://www.monkerguy.com/ | 6-max and 9-max NLHE 20 to 200bb, 8-max MTT packs; MonkerSolver output | .mkr, MonkerViewer, **.txt ranges (Pio/PPT compatible)** | hold'em products only: **$69** for the cheapest single sim ("6-MAX 100BB, 2.5x Open") up to **$319** for the tournament pack ("8max (BB ANTE) MTT Pack"); the 9-handed sim this project would actually want ("9 PLAYERS NLH, 100bb - 2.5x Open") is **$199**. The one $499 item on the site is "6-MAX PLO MTT (BB ANTE) Pack", which is Omaha, a different game. Prices read off the page 2026-09-16 |
+| MonkerGuy https://www.monkerguy.com/ | 6-max and 9-max NLHE 20 to 200bb, 8-max MTT packs; MonkerSolver output | .mkr, MonkerViewer, **.txt ranges (Pio/PPT compatible)** | hold'em products only: **$69** for the cheapest single sim ("6-MAX 100BB 2.5x Open") up to **$319** for the tournament pack ("8max (BB ANTE) MTT Pack"); the 9-handed sim this project would actually want ("9 PLAYERS NLH 100bb - 2.5x Open") is **$199**. The one $499 item on the site is "6-MAX PLO MTT (BB ANTE) Pack", which is Omaha, a different game. Prices read off the page 2026-09-16 |
 | GTO Sims https://gtosims.com/ | Spin&Go, 6-max, MTT from Simple Preflop Holdem | Simple Preflop files, Pio charts, PNG | per solution, price not shown |
 | TexasSolver release bundle | 6-max 100bb ranges (BTN/CO/MP/SB/UTG opens, 3-bet, call trees) as plain text | text, already on this Mac | free |
 | GTO Wizard | 9-max multiway preflop, custom antes/straddles | copy as UPI text by hand | top tier, monthly; $229 to $359 a month, vendor-confirmed (see entry 17) |
@@ -935,7 +973,8 @@ was run here; everything below it was read about.
 
 1. **TexasSolver** — free, ships a macOS binary, text-command driven, nothing
    to build. Solved a full-range turn-and-river spot in 0.56 to 0.71 s of
-   solving here (5.5 to 8 s wall including the JSON dump); the same binary
+   solving here (5.5 s wall measured, an earlier run noted only as about 8 s,
+   including the JSON dump); the same binary
    needs more than seven minutes to get nowhere on a full flop tree, so the
    rule is "prune the tree and start from the current street". The fastest
    heads-up postflop candidate measured here, and callable from Python by
@@ -1029,7 +1068,8 @@ and the open parts left open.
 
 - **What plays heads-up postflop.** TexasSolver is the fastest thing measured
   here for it, and that measurement stands: **0.74% of pot on a full-range
-  turn-and-river spot in 0.56 to 0.71 s of solving, 5.5 to 8 s wall**, which is
+  turn-and-river spot in 0.56 to 0.71 s of solving, 5.5 s wall measured and
+  the earlier run noted only as about 8 s**, which is
   what says a pruned tree fits inside a live decision, while the flop solve
   (Appendix A) is what says the tree must be pruned. An earlier draft of this
   file called that settled and wrote "Heads-up postflop: TexasSolver, called at
@@ -1118,12 +1158,14 @@ and the open parts left open.
 
 The settled part is a set of stopwatch readings, so it adopts no code and costs
 nothing at all. The code that was timed for it — OMPEval (ISC licence) and
-`phevaluator` (Apache-2.0) — is free, and both of those licences permit private
-use of the kind this project makes, so adopting either would also cost nothing
-if the reconciliation ever decided to. The open parts
+`phevaluator` (Apache-2.0) — is free, and both of those licences are
+compatible with this project's own GPL-3.0, so adopting either would also cost
+nothing if the reconciliation ever decided to. The open parts
 cost at most an optional $69 to $319 range pack
 and, if the reconciliation goes the way of the tools measured here, add AGPL
-code (TexasSolver, postflop-solver), which private use also permits.
+code (TexasSolver, postflop-solver), which GPL-3.0 may take in — but the AGPL
+network clause would then ride along with that part, and this repository is
+public.
 
 ---
 
@@ -1142,7 +1184,7 @@ range is the honest figure.
 
 | Tool | Spot | Result | Time (1-minute load at the start) |
 | --- | --- | --- | --- |
-| TexasSolver 0.2.0 | turn+river, 93 vs 95 hand classes (606 combinations each), one 66% bet, 60% raise, all-in | 0.74% exploitability, iter 51 | 0.56 to 0.71 s solve, 5.5 to 8 s wall (load 3.40 on the fresh run) |
+| TexasSolver 0.2.0 | turn+river, 93 vs 95 hand classes (606 combinations each), one 66% bet, 60% raise, all-in | 0.74% exploitability, iter 51 | 0.56 to 0.71 s solve, 5.5 s wall measured (load 3.40 on the fresh run); the earlier run's wall clock noted only as about 8 s |
 | TexasSolver 0.2.0 | bundled 3-street sample, 2 vs 2 hand classes | 0.44%, iter 71 | 10.5 s solve, 16.4 s wall |
 | TexasSolver 0.2.0 | flop+turn+river, same full ranges, 33/75% bets, 10 threads | iterations 0 and 2 printed on every run and 3 on two of the three (see the per-run table below); 226.39% of pot at iteration 0 and 221.72% at iteration 2 on all three runs | stopped at 421.4 / 422.5 / 423.1 s wall, 493.4 / 462.2 / 699.8 s CPU, 4.95 / 5.41 / 5.79 GiB over three runs (loads 3.29, 3.75, and not recorded on the third) |
 | postflop-solver | turn+river, ~40% vs ~40% ranges, 60%/geo/all-in, 2.5x raises | 0.46% of pot (0.91 chips of 200), iter 100 | 0.19 to 0.23 s wall, 1.53 to 1.59 s CPU over five runs (load 3.40) |
@@ -1285,4 +1327,23 @@ CARGO_TARGET_DIR=<scratch>/GTOpen/target_clean cargo build --release -p server
 #   Sampled every 15 s with `vm_stat` and `sysctl -n vm.swapusage`; swap in use
 #   rose 4.56 -> 11.68 GB and the swap file 6 -> 12 GB machine-wide, but other
 #   agents share this laptop, so none of that is attributable to the solve.
+
+# Vendor pages re-read 2026-09-17.  These are page reads, not timings, and they
+# were taken on the operator's PC rather than the Mac; each was fetched with
+# curl and a desktop browser user-agent and returned HTTP 200.
+#   https://piosolver.com/products   "PioSOLVER 3.0 Pro ... € 450.00
+#     (+applicable taxes)", "PioSOLVER 3.0 Edge ... € 800.00 (+applicable
+#     taxes)", both "1 year of software updates" and "Can be used on two
+#     computers"
+#   https://gtoplus.com/purchase   "Main License: $75  Second License: $40
+#     Upgrade from CREV: $50" and "The registration fee is one-time. All
+#     future updates are included."
+#   https://jesolver.com/ and https://jesolver.com/index.html   one byte each,
+#     no price anywhere; https://jesolver.com/cmdref.html is a command list
+#     with no price either
+#   https://www.preflopwizard.app/blog/9-max-preflop-chart   no PDF and no
+#     chart download; the only downloads offered are its iOS and Android apps
+#   https://www.monkerguy.com/   product names carry no commas: "6-MAX 100BB
+#     2.5x Open" $69, "9 PLAYERS NLH 100bb - 2.5x Open" $199, "8max (BB ANTE)
+#     MTT Pack (10bb-100bb)" $319
 ```
