@@ -3,6 +3,11 @@
 A multiway no-limit hold'em poker bot for a class project. `CLAUDE.md` holds the
 goal, the rules this project works under, and the plan.
 
+This project is published under the GNU General Public License version 3, whose
+full terms are in `LICENSE`, because the borrowed poker engine in
+`vendor/poker_ai` carries that licence and publishing this repository counts as
+distributing it.
+
 What the borrowed poker engine is, how to run it, and what it would cost to move
 it from its 20-card deck to a normal 52-card one: `REFERENCE_NOTES.md`.
 

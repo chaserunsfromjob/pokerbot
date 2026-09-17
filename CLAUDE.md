@@ -4,9 +4,11 @@ A multiway no-limit hold'em poker bot for a class project. Goal: consistently
 beat real human players at a table of 3 or more, not chase a theoretical
 optimum that does not exist at that table size.
 
-Built on `fedden/poker_ai` (vendored into this repo) rather than from scratch,
-for speed and because its MCCFR solver is real, tested code no one here would
-beat by hand-rolling it in a few weeks.
+The engine road is OpenSpiel's `universal_poker`: real, tested game code we call
+rather than hand-roll. `fedden/poker_ai` stays vendored in `vendor/poker_ai` as
+a reference only, not as this project's basis; its fixed-limit short deck is the
+wrong shape to convert. `dickreuter/Poker` is the reference for table-state
+capture, never for play.
 
 ## The forefront rule
 
@@ -29,11 +31,13 @@ beat by hand-rolling it in a few weeks.
 
 - Allow AI-written code to combine rates across the **observed population** — the whole database, seated players' stored rows included, with being seated never the criterion for inclusion — into a baseline, a classification split, or an archetype, and hand that result to the engine, which still chooses the action.
 - Derive any opponent archetype fed to the solver from measured action frequencies alone; never hand-write one, and never let it reference hole cards, board cards, or hand strength.
+- Treat who chooses the action on top of the engine as open and the operator's to settle; the carve-out from this rule is not granted, so every bullet above holds until the operator grants it.
 
 ## Plan
 
-1. Vendor `fedden/poker_ai`, get it running, and find out what it takes to move
-   it off the default 20-card short deck onto standard 52-card hold'em.
+1. Superseded. This stage was the 52-card conversion of `fedden/poker_ai`; the
+   reconciliation that the four surveys feed replaces it, and the engine road it
+   works from is OpenSpiel `universal_poker`.
 2. Layer in opponent modeling: track each player's tendencies and adjust
    against them specifically. This is the part that actually beats humans.
 3. Only if time remains: refine with a trained model on top of stages 1-2.
@@ -42,11 +46,22 @@ beat by hand-rolling it in a few weeks.
 
 - Keep every computation reachable in hours on one laptop; reject any approach that needs multi-day compute to reach a playable bot.
 
+## GitHub
+
+- Treat `github.com/chaserunsfromjob/pokerbot` as the single source of truth; a change that is not on GitHub does not exist.
+- Run `git fetch origin` and read the open pull requests (`gh pr list`) before starting anything; that list is the live board of who is working on what.
+- Cut the task's branch from `origin/main` and push it (`git push -u origin <branch>`) before doing the work.
+- Open a draft pull request titled with the task (`gh pr create --draft`) as soon as the branch is pushed, so the other agents see it.
+- Push the branch as the work goes, not once at the end.
+- Mark the pull request ready (`gh pr ready`) when the work is done, and land the change through it.
+- Push `main` the moment a merge lands on it.
+
 ## Licence
 
-- Keep pokerbot private: never publish it, give it to a classmate, or sell it.
-- Treat the vendored engine's GPL-3.0 terms as imposing nothing while pokerbot stays private, since they attach only on distribution.
-- Reopen this licence decision with the operator before handing the code to anyone.
+- Keep pokerbot public at `github.com/chaserunsfromjob/pokerbot` so classmates can collaborate on it.
+- License pokerbot under GPL-3.0, whose full text is `LICENSE` at the root, because the vendored engine is GPL-3.0 and publishing is distribution.
+- Keep every derived work under GPL-3.0 with its source published; the vendored engine's terms bind anything published alongside it.
+- Take any move to close the repository, or to a different licence, to the operator first.
 
 Rules in `~/.claude/CLAUDE.md` (deployed machine-wide from the `heater` fleet
 repository) apply on top of this file.
