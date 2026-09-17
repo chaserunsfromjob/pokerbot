@@ -36,7 +36,7 @@ import enum
 import functools
 import random
 import re
-from typing import Iterable, Mapping, Sequence
+from typing import Iterable, Sequence
 
 import pyspiel
 
@@ -46,6 +46,12 @@ from .record import Event, HandRecord, SCHEMA
 
 ENGINE = "open_spiel.universal_poker"
 BETTING_ABSTRACTION = "fchpa"
+
+#: Every bet menu `universal_poker` ships that this adapter will name. The
+#: value is written straight into the game definition, so it is checked
+#: against this list first: anything else -- a name the engine does not know,
+#: or a name with further parameters hidden behind it -- is refused.
+BETTING_ABSTRACTIONS = ("fchpa", "fcpa", "fullgame")
 MIN_SEATS = 2
 MAX_SEATS = 9
 
@@ -133,7 +139,6 @@ def game_string(
     engine_stacks: Sequence[int] | None = None,
     *,
     betting_abstraction: str = BETTING_ABSTRACTION,
-    extra_params: Mapping[str, object] | None = None,
 ) -> str:
     """The ACPC game definition, written the way `universal_poker` reads it.
 
@@ -145,11 +150,28 @@ def game_string(
     public so that anything measuring that table -- the decision-layer
     benchmark in `research/decision_layer/` above all -- asks for the game
     here rather than writing the blinds out again and drifting from them. The
-    two knobs are for exactly that use: `betting_abstraction` for a study
-    comparing bet menus, and `extra_params` for engine parameters the table
-    itself never sets, such as `calcOddsNumSims`. Leave `engine_stacks` out
-    and the config's own stacks are used, in engine seat order.
+    one knob is `betting_abstraction`, for a study comparing bet menus. Leave
+    `engine_stacks` out and the config's own stacks are used, in engine seat
+    order.
+
+    Nothing here can add an engine parameter. `universal_poker` reads the last
+    of a duplicated key, so anything written into this definition freely could
+    name `blind` or `firstPlayer` a second time and quietly load a game the
+    bot never sits at. So there is no free-form knob, and the one knob there
+    is, `betting_abstraction`, must be one of the engine's own menu names in
+    `BETTING_ABSTRACTIONS`; any other value raises `ValueError` before it
+    reaches the definition. An engine parameter is added instead by
+    `equity_rule.with_odds`, which appends `calcOddsNumSims` to a finished
+    definition and raises if it is already set.
     """
+    if betting_abstraction not in BETTING_ABSTRACTIONS:
+        raise ValueError(
+            f"betting_abstraction must be one of "
+            f"{', '.join(BETTING_ABSTRACTIONS)}, not {betting_abstraction!r}; "
+            "the value is written into the game definition, where anything "
+            "else could name blind or firstPlayer a second time and load a "
+            "game the table never plays"
+        )
     n = config.seats
     if n == 2:
         blind = f"{config.small_blind} {config.big_blind}"
@@ -162,12 +184,11 @@ def game_string(
     if engine_stacks is None:
         engine_stacks = config.stacks
     stacks = " ".join(str(int(s)) for s in engine_stacks)
-    extra = "".join(f",{name}={value}" for name, value in (extra_params or {}).items())
     return (
         f"universal_poker(betting=nolimit,numPlayers={n},numRounds=4,"
         f"blind={blind},firstPlayer={first_player},numSuits=4,numRanks=13,"
         f"numHoleCards=2,numBoardCards=0 3 1 1,stack={stacks},"
-        f"bettingAbstraction={betting_abstraction}{extra})"
+        f"bettingAbstraction={betting_abstraction})"
     )
 
 
