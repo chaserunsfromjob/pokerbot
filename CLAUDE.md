@@ -8,7 +8,7 @@ The engine road is OpenSpiel's `universal_poker`: real, tested game code we call
 rather than hand-roll. `fedden/poker_ai` stays vendored in `vendor/poker_ai` as
 a reference only, not as this project's basis; its fixed-limit short deck is the
 wrong shape to convert. `dickreuter/Poker` is the reference for table-state
-capture, never for play.
+capture.
 
 ## The forefront rule
 
@@ -31,13 +31,12 @@ capture, never for play.
 
 - Allow AI-written code to combine rates across the **observed population** — the whole database, seated players' stored rows included, with being seated never the criterion for inclusion — into a baseline, a classification split, or an archetype, and hand that result to the engine, which still chooses the action.
 - Derive any opponent archetype fed to the solver from measured action frequencies alone; never hand-write one, and never let it reference hole cards, board cards, or hand strength.
-- Treat who chooses the action on top of the engine as open and the operator's to settle; the carve-out from this rule is not granted, so every bullet above holds until the operator grants it.
+- Treat who chooses the action on top of the engine as open and the operator's to settle; the exception to this rule is not granted, so every bullet above holds until the operator grants it.
 
 ## Plan
 
-1. Superseded. This stage was the 52-card conversion of `fedden/poker_ai`; the
-   reconciliation that the four surveys feed replaces it, and the engine road it
-   works from is OpenSpiel `universal_poker`.
+1. Superseded by the reconciliation the four surveys feed; the engine road is
+   OpenSpiel `universal_poker`.
 2. Layer in opponent modeling: track each player's tendencies and adjust
    against them specifically. This is the part that actually beats humans.
 3. Only if time remains: refine with a trained model on top of stages 1-2.
@@ -50,7 +49,7 @@ capture, never for play.
 
 - Treat `github.com/chaserunsfromjob/pokerbot` as the single source of truth; a change that is not on GitHub does not exist.
 - Run `git fetch origin` and read the open pull requests (`gh pr list`) before starting anything; that list is the live board of who is working on what.
-- Cut the task's branch from `origin/main` and push it (`git push -u origin <branch>`) before doing the work.
+- Push the task's branch (`git push -u origin <branch>`) before doing the work.
 - Open a draft pull request titled with the task (`gh pr create --draft`) as soon as the branch is pushed, so the other agents see it.
 - Push the branch as the work goes, not once at the end.
 - Mark the pull request ready (`gh pr ready`) when the work is done, and land the change through it.
@@ -60,7 +59,7 @@ capture, never for play.
 
 - Keep pokerbot public at `github.com/chaserunsfromjob/pokerbot` so classmates can collaborate on it.
 - License pokerbot under GPL-3.0, whose full text is `LICENSE` at the root, because the vendored engine is GPL-3.0 and publishing is distribution.
-- Keep every derived work under GPL-3.0 with its source published; the vendored engine's terms bind anything published alongside it.
+- Keep every derived work under GPL-3.0 with its source published; the vendored engine's terms bind whatever is built on or combined with its code, not a separate program that merely ships beside it.
 - Take any move to close the repository, or to a different licence, to the operator first.
 
 Rules in `~/.claude/CLAUDE.md` (deployed machine-wide from the `heater` fleet

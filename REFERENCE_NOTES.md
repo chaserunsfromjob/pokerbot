@@ -63,14 +63,13 @@ Plain-language note first, because two words recur throughout:
 - Location in this repo: `vendor/poker_ai/`, as a **plain copy of the source
   tree**, not a git submodule.
 
-Why a copy and not a submodule: stage 1 of the plan in `CLAUDE.md` is to move
-this engine off the 20-card deck, which means editing its source. A submodule
-turns every such edit into a fork we have to host and track separately, and
-makes `git clone` of this repo produce a directory that is empty until someone
-remembers a second command. A copy is one clone, one diff, one review. The
-cost would normally be that upstream fixes have to be re-applied by hand, and
-here there is no such cost at all: the repository is archived, so there will be
-no upstream fixes.
+Why a copy and not a submodule: the engine's source is ours to edit and ours to
+carry. A submodule turns every such edit into a fork we have to host and track
+separately, and makes `git clone` of this repo produce a directory that is empty
+until someone remembers a second command. A copy is one clone, one diff, one
+review. The cost would normally be that upstream fixes have to be re-applied by
+hand, and here there is no such cost at all: the repository is archived, so
+there will be no upstream fixes.
 
 ### Changes made to the vendored code
 

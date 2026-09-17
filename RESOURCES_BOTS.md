@@ -115,7 +115,7 @@ Each resource gets a mark on five criteria:
 | b | True no-limit bet sizing | yes | abstracted / few sizes | limit or not stated |
 | c | Exploits a specific opponent by identity | built in, keyed by name | some opponent modelling, not by name | none |
 | d | Reachable in hours on **this** laptop (Apple M4, 16 GB memory), Python preferred | yes | possible with real work (other language, or a whole second computer simulated in software inside this one so that Windows programs will run — a *virtual machine*, or **VM**) | days of compute, more memory than the machine has, or a dead platform |
-| e | Fits this project (licence and price) | free and GPL-3.0-compatible, or affordable | paid but affordable, or copyleft with a condition attached | incompatible with GPL-3.0, or closed with no purchase path |
+| e | Fits this project (licence and price) | free and GPL-3.0-compatible, or affordable | paid but affordable, or copyleft with a condition beyond publishing source, such as the network clause | incompatible with GPL-3.0, or closed with no purchase path |
 
 "Runs on macOS / Python?" is answered literally. The licence half of (e) is
 judged against what this project now is: published on GitHub for anyone to
@@ -124,9 +124,9 @@ whose full text is `LICENSE` at the root. So code under GPL-3.0, or under a
 licence that can be combined with it, is fine, because publishing our own
 source is exactly what such a licence asks of us. A paid tool is still fine
 for the operator's own use: buying one and running it is not distributing it.
-The two to watch are the Affero variant — *AGPL* — whose extra clause is set
-off by letting people reach the software over a network, and any licence that
-cannot be combined with GPL-3.0 at all.
+The two to watch are the GNU Affero General Public License — *AGPL* — whose
+extra clause is set off by letting people reach the software over a network,
+and any licence that cannot be combined with GPL-3.0 at all.
 
 Two rules about the marks themselves:
 
@@ -1007,10 +1007,11 @@ real-sizing version "was not worth measuring against anything" at that time
 budget. And its "What the training measurements show, and what they do not"
 section records that **no abstraction sized to a few hours was attempted
 there**, so it does not close the train-in-advance road either; it reports that
-road unstarted, not disproved. Recommending a blueprint would also set aside
-the opening of
-`CLAUDE.md`, which names `fedden/poker_ai` as the engine this project is built
-on, and its Plan, whose stage 1 is moving that engine to the 52-card game.
+road unstarted, not disproved. `CLAUDE.md` no longer weighs against a blueprint
+either: its opening now names OpenSpiel's `universal_poker` as the engine road,
+and its Plan records stage 1 as superseded by the reconciliation. Neither says
+anything about whether the strategy is trained in advance or computed while the
+hand is played, so that objection no longer stands on its own.
 Choosing between a strategy trained in advance and one computed while the hand
 is being played is a decision for the **reconciliation of `ENGINE_ALTERNATIVES.md`,
 `RESOURCES_BOTS.md`, `RESOURCES_SOLVERS.md` and `RESOURCES_EXPLOITATION.md`**,
