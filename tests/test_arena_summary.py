@@ -14,7 +14,14 @@ is ever replaced by a worse run, these fail.
   * a win rate whose 95% interval excludes zero.
 
 The machine's load is in the file beside the timings, because a timing without
-the load it was taken at is not a measurement anyone can repeat.
+the load it was taken at is not a measurement anyone can repeat. The records
+digest in the file reproduces only at the commit the file names: the record
+carries the commit, and a change to what is written down changes the bytes.
+
+And the caveat that has to travel with the number, asserted below so it cannot
+quietly stop being true: against opponents who bet at random the hand is almost
+always over before the flop, so nearly every decision in this run is the bot's
+first one.
 """
 
 from __future__ import annotations
@@ -46,6 +53,25 @@ def test_no_invariant_failed():
     assert SUMMARY["invariants_checked"] == ["I1", "I2", "I3", "I4", "I5", "I6", "I7"]
     # And the two that only half ran say so, rather than being counted whole.
     assert set(SUMMARY["invariants_partial"]) == {"I3", "I6", "I7"}
+
+
+def test_nearly_every_decision_in_this_run_was_made_before_the_flop():
+    """What the win rate above actually measures, in one assertion.
+
+    Opponents that pick a move at random shove or fold early, so the hand
+    rarely reaches a flop and the bot rarely gets a second decision. The score
+    is therefore a score on the bot's opening move and little else; the rest of
+    it is not measured here and T3's personas are what will measure it. If a
+    re-recorded run ever spreads across the streets, this fails -- and the
+    sentence in `README.md` about what the score covers has to change with it.
+    """
+    by_street = SUMMARY["decisions_by_street"]
+    assert set(by_street) == {"preflop", "flop", "turn", "river"}
+    assert sum(by_street.values()) == SUMMARY["decisions"]
+    assert by_street["preflop"] > 0.9 * SUMMARY["decisions"], (
+        f"only {by_street['preflop']} of {SUMMARY['decisions']} decisions were "
+        f"made before the flop; the README says nearly all of them are"
+    )
 
 
 def test_no_decision_took_longer_than_the_budget():

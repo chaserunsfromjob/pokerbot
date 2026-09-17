@@ -71,6 +71,9 @@ CONFIDENCE = 0.95
 #: byte for byte, which is invariant I6.
 REPLAY_CHECK_EVERY = 100
 
+#: What each street is called, in the order the engine numbers them.
+STREET_NAMES = ("preflop", "flop", "turn", "river")
+
 
 # --------------------------------------------------------------------------
 # the invariants, checked on a finished hand
@@ -469,6 +472,14 @@ def run(
     elapsed = time.monotonic() - started
     load_end = os.getloadavg()
     search_times = [log.search_s for log in logs]
+    # Which streets the bot actually got to play. Against opponents who bet at
+    # random almost every hand is over before the flop, so a score that does
+    # not say this reads as a verdict on the whole bot when it is a verdict on
+    # its first decision. Counted here so the caveat travels with the number.
+    decisions_by_street = {
+        name: sum(1 for log in logs if log.street == street)
+        for street, name in enumerate(STREET_NAMES)
+    }
     rule_times = [log.rule_s for log in logs if log.rule_action]
     agreed = sum(1 for log in logs if log.rule_action and log.agree)
     rule_decisions = sum(1 for log in logs if log.rule_action)
@@ -508,6 +519,7 @@ def run(
             "I6": f"sampled: {replay_checks} of {len(per_hand_bb)} hands replayed",
         },
         "decisions": len(logs),
+        "decisions_by_street": decisions_by_street,
         "decision_time_max_s": max(search_times) if search_times else float("nan"),
         "decision_time_p99_s": percentile(search_times, 0.99),
         "decision_time_median_s": percentile(search_times, 0.50),
@@ -553,6 +565,13 @@ def format_report(report: dict) -> str:
         f"(checked: {' '.join(report['invariants_checked'])}; "
         f"I3 and I7 in part, I6 sampled -- see the module docstring)",
         f"  decisions          {report['decisions']} by the bot",
+        f"  by street          " + ", ".join(
+            f"{report['decisions_by_street'][name]} {where}"
+            for name, where in zip(
+                STREET_NAMES,
+                ("before the flop", "on the flop", "on the turn", "on the river"),
+            )
+        ),
         f"  decision time      max {report['decision_time_max_s'] * 1000:.1f} ms, "
         f"p99 {report['decision_time_p99_s'] * 1000:.1f} ms, "
         f"median {report['decision_time_median_s'] * 1000:.1f} ms "

@@ -137,6 +137,13 @@ much a poker player wins. It comes with a range around it, because poker is
 noisy enough that a single number means nothing; if that range does not include
 zero, the win is not something the shuffle could have produced on its own.
 
+What that score does not cover, said plainly: against opponents who bet at
+random almost every hand is over before the three shared cards are turned face
+up -- the *flop* -- so this measures the bot's first decision and little else,
+and T3's personas will test the rest. The printed report says how many
+decisions fell on each round of betting, so the caveat is visible in the number
+itself.
+
 The run that was recorded as evidence is kept, in summary, at
 `tests/data/arena_6seat_1000hands.json`, and `tests/test_arena_summary.py`
 checks it still says what it has to say.

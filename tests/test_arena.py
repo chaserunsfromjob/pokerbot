@@ -41,6 +41,7 @@ def test_a_small_run_is_green_and_reports_what_t2_asks_for():
     assert report["hands_played"] == SMALL["hands"]
     assert report["invariant_failures"] == 0
     assert report["decisions"] > 0
+    assert sum(report["decisions_by_street"].values()) == report["decisions"]
     assert report["decision_time_max_s"] < 0.25
     assert report["decisions_starved"] == 0
     assert report["rule_decisions"] == report["decisions"], (
@@ -52,6 +53,7 @@ def test_a_small_run_is_green_and_reports_what_t2_asks_for():
     for wanted in (
         "hands played",
         "invariant failures",
+        "by street",
         "decision time",
         "win rate",
         "95% interval",
