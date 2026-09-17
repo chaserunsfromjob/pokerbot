@@ -62,7 +62,7 @@ Four things surprised me on reading it, and all four change the answer:
   (`get_flop_frequency_of_player`) **that does not exist anywhere in the
   project** — I searched every file. The call sits inside a `try` that swallows
   the error, so it silently does nothing, every hand, forever
-  (`poker/decisionmaker/decisionmaker.py:246-262`). No count of how often anyone
+  (`poker/decisionmaker/decisionmaker.py:247-268`). No count of how often anyone
   plays, raises, or folds is kept about anybody. On the criterion the operator
   cares most about — beating a *named* person — this project scores zero.
 
@@ -74,14 +74,19 @@ Four things surprised me on reading it, and all four change the answer:
   local. The server is alive today and lets a guest account read; that is a
   thread the project would be hanging from.
 
-- **Its "chance of winning" number counts a split pot as a win.** I measured
-  this. Asked how often ace-king of one suit beats one unknown hand, it answers
-  0.6815. An independent count with `treys`, over the same number of deals, puts
-  the true figure at 0.6710 once split pots are halved, and 0.6795 if you count
-  every split as a whole win. Its answer matches the second. So every number the
-  decision rules are compared against is quietly about one point too high
-  heads-up, and more than that on boards where the cards in the middle are the
-  best hand.
+- **Its "chance of winning" number is too high, and for two separate reasons.**
+  I measured it. Asked how often ace-king of one suit beats one unknown hand,
+  pooled over 2,400,000 deals it answers **0.6817**. An independent 2,000,000-
+  deal count with `treys` — the outside hand-ranking library this project
+  already uses to check its tests — puts the honest figure at **0.6705** once
+  split pots are halved, and **0.6788** even if you generously count every
+  split as a whole win. dickreuter's answer is above *both*. Counting splits as
+  wins explains most of the gap; the rest comes from a second defect, in the
+  way it deals the opponent's cards, which leaves the opponent holding a pair
+  about a quarter less often than a real deck would (measured: 0.0443 against
+  the true 0.0588). So every number the decision rules are compared against is
+  quietly about one point too high heads-up, and putting it right is two
+  repairs, not one.
 
 - **Its own tests do not test the decisions.** All fourteen tests of the
   decision maker are switched off in the source, with the note "Fix access
@@ -96,18 +101,38 @@ brain.** Details, and the four things "based on dickreuter" could mean, are in
 
 ## How it is rated
 
-Same five criteria and same 0-to-3 scale as `RESOURCES_SOLVERS.md`, so the two
-documents can be read side by side. 3 is best.
+The same five criteria as `RESOURCES_SOLVERS.md`, on the same 0-to-3 scale, so
+the two documents can be read side by side. 3 is best. **Two of the five are
+not worded the same way there and here**, and where the wording differs the two
+columns must not simply be lined up. Each is flagged below.
 
-- **(a) 2 to 9 players** — does it produce decisions for 3+ player spots?
-- **(b) true no-limit sizing** — arbitrary bet sizes, not a fixed menu?
+- **(a) 2 to 9 players** — does it produce decisions for 3+ player spots? Same
+  question, same words, as `RESOURCES_SOLVERS.md:165`.
+- **(b) true no-limit sizing** — **redefined here, and not comparable.**
+  `RESOURCES_SOLVERS.md:166` asks "arbitrary bet sizes, not fixed-limit?",
+  which a tool passes as soon as it is not playing the fixed-stake form of the
+  game: a per-street *menu* of sizes scores 3 there
+  (`RESOURCES_SOLVERS.md:528`, TexasSolverLib, "(b) 3 (per-street sizing menus,
+  inherited)"). This document asks the harder question — arbitrary bet sizes,
+  **not a fixed menu** — because what is being judged here is a bot that has to
+  name a real amount at a real table. On the solvers wording dickreuter would
+  score **3**; on the wording used here it scores **1** (§4). **Do not read the
+  two (b) columns against each other.**
 - **(c) exploit specific opponents** — can it be biased by an opponent model, or
-  does it play the same way against everyone?
-- **(d) reachable in hours on one laptop** — no multi-day compute; runs here.
-- **(e) licence or price acceptable** — for a **public GPL-3.0** project. Note
-  this differs from `RESOURCES_SOLVERS.md`, which was written when pokerbot was
-  private; the operator's later decision makes the repository public and
-  GPL-3.0, so (e) now means "can we legally publish code derived from it".
+  does it play the same way against everyone? `RESOURCES_SOLVERS.md:167-168`
+  words it as node-locking, profiles or player types versus equilibrium only.
+  Same question.
+- **(d) reachable in hours on one laptop** — **reworded.**
+  `RESOURCES_SOLVERS.md:169-170` says "no multi-day compute, runs on macOS or
+  callable from a Mac". This one says no multi-day compute and runs *here*, on
+  this Windows PC, because dickreuter is a Windows program. The Mac half of the
+  solvers' question is not dropped — it is argued in §4(d) and counted against
+  it there — but the two (d) columns are measured on different machines.
+- **(e) licence or price acceptable** — for a project published under the GNU
+  General Public License version 3, written **GPL-3.0**. Same question as
+  `RESOURCES_SOLVERS.md:171-181`, which already asks it in exactly those terms
+  ("fits a public GPL-3.0 project"): can code derived from this be lawfully
+  published under GPL-3.0, and is the price acceptable.
 
 The score is in §4, after the evidence.
 
@@ -117,9 +142,9 @@ The score is in §4, after the evidence.
 
 The version read is commit `cae3a108b6cbf22ed8ef90bc0e70f790346289a4`, "fix
 config", 2025-06-26, the tip of `master`, cloned at 00:47 UTC on 2026-09-17.
-68 Python files, 14,449 lines, of which 5,329 sit in two vendored third-party
+69 Python files, 14,452 lines, of which 5,329 sit in two vendored third-party
 folders (`poker/vboxapi` 4,539 lines, `poker/pymouse` 790). So dickreuter's own
-code is about **9,100 lines**.
+code is **9,123 lines**.
 
 ### 1.1 The table-state capture — the good part
 
@@ -221,13 +246,17 @@ against a chance-of-winning number from `montecarlo_python.py`.** Nothing
 searches, nothing solves, nothing looks ahead.
 
 **The bet sizes are a menu of five**, set in `admin` (557-573): the table's own
-minimum bet; minimum plus `BetPlusInc` big blinds; half the pot; the whole pot;
-and a bluff of half the pot. Not arbitrary amounts.
+minimum bet; that minimum bet multiplied by the setting `BetPlusInc` with the
+minimum added back on — `t.minBet * BetPlusInc + t.minBet`
+(`decisionmaker.py:564-566`), a multiple of the minimum bet, **not** the
+minimum plus a number of big blinds; half the pot; the whole pot; and a bluff
+of half the pot. Not arbitrary amounts.
 
-**The one opponent-aware branch is dead.** Lines 246-262 try to fetch
+**The one opponent-aware branch is dead.** Lines 247-268 try to fetch
 `l.get_flop_frequency_of_player(t.PlayerNames[0])` and, on the answer, add or
 subtract 2 from both curvature numbers. `t.PlayerNames` is assigned nowhere in
-the project (the only three mentions are these lines) and `GameLogger` has no
+the project (the only two mentions in any file are lines 251 and 253, both
+reading it) and `GameLogger` has no
 method of that name (its methods are listed at
 `poker/tools/game_logger.py:20-204`). The bare `except` swallows it, the value
 becomes "not a number", both comparisons are then false, and the adjustment is
@@ -235,6 +264,12 @@ always 0. Searching the whole project for `vpip`, `pfr`, `aggression`,
 `fold_rate`, `player_stats` or `opponent_model` returns **nothing**.
 
 ### 1.3 The equity Monte Carlo
+
+The share of the pot a hand would take on average if the same spot were played
+out to the end over and over, counting every way the cards still to come could
+fall, is that hand's **equity**. It is one number between 0 and 1 — 0.68 means
+"about two thirds of the pot, on average" — and every threshold in the decision
+rules is compared against it.
 
 `poker/decisionmaker/montecarlo_python.py`, 491 lines, pure Python.
 `run_montecarlo` (line 238) deals the unknown cards at random up to `max_runs`
@@ -256,14 +291,47 @@ Fast enough to answer inside a second, which is all it needs to be. For scale,
 `RESOURCES_SOLVERS.md` measured OMPEval in C++ at 160 to 312 **million** hands a
 second; this is about twenty-thousand times slower, and still fast enough.
 
-**It counts split pots as wins.** 200,000 deals of AKs against one unknown hand
-gave **0.6815**. An independent 200,000-deal count with `treys` — the outside
-hand-ranking library this project already uses to check its tests — gave
-win 0.6625, split 0.0170, lose 0.3205: **0.6710** when splits are halved,
-**0.6795** when every split counts as a win. dickreuter's answer matches the
-second, ten standard errors away from the first. Reading the code confirms why:
-`eval_best_hand` sorts by score and takes the first, and Python's sort is
-stable, so a tie always resolves in favour of seat 0, which is you.
+**Its answer is too high, and two separate defects push it up.**
+
+*The measurement.* Twelve runs of 200,000 deals of AKs against one unknown
+hand, pooled — 2,400,000 deals in all — gave **0.6817**, give or take 0.0003.
+An independent 2,000,000-deal count with `treys` — the outside hand-ranking
+library this project already uses to check its tests — gave win 0.6623, split
+0.0165, lose 0.3212: **0.6705** when splits are halved and **0.6788** when
+every split is counted as a whole win. dickreuter's answer is **above both** —
+about nine standard errors above the halved figure and about six above the
+generous one. "It counts split pots as wins" is true, but it is not the whole
+story: even the most forgiving honest count comes out below what it reports.
+
+*First defect: ties are awarded to you.* `eval_best_hand` sorts the hands by
+score and takes the first, and Python's sort is stable, so equal hands keep the
+order they were handed in; the caller then treats seat 0 — you — as the winner
+(`montecarlo_python.py:271-277`: `winner = ...index(bestHand)`, then
+`if winner < CollusionPlayers + 1` with `CollusionPlayers = 0`). Splits run at
+0.0165 of deals here, so counting them whole rather than halved lifts the
+answer by about 0.0083 — most, but not all, of the 0.0112 gap to the halved
+figure.
+
+*Second defect: the second card dealt is not the card that was checked.*
+`distribute_cards_to_players` (`montecarlo_python.py:210-224`) picks two
+positions in the deck, checks that the **cards standing at those two
+positions** are inside the opponent's assumed range, and then deals with
+`deck.pop(random_card1)` followed by `deck.pop(random_card2)` — the second one
+taken from the **already shortened** deck. Two things follow. Whenever the
+second position is past the first, the card actually dealt is the one that
+stood *after* the card that was checked, so the range filter vetted one hand
+and a different hand was dealt. And the card sitting immediately after the
+first card can never be dealt second at all — `create_card_deck` lays the deck
+out rank by rank, four suits at a time (`"23456789TJQKA"` crossed with
+`"CDHS"`, lines 160-165), so the card that goes missing is almost always the
+**same rank in the next suit**. The opponent is therefore dealt a pair far too
+rarely. Measured over 400,000 opponent hands drawn through that very function:
+**0.0443**, against the **0.0588** a real 50-card deck gives once your own ace
+and king are out of it. About a quarter of the opponent's pairs are simply
+absent, which makes the opponent's hand weaker than it should be and your own
+chance of winning higher.
+
+The two defects point the same way and they both flatter you.
 
 **It also assigns ranges to opponents.** `get_opponent_allowed_cards_list`
 (line 37) reads `preflop_equity.json`, sorts the 169 starting-hand classes by
@@ -291,10 +359,13 @@ anything. It is a manual tuning aid, and honest people should call it that.
 
 ### 1.5 The GUI
 
-PyQt6. Seven window layouts in `poker/gui/ui/*.ui`: the main window, table
-setup, the strategy editor, the strategy analyser, the tuner, the updater and
-help. The analyser draws stacked bars of what each action type won and lost at
-each stage, so a person can walk backwards from the river tightening numbers.
+PyQt6. Eight window layouts in `poker/gui/ui/*.ui`: the main window, table
+setup, the strategy editor, the strategy analyser, the tuner, the updater,
+help, and a general settings window (`setup_form.ui`, titled "Setup" — mouse
+control, virtual machines, timeout, login and password;
+`poker/gui/gui_launcher.py:26` loads it). The analyser draws stacked bars of
+what each action type won and lost at each stage, so a person can walk
+backwards from the river tightening numbers.
 There is also a small React web front end in `website/` and a tiny local web
 service (`poker/restapi_local.py`) that does one thing: hands the browser a
 screenshot.
@@ -321,6 +392,33 @@ the download link, the current version number, the purchase link, and the
 address of the before-the-flop spreadsheet). The server code is **not** in the
 repository. `pymongo` is dead weight in the requirements list.
 
+**The traffic also runs the other way: every hand played is uploaded.** The
+file that sounds as though it keeps a log — `poker/tools/game_logger.py` —
+writes nothing to disk at all. Every one of its methods is a web request to
+that same address (lines 34, 69, 121, 125, 138, 144, 161, 171, 178, 185, 192,
+198, 205); it opens no file, no folder and no database of its own.
+
+- `write_log_file` (lines 40-70) fires once per decision, on a background
+  thread (`poker/main.py:251`). It packs the strategy settings, the table
+  reading, the running history and the decision itself into one record, stamps
+  it with the computer's own name (`os.environ['COMPUTERNAME']`, line 57) and
+  the time, and posts it to `insert_round` on `dickreuter.com:7778`.
+- `mark_last_game` (lines 72-117) posts a summary of each finished hand to
+  `insert_games`: the outcome, the money won or lost, the final decision, the
+  final chance of winning, which template and strategy were in use, the
+  software version, and again the computer's name (line 101). It is skipped
+  only when the money change exceeds the `max_abs_fundchange` setting. (The
+  record also carries an `ip` field, which in the shipped code is always empty
+  — `poker/scraper/table.py:19` sets it to `''` and nothing ever fills it in.)
+- `upload_collusion_data` (lines 128-134) posts your own two cards, the hand
+  number, the stage and the computer name whenever the collusion feature runs.
+
+No setting turns any of this off, and no local copy is kept. **Anyone running
+this program as shipped is sending their hand history, and the name of their
+computer, to the author's server.** The point matters twice over here: the same
+address is both the only source of the table definitions and the destination of
+every hand played.
+
 **It is alive today.** At 00:51-00:52 UTC on 2026-09-17, as an anonymous guest:
 `get_internal` returned 200 with the current version 6.76;
 `get_available_tables` returned 200 and a list of about 70 table templates
@@ -344,7 +442,7 @@ login=guest&password=guest
 
 There is one local fallback of any kind — a copy of the before-the-flop
 spreadsheet at `poker/decisionmaker/preflop.xlsx`, named as
-`preflop_url_backup` in `poker/tools/update_checker.py:18`. Nothing else.
+`preflop_url_backup` in `poker/tools/update_checker.py:17`. Nothing else.
 
 **What that means for this project:** if the author turns the server off, or
 locks the guest account, or the domain lapses, every table template and every
@@ -361,10 +459,37 @@ and the README gives per-room setup: PartyPoker "Fast Forward" tables, PokerStar
 style, and a pictured GGPoker layout. The server's table list also shows
 community-made templates for ClubGG, PokerNow, ACR, Bet365 and others. The
 README's FAQ says plainly: **"Currently the bot only works for tables with 6
-players."** The table-setup window offers a seat count of 6 (default), 2, 3, 4,
-5, 7 and 8 — **never 9**. The "Official GGPoker 6player" definition carries no
-seat-count key at all, so it falls back to 6
+players"** (`readme.rst:291`).
+
+**How many seats it will accept.** The setup window's seat-count box offers
+**every count from 2 to 9**. Its choices are written out one by one in
+`poker/gui/ui/table_setup_form.ui:632-676`, in this order — `6`, `2`, `3`, `4`,
+`5`, `7`, `8`, `9` — six first because it is the default, the rest in plain
+order after it. Whatever is picked goes straight into the table's `max_players`
+value (`poker/scraper/table_setup_actions_and_signals.py:210-219`), and the
+scraper reads that value back, falling back to 6 only when the key is missing
 (`poker/scraper/table_scraper.py:19`).
+
+So the six-player limit is not a limit of the window. It rests on three other
+things:
+
+- **The author's own word**, quoted above.
+- **No published template goes beyond six.** The three official rooms are all
+  six-handed, and "Official GGPoker 6player" carries no `max_players` key at
+  all, so it falls back to 6. The server's list of templates, re-read at
+  01:51 UTC on 2026-09-17 (HTTP 200), holds 78 names and none of them
+  advertises more than six seats. Whether any community-made one sets
+  `max_players` above 6 inside its own definition is **UNVERIFIED**: checking
+  would mean downloading all 78, at roughly half a megabyte each.
+- **The equity simulation caps itself below the table size.**
+  `max_assumed_players = t.total_players - 2`
+  (`montecarlo_python.py:346-347`), so a nine-seat table would be simulated as
+  at most seven players however many are actually in the hand — and a
+  two-seat table hits the floor of 2 from the other side.
+
+Nine seats can therefore be *set up*, and nothing in the screen reading stops
+at six. What is missing at nine is a template anyone has built, any claim from
+the author that it works, and an equity number that counts the whole table.
 
 **Operating systems.** The README: *"The current version Only works on
 windows."* Its own automated tests run on `windows-latest` with Python 3.11.
@@ -396,6 +521,12 @@ virtual machine. **This PC is Windows 10, which is the supported case.**
 
 ## 2. The facts
 
+Most of these were read from GitHub's own machine-readable service for
+answering questions about a repository — a web address that hands back plain
+data instead of a page for a person to look at. Such a service is called an
+**application programming interface**, written **API**. The rest came from the
+clone on this PC.
+
 | Fact | Value | How confirmed |
 | --- | --- | --- |
 | Licence | **GPL-3.0** | GitHub API `license.spdx_id = GPL-3.0`, HTTP 200, 00:52 UTC 2026-09-17; and `license.txt` in the clone is the verbatim 673-line GNU GPL v3 text, no added exceptions |
@@ -409,12 +540,13 @@ virtual machine. **This PC is Windows 10, which is the supported case.**
 | Archived / disabled | No / No | GitHub API |
 | Python required | **3.11** | Its own test workflow pins `python-version: 3.11`; the README tells you to install a `cp311` Tesseract wheel; `tensorflow==2.12.0` and `pandas==2.0.3` both publish wheels only for cp38 to cp311 (PyPI API, HTTP 200, 00:56 UTC) |
 
-**Dependencies and weight.** `requirements_win.txt` lists 29 packages;
-`requirements_mac.txt` the same, with `tensorflow` unpinned and `tesserocr`
-pinned. Nine are pinned on Windows: `pandas==2.0.3`, `matplotlib==3.7.2`,
-`pyinstaller==5.13.0`,
-`pymongo==4.3.3`, `numexpr==2.8.4`, `fastapi==0.101.1`, `uvicorn==0.23.2`,
-`PyJWT==1.7.0`, `tensorflow==2.12.0`, `tesserocr==2.6.1`.
+**Dependencies and weight.** `requirements_win.txt` lists 30 packages;
+`requirements_mac.txt` lists the same 30, with `tensorflow` left unpinned and
+`tesserocr` pinned instead. Nine carry a pinned version on Windows:
+`pandas==2.0.3`, `matplotlib==3.7.2`, `pyinstaller==5.13.0`, `pymongo==4.3.3`,
+`numexpr==2.8.4`, `fastapi==0.101.1`, `uvicorn==0.23.2`, `PyJWT==1.7.0` and
+`tensorflow==2.12.0`. (`tesserocr==2.6.1` is the Mac file's pin; on Windows
+`tesserocr` is unpinned, as the sentence before this one says.)
 
 - **TensorFlow: yes, and it is the heavy item.** `tensorflow==2.12.0`. On
   Windows the published `tensorflow` wheel is a 1,916-byte stub that pulls
@@ -499,7 +631,8 @@ GPL-3.0 code and publishing the result is exactly what the licence contemplates
 
 1. **`poker/vboxapi/` is not GPL-3.0.** It is Oracle's VirtualBox glue, and its
    header reads *"under the terms of the GNU General Public License (GPL) ... in
-   version 2"*, or alternatively the CDDL version 1.0. GPL **version 2 only** is
+   version 2"*, or alternatively version 1.0 of the Common Development and
+   Distribution License, written **CDDL**. GPL **version 2 only** is
    *incompatible* with GPL-3.0, and so is the CDDL. That folder is 4,539 lines,
    it is **imported nowhere else in the project**, and it must not be copied
    into pokerbot. `poker/pymouse/` is fine: version 3 "or any later version".
@@ -624,17 +757,27 @@ poker site, and no table was played.
 
 **dickreuter/Poker — Ratings: (a) 2 — (b) 1 — (c) 0 — (d) 2 — (e) 2.**
 
+Two of those five are not on `RESOURCES_SOLVERS.md`'s wording, so they do not
+line up against its rows: **(b)** answers a stricter question here (on the
+solvers wording it would be 3) and **(d)** was measured on this Windows PC
+rather than on a Mac. See "How it is rated".
+
 - **(a) 2 to 9 players — 2.** The decision code does branch on multiway
   (`isHeadsUp` guards the bluff and profile paths; `range_multiple_players`
   governs equity when more than one opponent is live), and the setup window
-  offers 2 to 8 seats. But every official table is 6-handed, the README's FAQ
-  says "Currently the bot only works for tables with 6 players", **9 is not
-  offered at all**, and the equity simulation silently caps itself at
-  `total_players - 2` opponents. Multiway in principle, six-handed in practice,
-  never nine.
-- **(b) true no-limit sizing — 1.** A menu of five: minimum bet; minimum plus
-  N big blinds; half pot; pot; bluff of half pot. One of them is
-  parameterised, which is why this is 1 and not 0.
+  offers **every seat count from 2 to 9** (§1.7). The point comes off for what
+  is true past that window: every published template is 6-handed, the README's
+  FAQ says "Currently the bot only works for tables with 6 players", and the
+  equity simulation silently caps itself at `total_players - 2`, so a nine-seat
+  table would never be simulated with more than seven players in it even if
+  somebody built the template. Multiway in principle and selectable up to nine;
+  six-handed in every template anyone has published.
+- **(b) true no-limit sizing — 1 on this document's stricter wording, and 3 on
+  `RESOURCES_SOLVERS.md`'s looser one; see "How it is rated" above, and do not
+  line the two up.** A menu of five: the table's minimum bet; that minimum bet
+  multiplied by `BetPlusInc` with the minimum added back on; half the pot; the
+  whole pot; and a bluff of half the pot. One of the five carries a setting,
+  which is why this is 1 here and not 0.
 - **(c) exploit specific opponents — 0.** No per-person memory of any kind; the
   only branch that would have used one calls a function that does not exist, and
   name reading is commented out. Not partly, not weakly — zero.
@@ -654,9 +797,15 @@ poker site, and no table was played.
   version" buys server privileges, not code, so it is not a barrier.
 
 For comparison from `RESOURCES_SOLVERS.md`: OpenSpiel-style entries score (a) 2
-to 3 and (b) 3; GTOpen scores (a) 2 — (b) 3 — (c) 3 — (d) 3 — (e) 3. dickreuter
-is not in that company **as a source of poker judgment**, and is not trying to
-be. As a source of *eyes*, nothing else in any of the four surveys competes.
+to 3 and (b) 3; GTOpen scores **(a) 2 — (b) 3 — (c) 3 — (d) 3 — (e) 1**
+(`RESOURCES_SOLVERS.md:446-448`; its (e) is 1, not 3, because GTOpen carries no
+licence at all, so none of it may be copied into a published project). Two
+cautions on reading that row beside this one: those (b) 3s answer the solvers
+file's looser question about sizing and dickreuter's (b) 1 answers the stricter
+one asked here, so the (b) column does not compare at all; and GTOpen's (d) 3
+was earned on a Mac, dickreuter's (d) 2 on this PC. dickreuter is not in that
+company **as a source of poker judgment**, and is not trying to be. As a source
+of *eyes*, nothing else in any of the four surveys competes.
 
 ---
 
@@ -671,14 +820,37 @@ of the vendored engine; adapt the engine instead."* Its table has a left column
 (allowed) and a right column (reserved to the engine).
 
 **One thing has to be said first, because it decides everything after it.**
-Nicolas Dickreuter is a person, not a language model, and his code is not
-AI-written. So the rule's *first two* bullets, which are about AI-written code,
-do not by themselves forbid using it. The *third* bullet does not mention who
-wrote it: it rejects **hand-rolled hand-strength or decision logic in place of
-the engine**, full stop. And the table's right column reserves those jobs "to
-the engine" without saying whose hand wrote the alternative. So the real
-question is not "is this AI-written" but **"does this count as engine code?"** —
-and that is a judgment for the operator, not for me.
+
+The two opening bullets say different things and have to be read apart. The
+**first** — *"Never let an AI model decide a poker action, evaluate a hand, or
+read a board; call real engine code for that"* — is about what happens *while
+the bot is playing*: no AI model may be in the loop at the table, deciding in
+the moment. It is not about who typed the source. Nothing in dickreuter puts an
+AI model in that loop; its decisions come out of if-statements and a
+spreadsheet. That bullet is not engaged here either way. The **second** —
+*"Only use AI-written code for integration, tooling, table-state capture (screen
+to structured data), and card combinatorics, never for poker judgment itself"* —
+is the one about **who wrote the code**, and Nicolas Dickreuter is a person, not
+an AI model.
+
+So a reading is available: the second bullet restricts AI-written code,
+dickreuter's code is human-written, and therefore that bullet does not by itself
+forbid taking his decision maker. **I am not treating that reading as settled,
+and it should not be adopted unless the operator says so.** It is a narrowing of
+the rule, and it does not narrow it only for dickreuter: it would let **any**
+human-written third-party project past the second bullet, which is a much wider
+door than one assessment should open on its own. That is a question for the
+operator: *does "AI-written code" in the second bullet mean only code this
+project's assistants write, or does it stand for hand-rolled code from any
+source?*
+
+Two things hold whichever way that is answered. The **third** bullet does not
+mention who wrote anything: it rejects **hand-rolled hand-strength or decision
+logic in place of the vendored engine**, full stop. And the table's right column
+reserves those jobs "to the engine" without asking whose hand wrote the
+alternative. So the question that actually decides the sorting below is not "is
+this AI-written" but **"does this count as engine code?"** — and that, like the
+narrowing above, is the operator's to settle and not mine.
 
 Sorting the files:
 
@@ -692,7 +864,7 @@ Sorting the files:
 | `poker/scraper/table_setup_actions_and_signals.py` + the setup window | tooling |
 | `poker/tools/mouse_mover.py`, `poker/pymouse/`, `poker/tools/vbox_manager.py` | integration |
 | `poker/gui/`, `poker/tools/logger.py`, `poker/tools/helper.py` | tooling |
-| `poker/tools/game_logger.py` | counting observed actions (our own) |
+| `poker/tools/game_logger.py` — **the shape of the record, not the code.** It keeps no local store of any kind; every method posts to the author's server, and it uploads every hand played (§1.6). What is worth taking is the list of fields it records, not the file | counting observed actions (our own) |
 | `MonteCarlo.create_card_deck`, `get_two_short_notation` | card combinatorics — deck enumeration, hand-class naming, both named as ours to write |
 
 ### Right column — reserved to the engine
@@ -707,7 +879,7 @@ Sorting the files:
 | `decisionmaker.preflop_table_analyser` + `preflop.xlsx` | **Producing the strategy itself** |
 | `poker/decisionmaker/curvefitting.py` | part of choosing an action — it converts a chance of winning into an amount of money |
 | `poker/decisionmaker/genetic_algorithm.py` | **Producing the strategy itself** |
-| `decisionmaker.py:246-262` (the dead player-profile branch) | **Combining live-field rates into a quantity that drives a poker decision** — it would turn one opponent's flop frequency directly into a curvature change. Dead, but it is the shape the rule names |
+| `decisionmaker.py:247-268` (the dead player-profile branch) | **Combining live-field rates into a quantity that drives a poker decision** — it would turn one opponent's flop frequency directly into a curvature change. Dead, but it is the shape the rule names |
 
 The split is clean and it falls exactly along the seam between the two halves of
 the program. **Its eyes are entirely in the left column. Its brain is entirely
@@ -733,14 +905,20 @@ Also take `montecarlo_python.py` to answer "how often do I win this hand".
 *Gains:* a working chance-of-winning number, measured here at 6,600 to 12,500
 deals a second, with ranges per seat already wired in. It saves a week.
 *Gives up:* accuracy and trust. Its ranker is hand-rolled Python that counts
-split pots as wins (measured, §1.3), its opponent ranges are hand-written
-assumptions, and its own test of the simulation has been broken since a rename.
+split pots as wins, and its dealing skips a card, so the opponent is dealt a
+pair about a quarter less often than it should be; between them those two put
+its answer above even the most generous honest count (all measured, §1.3). Its
+opponent ranges are hand-written assumptions, and its own test of the
+simulation has been broken since a rename.
 *Permitted as written?* **No.** Evaluating hand strength and assigning a range
-to an opponent are both in the right column. It would need the operator's
-carve-out — **unless** the ranking is replaced. Swapping `calc_score` for a real
-external evaluator is a small, contained change, and it would put the loop back
-on the right side of the line while keeping the useful shell. That is worth
-saying plainly: **(ii) is one substitution away from being allowed.**
+to an opponent are both in the right column, so it would need the operator's
+carve-out. Replacing the ranker would answer the rule — swapping `calc_score`
+for a real external evaluator is a small, contained change that puts the loop
+back on the right side of the line while keeping the useful shell — but it
+would **not** by itself make the number right. The dealing defect lives in
+`distribute_cards_to_players`, not in the ranker, and no change of evaluator
+touches it. Saying it plainly: **(ii) is one substitution away from being
+*allowed*, and at least two repairs away from being *correct*.**
 
 **(iii) Capture plus its whole decision maker, calling that "the engine".**
 *Gains:* a bot that plays a real table this month. That is not nothing, and it
@@ -792,8 +970,12 @@ player), `blind` (one per player), `firstPlayer`, `betting` (`"nolimit"`), and
 (`BettingAbstraction::kFULLGAME`, header line 62) makes every whole-chip raise
 amount its own legal move — genuine no-limit. The ceiling is **10 players**
 (`kMaxUniversalPokerPlayers`, header line 52). Then the position in the hand is
-reached by **replaying the actions** from the start: fold, call, bet, all-in
-(header lines 56-58).
+reached by **replaying the actions** from the start. Header line **56** is one
+line and lists five, not four: `enum ActionType { kFold = 0, kCall = 1,
+kBet = 2, kAllIn = 3, kHalfPot = 4 };`. The first four are the ones this join
+would use. `kHalfPot` is the half-pot action belonging to the `fchpa` betting
+abstraction (`kNumActionsFCHPA`, lines 59-60; `kFCHPA`, line 62), not to
+`fullgame`.
 
 **The seam, named.** One structure and two converters:
 
@@ -885,11 +1067,14 @@ records dickreuter as the capture reference, and option (i) — which needs no
 decision at all — is a subset of this recommendation.
 
 **The one thing to decide separately, and soon:** option (ii). If the operator
-wants a chance-of-winning number quickly, dickreuter's simulation is the fastest
-route, and it is **one substitution away** from being allowed — replace its
-hand-rolled card ranker with a real external evaluator and the loop stops
-breaking the rule. That is a smaller question than the four above and can be
-settled on its own.
+wants a chance-of-winning number quickly, dickreuter's simulation is the
+fastest route. Replacing its hand-rolled card ranker with a real external
+evaluator would stop the loop breaking the rule: that is the **one
+substitution** that makes it allowed. Making the number *right* takes at least
+one further repair, because the way it deals the opponent's cards is broken
+too and no change of evaluator touches that (§1.3). One fix for the rule, two
+at the least for the arithmetic. It is still a smaller question than the four
+above and can be settled on its own.
 
 **Not recommended:** option (iii). It would need the operator to grant an
 exception `CLAUDE.md` explicitly says is not granted, and what it buys — a bot
@@ -933,6 +1118,8 @@ No browser was used.
 | 01:11:09 | `http://www.deepermind-pokerbot.com/` | **301 → fails** | redirects to `https://www.…`, which does not connect (curl reports `000`) |
 | 01:11:16 | `https://deepermind-pokerbot.com/` | **200** | 1,304 bytes, "DeeperMind Pokerbot" React page |
 | 01:11:16 | `http://deepermind-pokerbot.com/` | **200** | same, after redirect to https |
+| 01:51:20 | `https://raw.githubusercontent.com/google-deepmind/open_spiel/master/open_spiel/games/universal_poker/universal_poker.h` | **200** | re-read for §6; 12,986 bytes; `ActionType` is a single line at l.56 with five members, the fifth `kHalfPot = 4`; `kNumActionsFCHPA` ll.59-60; `kFCHPA` l.62 |
+| 01:51:47 | `POST https://dickreuter.com:7778/get_available_tables?computer_name=test` | **200** | re-read for §1.7; 1,205 bytes, **78** template names, none advertising more than six seats |
 
 **UNVERIFIED, and why:**
 
@@ -944,6 +1131,10 @@ No browser was used.
   weights from the server *did* succeed (`test_load_nn_model` passed).
 - **Whether the table templates may be redistributed.** They are not in the
   repository, carry no licence, and are pictures of commercial poker clients.
+- **Whether any community-made template sets more than six seats.** The 78
+  names were read; the definitions behind them were not, because each is about
+  half a megabyte. Only "Official GGPoker 6player" was downloaded in full, and
+  it carries no seat-count key at all.
 - **What the paid "full version" actually unlocks beyond creating and viewing
   settings sheets.** The purchase page was not bought from.
 - **Whether the decision maker's 14 switched-off tests would pass.** They are
@@ -957,6 +1148,9 @@ Scratch area:
 `C:\Users\chase\AppData\Local\Temp\claude\C--Users-chase-heater\9b6e4e4f-09aa-4db9-b21b-ae800089dd8f\scratchpad\dickreuter\`.
 Python: `C:\Users\chase\AppData\Local\Programs\Python\Python313\python.exe`,
 **3.13.15**. Nothing outside the scratch area and this repository was changed.
+The larger re-runs in item 6 reused that same clone and install area; `treys`
+0.1.8 was installed into it for the independent count, and the two extra
+scripts (`treys_check2m.py`, `deal_check.py`) sit beside the originals.
 
 **1. Clone.** 00:47:56 → 00:49:22 UTC, 86 s.
 ```
@@ -968,7 +1162,17 @@ $ git log -1 --format="%H %ad %an %s" --date=iso-strict
 cae3a108b6cbf22ed8ef90bc0e70f790346289a4 2025-06-26T22:29:09+01:00 Nicolas Dickreuter fix config
 ```
 Size breakdown: `.git` 41 M, `doc` 28 M, `tessdata` 15 M, `poker` 5.0 M,
-`notebooks` 3.2 M, `website` 2.2 M. 68 Python files, 14,449 lines.
+`notebooks` 3.2 M, `website` 2.2 M. Recounted at 01:40 UTC on 2026-09-17:
+```
+$ git ls-files '*.py' | wc -l
+69
+$ git ls-files '*.py' | xargs wc -l | tail -1
+ 14452 total
+$ grep -c . requirements_win.txt
+30
+$ ls poker/gui/ui/*.ui | wc -l
+8
+```
 
 **2. The documented install, on Python 3.13 — failed.** 00:50:23 → 00:50:52.
 ```
@@ -1040,7 +1244,7 @@ players=3 board=['7H','8H','9C'] equity=0.245 runs=5000 wall=0.44s -> 11,323 pla
 players=6 board=['7H','8H','9C'] equity=0.082 runs=5000 wall=0.70s ->  7,142 playouts/s
 ```
 
-**6. The split-pot check.** 01:06:06 → 01:06:46.
+**6. The equity check.** First pass 01:06:06 → 01:06:46:
 ```
 $ python mc_bench2.py                         # dickreuter's own simulation
 AKs heads-up vs random, 200000 playouts: equity=0.6815 in 16.6s
@@ -1048,8 +1252,51 @@ $ python treys_check.py                       # independent, using treys 0.1.8
 treys, 200000 deals: win=0.6625 tie=0.0170 lose=0.3205
                      win+tie=0.6795  win+tie/2=0.6710
 ```
-0.6815 matches "every split counts as a win" (0.6795), not "splits halved"
-(0.6710).
+200,000 deals on each side is not enough to separate 0.6815 from 0.6795, so
+both sides were re-run larger, 01:43:14 → 01:49:11 UTC on 2026-09-17. Twelve
+runs of the same unmodified `mc_bench2.py`, 200,000 deals each, 2,400,000 in
+all:
+```
+$ for i in 1..12; do python mc_bench2.py; done
+AKs heads-up vs random, 200000 playouts: equity=0.6795 in 15.4s
+AKs heads-up vs random, 200000 playouts: equity=0.6817 in 15.7s
+AKs heads-up vs random, 200000 playouts: equity=0.6818 in 15.4s
+AKs heads-up vs random, 200000 playouts: equity=0.6824 in 15.5s
+AKs heads-up vs random, 200000 playouts: equity=0.6811 in 15.3s
+AKs heads-up vs random, 200000 playouts: equity=0.6816 in 15.3s
+AKs heads-up vs random, 200000 playouts: equity=0.6832 in 15.4s
+AKs heads-up vs random, 200000 playouts: equity=0.6812 in 15.5s
+AKs heads-up vs random, 200000 playouts: equity=0.6817 in 15.9s
+AKs heads-up vs random, 200000 playouts: equity=0.6807 in 15.7s
+AKs heads-up vs random, 200000 playouts: equity=0.6825 in 16.0s
+AKs heads-up vs random, 200000 playouts: equity=0.6832 in 15.3s
+```
+Pooled: **0.6817**, standard error 0.0003. The independent count, same script
+as before with the count raised to 2,000,000 deals and a fresh seed
+(`treys_check2m.py`, treys 0.1.8):
+```
+$ python treys_check2m.py
+treys, 2000000 deals: win=0.6623 tie=0.0165 lose=0.3212
+                      win+tie=0.6788  win+tie/2=0.6705
+```
+So dickreuter's 0.6817 is above **both** references — 0.6788 with every split
+counted as a whole win, 0.6705 with splits halved — not level with the first.
+A 400,000-deal treys run at 01:44:43 → 01:45:03 with a different seed gave
+win+tie 0.6775, win+tie/2 0.6692, consistent with the larger one.
+
+**6b. The dealing check.** 01:49:40 → 01:49:47. `deal_check.py` calls
+dickreuter's own `distribute_cards_to_players` 400,000 times with the
+opponent's range set to every hand, and counts how often the opponent's two
+cards are a pair:
+```
+$ python deal_check.py
+dickreuter dealing, 400000 opponent hands: pocket pairs = 0.04431
+correct rate from a 50-card deck (AS,KS removed) = 0.05878
+```
+The correct rate is arithmetic, not a simulation: with your own ace and king
+removed there are 11 ranks with all four suits left (6 pairs each) and two
+ranks with three suits left (3 pairs each), so 72 pairs out of the 1,225
+two-card hands, 0.05878.
 
 **7. The offline check.** A copy of the tree with `db` pointed at a dead port:
 ```
@@ -1064,4 +1311,14 @@ login=guest&password=guest
 $ python.exe -m pytest tests -q
 .........................                                                [100%]
 25 passed in 0.72s
+```
+Re-run at 01:53 UTC on 2026-09-17, after the round-1 corrections and after
+local `main` had been merged in (`main` added tests of its own):
+```
+$ python.exe -m pytest tests -q
+................................                                         [100%]
+32 passed in 1.77s
+$ python.exe tools/check_design_numbers.py
+684 figures in OPPONENT_MODEL_DESIGN.md all match the constants they derive
+from.
 ```
