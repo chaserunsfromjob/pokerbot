@@ -46,9 +46,9 @@ The full list of what must change is GitHub issue #4 (`gh issue view 4`). It has
 
 ### JOB 2 — build task T3, the scoreboard (only after JOB 1 is pushed)
 
-T3 is described in `BUILD_PLAN.md` §4 ("The first three tasks to dispatch").
-T1 is already being built by someone else on pull request #11, and T2 waits on
-T1, so T3 is the one free task. Build it on your arena (`pokerbot/runner.py`),
+T3 is described in `BUILD_PLAN.md` §4, under the heading "T3 — The
+scoreboard". T1 is already being built by someone else on pull request #11,
+and T2 waits on T1, so T3 is the one free task. Build it on your arena (`pokerbot/runner.py`),
 on a **separate branch** with its own **draft pull request**.
 
 Build `EVALUATION_STRATEGY.md` §3.7 Tiers 1 and 2:
