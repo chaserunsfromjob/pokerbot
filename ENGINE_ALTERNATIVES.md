@@ -75,9 +75,11 @@ behind them, and they are marked as such wherever they appear:
 - the claim that PokerRL will not install at all, which is by nature not a
   measurement - the raw output of the attempt is in `raw/pokerrl_install.txt`.
 
-These programs are research artefacts. **They are not the bot**, they are not on
-the bot's import path, and whether code of that shape may become the bot at all
-is the open rule question set out at the end of this document.
+These programs are research artefacts. **They are not the bot** and they are not
+on the bot's import path. Code of that shape may become the bot: `CLAUDE.md`'s
+"The forefront rule", under "What may be coded", lets an AI assistant write the
+code that picks an action. What that rule still binds it to is set out at the
+end of this document.
 
 Three conditions decide whether a poker measurement here means anything, and all
 three are stated with every number below.
@@ -127,16 +129,19 @@ actually does, and the only one that also ships a solver that works with more
 than two players, so it keeps a door open that the others close.
 
 **Then compute the decision during the hand rather than training a strategy in
-advance - subject to two things this document cannot settle by itself:**
+advance - subject to one thing this document cannot settle by itself: a
+comparison against adopting an existing bot** that chooses the action with its
+own code. `RESOURCES_BOTS.md` (under review) shortlists one that covers 2 to 6
+players, against the 2 to 9 this road covers. That comparison is about build
+cost and coverage, not about permission.
 
-1. A **ruling on the forefront rule.** The thing that chooses the action would
-   be code we wrote, which is what `CLAUDE.md`'s "The forefront rule" section
-   exists to prevent. See "Does this contradict the forefront rule?" at the
-   end. Until that is recorded, the chooser measured here stays a research
-   artefact.
-2. **Comparison against adopting an existing bot** that chooses the action with
-   its own code and needs no such ruling - `RESOURCES_BOTS.md` (under review)
-   shortlists one that covers 2 to 6 players.
+Writing the chooser ourselves is permitted. `CLAUDE.md`'s "The forefront rule",
+under "What may be coded", lets an AI assistant write the code that picks an
+action, as ordinary testable code a reviewer can read line by line. What the
+rule binds that code to - no model call in the live decision path, no stored
+model output as decision content, rules and hand evaluation from OpenSpiel, and
+any opponent archetype from measured action frequencies alone - is set out in
+"What the forefront rule permits here, and what it still binds" at the end.
 
 What this document *can* settle, and does: training in advance **without a card
 abstraction** does not converge on this laptop, and decision-time computing
@@ -158,8 +163,7 @@ with `fedden/poker_ai` "a reference only, not as this project's basis", and
 `universal_poker`", with what replaces it left to the reconciliation of
 `ENGINE_ALTERNATIVES.md`, `RESOURCES_BOTS.md` and `RESOURCES_SOLVERS.md`.
 So this recommendation no longer contradicts `CLAUDE.md`; what that
-reconciliation still owes is the replacement stage 1, and the rule question
-above.
+reconciliation still owes is the replacement stage 1.
 
 ## Why - the measurement that carries the recommendation
 
@@ -414,10 +418,10 @@ the one to expect: **the ratios held and the absolute speeds came out lower.**
 The chooser got 11,535 - 13,108 play-outs per `fcpa` decision and 202 - 245 per
 `fullgame` decision; OpenSpiel ran 42,541 - 48,572 complete `fcpa` hands a
 second - its slowest repeat is 11 per cent under the quieter sitting's median
-of 47,564, and its fastest is above that median. Every ratio this document
-argues from was at least as favourable as the figure quoted below: OpenSpiel
-over `texasholdem` on the menu 5.7 - 6.8 (quoted 5.5), over PokerKit 71 - 74
-(quoted 64.5), over PyPokerEngine 55 - 61 (quoted 51).
+of 47,564, and its fastest is above that median. Every ratio named below was at
+least as favourable as the figure quoted beside it: OpenSpiel over
+`texasholdem` on the menu 5.7 - 6.8 (quoted 5.5), over PokerKit 71 - 74 (quoted
+64.5), over PyPokerEngine 55 - 61 (quoted 51).
 **This is why the document argues from ratios within a sitting and not from the
 absolute speeds:** the absolute speeds move with whatever else the laptop is
 doing, and the ratios do not.
@@ -503,8 +507,8 @@ path. Adding a second borrowed engine as a reference is the same kind of
 choice, about a different job, and that bullet does not currently record it.
 **This document does not make that choice.** It goes to the same reconciliation
 of `ENGINE_ALTERNATIVES.md`, `RESOURCES_BOTS.md` and `RESOURCES_SOLVERS.md` as
-the rule question at the end, where the operator decides whether to record it
-and in which words.
+the replacement stage 1, where the operator decides whether to record it and in
+which words.
 
 ---
 
@@ -725,7 +729,7 @@ clone out on the same four-move menu the other engines were given, it manages
 **895 - 1,053 - 1,136 play-outs per second** (lowest, middle and highest of six
 repeats of ten seconds, taken in the same sitting and at the same machine loads
 as every other timing here; the busier second sitting gave **878 - 958** at
-loads of 3.68 to 4.66, so the rejection does not turn on which evening it was
+loads of 4.27 to 4.66, so the rejection does not turn on which evening it was
 measured). That is about **260 play-outs in a 250 ms decision**, against the
 **12,373** the chooser gets out of OpenSpiel in the same quarter-second on the
 same menu - a factor of **29 to 59, median 47**. Split
@@ -827,7 +831,12 @@ Every candidate above passes, and none of them was a close call:
 
 So **no engine was rejected on its licence, and none could have been.** The
 recommendation would be unchanged if this repository were private. Licences
-read from each package's own metadata and from `vendor/poker_ai/LICENSE`.
+read from the installed package's own metadata for the six that install, and
+from `vendor/poker_ai/LICENSE` for the vendored engine. PokerRL does not
+install here, so its cell has no local metadata behind it: its MIT licence is
+read off its Python Package Index listing - the `license` field and the
+"License :: OSI Approved :: MIT License" classifier, read on 2026-09-16 - which
+is not a measurement.
 
 `fedden/poker_ai` is **archived** on GitHub as of 2023-04-03. Archived means
 frozen read-only - upstream cannot accept a fix even in principle.
@@ -876,16 +885,20 @@ research-grade rewrite after it. **Recommend stopping here.**
 4. A translation layer between our table-state capture and OpenSpiel's game
    parameters - a day or two of plumbing with no poker judgment in it, which
    `CLAUDE.md`'s forefront rule permits us to write.
-5. **A ruling on the forefront rule.** Items 2 and 3 are the parts that choose
-   the action and guess the cards, and `CLAUDE.md`'s "The forefront rule"
-   section is what says whether we may write them at all. This is not costed
-   in days because it is not coding work; it is a decision, and the section
-   "Does this contradict the forefront rule?" below sets out what has to be
-   decided and where. **Until it is made, items 2 and 3 stay research
-   artefacts.**
+5. **Bringing items 2 and 3 up to the standard the forefront rule sets.** They
+   are the parts that choose the action and guess the cards, and `CLAUDE.md`'s
+   "The forefront rule" permits us to write them: "What may be coded" covers
+   the code that picks an action and the code that assigns a range to an
+   opponent. What it asks of them is that they be ordinary code - same inputs
+   and seed, same answer; tests covering them; readable line by line - and that
+   they leave ranking and valuing a hand to the engine. **Items 2 and 3 are
+   research artefacts today because they are scripts off the import path with
+   no tests, not because permission is missing.** Not costed in days here; the
+   section "What the forefront rule permits here, and what it still binds"
+   below says what they have to satisfy.
 
-**Total offline computing: zero.** The remaining coding work is integration,
-which is exactly the category `CLAUDE.md` says is ours; the chooser is not.
+**Total offline computing: zero.** The remaining coding work is integration and
+the chooser itself, and "What may be coded" puts both in our hands.
 
 ### Is there a pre-trained strategy we could just download?
 
@@ -939,10 +952,12 @@ nobody has costed.
 
 ## What this means for the plan in `CLAUDE.md`
 
-The plan's stage 1 is "find out what it takes to move `poker_ai` off the 20-card
-deck". This survey answers that question from the other direction: **it takes
-more than adopting an engine where the problem does not exist, and more time
-than we have.**
+The plan's stage 1 asked "find out what it takes to move `poker_ai` off the
+20-card deck". That stage has since been superseded: `CLAUDE.md` now reads
+"Superseded; the engine road is OpenSpiel `universal_poker`" there, as recorded
+above. The survey's answer to the old question stands as history, and is part
+of why it was superseded - **it takes more than adopting an engine where the
+problem does not exist, and more time than we have.**
 
 Stage 2 - opponent modelling - is where `CLAUDE.md` says the real win is, and
 this recommendation helps it rather than delaying it. A bot that decides during
@@ -975,24 +990,49 @@ narrowing it by observed actions. Its stat list is frequencies, not ranges, and
 `showdown_holdings` (real cards, seen at about a 4.5% rate) is explicitly
 corroboration only. **Supported today only in its uniform form**:
 `resample_opponents` draws every hidden hole card uniformly from the unseen
-cards. Weighting that draw is where a model would enter, and the weighting is
-itself poker judgment, so it meets the same rule question as the chooser below.
+cards. Weighting that draw is assigning a range to an opponent, which "What may
+be coded" names as ours to write. What the rule binds is where the weights come
+from - measured action frequencies, never a hand-written archetype - and that
+no model call happens at the moment the bot acts. Supplying those frequencies
+is what `OPPONENT_MODEL_DESIGN.md` would have to do.
 
 Hook A is the cheaper and the better specified, and is the one to build first
 if this architecture is adopted. A trained-in-advance blueprint has no
 comparable hook: it is a fixed table, and adapting it means re-solving.
 
-## Does this contradict the forefront rule? It needs a ruling, not an assertion
+## What the forefront rule permits here, and what it still binds
 
 An earlier draft of this document said "nothing here contradicts the forefront
-rule". That settled by assertion the one thing that most needs deciding.
-`CLAUDE.md`'s "The forefront rule" section says never to let an AI model decide
-a poker action, and to reject a change that adds hand-rolled decision logic in
-place of the vendored engine. **A rollout loop we wrote, taking the highest
-average chip result, is logic that chooses the action.** That it was typed by
-hand rather than produced by a model does not exempt it: the bullet rejecting
-hand-rolled decision logic in place of the vendored engine is about hand-rolled
-logic in its own right, whoever or whatever typed it.
+rule", which settled by assertion the thing that most needed deciding; a later
+one said adopting this road would need a recorded carve-out to that rule.
+**Both of those positions are withdrawn.** `CLAUDE.md`'s "The forefront rule"
+has been rewritten, and its "What may be coded" list answers the question
+directly: an AI assistant may write "the code that picks an action, assigns a
+range to an opponent, reads the board, and combines opponent rates", as
+ordinary testable code where the same inputs and seed give the same answer and
+a reviewer can read it line by line. **A rollout loop we wrote, taking the
+highest average chip result, is that kind of code.** No carve-out is needed and
+none is asked for here.
+
+What the rule still binds, from "What may not be coded", and where the bot
+measured here stands against each:
+
+- **No model call in the live decision path.** When the bot acts it runs
+  ordinary code only - no language-model inference, no network call to a model,
+  no prompt. The chooser meets this today: it is a rollout loop and a mean, and
+  nothing in it talks to a model.
+- **No stored model output as decision content.** A decision may not take its
+  content from a table, a set of weights or text a model produced. The
+  candidate menu and the rollout policy here are code, so they meet this today;
+  if either is ever replaced by a weights file, where those weights came from
+  is what decides whether it still does.
+- **Rules and hand evaluation from the engine**, never hand-rolled in its
+  place. That is what the split below shows: OpenSpiel ranks the hands and pays
+  the pot, and nothing in the right-hand column ranks or values a hand.
+- **Opponent archetypes from measured action frequencies alone**, never
+  hand-written and never referencing hole cards, board cards or hand strength.
+  This is the live constraint on Hook B above; the bot measured here does not
+  test it either way, because its resampling is still uniform.
 
 Split precisely, for the bot measured here:
 
@@ -1004,31 +1044,24 @@ Split precisely, for the bot measured here:
 | Paying the pot, including side pots and all-ins | **The comparison that picks the move** - highest mean chips |
 | Sampling chance events during a play-out | Redrawing the opponents' hole cards, which `universal_poker.cc:1111` refuses to do |
 
-The right-hand column is where the action comes from. The engine never picks.
+The right-hand column is where the action comes from. The engine never picks -
+and under the rewritten rule that is the intended shape rather than a breach of
+it: every entry in that column is decision code, and none of it ranks or values
+a hand.
 
-**So adopting this recommendation requires a recorded carve-out to the
-forefront rule.** One possible shape of such a carve-out, given as an
-illustration and not as a proposal: *permit a general, published game-search
-algorithm that carries no poker-specific heuristics, implemented from its own
-paper and validated against a reference implementation.* Worth noting that the
-chooser measured here would **not** qualify under that wording: its candidate
-menu and its rollout policy were written here from scratch, not taken from a
-published algorithm.
-
-**This document does not grant that carve-out and must not be read as granting
-one.** Changing a rule in `CLAUDE.md` is the operator's call, recorded with its
-reason. The place for it is the reconciliation of `ENGINE_ALTERNATIVES.md`,
-`RESOURCES_BOTS.md` and `RESOURCES_SOLVERS.md`, not here.
-
-**There is an alternative that needs no carve-out at all, and it has to be
-weighed against this one:** adopt an existing bot whose *own* code chooses the
-action. Then poker judgment stays inside borrowed, tested code and what we
-write is plumbing and opponent modelling - exactly the split `CLAUDE.md`
-describes. `RESOURCES_BOTS.md` (under review, not accepted) shortlists
+**The alternative still has to be weighed, now on build cost and coverage
+rather than on permission:** adopt an existing bot whose *own* code chooses the
+action. `RESOURCES_BOTS.md` (under review, not accepted) shortlists
 **NoRegrets** (`conorarmstrong/noregrets`), an open-source Pluribus-style bot
-covering 2 to 6 players at no-limit hold'em that plays a hand today; that
-document records its training-time claim and its macOS build as unverified.
-Which road to take is not decided here either.
+covering 2 to 6 players at no-limit hold'em that plays a hand today. On
+coverage it is short of the 2 to 9 seats the OpenSpiel road runs. On build cost
+that document records its training-time claim and its macOS build as
+unverified, and a build nobody has got to work is a cost nobody has measured,
+against an OpenSpiel road whose costs are the ones measured above and whose
+offline training is zero. What it buys in exchange is poker judgment already
+written and tested by someone else, leaving us plumbing and opponent modelling;
+against that, both hooks above would have to be built against its internals,
+which nobody has read. Which road to take is not decided here.
 
 ---
 
