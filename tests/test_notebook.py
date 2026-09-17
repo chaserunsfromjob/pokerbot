@@ -18,6 +18,7 @@ sixth:
 from __future__ import annotations
 
 import json
+import math
 import subprocess
 import sys
 from pathlib import Path
@@ -766,3 +767,261 @@ def test_an_unwatched_name_is_a_clear_refusal_not_an_empty_report(tmp_path):
     )
     assert done.returncode == 2
     assert "nobody" in done.stderr
+
+
+# ---------------------------------------------------------------------------
+# 5. the machinery sections 4.3 and 4.4 specify
+# ---------------------------------------------------------------------------
+
+
+@pytest.mark.parametrize(
+    "n, s, expected",
+    [
+        (1, 15, 0.06), (1, 25, 0.04), (1, 50, 0.02),
+        (5, 15, 0.25), (5, 25, 0.17), (5, 50, 0.09),
+        (25, 15, 0.63), (25, 25, 0.50), (25, 50, 0.33),
+        (100, 15, 0.87), (100, 25, 0.80), (100, 50, 0.67),
+        (500, 15, 0.97), (500, 25, 0.95), (500, 50, 0.91),
+    ],
+)
+def test_table_d_confidence_weights(n, s, expected):
+    """Section 4.3's Table D, at the three tier values it marks.
+
+    Rounded half up, which is how the document's own checker prints it;
+    Python's built-in `round` breaks a tie to the even digit and would make
+    25/40 read 0.62 where Table D says 0.63.
+    """
+    assert _half_up(notebook.confidence_of(n, s), 2) == expected
+
+
+@pytest.mark.parametrize(
+    "baseline, s, k, n, expected",
+    [
+        (0.25, 25, 10, 20, 0.361),
+        (0.25, 25, 30, 40, 0.558),
+        (0.60, 25, 18, 20, 0.733),
+        (0.60, 25, 2, 20, 0.378),
+    ],
+)
+def test_table_e_shrinkage_in_practice(baseline, s, k, n, expected):
+    """Section 4.3's Table E: what the blend does to a loud small sample."""
+    assert _half_up(notebook.shrunk_rate(k, n, baseline, s), 3) == expected
+
+
+def _half_up(value: float, places: int) -> float:
+    scale = 10 ** places
+    return math.floor(value * scale + 0.5) / scale
+
+
+def test_every_stat_section_4_3_shrinks_has_exactly_one_prior_strength():
+    """Section 4.3's three rows are exhaustive, and nothing is a wildcard."""
+    tier_a = {"vpip", "pfr", "limp"}
+    tier_b = {
+        "three_bet", "fold_to_three_bet", "fold_to_steal", "cbet",
+        "fold_to_cbet", "afq", "check_raise", "open_raise",
+    }
+    tier_c = {"wtsd", "wsd", "fold_to_river_bet"}
+    assert set(notebook.PRIOR_STRENGTH) == tier_a | tier_b | tier_c
+    assert {notebook.PRIOR_STRENGTH[s] for s in tier_a} == {50.0}
+    assert {notebook.PRIOR_STRENGTH[s] for s in tier_b} == {25.0}
+    assert {notebook.PRIOR_STRENGTH[s] for s in tier_c} == {15.0}
+    # fold_to_river_bet is Tier C and is not swept up by the Tier B fold_to_*
+    # family it resembles, which section 4.3 says in as many words.
+    assert notebook.PRIOR_STRENGTH["fold_to_river_bet"] == 15.0
+    for stat in notebook.UNSHRUNK:
+        assert stat not in notebook.PRIOR_STRENGTH
+
+
+@pytest.mark.parametrize(
+    "seats, band",
+    [(2, "HU"), (3, "SHORT"), (4, "SHORT"), (5, "MID"), (6, "MID"),
+     (7, "FULL"), (8, "FULL"), (9, "FULL")],
+)
+def test_r1_the_seat_count_band_is_a_context_value(seats, band):
+    """R1: `band=<label>`, in the context column, composed with what is there."""
+    assert band_of(seats) == band
+    # Whoever acts first before the flop: the button heads-up, three seats
+    # along from it otherwise.
+    actor = 0 if seats == 2 else 3 % seats
+    record = make_record(seats, 0, [(0, actor, "fold", 0)], net=[0.0] * seats)
+    book = Notebook()
+    book.observe(record, {seat: f"p{seat}" for seat in range(seats)})
+    for player in book.players():
+        for _stat, ctx in book.counts[player]:
+            assert notebook.context_has(ctx, "band", band)
+    # The band composes with the street key rather than replacing it.
+    contexts = {ctx for _stat, ctx in book.counts[f"p{actor}"]}
+    assert f"band={band},street=preflop" in contexts
+
+
+def test_r3_open_raise_is_keyed_by_players_to_act_behind():
+    """R3: `behind=<k>` and a blind flag, not EP/MP/LP.
+
+    Six seats, button 0: the first player to act is seat 3 with five behind
+    them, and the button itself is `behind=2`, which is the seat R3 points at
+    when it says a player's button hands are the `behind=2` hands whatever the
+    table size.
+    """
+    record = make_record(
+        6,
+        0,
+        [
+            (0, 3, "fold", 0),
+            (0, 4, "fold", 0),
+            (0, 5, "fold", 0),
+            (0, 0, "pot", 300),
+            (0, 1, "fold", 0),
+            (0, 2, "fold", 0),
+        ],
+        net=[150, -50, -100, 0, 0, 0],
+    )
+    book = Notebook()
+    book.observe(record, SIX)
+    assert ("open_raise", "band=MID,behind=5+,blind=none") in book.counts["p3"]
+    assert book.counts["p0"][("open_raise", "band=MID,behind=2,blind=none")] == [1.0, 1.0]
+
+
+def test_r4_fold_to_steal_is_a_blind_facing_a_late_open_with_no_caller():
+    """R4: the opener must have one or no players behind them, and no caller.
+
+    Seat 0 has the button, so an open from seat 0 has the two blinds behind
+    it: `behind=2`, which is not a steal under R4. An open from seat 1, the
+    small blind, has one behind it and is.
+    """
+    button_open = make_record(
+        6,
+        0,
+        [(0, 3, "fold", 0), (0, 4, "fold", 0), (0, 5, "fold", 0),
+         (0, 0, "pot", 300), (0, 1, "fold", 0), (0, 2, "fold", 0)],
+        net=[150, -50, -100, 0, 0, 0],
+    )
+    small_blind_open = make_record(
+        6,
+        0,
+        [(0, 3, "fold", 0), (0, 4, "fold", 0), (0, 5, "fold", 0),
+         (0, 0, "fold", 0), (0, 1, "pot", 250), (0, 2, "fold", 0)],
+        net=[0, 100, -100, 0, 0, 0],
+    )
+    book = Notebook()
+    book.observe(button_open, SIX)
+    assert book.tally("p2", "fold_to_steal") == (0.0, 0.0)
+    book.observe(small_blind_open, SIX)
+    assert book.tally("p2", "fold_to_steal") == (1.0, 1.0)
+    assert ("fold_to_steal", "band=MID,behind=1") in book.counts["p2"]
+
+
+def _seed_pool(book, names, hands, rate, band="MID"):
+    """Put a pool of stored opponents in the notebook without playing them."""
+    for name in names:
+        book.counts[name] = {
+            ("hands_dealt", f"band={band}"): [float(hands), float(hands)],
+            ("vpip", f"band={band}"): [float(hands) * rate, float(hands)],
+        }
+
+
+def test_r2_the_baseline_falls_back_band_then_global_then_unqualified():
+    """R2's chain, and section 4.3's floors applied within the band.
+
+    `MIN_POOL_HANDS = 200` and `MIN_POOL_OPPONENTS = 20` have to be met inside
+    the band or the fallback fires. The last rung stands in for section 4.3's
+    "the blueprint's own action frequency", which Tier 0 has no blueprint to
+    ask, and is marked so a reader cannot mistake it for a qualified pool.
+    """
+    book = Notebook()
+    _seed_pool(book, [f"q{i}" for i in range(20)], 250, 0.40, band="MID")
+    value, source = book.baseline("vpip", "MID")
+    assert value == pytest.approx(0.40)
+    assert source == "band=MID"
+
+    # A band with nobody in it falls through to the global pool.
+    value, source = book.baseline("vpip", "FULL")
+    assert value == pytest.approx(0.40)
+    assert source == "global"
+
+    thin = Notebook()
+    _seed_pool(thin, [f"q{i}" for i in range(5)], 250, 0.31, band="MID")
+    value, source = thin.baseline("vpip", "MID")
+    assert value == pytest.approx(0.31)
+    assert source == "pooled-unqualified"
+
+    empty = Notebook()
+    empty.counts["nobody"] = {}
+    assert empty.baseline("vpip") == (0.0, "no-observations")
+
+
+def test_the_splits_are_the_design_defaults_until_the_pool_replaces_them():
+    """Section 4.4: 0.28 and 0.50, then the observed population's median."""
+    book = Notebook()
+    assert book.split("vpip") == pytest.approx(0.28)
+    assert book.split("afq") == pytest.approx(0.50)
+    rates = [0.10 + 0.02 * i for i in range(21)]
+    for index, rate in enumerate(rates):
+        _seed_pool(book, [f"q{index}"], 250, rate, band="MID")
+    assert book.split("vpip", "MID") == pytest.approx(sorted(rates)[10])
+
+
+def test_a_near_boundary_bucket_is_marked_in_the_report():
+    """Section 4.4: `report.py` must mark a bucket that is too close to call."""
+    readings = [
+        notebook.reading("vpip", 28, 100, 0.28),
+        notebook.reading("afq", 30, 100, 0.30),
+    ]
+    profile = notebook.build_profile(
+        "borderline", "all", 100, readings, vpip_split=0.28, afq_split=0.50
+    )
+    assert profile.near_boundary == ("vpip",)
+    assert "near boundary on vpip" in profile_module.render(profile)
+
+
+def test_a_thin_read_is_unknown_and_plays_no_favourites():
+    """Section 4.4: below either gate the label is UNKNOWN, not a guess."""
+    readings = [notebook.reading("vpip", 9, 10, 0.28), notebook.reading("afq", 9, 10, 0.30)]
+    thin = notebook.build_profile("newcomer", "all", 10, readings, vpip_split=0.28, afq_split=0.50)
+    assert thin.bucket == "UNKNOWN"
+    assert thin.near_boundary == ()
+
+
+def test_hysteresis_holds_a_bucket_until_the_new_one_has_stood_for_ten_hands():
+    """Section 4.4: cross the split by the dead band, then hold it.
+
+    The dead band controls flapping between hands and nothing else; section
+    4.4 is explicit that it is not a noise control and must never be tuned as
+    though it were.
+    """
+    config = NotebookConfig(min_classify_hands=5, classify_confidence=0.05, hold_hands=3)
+    book = Notebook(config)
+    folds = make_record(
+        6, 0,
+        [(0, 3, "fold", 0), (0, 4, "fold", 0), (0, 5, "fold", 0),
+         (0, 0, "fold", 0), (0, 1, "fold", 0)],
+        net=[0, -50, 50, 0, 0, 0],
+    )
+    raises = make_record(
+        6, 0,
+        [(0, 3, "pot", 300), (0, 4, "fold", 0), (0, 5, "fold", 0),
+         (0, 0, "fold", 0), (0, 1, "fold", 0), (0, 2, "fold", 0)],
+        net=[0, -50, -100, 150, 0, 0],
+    )
+    for _ in range(12):
+        book.observe(folds, {3: "p3"})
+    assert book.classification("p3")[0] == "ROCK"
+
+    seen = []
+    for _ in range(12):
+        book.observe(raises, {3: "p3"})
+        seen.append(book.classification("p3"))
+    turned = next(index for index, row in enumerate(seen) if row[1] != "ROCK")
+    lands = turned + config.hold_hands - 1
+    # The candidate turns over the hand the rate crosses the split; the label
+    # showing waits for it to have stood for `hold_hands` hands.
+    assert [row[0] for row in seen[:lands]] == ["ROCK"] * lands
+    assert seen[lands][0] == seen[turned][1] == "STATION"
+
+
+def test_the_notebook_never_imports_the_parts_that_decide():
+    """Section 4.1: nothing below `classify.py` may need the engine or search."""
+    source = (ROOT / "pokerbot" / "notebook.py").read_text()
+    assert "pokerbot.search" not in source
+    assert "equity_rule" not in source
+    assert "from .search" not in source
+    assert "pyspiel" not in source

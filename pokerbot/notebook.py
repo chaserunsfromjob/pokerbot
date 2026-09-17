@@ -1081,6 +1081,15 @@ class Notebook:
                 profile = dataclasses.replace(profile, bucket=run.committed)
         return profile
 
+    def classification(self, player: str) -> tuple[str, str, int]:
+        """The bucket showing, the one trying to replace it, and how long for.
+
+        Section 4.4's hysteresis in three numbers, so that a caller can see
+        *why* a bucket has not changed rather than only that it has not.
+        """
+        run = self._buckets.get(player, _BucketRun())
+        return run.committed, run.candidate, run.held
+
     def _reclassify(self, player: str) -> None:
         """Section 4.4: cross the split by the dead band, then hold it.
 
