@@ -104,8 +104,12 @@ def test_the_three_opponents_only_ever_play_a_move_on_the_menu():
 
 
 def test_seating_refuses_a_list_that_does_not_fit_the_table():
-    with pytest.raises(InvariantViolation):
+    # A mistyped command is not a broken table: it raises an ordinary error,
+    # not an invariant violation.
+    with pytest.raises(ValueError):
         seat_opponents(6, 0, ["random", "call"])
+    with pytest.raises(ValueError):
+        seat_opponents(6, 0, ["nobody"] * 5)
     seated, names = seat_opponents(6, 0, ["random"])
     assert sorted(seated) == [1, 2, 3, 4, 5]
     assert set(names.values()) == {"random"}

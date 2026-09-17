@@ -324,7 +324,15 @@ def bootstrap_interval(
     again at random allowing the same hand to come up twice, average them, and
     do that thousands of times. The middle 95% of those averages is the
     interval. It assumes nothing about the shape of poker results, which is
-    why `EVALUATION_STRATEGY.md` asks for this one rather than a formula.
+    why `EVALUATION_STRATEGY.md` section 3.5 asks for this one -- the
+    percentile bootstrap, resampling hands -- rather than a formula: per-hand
+    poker results are mostly small folds and occasionally a whole stack, and
+    no textbook curve fits that.
+
+    Resampling single hands is right here because the three opponents have no
+    memory: nothing about hand 10 depends on hand 9. The same document says an
+    opponent that tilts needs blocks of consecutive hands resampled instead,
+    and that opponent does not exist until T3.
     """
     if len(per_hand) < 2:
         return (float("nan"), float("nan"))
@@ -349,11 +357,8 @@ def seat_opponents(
     others = [s for s in range(seats) if s != bot_seat]
     if len(names) == 1:
         names = names * len(others)
-    require(
-        len(names) == len(others),
-        "I4",
-        f"{len(names)} opponents were named for {len(others)} seats",
-    )
+    if len(names) != len(others):
+        raise ValueError(f"{len(names)} opponents were named for {len(others)} seats")
     seated = {seat: baselines.by_name(name) for seat, name in zip(others, names)}
     return seated, dict(zip(others, names))
 
@@ -377,7 +382,8 @@ def run(
     log_out: str | None = None,
 ) -> dict:
     """Play the hands, check the table after every one, and report."""
-    require(bot == "search", "I4", f"the only bot is 'search', not {bot!r}")
+    if bot != "search":
+        raise ValueError(f"the only bot is 'search', not {bot!r}")
     names = list(opponents or ["random"])
     table = Table(TableConfig(seats=seats, small_blind=small_blind, big_blind=big_blind))
     seated, seated_names = seat_opponents(seats, bot_seat, names)

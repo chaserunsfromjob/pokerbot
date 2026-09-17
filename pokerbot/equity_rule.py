@@ -79,16 +79,10 @@ def with_odds(game_string: str, sims: int = ODDS_SIMS) -> str:
     same game definition -- the same seats, blinds, stacks and betting
     abstraction, one setting added.
     """
-    require(
-        game_string.endswith(")"),
-        "I7",
-        f"the game definition does not look like one: {game_string!r}",
-    )
-    require(
-        "calcOddsNumSims" not in game_string,
-        "I7",
-        "the game definition already sets calcOddsNumSims",
-    )
+    if not game_string.endswith(")"):
+        raise ValueError(f"the game definition does not look like one: {game_string!r}")
+    if "calcOddsNumSims" in game_string:
+        raise ValueError("the game definition already sets calcOddsNumSims")
     return f"{game_string[:-1]},calcOddsNumSims={int(sims)})"
 
 

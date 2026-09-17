@@ -30,7 +30,6 @@ from __future__ import annotations
 import random
 from typing import Callable, Sequence
 
-from .invariants import require
 from .table import Action
 
 #: What each opponent is called on the command line.
@@ -66,10 +65,15 @@ BY_NAME: dict[str, Callable[[Sequence[Action], random.Random], Action]] = {
 
 
 def by_name(name: str):
-    """One of the three, by the name the command line uses."""
-    require(
-        name in BY_NAME,
-        "I4",
-        f"there is no opponent called {name!r}; the three are {sorted(BY_NAME)}",
-    )
+    """One of the three, by the name the command line uses.
+
+    A name that is not one of the three is a mistake in the command, not a
+    table that has gone wrong, so it raises `ValueError` rather than an
+    invariant violation -- the invariants are statements about a dealt hand
+    and must not be spent on a typo.
+    """
+    if name not in BY_NAME:
+        raise ValueError(
+            f"there is no opponent called {name!r}; the three are {sorted(BY_NAME)}"
+        )
     return BY_NAME[name]
