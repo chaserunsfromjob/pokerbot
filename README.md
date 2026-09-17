@@ -228,6 +228,39 @@ a figure in the thousands of big blinds is a statement about how bad that
 opposition is and not about how good the bot is. Nothing has been adjusted on
 the strength of it.
 
+## The notebook: what the bot has noticed about a player
+
+The notebook is the bot's memory of the people it plays against. It watches
+every hand and writes down, for each player by name, how often the game offered
+them a particular spot and how often they did a particular thing in it: how
+often they put money in before the flop, how often they raised, how often they
+folded when someone bet at them, and a dozen more of the same shape. It changes
+nothing about how the bot plays. It only counts.
+
+Two things stop it fooling itself. A player who has raised four times out of six
+is not a wild raiser, so every rate is pulled towards the average of everyone
+the notebook has ever watched -- not the people at the table right now, which
+would be a different and much shakier thing -- and the pull only lets go as the
+number of hands grows, so a number resting on six hands reads close to that
+average and one resting on six hundred reads close to what was actually seen. And beside every number it
+prints how much of it is the player and how much is still that average, as a
+figure between nought and one. It also never looks at anybody's cards: the
+account of the hand is copied without the cards in it before a single number is
+counted, so no count can be about a card even by accident.
+
+To see what it has on somebody, give it a file of recorded hands and a name:
+
+    .venv/bin/python -m pokerbot.profile ada --records hands.jsonl \
+        --names 0=ada,1=grace,2=ida,3=mary,4=edith,5=nina
+
+Hand files come from the arena's `--records-out`. A recorded hand knows which
+seat did what but not who was sitting there, so `--names` says who was in which
+seat; leave it out and the players are called `seat0`, `seat1` and so on. What
+it prints is a block of one line per number, then the player's overall type in
+one word, marked as too close to call when it is, then a short list of the
+specific weaknesses it has seen enough hands to name. Those are notes for a
+person reading them, and nothing in the bot reads them back.
+
 ## Checking the design document's arithmetic
 
 `OPPONENT_MODEL_DESIGN.md` states a small number of settings and then works out
