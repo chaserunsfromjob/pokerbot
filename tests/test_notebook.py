@@ -1025,3 +1025,19 @@ def test_the_notebook_never_imports_the_parts_that_decide():
     assert "equity_rule" not in source
     assert "from .search" not in source
     assert "pyspiel" not in source
+
+
+def test_a_profile_with_nothing_to_flag_says_so_rather_than_trailing_off():
+    """Every shrunk stat has a line, and no flag firing is itself a result."""
+    readings = [
+        notebook.reading(key, 0, 0, 0.2) for key in ("vpip", "pfr", "limp", "afq")
+    ]
+    profile = notebook.build_profile(
+        "stranger", "all", 0, readings, vpip_split=0.28, afq_split=0.50
+    )
+    printed = profile_module.render(profile)
+    assert printed.endswith("  flags       none")
+    assert "  vpip        0.20  (conf 0.00)" in printed
+    # With no opportunities the rate *is* the baseline and there is no raw
+    # rate to print beside it.
+    assert "raw" not in printed

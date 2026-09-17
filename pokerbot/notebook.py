@@ -586,6 +586,12 @@ def hand_counts(
                             )
 
         if street == 0:
+            # Nothing below applies before the flop. A continuation bet is by
+            # definition a bet on a later street, and R8's sized `fold_to_bet`
+            # measures a bet against the pot before it, which is the postflop
+            # quantity `OPPONENT_MODEL_DESIGN.md` Table A is about; before the
+            # flop the corresponding stats are `fold_to_three_bet` and
+            # `fold_to_steal`, both counted above.
             continue
 
         # cbet and fold_to_cbet.
@@ -1041,12 +1047,18 @@ class Notebook:
         return rates[mid] if len(rates) % 2 else (rates[mid - 1] + rates[mid]) / 2.0
 
     def keys(self, player: str) -> list[str]:
-        """Every display key this player has counts for, in a fixed order."""
-        found: set[str] = set()
+        """Every display key a profile of this player carries, in a fixed order.
+
+        Every shrunk stat is here whether or not the player was ever handed
+        the spot, so two profiles have the same shape and a stat with no
+        opportunities reads as its baseline at a confidence of zero rather
+        than vanishing from the report. The per-street keys follow the data,
+        because a street nobody played has no line to print.
+        """
+        found: set[str] = set(PRIOR_STRENGTH)
         for stat, ctx in self.counts.get(player, {}):
             if stat not in PRIOR_STRENGTH:
                 continue
-            found.add(stat)
             for street in STREETS:
                 if context_has(ctx, "street", street):
                     found.add(f"{stat}[{street}]")

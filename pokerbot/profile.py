@@ -85,7 +85,9 @@ def render(profile: Profile) -> str:
         # Section 4.4: a reader must see that a bucket is too close to call.
         bucket += f"  (near boundary on {', '.join(profile.near_boundary)})"
     lines.append(f"  {'bucket':<{_WIDTH}}{bucket}")
-    lines.append(f"  {'flags':<{_WIDTH}}{', '.join(profile.flags)}")
+    # "none" rather than an empty line: a report that trails off is read as
+    # broken, and no flag firing is a result in its own right.
+    lines.append(f"  {'flags':<{_WIDTH}}{', '.join(profile.flags) or 'none'}")
     return "\n".join(lines)
 
 
