@@ -224,11 +224,20 @@ class EngineView:
     unseen slots itself out of the cards it can account for, which is the
     ordinary card bookkeeping `CLAUDE.md` puts on our side of the line.
 
+    The history is not all cards. Past the hole cards it holds the board *and*
+    every bet made, and the two are not told apart by their values: under
+    `fchpa` the five moves are numbered 0 to 4 and so are the first five cards
+    of the deck, so a call and the deuce of diamonds are both the integer 1.
+    `card_slots` is how anyone reading this view knows which is which, and it
+    is recorded by the `Hand` as it deals rather than guessed at afterwards.
+
     * `game_string`   the ACPC game definition, so the searcher can load its
                       own copy of the same game and replay into it.
     * `player`        engine seat index of the seat to act.
     * `seat`          the same seat in table numbering.
     * `hole_slots`    how many of the leading history entries are hole cards.
+    * `card_slots`    which history positions the engine dealt a card at; every
+                      other position is a bet, not a card.
     * `history`       the masked history described above.
     * `menu`          what that seat may do, the five-move menu.
     """
@@ -238,17 +247,24 @@ class EngineView:
     player: int
     seat: int
     hole_slots: int
+    card_slots: tuple[int, ...]
     history: tuple[int | None, ...]
     menu: tuple[Action, ...]
 
     def unseen_slots(self) -> tuple[int, ...]:
         """Which history positions are cards this seat has not been shown."""
-        return tuple(i for i, card in enumerate(self.history) if card is None)
+        return tuple(i for i in self.card_slots if self.history[i] is None)
 
     def seen_cards(self) -> frozenset[int]:
-        """Every card this seat can account for: its own two and the board."""
-        return frozenset(card for card in self.history[: self.hole_slots] if card is not None) | frozenset(
-            card for card in self.history[self.hole_slots :] if card is not None
+        """Every card this seat can account for: its own two and the board.
+
+        Only the positions a card was dealt at are read. Taking every non-None
+        entry instead counts bets as cards, and so strikes real cards out of
+        the deck a search deals from -- one of the first five, whenever anyone
+        folds, calls or bets.
+        """
+        return frozenset(
+            self.history[i] for i in self.card_slots if self.history[i] is not None
         )
 
 
@@ -313,6 +329,10 @@ class Hand:
         self._hole: list[list[str]] = [[] for _ in range(n)]
         self._board: list[str] = []
         self._deals_seen = 0
+        #: Where in the engine's history each card was dealt. Kept as the deal
+        #: happens because nothing after it can tell a card from a bet: see
+        #: `EngineView`.
+        self._card_slots: list[int] = []
         self._folded = [False] * n
         self._record: HandRecord | None = None
         self._advance_chance()
@@ -343,6 +363,7 @@ class Hand:
         while not self._state.is_terminal() and self._state.is_chance_node():
             legal = self._state.legal_actions()
             card = legal[self._rng.randrange(len(legal))]
+            self._card_slots.append(len(self._state.history()))
             self._state.apply_action(card)
             self._note_card(card)
 
@@ -456,12 +477,26 @@ class Hand:
             card if i >= hole_slots or i // 2 == player else None
             for i, card in enumerate(history)
         ]
+        # The recorded card positions are what the view's readers tell a card
+        # from a bet by, so check them against what was actually dealt before
+        # handing them out: the hole cards come first and in order, and there
+        # is one position per card this hand has seen.
+        card_slots = tuple(self._card_slots)
+        require(
+            len(card_slots) == self._deals_seen
+            and card_slots[:hole_slots] == tuple(range(hole_slots))
+            and all(slot < len(history) for slot in card_slots),
+            "I7",
+            f"the deal was recorded at history positions {card_slots} for "
+            f"{self._deals_seen} cards in a history of {len(history)}",
+        )
         return EngineView(
             game_string=self.game_string,
             seats=self.config.seats,
             player=player,
             seat=self.seat_of(player),
             hole_slots=hole_slots,
+            card_slots=card_slots,
             history=tuple(masked),
             menu=tuple(self.legal_actions()),
         )
