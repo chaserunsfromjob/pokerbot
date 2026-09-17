@@ -31,10 +31,11 @@ at it.
 
 The second is **"how much money does this bot win from these particular
 opponents?"** That is the question this project actually cares about, because
-the goal in `CLAUDE.md` is to beat real humans at a table of three or more, not
-to be unbeatable. It is an easier question to compute and a much harder
-question to *measure*, because poker is so wildly random that a bot can lose
-for thousands of hands while playing better than everyone at the table.
+the goal in `CLAUDE.md` is to beat real humans at every table size from 2 to 9,
+judged mostly at 6, 8 and 9 seats, not to be unbeatable. It is an easier
+question to compute and a much harder question to *measure*, because poker is
+so wildly random that a bot can lose for thousands of hands while playing
+better than everyone at the table.
 
 That randomness is the whole problem. A single hand of no-limit hold'em can
 swing a hundred big blinds. So if you play a new version of the bot for a
@@ -148,10 +149,12 @@ humans make?* And a second, weaker question that is much cheaper to answer:
   produce a score to admire.
 
 **The measurement this project needs is a bankroll measurement, not an
-equilibrium measurement.** `CLAUDE.md` is explicit: beat real humans at a table
-of three or more, do not chase a theoretical optimum that does not exist at that
-table size. The research field has a name for this distinction and has measured
-that the two goals genuinely disagree — see
+equilibrium measurement.** `CLAUDE.md` is explicit: beat real humans at every
+table size from 2 to 9, judged mostly at 6, 8 and 9 seats by the weights in
+[§3.5](#35-the-decision-rule-is-this-change-an-improvement), do not chase a
+theoretical optimum that does not exist once three or more players are in the
+pot. The research field has a name for this distinction and has measured that
+the two goals genuinely disagree — see
 [§2.6](#26-what-a-head-to-head-number-does-not-tell-you).
 
 ---

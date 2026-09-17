@@ -763,8 +763,13 @@ works for 2 players at the moment"*). The game tree its CFR walks refuses
 anything else (`PokerRL/game/_/tree/_/ValueFiller.py:27`).
 
 It does have a genuine continuous-sizing `NoLimitHoldem` environment
-(`PokerRL/game/games.py:170-178`). That does not save it: a heads-up-only solver
-is useless for a project whose goal is a table of three or more.
+(`PokerRL/game/games.py:170-178`). That does not save it. The goal is every
+table size from 2 to 9, so heads-up is inside it rather than outside - but a
+heads-up-only solver covers one of those eight seat counts and no more, and no
+seat count carries less weight in the headline that `EVALUATION_STRATEGY.md`
+section 3.5 defines. Requirement 2 asks for anything from 2 up to 9 without
+editing the engine's source, and one seat count out of eight is not that, so
+the verdict stands in the words the table uses: **no - heads-up CFR**.
 **Requirement 3: no** - it ships no trained weights, and training it was the
 expensive road anyway.
 
