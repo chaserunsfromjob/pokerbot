@@ -1,0 +1,77 @@
+# The scoreboard's pre-registered configuration.
+#
+# EVALUATION_STRATEGY.md section 3.5 says every number that decides an accept or
+# a reject is written down BEFORE a hand is played, and reprinted at the top of
+# the report. This file is that writing-down. `pokerbot/scoreboard.py` prints it
+# back out verbatim-in-substance at the head of every run; an unlabelled average
+# is not a result.
+#
+# Nothing in here is a measurement. Every number is a decision, and the reason
+# for each is beside it.
+
+[weights]
+# Section 3.5, table-size weights. The ordering is the operator's own statement
+# of what they play (2026-09-15): mostly six-handed, then eight or nine, which
+# are close enough to be one band. The three numbers are EVALUATION_STRATEGY.md's
+# design choice implementing that ordering, not a quantity the operator gave,
+# and they are revisable here without touching that document.
+primary_seats = [6]
+primary = 0.50
+secondary_seats = [8, 9]      # one band, split equally inside it
+secondary = 0.30
+other = 0.20                  # whichever other seat counts ran, split equally
+
+[run]
+# The seat counts BUILD_PLAN.md T3 requires a cell for. The band weights above
+# never move; only the split inside the "other" band does, and the report prints
+# whatever split was in force.
+seats = [2, 6, 8, 9]
+hands = 1000                  # per cell, per arm; the CLI's --hands overrides it
+small_blind = 50              # chips; 0.5 big blinds
+big_blind = 100               # chips; the unit every result is reported in
+starting_stack_bb = 200       # ENGINE_ALTERNATIVES.md measured at 200 bb deep
+equity_rollouts = 24          # engine showdowns per persona hand-strength lookup
+preflop_rollouts = 120        # engine showdowns per preflop class, for "top X%"
+
+[bootstrap]
+# Section 3.5: percentile bootstrap, not a t-interval, because per-hand poker
+# results are heavy-tailed. The t-interval is printed beside it as a cross-check.
+resamples = 2000
+confidence = 0.95
+block_hands = 20              # block bootstrap length for personas with memory
+
+[decision]
+# Section 3.5's rule, in the order it applies.
+reference_bot = "always_call"     # arm A when --compare is not given
+accept_if_primary_interval_above_zero = true
+block_if_any_persona_interval_below_zero = true
+# A written override is the only way past the per-persona blocker. Each entry
+# names the persona, quotes the size of the regression, and says why it is
+# acceptable; the text is copied into the report.
+overrides = []
+
+[split]
+# Section 3.2, design rule 2: half the behavioural personas are held back and
+# used for accept/reject only, never for tuning. A harness with one fixed
+# opponent set is a training opponent by another name.
+development = [
+    "calling_station",
+    "nit",
+    "maniac",
+    "never_bluffs",
+    "fit_or_fold",
+]
+evaluation = [
+    "tag",
+    "lag",
+    "tilter",
+    "sizing_tell",
+]
+# The four calibration agents of section 3.2 group A are instruments with known
+# right answers, not opponents anyone tunes against, so they run in both modes.
+calibration = [
+    "always_fold",
+    "always_call",
+    "always_raise",
+    "call_raise_50_50",
+]
