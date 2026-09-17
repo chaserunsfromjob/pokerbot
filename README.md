@@ -44,6 +44,53 @@ importable from that area, without letting it pull in its own five-year-old
 package list. `REFERENCE_NOTES.md` explains why those last two flags are
 there.
 
+## Working from another machine
+
+Everything this project is made of is published on GitHub, the website that
+stores code along with the full history of every change to it. There are two
+repositories -- a repository being one project's worth of code and history. The
+bot is at `github.com/chaserunsfromjob/pokerbot` and the machinery that runs the
+agents working on it is at `github.com/chaserunsfromjob/heater`. Both are
+public, checked on 17 September 2026, which means anyone with the address can
+read them in a browser and take their own copy without being granted permission
+first.
+
+**The four setup lines above work on a Mac, on Linux and on Windows.** The one
+piece that could have tied this project to a single kind of computer is the
+poker engine it deals its own hands on, which is pinned to one exact version,
+`open_spiel==2.0.2`. That version publishes ready-built packages for all three
+kinds of machine, so nothing has to be compiled where it is installed. Read from
+the package index on 17 September 2026 at
+`https://pypi.org/pypi/open_spiel/2.0.2/json`, the packages it offers carry
+these platform names: `macosx_11_0_arm64` for an Apple-silicon Mac,
+`manylinux_2_27_x86_64` and `manylinux_2_27_aarch64` for Linux on each of the
+two common chip families, and `win_amd64` for 64-bit Windows -- each of them
+built for Python 3.11, 3.12, 3.13 and 3.14. This project needs 3.13 or newer, as
+the section above says, and 3.13 and 3.14 are both in that list for all three
+platforms. Check it yourself with:
+
+    curl -s https://pypi.org/pypi/open_spiel/2.0.2/json
+
+**One difference on Windows.** The private area of outside code keeps its
+programs in a folder called `Scripts` rather than `bin`, so every command in
+this README that starts `.venv/bin/` starts `.venv\Scripts\` there instead:
+`.venv\Scripts\python`, `.venv\Scripts\pip`. The four setup lines change the
+same way. Nothing else about them differs.
+
+**Tell the machine who is committing, before committing anything.** A saved
+change -- a *commit* -- carries the name and email address of whoever made it,
+and those are taken from a setting on the machine rather than from the website.
+GitHub decides which account a commit belongs to by matching that email address
+against the addresses it knows, so a commit made with the wrong address, or with
+none, shows up on the history as an unlinked stranger and never appears on the
+account's record. Run these two lines once on each machine:
+
+    git config --global user.name "chaserunsfromjob"
+    git config --global user.email "329321487+chaserunsfromjob@users.noreply.github.com"
+
+That address is the stand-in GitHub itself issues for the account, so the work
+is credited to it without putting a real mailbox into a public history.
+
 ## The gate
 
 One command that runs every check this project has and says, in one word,
