@@ -716,37 +716,45 @@ anchors chosen to show the shape of the requirement, **not claims about any
 real population**; the width of the interval barely moves for `p̂` between 0.2
 and 0.8. Computed by `tools/check_design_numbers.py`, 2026-09-15.
 
-The **"Opportunities per hand" column is an illustrative estimate on the same
-footing as `p̂`, not a sourced fact.** No published figure was found for how
-often a real multiway table hands a given player these spots, and none is
-invented here: 0.08, 0.15 and 0.30 are round order-of-magnitude placeholders for
-"rare", "occasional" and "common". Only `vpip` and `pfr` carry a rate of 1.00,
-and they carry it because their [§4.2](#42-the-stat-table) denominator is
+The **"Opportunities per hand" column is measured in two rows and an
+illustrative estimate in two others.** `fold_to_cbet` at **0.030** and `wtsd` at
+**0.187** are the nine-handed pooled rates in
+[`OPPONENT_BASELINE.md` §2](OPPONENT_BASELINE.md#2-corpus-a-the-2009-no-limit-population-per-table-size),
+whose "FtCB chances per hand" and "Flops seen per hand" columns are exactly the
+[§4.2](#42-the-stat-table) denominators of those two stats — "faced a
+continuation bet on that street" and "saw a flop" — counted over that
+document's 70,685 nine-handed hands of 2009 no-limit play. Carry its caveat with
+the number: both were measured on the sample its §1 describes, which lacks
+PartyPoker and leans high-stakes, and on a seventeen-year-old archive rather
+than on the table this bot will sit at. For the other two rows no published
+figure was found for how often a real multiway table hands a given player those
+spots, and none is invented here: 0.08 and 0.15 are round order-of-magnitude
+placeholders for "rare" and "occasional". Only `vpip` and `pfr` carry a rate of
+1.00, and they carry it because their [§4.2](#42-the-stat-table) denominator is
 literally "opponent was dealt in" — one opportunity per hand by definition, not
-an estimate. **Every other row takes a placeholder**, because every other
-denominator in [§4.2](#42-the-stat-table) is a spot the game has to hand the
-player: `three_bet`'s is "faced exactly one open raise with chips behind",
-`fold_to_three_bet`'s is "had open-raised and then faced a reraise",
-`fold_to_cbet`'s is "faced a continuation bet on that street", `wtsd`'s is "saw
-a flop". The "Hands needed" column inherits that uncertainty and scales
-inversely with them — halve an opportunity rate and the hands double. **Replace
-every placeholder with measurement as soon as Tier 0 has logged any hands**:
-each is exactly `denominator / hands_dealt` for that stat, pooled
-across the observed population (not the live field, and not a behaviour rate at
-all — it is how often the game hands somebody that spot). What survives the
-uncertainty is the *ordering* — Tier A stats need hundreds of hands and postflop
-stats need thousands — and that ordering is what the rest of this document leans
-on.
+an estimate. **Every row that is neither measured nor forced takes a
+placeholder**, because every other denominator in [§4.2](#42-the-stat-table) is
+a spot the game has to hand the player: `three_bet`'s is "faced exactly one open
+raise with chips behind", `fold_to_three_bet`'s is "had open-raised and then
+faced a reraise". The "Hands needed" column inherits whatever its rate is worth
+and scales inversely with it — halve an opportunity rate and the hands double.
+**Replace every remaining placeholder, and both archive rates, with measurement
+as soon as Tier 0 has logged any hands**: each is exactly
+`denominator / hands_dealt` for that stat, pooled across the observed population
+(not the live field, and not a behaviour rate at all — it is how often the game
+hands somebody that spot). What survives the uncertainty is the *ordering* —
+Tier A stats need hundreds of hands and postflop stats need thousands — and that
+ordering is what the rest of this document leans on.
 
-| Stat | Anchor `p̂` (illustrative) | Opportunities per hand (illustrative) | Target width | Opportunities needed | **Hands needed** |
-| --- | --- | --- | --- | --- | --- |
-| `vpip` | 0.30 | 1.00 | ±5pp | 323 | **323** |
-| `vpip` | 0.30 | 1.00 | ±3pp | 896 | **896** |
-| `pfr` | 0.20 | 1.00 | ±5pp | 246 | **246** |
-| `three_bet` | 0.07 | 0.15 | ±2pp | 625 | **4,168** |
-| `fold_to_three_bet` | 0.60 | 0.08 | ±10pp | 92 | **1,152** |
-| `fold_to_cbet` | 0.50 | 0.15 | ±10pp | 96 | **640** |
-| `wtsd` | 0.25 | 0.30 | ±5pp | 288 | **960** |
+| Stat | Anchor `p̂` (illustrative) | Opportunities per hand | Target width | Opportunities needed | **Hands needed** | Where the rate comes from |
+| --- | --- | --- | --- | --- | --- | --- |
+| `vpip` | 0.30 | 1.00 | ±5pp | 323 | **323** | one per hand by definition |
+| `vpip` | 0.30 | 1.00 | ±3pp | 896 | **896** | one per hand by definition |
+| `pfr` | 0.20 | 1.00 | ±5pp | 246 | **246** | one per hand by definition |
+| `three_bet` | 0.07 | 0.15 | ±2pp | 625 | **4,168** | illustrative placeholder |
+| `fold_to_three_bet` | 0.60 | 0.08 | ±10pp | 92 | **1,152** | illustrative placeholder |
+| `fold_to_cbet` | 0.50 | 0.030 | ±10pp | 96 | **3,201** | measured, `OPPONENT_BASELINE.md` §2, nine-handed |
+| `wtsd` | 0.25 | 0.187 | ±5pp | 288 | **1,541** | measured, `OPPONENT_BASELINE.md` §2, nine-handed |
 
 **This table is the honest expectation-setter for the whole project.** VPIP and
 PFR are usable inside one long session. Everything postflop needs many sessions
@@ -1864,7 +1872,7 @@ inputs, never from another figure's printed value.
 | --- | --- |
 | Tables A, B, C, D, E, the flag margin-versus-interval table in [§4.4](#44-bucketing-an-opponent), and the inline `0.5^(1/3) ≈ 0.794` reading of them | Computed by `tools/check_design_numbers.py`, 2026-09-15, which also re-checks them on every run. Formulas are stated inline beside each table; all are elementary arithmetic (binomial standard error, independent-event products, Beta posterior means) |
 | Table C's anchor `p̂` column (0.30, 0.20, 0.07, 0.60, 0.50, 0.25) | **Illustrative anchors, not measured or cited.** Labelled as such beside the table; the interval width barely moves across `p̂` in 0.2–0.8 |
-| Table C's opportunities-per-hand column (`three_bet` 0.15, `fold_to_three_bet` 0.08, `fold_to_cbet` 0.15, `wtsd` 0.30) | **Illustrative estimates, not measured or cited.** No source exists for them; labelled as such beside the table. Each is to be replaced by `denominator / hands_dealt` from the bot's own logged hands. The "Hands needed" column scales inversely with them. Only `vpip` and `pfr` escape the placeholder, at 1.00, and only because their [§4.2](#42-the-stat-table) denominator is "opponent was dealt in" |
+| Table C's opportunities-per-hand column (`three_bet` 0.15, `fold_to_three_bet` 0.08, `fold_to_cbet` 0.030, `wtsd` 0.187) | **Two measured, two illustrative.** `fold_to_cbet` 0.030 and `wtsd` 0.187 are the nine-handed pooled rates in [`OPPONENT_BASELINE.md` §2](OPPONENT_BASELINE.md#2-corpus-a-the-2009-no-limit-population-per-table-size) — its "FtCB chances per hand" and "Flops seen per hand" columns, over 70,685 nine-handed hands — measured on the sample its §1 describes, which lacks PartyPoker and leans high-stakes; adopting them is that document's §5 recommendation 2. `three_bet` 0.15 and `fold_to_three_bet` 0.08 are **illustrative estimates, not measured or cited**, because that measurement does not reach their denominators; no source exists for them, and they are labelled as such beside the table. Each of the four is to be replaced by `denominator / hands_dealt` from the bot's own logged hands. The "Hands needed" column scales inversely with them. Only `vpip` and `pfr` escape the placeholder, at 1.00, and only because their [§4.2](#42-the-stat-table) denominator is "opponent was dealt in" |
 | The bucket boundary's noise exposure — ±12.4pp raw and ±6.2pp shrunk on `vpip` at the `0.5` gate, ±19.6pp and ±9.8pp on `afq`, and the 1,835 hands / 2,351 opportunities a `0.02`-tight gate would need ([§4.4](#44-bucketing-an-opponent)) | Computed by `tools/check_design_numbers.py` from `VPIP_SPLIT`, `AFQ_SPLIT`, `PRIOR_STRENGTH`, the `0.5` gate and the `0.02` band, by the same `n = s·c/(1−c)` and `w = 1.96·√(p̂(1−p̂)/n)` used for the flag margins |
 | **Hours on one laptop for the whole offline build, no multi-day computing** ([§4.5](#45-tiers-what-to-build-in-what-order), [E5](#engine-requirements)) | **The operator's stated cap, 2026-09-15**, not a derived or negotiable figure. It is what E5's answer has to clear, and what makes Tier 1's 32 runs conditional on a minutes-long single solve |
 | The table-size priority — 6-handed first, then 8- and 9-handed as one band, then the rest ([§4.5](#45-tiers-what-to-build-in-what-order)) | **The operator's stated priority, 2026-09-15**, recorded as heater task `65bba741bf40` and quoted verbatim at its point of use. Not derived and not negotiable here; it fixes only the order of the solve plan, never which seat counts are required |
