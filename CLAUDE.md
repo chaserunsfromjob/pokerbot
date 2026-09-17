@@ -12,26 +12,14 @@ capture.
 
 ## The forefront rule
 
-- Never let an AI model decide a poker action, evaluate a hand, or read a board; call real engine code for that.
-- Only use AI-written code for integration, tooling, table-state capture (screen to structured data), and card combinatorics, never for poker judgment itself.
-- Reject a change that adds hand-rolled hand-strength or decision logic in place of the vendored engine; adapt the engine instead.
-- Write card-combinatorics bookkeeping ourselves - enumerating the 169 preflop hand classes, suit isomorphisms, deck enumeration - but leave anything that ranks or values a hand, or chooses an action, to the engine.
+- Let an AI assistant write the poker code: the code that picks an action, assigns a range to an opponent, reads the board, and combines opponent rates.
+- Keep every model call out of the live decision path; when the bot acts it runs ordinary code only, with no language-model inference, no network call to a model, and no prompt.
+- Write decision code as ordinary, testable code: the same inputs and seed give the same answer, tests cover it, and a reviewer can read it line by line.
+- Take the game rules and hand evaluation from the engine road, OpenSpiel `universal_poker`, rather than hand-rolling them; reject a change that hand-rolls hand-strength logic in place of the vendored engine, and adapt the engine instead.
 - Ground-truth hand ranking against a named external evaluator (currently `treys`), the reference for standard 52-card ranking, and keep it out of the bot's decision path; it validates tests only, never runtime play.
-- Keep opponent-modelling code to the left column of this boundary, and leave every right-column job to the engine.
-
-| Allowed to AI-written opponent-model code | Reserved to the engine |
-| --- | --- |
-| Counting observed actions | Evaluating hand strength |
-| Computing a single rate from its own counts | Choosing an action |
-| Shrinking a rate toward a baseline | Assigning a range to an opponent |
-| Sorting an opponent into a bucket | Reading board texture |
-| Selecting *which* engine strategy to load | Producing the strategy itself |
-| Substituting an opponent model into the engine's own solver | Solving |
-| Reporting several rates side by side | Combining live-field rates into a quantity that drives a poker decision — multiplying the fold rates of the opponents in the current hand to gate a bluff, for one |
-
-- Allow AI-written code to combine rates across the **observed population** — the whole database, seated players' stored rows included, with being seated never the criterion for inclusion — into a baseline, a classification split, or an archetype, and hand that result to the engine, which still chooses the action.
+- Write card-combinatorics bookkeeping ourselves - the 169 preflop hand classes, suit isomorphisms, deck enumeration - and leave ranking or valuing a hand to the engine.
+- Keep every way language models play poker badly, as named in `LLM_POKER_FAILURE_MODES.md`, out of the decision code, and reject a change that reintroduces one of them.
 - Derive any opponent archetype fed to the solver from measured action frequencies alone; never hand-write one, and never let it reference hole cards, board cards, or hand strength.
-- Treat who chooses the action on top of the engine as open and the operator's to settle; the exception to this rule is not granted, so every bullet above holds until the operator grants it.
 
 ## Plan
 
@@ -55,13 +43,14 @@ capture.
 - Push the branch as the work goes, not once at the end.
 - Mark the pull request ready (`gh pr ready`) when the work is done, and land the change through it.
 - Push `main` the moment a merge lands on it.
+- Push branches without asking, from any session on any machine, the PC included.
 
 ## Licence
 
 - Keep pokerbot public at `github.com/chaserunsfromjob/pokerbot` so classmates can collaborate on it.
 - License pokerbot under the GNU General Public License version 3 — GPL-3.0 — whose full text is `LICENSE` at the root, because the vendored engine is GPL-3.0 and publishing is distribution.
 - Keep every derived work under GPL-3.0 with its source published; the vendored engine's terms bind whatever is built on or combined with its code, not a separate program that merely ships beside it.
-- Take any move to close the repository, or to a different licence, to the operator first.
+- Use third-party code and data when they help, and never let a licence question block a change; making the repository private later is the operator's call.
 
 Rules in `~/.claude/CLAUDE.md` (deployed machine-wide from the `heater` fleet
 repository) apply on top of this file.
