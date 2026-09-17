@@ -1,0 +1,19 @@
+# What the `pokerbot` package and its table invariants need, and nothing else.
+#
+# Kept separate from `requirements-vendor.txt`, which is the dependency set that
+# makes the reference engine in `vendor/poker_ai` run and has nothing to do with
+# this. Installing both into one `.venv` is fine; they do not disagree.
+#
+# Verified on Python 3.13.15, macOS 15.2 (24.2.0), Apple M4, 2026-09-16.
+#
+# open_spiel: the engine. Every rule, every legal move, every hand ranking and
+#   every payout in this project comes out of its `universal_poker` game, which
+#   is CLAUDE.md's forefront rule. Version pinned to the one ENGINE_ALTERNATIVES.md
+#   measured against.
+# pytest: the test runner the invariants are written for.
+# treys: the outside hand evaluator. Tests only -- it checks that the engine's
+#   showdown is right, and never takes part in play; the guard on that is
+#   tests/test_adapter_scope.py.
+open_spiel==2.0.2
+pytest==9.1.1
+treys==0.1.8
