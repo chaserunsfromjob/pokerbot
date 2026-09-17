@@ -1,0 +1,10 @@
+command file:  /Users/chasethompson/.heater/worktrees/pokerbot/85f4140c6fae/research/solvers/texassolver_flop_full_ranges.txt
+solver:        /private/tmp/claude-501/-Users-chasethompson-heater/60db9bfd-fa3a-4035-aa37-91a8741fa698/scratchpad/ts/TexasSolver-v0.2.0-MacOs/console_solver
+threads:       as set in the command file (set_thread_num)
+stopped by:    deadline
+wall:          423.1 s
+cpu:           699.8 s  (1.65 cores busy on average)
+max rss:       5.79 GiB
+iterations:    [0, 2, 3]
+exploitability (% of pot, in order): ['226.38864', '221.72139']
+exit status:   -9

@@ -1,0 +1,15 @@
+Run note for texassolver_flop_run2_421s.log (TexasSolver v0.2.0 macOS, command
+file texassolver_flop_full_ranges.txt, run by run_texassolver_flop.py to the
+420-second deadline).
+
+The runner records wall time, CPU time, cores busy, peak memory, the iterations
+printed and the exploitability figures, but nothing about how busy the machine
+was.  That was sampled separately by a probe that recorded memory use and load
+alongside this solve.  The probe's first line, headed BEFORE and taken just
+before the solve started, is copied here verbatim:
+
+  === BEFORE  t=20:49:31  load=3.29 4.46 4.74
+
+The three numbers after "load=" are the machine's 1-minute, 5-minute and
+15-minute load averages, so the 1-minute load at the start of run 2 was 3.29.
+That is the figure published for run 2 in RESOURCES_SOLVERS.md Appendix A.

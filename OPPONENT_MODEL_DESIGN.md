@@ -312,7 +312,7 @@ column is what drives that; see [Table C](#table-c-how-many-hands-each-stat-need
 | `pfr` | Preflop raise | Separates aggressive-loose from passive-loose |
 | `vpip_pfr_gap` | `vpip − pfr` | Passive callers show a wide gap; the derived "limps a lot" signal. It combines two rates, so — exactly like `AF` in [§4.2](#42-the-stat-table) — it is *reported* as a diagnostic **without ever being used as an input to a poker decision the bot acts on**; it is one opponent's own two rates, never a live-field combination |
 | `limp` | Called the big blind unraised, first in | Strongly recreational; Pluribus's self-play discarded limping as suboptimal for everyone but the small blind ([Brown 2020](#s-brown2020), §6.6) |
-| `open_raise_by_seat` | PFR split by early / middle / late / blinds | Position-blind opponents are the exploitable ones |
+| `open_raise` | Made the first raise preflop, first-in with no prior raiser; split five ways by seat bucket: `EP` / `MP` / `LP` / `SB` / `BB` | Position-blind opponents are the exploitable ones |
 
 **Tier B — a few opportunities per ten hands. Usable after a session or two.**
 
@@ -511,12 +511,14 @@ the useful ones for this project are:
 
 Their results: the naive **1-Step** function (any confidence after a single
 observation) **overfits the model**, while 10-Step, 0-10 Linear and 1-Curve do
-not — "1-Curve" is the source's own name, kept verbatim here, and reads as the
-s-Curve above with the constant `s` = 1, matching how it names 1-Step and
-10-Step; and the 0-10 Linear counter-strategies "are effective with any quantity
-of training data", tested down to 100 observed games (ibid., §6 and Figure 2). That
-last point is the licence for this project to exploit on small samples at all —
-but only with the shrinkage in place.
+not — "1-Curve" is the source's own name, kept verbatim here, and that it is the
+s-Curve above with the constant `s` = 1 is the paper's own statement, not an
+inference of this document's: "The s-Curve function returns Pmax × (nI/(s + nI))
+for any constant s; in this experiment, we used s = 1" (ibid., §5.2); and the
+0-10 Linear counter-strategies "are effective with any quantity of training
+data", tested down to 100 observed games (ibid., §6 and Figure 2). That last
+point is the licence for this project to exploit on small samples at all — but
+only with the shrinkage in place.
 
 **Deviation-Based Best Response, DBBR ([Ganzfried & Sandholm 2011](#s-ganzfried2011)).**
 The closest published thing to what this project should build. It "works by
@@ -537,7 +539,8 @@ copying verbatim: "we wanted to choose a small number so that our observations
 would quickly trump the prior for common public history sets, but so that the
 prior would have more weight if we had just one or two observations. Note that
 setting `N_prior = 5` means that our prior and our observations will have equal
-weight in our model when we have observed the opponent's action 5 times."
+weight in our model when we have observed the opponent's action 5 times at the
+given public history set."
 
 Their remaining design choices: play the baseline for the first `T = 1000` hands
 before exploiting at all, and rebuild the model every `k = 50` hands. And they
@@ -1004,10 +1007,12 @@ refuses the third:
   coin-flip.
 
 **So the exposure is accepted, and bounded by what depends on it.** A
-misclassification here costs one adjacent bucket's counter-strategy rather than
-a fired exploit: the flags, which are what actually reach for money against a
-specific leak, carry the margin discipline of the next subsection and their own
-higher gates. Three consequences a coding task must keep:
+misclassification here costs one adjacent bucket's counter-strategy — which is
+the thing that does reach play — rather than a fired flag: the flags name a
+specific leak rather than act on one, being report-only diagnostics until Tier 2
+as the next subsection sets out, and they carry that subsection's margin
+discipline and their own higher gates besides. Three consequences a coding task
+must keep:
 
 - The `0.02` dead-band controls *flapping between hands*, not sampling error,
   and must never be described or tuned as though it controlled the latter.
@@ -1023,6 +1028,29 @@ higher gates. Three consequences a coding task must keep:
 money is often in one specific leak. Flags are independent booleans, each with
 its own confidence gate. A flag fires only when *both* the confidence threshold
 and the magnitude threshold are met.
+
+**What a fired flag does, stated plainly: it is a report, not a change of play,
+until Tier 2.** Nothing in this design reads a flag to alter what the bot does at
+the table. `classify.py` emits flags beside the bucket
+([§4.1](#41-architecture-and-module-boundaries)) and `report.py` prints them, but
+`select.py` — the only module that reaches the engine — takes buckets and table
+context, and [§4.5](#45-tiers-what-to-build-in-what-order)'s load rule reads
+bucket labels alone. **Through Tier 0 and Tier 1 the flags are therefore
+report-only diagnostics**: they tell a person reading a profile which specific
+leak an opponent has, they give the per-flag accounting in
+[§5.2](#52-mitigations-each-traceable-to-a-source) and
+[§5.3](#53-the-one-risk-the-literature-does-not-cover) something to attribute
+profit to, and that is the whole of their effect.
+[§4.6](#46-what-each-bucket-means-in-plain-strategic-terms)'s flag table is, by
+its own statement, a description of what the engine's output is expected to look
+like and not an instruction to any module. **Tier 2** is the first tier at which
+the engine receives a per-opponent model at all, so it is the earliest point at
+which the rates underlying a flag reach play. Even there no flag-specific
+consumer is specified: Tier 2 consumes per-public-history action frequencies,
+not flags. Feeding a flag into play any earlier is a mechanism this document
+does not contain, and the reconciliation that added it would have to name that
+mechanism and place it on the engine's side of the `CLAUDE.md` table, under
+"Choosing an action".
 
 | Flag | Condition | Confidence gate |
 | --- | --- | --- |
@@ -1260,6 +1288,11 @@ settles it, and it must be answered for one run *and* for 32 against that cap.
 section does not pre-empt it.** `ENGINE_ALTERNATIVES.md` is under review and
 recommends computing decisions at play time instead of solving strategies
 offline at all; its numbers are its own and are deliberately not restated here.
+**That document has not landed: it is not on `main` and not in this
+repository's trunk.** It exists only on the branch `worker/7f09949cb56f`, and a
+reader who cannot find the file beside this one should look there. What this
+subsection is conditional on is the pending decision, which stands whether or
+not the file has landed; no figure or claim here is drawn from its text.
 If that recommendation is accepted, the 32 runs below do not happen and Tier 1's
 "select among precomputed strategies" structure is what changes — not the stats,
 the shrinkage, the buckets or the flags, which are what
@@ -1315,9 +1348,10 @@ simply absent, [Table B](#table-b-the-multiway-problem)'s one-opponent column
 being the raw fold rate, so heads-up is the one seat count where a bluffing
 exploit is not discounted away. Second: "predominantly" degenerates, because with
 `n = 1` live opponent `⌈2n/3⌉ = 1` — the bot loads that opponent's
-counter-strategy once they are classified, and `S_BASE` while they are `UNKNOWN`.
-Everything else is unchanged: every stat, bucket and flag is keyed on one
-opponent already.
+counter-strategy once they have passed warm-up **and** are classified, and
+`S_BASE` while either gate is unmet, which between 50 and 199 stored hands means
+while warm-up is unmet even though they are no longer `UNKNOWN`. Everything else
+is unchanged: every stat, bucket and flag is keyed on one opponent already.
 
 The archetypes are defined as
 *action-frequency perturbations of the blueprint*, in exactly DBBR's sense: take
@@ -1327,7 +1361,7 @@ profile.
 
 | Strategy | Trained against | The bot loads it when… |
 | --- | --- | --- |
-| `S_BASE` | self-play (the blueprint) | any opponent is `UNKNOWN`, or the table is mixed |
+| `S_BASE` | self-play (the blueprint) | any opponent has not passed warm-up or is `UNKNOWN`, or the table is mixed |
 | `S_VS_STATION` | archetype with calls up-weighted, folds and raises down-weighted | the live field is predominantly `STATION` |
 | `S_VS_MANIAC` | archetype with raises up-weighted | the live field is predominantly `MANIAC` |
 | `S_VS_ROCK` | archetype with folds up-weighted, VPIP down-weighted | the live field is predominantly `ROCK` |
@@ -1342,10 +1376,18 @@ strong opponents.
 **"Predominantly" must be defined, because it is a multiway table.** Selection
 is on the *live field*, not on one opponent, for the reason in
 [§2.4](#24-why-bluffing-is-the-wrong-primary-exploit-at-a-multiway-table). Rule:
-load a counter-strategy only if **every** live opponent is classified (none
-`UNKNOWN`) **and** at least `⌈2n/3⌉` of the `n` live opponents share the bucket.
-Otherwise `S_BASE`. The `⌈2n/3⌉` fraction is an **unmeasured design choice**
-encoding "a clear majority of the live field", to be tuned against
+load a counter-strategy only if **every** live opponent has passed warm-up
+(`hands_dealt` at or above `WARMUP_HANDS = 200`,
+[§5.2](#52-mitigations-each-traceable-to-a-source)) **and** **every** live
+opponent is classified (none `UNKNOWN`) **and** at least `⌈2n/3⌉` of the `n` live
+opponents share the bucket. Otherwise `S_BASE`. The warm-up conjunct is not
+implied by the classification one and has to be written out: `UNKNOWN` clears at
+`MIN_CLASSIFY_HANDS = 50` hands while warm-up clears at 200, so an opponent with
+between 50 and 199 stored hands is classified and still not warmed up, and it is
+the warm-up conjunct that refuses the counter-strategy there.
+[§5.2](#52-mitigations-each-traceable-to-a-source) says which of the two binds
+where. The `⌈2n/3⌉` fraction is an **unmeasured design choice** encoding "a clear
+majority of the live field", to be tuned against
 [V5](#6-validation-before-it-touches-a-real-table).
 
 **This is the one place on the live decision path where the live field is looked
@@ -1484,11 +1526,11 @@ has knowledge it does not have.
 
 | Mitigation | Grounding |
 | --- | --- |
-| **Confidence gate on every flag.** No exploit fires below its threshold | DBR: 1-Step confidence (act after one observation) overfits; 10-Step and 0-10 Linear do not ([Johanson & Bowling 2009](#s-johanson2009), §6) |
+| **Confidence gate on every flag.** No flag is set below its threshold, so nothing thin enough to be noise is ever reported as a leak — and until Tier 2 a set flag is a diagnostic rather than an exploit, per [§4.4](#44-bucketing-an-opponent) | DBR: 1-Step confidence (act after one observation) overfits; 10-Step and 0-10 Linear do not ([Johanson & Bowling 2009](#s-johanson2009), §6) |
 | **Warm-up period.** Play `S_BASE` against an opponent until `WARMUP_HANDS = 200` hands have been recorded of *that opponent* — per opponent and lifetime; see below the table | DBBR used `T = 1000` ([Ganzfried & Sandholm 2011](#s-ganzfried2011), §5), also per opponent. 200 is a deliberately shorter warm-up, not a point at which Table C says anything has converged; the arithmetic is below the table. A tuning parameter |
 | **Deviation cap.** A global `Pmax`-equivalent limiting how far any counter-strategy may sit from `S_BASE` | DBR's `Pmax` "allows us to set a tradeoff between" exploitation and exploitability |
 | **Exploit only where observed.** Where a stat has no observations, the bot must fall back to `S_BASE` for that decision, not to the prior-filled model | Directly from the DBBR river failure above |
-| **Win-rate switch.** Track realised bb/100 with exploitation on versus off, per bucket and per flag. Disable any exploit whose measured contribution is not positive over a meaningful sample | "only attempting to exploit the opponent if a win rate above some threshold is attained" (ibid., §5) |
+| **Win-rate switch.** Track realised bb/100 with exploitation on versus off, per bucket and per flag. Disable any exploit whose measured contribution is not positive over a meaningful sample. Through Tier 1 the only exploit there is to disable is a bucket's counter-strategy; the per-flag figure is a report until Tier 2 gives a flag something to switch off ([§4.4](#44-bucketing-an-opponent)) | "only attempting to exploit the opponent if a win rate above some threshold is attained" (ibid., §5) |
 | **Default to the blueprint.** Unknown opponent, mixed table, or any uncertainty: `S_BASE` | Pluribus beat elite humans with no opponent model at all ([Brown 2020](#s-brown2020), §6.6) |
 
 **What `WARMUP_HANDS` counts, and what 200 buys.** The count is the opponent's
@@ -1503,8 +1545,21 @@ already the mechanism for making old evidence count less. Per *table* it is not:
 `opponent_id` is the player name, not the seat or the table
 ([§7](#7-questions-for-the-operator), Q2).
 At a table this reads as `S_BASE` until every live opponent has passed its own
-warm-up, because [§4.5](#45-tiers-what-to-build-in-what-order) already refuses a
-counter-strategy while any live opponent is `UNKNOWN`.
+warm-up, and [§4.5](#45-tiers-what-to-build-in-what-order)'s load rule carries
+warm-up as a conjunct of its own for exactly that reason. **Warm-up and the
+classification gate are two gates, not one, and they clear at different
+points — 200 hands against 50 — so which one binds has to be stated rather than
+assumed.** `UNKNOWN` clears at `MIN_CLASSIFY_HANDS = 50` hands, and at that same
+50 the Tier A `confidence(vpip) ≥ 0.5` threshold is reached too, so the two
+halves of the `UNKNOWN` test clear together
+([§4.4](#44-bucketing-an-opponent)). Warm-up clears at 200. **Below 50 hands
+both gates refuse; from 50 to 199 they disagree and warm-up is the gate that
+binds**, because the opponent is classified by then and warm-up alone is what
+holds the bot on `S_BASE`; from 200 on, neither of the two holds it back. Warm-up
+is therefore the later gate throughout, and the one whose value decides when
+exploitation against a given opponent can start at all, for as long as it stays
+above `MIN_CLASSIFY_HANDS`. Tuning it moves the gate that actually binds, which
+is why it is not a formality.
 
 200 is **not** a convergence point from
 [Table C](#table-c-how-many-hands-each-stat-needs). Table C's ±5pp rows need 323
@@ -1525,9 +1580,13 @@ Required responses, all cheap:
 
 - **Decay** ([§4.3](#43-after-each-hand-the-update) step 2) so that stale
   observations lose weight.
-- **Per-exploit profit tracking.** If `OVERFOLDS_TO_3BET` stops earning against
-  a specific opponent, the flag must go stale and switch off for that opponent.
-  This is the counter-adaptation detector, and it costs one extra column.
+- **Per-exploit profit tracking.** Attribute realised profit to the
+  counter-strategy in play and to each flag set on that opponent. If
+  `OVERFOLDS_TO_3BET` stops earning against a specific opponent, that has to
+  show up — as a report while flags are report-only
+  ([§4.4](#44-bucketing-an-opponent)), and as the flag going stale and switching
+  off for that opponent once Tier 2 lets a flag reach play. This is the
+  counter-adaptation detector, and it costs one extra column.
 - **Never deviate maximally.** A capped deviation is much harder for a human to
   read than a total one.
 
@@ -1698,10 +1757,10 @@ Michael Bowling, "Data Biased Robust Counter Strategies", *AISTATS 2009*.
 The confidence-function family, `Pmax`, the overfitting result for single-
 observation confidence, and the finding that 0-10 Linear counter-strategies work
 across data quantities from 100 to 1,000,000 observed games. The name `1-Curve`
-is the paper's, for one of the functions it tested; reading it as the s-Curve at
-`s` = 1 is this document's inference from that naming pattern, not a statement
-the paper makes, and a coding task that depends on the distinction should check
-the primary text.
+is the paper's, for one of the functions it tested; that it is the s-Curve at
+`s` = 1 is the paper's own statement rather than an inference here, §5.2 reading
+"The s-Curve function returns Pmax × (nI/(s + nI)) for any constant s; in this
+experiment, we used s = 1".
 
 <a id="s-johanson2007"></a>**[Johanson et al. 2007]** Michael Johanson, Martin
 Zinkevich and Michael Bowling, "Computing Robust Counter-Strategies",

@@ -928,7 +928,7 @@ class Checker:
         self.prose("section 4.5 majority rule", f"`{MAJORITY_RULE}` of the `n` live opponents")
         self.every_occurrence(
             "the majority rule wherever the document writes it",
-            r"(⌈\dn/\d⌉)",
+            r"(⌈\d+n/\d+⌉)",
             MAJORITY_RULE,
         )
         self.prose(
@@ -1555,8 +1555,35 @@ class Checker:
             "WARMUP_HANDS wherever §5.2 argues about it without naming it",
             r"what (\d+) buys|(\d+) is \*\*not\*\* a convergence point|"
             r"At (\d+) hands the same formula|the width (\d+) actually buys|"
-            r"§5\), also per opponent\. (\d+) is a deliberately shorter",
+            r"§5\), also per opponent\. (\d+) is a deliberately shorter|"
+            r"from (\d+) on, neither",
             str(WARMUP_HANDS),
+        )
+        self.every_occurrence(
+            "MIN_CLASSIFY_HANDS wherever §5.2 argues about it without naming it",
+            r"Below (\d+) hands\s+both gates refuse|at that same\s+(\d+) the Tier A",
+            str(MIN_CLASSIFY_HANDS),
+        )
+        # The two gates clear at different hand counts, and §4.5 and §5.2 both
+        # state where each one binds. Those boundaries are MIN_CLASSIFY_HANDS and
+        # WARMUP_HANDS read off against each other, so they are derived figures
+        # and every copy of them has to move when either constant moves.
+        self.every_occurrence(
+            "the hand span over which the two gates disagree, wherever it is stated",
+            r"between (\d+) and (\d+) stored hands|from (\d+) to (\d+) they disagree",
+            str(MIN_CLASSIFY_HANDS),
+            str(WARMUP_HANDS - 1),
+        )
+        self.every_occurrence(
+            "the hand count warm-up clears at, wherever the prose states it bare",
+            r"[Ww]arm-up clears at (\d+)",
+            str(WARMUP_HANDS),
+        )
+        self.every_occurrence(
+            "the two gates' clearing points where §5.2 sets them side by side",
+            r"clear at different\s+points — (\d+) hands against (\d+)",
+            str(WARMUP_HANDS),
+            str(MIN_CLASSIFY_HANDS),
         )
         self.every_occurrence(
             "the Table C anchors §5.2 reads the warm-up widths at",
@@ -1789,6 +1816,12 @@ def spell(n: int) -> str:
 
 
 def main(argv: list[str]) -> int:
+    # A failing figure named with a character the console cannot encode
+    # (the ceiling brackets in the majority rule, on a cp1252 Windows
+    # console) must print as a replacement character, not crash the run.
+    for stream in (sys.stdout, sys.stderr):
+        if hasattr(stream, "reconfigure"):
+            stream.reconfigure(encoding="utf-8", errors="replace")
     path = Path(argv[1]) if len(argv) > 1 else DEFAULT_DOC
     if not path.exists():
         print(f"design document not found: {path}", file=sys.stderr)
