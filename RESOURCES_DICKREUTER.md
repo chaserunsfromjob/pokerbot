@@ -107,30 +107,35 @@ not worded the same way there and here**, and where the wording differs the two
 columns must not simply be lined up. Each is flagged below.
 
 - **(a) 2 to 9 players** — does it produce decisions for 3+ player spots? Same
-  question, same words, as `RESOURCES_SOLVERS.md:165`.
+  question, same words, as `RESOURCES_SOLVERS.md:171`. It is also
+  `CLAUDE.md`'s first firm requirement: "Play every table size from 2 to 9
+  players; treat no size in that range as out of scope."
 - **(b) true no-limit sizing** — **redefined here, and not comparable.**
-  `RESOURCES_SOLVERS.md:166` asks "arbitrary bet sizes, not fixed-limit?",
+  `RESOURCES_SOLVERS.md:172` asks "arbitrary bet sizes, not fixed-limit?",
   which a tool passes as soon as it is not playing the fixed-stake form of the
   game: a per-street *menu* of sizes scores 3 there
-  (`RESOURCES_SOLVERS.md:528`, TexasSolverLib, "(b) 3 (per-street sizing menus,
+  (`RESOURCES_SOLVERS.md:534`, TexasSolverLib, "(b) 3 (per-street sizing menus,
   inherited)"). This document asks the harder question — arbitrary bet sizes,
   **not a fixed menu** — because what is being judged here is a bot that has to
-  name a real amount at a real table. On the solvers wording dickreuter would
+  name a real amount at a real table, and because `CLAUDE.md`'s second firm
+  requirement forbids exactly a menu: "allow any legal bet size, from a minimum
+  raise to all-in, and never restrict the bot to a fixed ladder of raise
+  amounts." On the solvers wording dickreuter would
   score **3**; on the wording used here it scores **1** (§4). **Do not read the
   two (b) columns against each other.**
 - **(c) exploit specific opponents** — can it be biased by an opponent model, or
-  does it play the same way against everyone? `RESOURCES_SOLVERS.md:167-168`
+  does it play the same way against everyone? `RESOURCES_SOLVERS.md:173-174`
   words it as node-locking, profiles or player types versus equilibrium only.
   Same question.
 - **(d) reachable in hours on one laptop** — **reworded.**
-  `RESOURCES_SOLVERS.md:169-170` says "no multi-day compute, runs on macOS or
+  `RESOURCES_SOLVERS.md:175-176` says "no multi-day compute, runs on macOS or
   callable from a Mac". This one says no multi-day compute and runs *here*, on
   this Windows PC, because dickreuter is a Windows program. The Mac half of the
   solvers' question is not dropped — it is argued in §4(d) and counted against
   it there — but the two (d) columns are measured on different machines.
 - **(e) licence or price acceptable** — for a project published under the GNU
   General Public License version 3, written **GPL-3.0**. Same question as
-  `RESOURCES_SOLVERS.md:171-181`, which already asks it in exactly those terms
+  `RESOURCES_SOLVERS.md:177-187`, which already asks it in exactly those terms
   ("fits a public GPL-3.0 project"): can code derived from this be lawfully
   published under GPL-3.0, and is the price acceptable.
 
@@ -173,8 +178,8 @@ Tesseract, the standard open-source text-from-pictures program, via `tesserocr`
 (`poker/tools/screen_operations.py:11,106,291`). The repository ships 15 MB of
 Tesseract language data in `tessdata/`.
 
-**What it hands over.** After a successful read (`poker/main.py:171-200` runs
-twenty-odd steps in a row and stops at the first failure), the table object
+**What it hands over.** After a successful read (`poker/main.py:172-199` runs
+twenty-eight steps in a row and stops at the first failure), the table object
 holds: your two cards; the cards in the middle; the stage (PreFlop / Flop /
 Turn / River); how many seats; for each other player their seat, whether they
 are still in the hand, their money and the chips they have pushed in; where the
@@ -299,9 +304,11 @@ An independent 2,000,000-deal count with `treys` — the outside hand-ranking
 library this project already uses to check its tests — gave win 0.6623, split
 0.0165, lose 0.3212: **0.6705** when splits are halved and **0.6788** when
 every split is counted as a whole win. dickreuter's answer is **above both** —
-about nine standard errors above the halved figure and about six above the
-generous one. "It counts split pots as wins" is true, but it is not the whole
-story: even the most forgiving honest count comes out below what it reports.
+about twenty-five standard errors above the halved figure and about six above
+the generous one. (The two counts' standard errors combine to 0.00045, against
+gaps of 0.0112 and 0.0029.) "It counts split pots as wins" is true, but it is
+not the whole story: even the most forgiving honest count comes out below what
+it reports.
 
 *First defect: ties are awarded to you.* `eval_best_hand` sorts the hands by
 score and takes the first, and Python's sort is stable, so equal hands keep the
@@ -313,14 +320,14 @@ answer by about 0.0083 — most, but not all, of the 0.0112 gap to the halved
 figure.
 
 *Second defect: the second card dealt is not the card that was checked.*
-`distribute_cards_to_players` (`montecarlo_python.py:210-224`) picks two
+`distribute_cards_to_players` (`montecarlo_python.py:211-225`) picks two
 positions in the deck, checks that the **cards standing at those two
 positions** are inside the opponent's assumed range, and then deals with
-`deck.pop(random_card1)` followed by `deck.pop(random_card2)` — the second one
-taken from the **already shortened** deck. Two things follow. Whenever the
-second position is past the first, the card actually dealt is the one that
-stood *after* the card that was checked, so the range filter vetted one hand
-and a different hand was dealt. And the card sitting immediately after the
+`deck.pop(random_card1)` (line 224) followed by `deck.pop(random_card2)`
+(line 225) — the second one taken from the **already shortened** deck. Two
+things follow. Whenever the second position is past the first, the card
+actually dealt is the one that stood *after* the card that was checked, so the
+range filter vetted one hand and a different hand was dealt. And the card sitting immediately after the
 first card can never be dealt second at all — `create_card_deck` lays the deck
 out rank by rank, four suits at a time (`"23456789TJQKA"` crossed with
 `"CDHS"`, lines 160-165), so the card that goes missing is almost always the
@@ -341,8 +348,11 @@ opponent's seat. That is a hand-written range assumption, not a measured one.
 
 **And it caps how many opponents it simulates.**
 `montecarlo_python.py:346-347`: `max_assumed_players = t.total_players - 2`,
-then `assumedPlayers` is clamped between 2 and that. On a 6-seat table it never
-simulates more than 4 players, whoever is actually in the hand. No comment
+then `t.assumedPlayers = min(max(t.assumedPlayers, 2), max_assumed_players)`.
+On a 6-seat table it never simulates more than 4 players, whoever is actually in
+the hand. The ceiling is applied last, so it wins whenever it is the lower of
+the two, and the floor of 2 is not a floor at all below four seats — which is
+what makes the two- and three-seat cases in §1.7 come out at 0 and 1. No comment
 explains why.
 
 ### 1.4 The "genetic algorithm"
@@ -468,7 +478,7 @@ players"** (`readme.rst:291`).
 order after it. Whatever is picked goes straight into the table's `max_players`
 value (`poker/scraper/table_setup_actions_and_signals.py:210-219`), and the
 scraper reads that value back, falling back to 6 only when the key is missing
-(`poker/scraper/table_scraper.py:19`).
+(`poker/scraper/table_scraper.py:18`).
 
 So the six-player limit is not a limit of the window. It rests on three other
 things:
@@ -482,10 +492,16 @@ things:
   `max_players` above 6 inside its own definition is **UNVERIFIED**: checking
   would mean downloading all 78, at roughly half a megabyte each.
 - **The equity simulation caps itself below the table size.**
-  `max_assumed_players = t.total_players - 2`
+  `max_assumed_players = t.total_players - 2`, then
+  `min(max(assumedPlayers, 2), max_assumed_players)`
   (`montecarlo_python.py:346-347`), so a nine-seat table would be simulated as
-  at most seven players however many are actually in the hand — and a
-  two-seat table hits the floor of 2 from the other side.
+  at most seven players however many are actually in the hand. The floor of 2
+  never binds below four seats, because the ceiling is applied last and is
+  lower: at three seats the clamp gives **1**, and at two seats it gives
+  **0**. Before the flop `run_montecarlo_wrapper` has already set
+  `assumedPlayers = 2` (line 315), so a heads-up table is handed a player count
+  of zero, no hand is assembled to rank, and the call raises `IndexError`
+  rather than returning an equity at all (reproduced, Appendix B item 9).
 
 Nine seats can therefore be *set up*, and nothing in the screen reading stops
 at six. What is missing at nine is a template anyone has built, any claim from
@@ -771,13 +787,18 @@ rather than on a Mac. See "How it is rated".
   equity simulation silently caps itself at `total_players - 2`, so a nine-seat
   table would never be simulated with more than seven players in it even if
   somebody built the template. Multiway in principle and selectable up to nine;
-  six-handed in every template anyone has published.
+  six-handed in every template anyone has published. `CLAUDE.md`'s first firm
+  requirement treats no size from 2 to 9 as out of scope: dickreuter's setup
+  window offers all eight of those sizes, and its published templates cover
+  one.
 - **(b) true no-limit sizing — 1 on this document's stricter wording, and 3 on
   `RESOURCES_SOLVERS.md`'s looser one; see "How it is rated" above, and do not
   line the two up.** A menu of five: the table's minimum bet; that minimum bet
   multiplied by `BetPlusInc` with the minimum added back on; half the pot; the
   whole pot; and a bluff of half the pot. One of the five carries a setting,
-  which is why this is 1 here and not 0.
+  which is why this is 1 here and not 0. A menu of five is "a fixed ladder of
+  raise amounts", which `CLAUDE.md`'s second firm requirement forbids by name,
+  so the stricter wording is the one that decides anything here.
 - **(c) exploit specific opponents — 0.** No per-person memory of any kind; the
   only branch that would have used one calls a function that does not exist, and
   name reading is commented out. Not partly, not weakly — zero.
@@ -798,7 +819,7 @@ rather than on a Mac. See "How it is rated".
 
 For comparison from `RESOURCES_SOLVERS.md`: OpenSpiel-style entries score (a) 2
 to 3 and (b) 3; GTOpen scores **(a) 2 — (b) 3 — (c) 3 — (d) 3 — (e) 1**
-(`RESOURCES_SOLVERS.md:446-448`; its (e) is 1, not 3, because GTOpen carries no
+(`RESOURCES_SOLVERS.md:452-454`; its (e) is 1, not 3, because GTOpen carries no
 licence at all, so none of it may be copied into a published project). Two
 cautions on reading that row beside this one: those (b) 3s answer the solvers
 file's looser question about sizing and dickreuter's (b) 1 answers the stricter
@@ -809,81 +830,114 @@ of *eyes*, nothing else in any of the four surveys competes.
 
 ---
 
-## 5. The forefront rule: which parts sit on which side
+## 5. What `CLAUDE.md` allows: which parts sit on which side
 
-`CLAUDE.md` says: *"Never let an AI model decide a poker action, evaluate a
-hand, or read a board; call real engine code for that,"* and *"Only use
-AI-written code for integration, tooling, table-state capture (screen to
-structured data), and card combinatorics, never for poker judgment itself,"* and
-*"Reject a change that adds hand-rolled hand-strength or decision logic in place
-of the vendored engine; adapt the engine instead."* Its table has a left column
-(allowed) and a right column (reserved to the engine).
+`CLAUDE.md` is the authority for what may be taken from another project and what
+may not. Three of its sections reach dickreuter, and the words that decide the
+answer are quoted here **verbatim**, so that this section can be checked against
+the authority by inspection rather than trusted.
+
+**The firm requirements.** All three, because all three bear. These are
+requirements of the finished bot, not rules about who writes its code:
+
+> Play every table size from 2 to 9 players; treat no size in that range as out of scope.
+
+> Play true no-limit hold'em: allow any legal bet size, from a minimum raise to all-in, and never restrict the bot to a fixed ladder of raise amounts.
+
+> Play exploitatively against the named player in each seat, keyed to that player's measured tendencies, rather than settling for unexploitable play alone.
+
+**"What may be coded"** — four of its five bullets reach this question:
+
+> Let an AI assistant write the poker code: the code that picks an action, assigns a range to an opponent, reads the board, and combines opponent rates.
+
+> Write decision code as ordinary, testable code: the same inputs and seed give the same answer, tests cover it, and a reviewer can read it line by line.
+
+> Write card-combinatorics bookkeeping ourselves - the 169 preflop hand classes, suit isomorphisms, deck enumeration - and leave ranking or valuing a hand to the engine.
+
+> Derive any opponent archetype fed to the solver from measured action frequencies alone; never hand-write one, and never let it reference hole cards, board cards, or hand strength.
+
+**"What may not be coded"** — two of its five reach it:
+
+> Take the game rules and hand evaluation from the engine road, OpenSpiel `universal_poker`, rather than hand-rolling them; reject a change that hand-rolls hand-strength logic in place of the vendored engine, and adapt the engine instead.
+
+> Ground-truth hand ranking against a named external evaluator (currently `treys`), the reference for standard 52-card ranking, and keep it out of the bot's decision path; it validates tests only, never runtime play.
+
+The other three "may not" bullets are about language models: no model call in
+the live decision path, no poker decision whose content comes from stored
+language-model output, and none of the failure modes named in
+`LLM_POKER_FAILURE_MODES.md`. **Nothing in dickreuter puts a language model
+anywhere.** Its decisions come out of if-statements, a fitted curve and a
+spreadsheet a person filled in by hand; its one neural network reads card faces
+and never poker judgment (§1.1). Those three bullets are not engaged here
+either way.
 
 **One thing has to be said first, because it decides everything after it.**
 
-The two opening bullets say different things and have to be read apart. The
-**first** — *"Never let an AI model decide a poker action, evaluate a hand, or
-read a board; call real engine code for that"* — is about what happens *while
-the bot is playing*: no AI model may be in the loop at the table, deciding in
-the moment. It is not about who typed the source. Nothing in dickreuter puts an
-AI model in that loop; its decisions come out of if-statements and a
-spreadsheet. That bullet is not engaged here either way. The **second** —
-*"Only use AI-written code for integration, tooling, table-state capture (screen
-to structured data), and card combinatorics, never for poker judgment itself"* —
-is the one about **who wrote the code**, and Nicolas Dickreuter is a person, not
-an AI model.
+The rule asks what the code *does*, not who typed it. Picking an action,
+assigning a range to an opponent, reading the board and combining opponent rates
+are all named, in as many words, as things that **may** be coded. So there is no
+question to settle about Nicolas Dickreuter being a person rather than a model,
+and nothing in the rule bars a third party's decision code as such. What the
+rule reserves is narrow and specific: **the game rules and hand evaluation come
+from the engine, and ranking or valuing a hand is left to the engine.** That one
+line decides most of the sorting below. What stops the rest of dickreuter's
+brain is not the forefront rule at all — it is the firm requirements, which say
+what the finished bot must do rather than what may be written.
 
-So a reading is available: the second bullet restricts AI-written code,
-dickreuter's code is human-written, and therefore that bullet does not by itself
-forbid taking his decision maker. **I am not treating that reading as settled,
-and it should not be adopted unless the operator says so.** It is a narrowing of
-the rule, and it does not narrow it only for dickreuter: it would let **any**
-human-written third-party project past the second bullet, which is a much wider
-door than one assessment should open on its own. That is a question for the
-operator: *does "AI-written code" in the second bullet mean only code this
-project's assistants write, or does it stand for hand-rolled code from any
-source?*
+Two judgments below are the operator's and not mine, and both are marked where
+they fall:
 
-Two things hold whichever way that is answered. The **third** bullet does not
-mention who wrote anything: it rejects **hand-rolled hand-strength or decision
-logic in place of the vendored engine**, full stop. And the table's right column
-reserves those jobs "to the engine" without asking whose hand wrote the
-alternative. So the question that actually decides the sorting below is not "is
-this AI-written" but **"does this count as engine code?"** — and that, like the
-narrowing above, is the operator's to settle and not mine.
+1. whether counting outs is *reading the board*, which may be coded, or a
+   statement about hand strength, which is left to the engine;
+2. whether a hand-written, seat-keyed slice of the 169 starting hands is an
+   *opponent archetype fed to the solver*, which the fourth permitted bullet
+   says may never be hand-written and may never reference hand strength.
+
+This document settles neither, and nothing it recommends depends on either.
 
 Sorting the files:
 
-### Left column — allowed to us, no exception needed
+### Permitted column — what the rule leaves open to us
 
-| Part of dickreuter | Which allowed job |
+| Part of dickreuter | Why the rule leaves it open |
 | --- | --- |
-| `poker/scraper/table_scraper.py`, `table_screen_based.py` | table-state capture: screen to structured data |
+| `poker/scraper/table_scraper.py`, `table_screen_based.py` | reading a screen is not a poker decision, and `CLAUDE.md` already names `dickreuter/Poker` "the reference for table-state capture" |
 | `poker/scraper/table_scraper_nn.py` (the trained card reader) | same; it reads *which card*, never *how good* |
 | `poker/tools/screen_operations.py` (picture matching, number reading) | same |
-| `poker/scraper/table_setup_actions_and_signals.py` + the setup window | tooling |
-| `poker/tools/mouse_mover.py`, `poker/pymouse/`, `poker/tools/vbox_manager.py` | integration |
-| `poker/gui/`, `poker/tools/logger.py`, `poker/tools/helper.py` | tooling |
-| `poker/tools/game_logger.py` — **the shape of the record, not the code.** It keeps no local store of any kind; every method posts to the author's server, and it uploads every hand played (§1.6). What is worth taking is the list of fields it records, not the file | counting observed actions (our own) |
-| `MonteCarlo.create_card_deck`, `get_two_short_notation` | card combinatorics — deck enumeration, hand-class naming, both named as ours to write |
+| `poker/scraper/table_setup_actions_and_signals.py` + the setup window | tooling around the capture layer; no poker decision inside it |
+| `poker/tools/mouse_mover.py`, `poker/pymouse/`, `poker/tools/vbox_manager.py` | carrying out an action already chosen; no poker decision inside it |
+| `poker/gui/`, `poker/tools/logger.py`, `poker/tools/helper.py` | same |
+| `poker/tools/game_logger.py` — **the shape of the record, not the code.** It keeps no local store of any kind; every method posts to the author's server, and it uploads every hand played (§1.6). What is worth taking is the list of fields it records, not the file | a record of this shape is what an **observed population** is built out of, and combining rates across it is named as ours to code |
+| `MonteCarlo.create_card_deck`, `get_two_short_notation` | deck enumeration and hand-class naming: "card-combinatorics bookkeeping", which the rule puts on our side of the line and not the engine's |
 
-### Right column — reserved to the engine
+### Closed column — what the rule, or a firm requirement, shuts out
 
-| Part of dickreuter | Which reserved job |
+| Part of dickreuter | What shuts it out |
 | --- | --- |
-| `montecarlo_python.calc_score` / `eval_best_hand` (lines 52-159) | **Evaluating hand strength** — a hand-rolled 7-card ranker |
-| `montecarlo_python.run_montecarlo` (the equity number) | **Evaluating hand strength** — it exists only to say how good your hand is, and it is built on the ranker above |
-| `MonteCarlo.get_opponent_allowed_cards_list` + `preflop_equity.json` + `range_utg0..5` | **Assigning a range to an opponent** |
-| `poker/decisionmaker/outs_calculator.py` (328 lines of flush draws, open-ended straights, gutshots) | **Reading board texture** |
-| `decisionmaker.calling`, `betting`, `bluff`, `check_deception`, `bully`, `admin`, `make_decision` | **Choosing an action** |
-| `decisionmaker.preflop_table_analyser` + `preflop.xlsx` | **Producing the strategy itself** |
-| `poker/decisionmaker/curvefitting.py` | part of choosing an action — it converts a chance of winning into an amount of money |
-| `poker/decisionmaker/genetic_algorithm.py` | **Producing the strategy itself** |
-| `decisionmaker.py:247-268` (the dead player-profile branch) | **Combining live-field rates into a quantity that drives a poker decision** — it would turn one opponent's flop frequency directly into a curvature change. Dead, but it is the shape the rule names |
+| `montecarlo_python.calc_score` / `eval_best_hand` (lines 52-159) | a hand-rolled 7-card ranker — exactly the "hand-strength logic in place of the vendored engine" the rule says to reject |
+| `montecarlo_python.run_montecarlo` (the equity number) | it exists only to say how good your hand is, and it is built on that ranker; "ranking or valuing a hand" is left to the engine |
+| `MonteCarlo.get_opponent_allowed_cards_list` + `preflop_equity.json` + `range_utg0..5` | **assigning a range is permitted; this range is not.** It is hand-written, keyed to seat, and sorted by hand strength, so a bot using it is not "keyed to that player's measured tendencies". Whether the archetype bullet reaches it as well is judgment 2 above |
+| `decisionmaker.calling`, `betting`, `bluff`, `check_deception`, `bully`, `make_decision` | **picking an action is permitted; picking it this way is not.** Every threshold in them is compared against the equity number above, so all of them inherit the hand-rolled ranker |
+| `decisionmaker.admin` (557-573) | its five-size bet menu is a "fixed ladder of raise amounts", which the second firm requirement forbids in those words |
+| `decisionmaker.preflop_table_analyser` + `preflop.xlsx` | one sheet for everybody: it plays the same way against every opponent, which is what the third firm requirement rules out. (The ban on decision content taken from stored model output does *not* reach it — a person made the sheet) |
+| `poker/decisionmaker/curvefitting.py` | it converts a chance of winning into an amount of money, so it inherits the ranker at one end and feeds the bet ladder at the other |
+| `poker/decisionmaker/genetic_algorithm.py` | it tunes the thresholds of everything above, so it inherits all of it, and what it tunes is not keyed to any named opponent |
+| `decisionmaker.py:247-268` (the dead player-profile branch) | it would turn one opponent's flop frequency straight into a change in a hand-strength curve. Dead, but it is the shape the archetype bullet names |
 
-The split is clean and it falls exactly along the seam between the two halves of
-the program. **Its eyes are entirely in the left column. Its brain is entirely
-in the right column.** That is the whole finding in one line.
+### On the line — the one file the rule points at twice
+
+`poker/decisionmaker/outs_calculator.py`, 328 lines of flush draws, open-ended
+straights and gutshots. Counting the cards that would improve a hand is
+**reading the board**, which "What may be coded" names outright; it is also a
+statement about how good a hand is, which is "left to the engine". That is
+judgment 1 above. Nothing else here waits on it: the file is not wired into the
+ranker, so it can be settled on its own, later.
+
+The seam still falls where the program itself is jointed. **Its eyes are
+entirely in the permitted column. Its brain is entirely in the closed one** —
+but not for a single reason. Half of the brain is shut out by the engine bullet,
+and half by the firm requirements, which no reading of the forefront rule
+reaches.
 
 ### What "based on dickreuter" could legitimately mean
 
@@ -894,7 +948,9 @@ table reading. Nothing else.
 finished and tested, with its own tests passing on this PC today (§3). A way in
 to three named poker rooms and a documented way to teach a fourth.
 *Gives up:* nothing.
-*Permitted as written?* **Yes.** The rule names table-state capture explicitly.
+*Permitted as written?* **Yes.** Nothing in "What may not be coded" reaches a
+screen reader, and `CLAUDE.md` already names `dickreuter/Poker` as the reference
+for table-state capture.
 *Cost to be honest about:* the table templates are on somebody else's server and
 must be pulled down and stored locally before anything is built on them; and
 `poker/tools/screen_operations.py` imports VirtualBox automation at the top of
@@ -910,11 +966,18 @@ pair about a quarter less often than it should be; between them those two put
 its answer above even the most generous honest count (all measured, §1.3). Its
 opponent ranges are hand-written assumptions, and its own test of the
 simulation has been broken since a rename.
-*Permitted as written?* **No.** Evaluating hand strength and assigning a range
-to an opponent are both in the right column, so it would need the operator's
-carve-out. Replacing the ranker would answer the rule — swapping `calc_score`
-for a real external evaluator is a small, contained change that puts the loop
-back on the right side of the line while keeping the useful shell — but it
+*Permitted as written?* **No.** `calc_score` / `eval_best_hand` is hand-rolled
+hand-strength logic, and the rule says to take hand evaluation "from the engine
+road, OpenSpiel `universal_poker`, rather than hand-rolling them" and to reject
+a change that hand-rolls it "in place of the vendored engine". Assigning a range
+is *not* what stops it — that is named as ours to code — but the ranges it ships
+are hand-written and sorted by hand strength, so they would have to go as well
+for anything keyed to a named opponent's measured tendencies.
+Replacing the ranker would answer the rule, and the replacement has to be **the
+engine, not `treys`**: `treys` is named as the test-time ground truth and kept
+"out of the bot's decision path ... never runtime play". Swapping `calc_score`
+for a call into `universal_poker` is a small, contained change that puts the
+loop back on the right side of the line while keeping the useful shell — but it
 would **not** by itself make the number right. The dealing defect lives in
 `distribute_cards_to_players`, not in the ranker, and no change of evaluator
 touches it. Saying it plainly: **(ii) is one substitution away from being
@@ -929,11 +992,23 @@ modelling at all**, which is stage 2 of the plan and the operator's stated
 reason for the whole thing. Its own users say it plays predictably (issue #185).
 And the thresholds are tuned by a routine that is called a genetic algorithm and
 is not one.
-*Permitted as written?* **No, and not close.** It would need the operator to
-grant the standing exception in `CLAUDE.md` — *"Treat who chooses the action on
-top of the engine as open and the operator's to settle; the exception to this
-rule is not granted"* — and to widen it further, because this is not a chooser
-sitting on top of an engine; it is a chooser instead of one.
+*Permitted as written?* **No, and not close** — and what stops it is mostly not
+the forefront rule. Three separate things:
+1. Its equity number rests on the hand-rolled ranker, so everything said about
+   (ii) applies here too, inherited by every threshold in the file.
+2. Its bet sizes are a menu of five (§1.2). The second firm requirement forbids
+   that in its own words: "allow any legal bet size, from a minimum raise to
+   all-in, and never restrict the bot to a fixed ladder of raise amounts."
+3. It keeps no record of any opponent at all (§1.2), so the third firm
+   requirement — "Play exploitatively against the named player in each seat,
+   keyed to that player's measured tendencies" — is out of its reach entirely.
+   That requirement is the operator's stated reason for the project.
+
+The forefront rule does not forbid taking a third party's chooser as such:
+picking an action is coded work, whoever writes it. What (iii) runs into is what
+the bot itself is required to do, and that is not something an assessment can
+read its way around. Changing it would mean changing `CLAUDE.md`, which is the
+operator's alone.
 
 **(iv) Its architecture as a template, with OpenSpiel supplying the decisions.**
 Copy the *shape*: screen → one table-state structure → a decision → a mouse
@@ -946,7 +1021,9 @@ anything and abandon the read at the first failure; keep a memory of what you
 did last time round this betting round; move the mouse on a wobbly path; keep
 the poker client in a separate pretend computer.
 *Gives up:* nothing, except that the decision side still has to be built.
-*Permitted as written?* **Yes.** Architecture is not poker judgment.
+*Permitted as written?* **Yes.** How the parts are arranged is not a poker
+decision, and taking the decisions from OpenSpiel `universal_poker` is exactly
+what "What may not be coded" asks for.
 
 ---
 
@@ -997,8 +1074,9 @@ have to be bridged there, and they are the whole of the work:
    decision, and the per-hand round list it does keep comes from the author's
    server (`get_rounds`). **This project has to build the action history itself,
    by differencing consecutive screen reads.** It is the one piece of real new
-   work the join demands, and it belongs squarely in the left column: counting
-   observed actions.
+   work the join demands, and it belongs squarely in the permitted column:
+   counting the actions we observe, which is what an observed population is
+   built out of.
 2. **Money versus chips.** dickreuter reads dollars as floating-point numbers
    through a text scanner. OpenSpiel counts whole chips. Divide by the big blind
    and round, and decide once what a hundredth of a big blind does.
@@ -1023,8 +1101,8 @@ lawful in that direction, provided `poker/vboxapi/` is left behind (§2).
 | --- | --- | --- | --- |
 | **1** | **(iv)** Its architecture as the template, its capture layer as the eyes, OpenSpiel deciding | **Yes** | The finished hard part, plus a proven layout of the whole program |
 | 2 | **(i)** Its capture layer only | **Yes** | The finished hard part |
-| 3 | **(ii)** Capture plus its equity simulation | **No** — needs a carve-out, *or* one substitution to become yes | A week saved, at the cost of a number that is quietly wrong |
-| 4 | **(iii)** Capture plus its whole decision maker as "the engine" | **No** — needs a wide, explicit carve-out | A playing bot soon, and the end of the project's actual goal |
+| 3 | **(ii)** Capture plus its equity simulation | **No** — its ranker is hand-rolled hand strength, which the rule says to reject; one substitution, to the engine, turns that into yes | A week saved, at the cost of a number that is quietly wrong |
+| 4 | **(iii)** Capture plus its whole decision maker as "the engine" | **No** — it collides with two of the three firm requirements as well as the engine bullet, so it is a change to `CLAUDE.md`, not a reading of it | A playing bot soon, and the end of the project's actual goal |
 
 ### The recommendation
 
@@ -1068,18 +1146,22 @@ decision at all — is a subset of this recommendation.
 
 **The one thing to decide separately, and soon:** option (ii). If the operator
 wants a chance-of-winning number quickly, dickreuter's simulation is the
-fastest route. Replacing its hand-rolled card ranker with a real external
-evaluator would stop the loop breaking the rule: that is the **one
-substitution** that makes it allowed. Making the number *right* takes at least
-one further repair, because the way it deals the opponent's cards is broken
-too and no change of evaluator touches that (§1.3). One fix for the rule, two
+fastest route. Replacing its hand-rolled card ranker with a call into OpenSpiel
+`universal_poker` would stop the loop breaking the rule: that is the **one
+substitution** that makes it allowed. It has to be the engine and not `treys`,
+which `CLAUDE.md` keeps out of the bot's decision path and reserves for checking
+tests. Making the number *right* takes at least one further repair, because the
+way it deals the opponent's cards is broken too and no change of evaluator
+touches that (§1.3). One fix for the rule, two
 at the least for the arithmetic. It is still a smaller question than the four
 above and can be settled on its own.
 
-**Not recommended:** option (iii). It would need the operator to grant an
-exception `CLAUDE.md` explicitly says is not granted, and what it buys — a bot
-that plays predictably, at six seats, with five bet sizes, against everyone the
-same way — is not the bot that was asked for.
+**Not recommended:** option (iii). Two of `CLAUDE.md`'s three firm
+requirements would have to be struck out for it — the one that forbids "a fixed
+ladder of raise amounts" and the one that requires play "keyed to that player's
+measured tendencies" — and only the operator can strike those out. What it buys
+in exchange — a bot that plays predictably, at six seats, with five bet sizes,
+against everyone the same way — is not the bot that was asked for.
 
 ---
 
@@ -1322,3 +1404,40 @@ $ python.exe tools/check_design_numbers.py
 684 figures in OPPONENT_MODEL_DESIGN.md all match the constants they derive
 from.
 ```
+
+**9. The opponent-count clamp, re-checked.** 2026-09-17, on the Mac worktree
+rather than the PC, against the same clone at `cae3a108`. The clamp at
+`montecarlo_python.py:346-347` was evaluated for every table size, with the
+preflop `assumedPlayers = 2` of line 315:
+```
+total_players=2 max_assumed=0 clamped=0
+total_players=3 max_assumed=1 clamped=1
+total_players=4 max_assumed=2 clamped=2
+...
+total_players=9 max_assumed=7 clamped=2
+```
+The ceiling is applied last, so below four seats it is the ceiling and not the
+floor of 2 that decides. Calling dickreuter's own `run_montecarlo` with the
+player count that produces at two seats:
+```
+$ python3 -c "... m.run_montecarlo(..., player_amount=0, ...)"
+RAISED IndexError list index out of range
+```
+— `eval_best_hand` takes the first of an empty list of hands. The simulation
+was not modified; only `poker.tools.helper`, which needs `pandas`, was stubbed
+so the module would import on this machine.
+
+**10. This repository's own gate, on the merged branch.** After merging
+`origin/main` at `69286e6`, which is 145 commits past item 8's run and brings
+its own tests with it:
+```
+$ bash bin/gate.sh
+collected 340 tests
+339 passed, 1 skipped in 14.15s
+705 figures in OPPONENT_MODEL_DESIGN.md all match the constants they derive from.
+233 figures in TABLE_SIZE_AND_SIZING_NOTES.md all match the constants they derive from.
+234 checks on EVALUATION_STRATEGY.md all match the constants they derive from.
+gate: passed
+```
+Item 8's smaller counts are what the same commands returned before that merge;
+they are left as they were recorded.
