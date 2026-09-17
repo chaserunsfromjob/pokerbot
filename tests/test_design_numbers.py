@@ -70,6 +70,42 @@ def test_checker_reports_a_drifted_forefront_table(tmp_path):
     assert "verbatim" in result.stdout
 
 
+def test_checker_reports_a_drifted_warmup_span(tmp_path):
+    """The span the two gates disagree over is derived; drift must fail."""
+    text = DOCUMENT.read_text(encoding="utf-8")
+    broken = text.replace("from 50 to 199 they disagree", "from 50 to 198 they disagree", 1)
+    assert broken != text, "the warm-up span sentence this test edits has moved"
+    target = tmp_path / "OPPONENT_MODEL_DESIGN.md"
+    target.write_text(broken, encoding="utf-8")
+    result = run_checker(str(target))
+    assert result.returncode == 1
+    assert "the hand span over which the two gates disagree" in result.stdout
+
+
+def test_checker_reports_a_drifted_warmup_clearing_point(tmp_path):
+    """The bare hand count warm-up clears at is derived; drift must fail."""
+    text = DOCUMENT.read_text(encoding="utf-8")
+    broken = text.replace("warm-up clears at 200", "warm-up clears at 300", 1)
+    assert broken != text, "the warm-up clearing sentence this test edits has moved"
+    target = tmp_path / "OPPONENT_MODEL_DESIGN.md"
+    target.write_text(broken, encoding="utf-8")
+    result = run_checker(str(target))
+    assert result.returncode == 1
+    assert "the hand count warm-up clears at" in result.stdout
+
+
+def test_checker_reports_a_drifted_gate_comparison(tmp_path):
+    """The two gates stated side by side are derived; drift must fail."""
+    text = DOCUMENT.read_text(encoding="utf-8")
+    broken = text.replace("200 hands against 50", "300 hands against 50", 1)
+    assert broken != text, "the side-by-side gate sentence this test edits has moved"
+    target = tmp_path / "OPPONENT_MODEL_DESIGN.md"
+    target.write_text(broken, encoding="utf-8")
+    result = run_checker(str(target))
+    assert result.returncode == 1
+    assert "sets them side by side" in result.stdout
+
+
 def test_missing_document_is_reported():
     result = run_checker("no/such/document.md")
     assert result.returncode == 2

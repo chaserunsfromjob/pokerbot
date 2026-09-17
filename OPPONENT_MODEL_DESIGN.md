@@ -312,7 +312,7 @@ column is what drives that; see [Table C](#table-c-how-many-hands-each-stat-need
 | `pfr` | Preflop raise | Separates aggressive-loose from passive-loose |
 | `vpip_pfr_gap` | `vpip − pfr` | Passive callers show a wide gap; the derived "limps a lot" signal. It combines two rates, so — exactly like `AF` in [§4.2](#42-the-stat-table) — it is *reported* as a diagnostic **without ever being used as an input to a poker decision the bot acts on**; it is one opponent's own two rates, never a live-field combination |
 | `limp` | Called the big blind unraised, first in | Strongly recreational; Pluribus's self-play discarded limping as suboptimal for everyone but the small blind ([Brown 2020](#s-brown2020), §6.6) |
-| `open_raise` | PFR split five ways by seat bucket: `EP` / `MP` / `LP` / `SB` / `BB` | Position-blind opponents are the exploitable ones |
+| `open_raise` | Made the first raise preflop, first-in with no prior raiser; split five ways by seat bucket: `EP` / `MP` / `LP` / `SB` / `BB` | Position-blind opponents are the exploitable ones |
 
 **Tier B — a few opportunities per ten hands. Usable after a session or two.**
 
@@ -1043,12 +1043,14 @@ leak an opponent has, they give the per-flag accounting in
 profit to, and that is the whole of their effect.
 [§4.6](#46-what-each-bucket-means-in-plain-strategic-terms)'s flag table is, by
 its own statement, a description of what the engine's output is expected to look
-like and not an instruction to any module. The first tier at which a flag could
-reach play is **Tier 2**, where the per-opponent model is handed to the engine
-and the engine computes the response. Feeding a flag into play any
-earlier is a mechanism this document does not contain, and the reconciliation
-that added it would have to name that mechanism and place it on the engine's
-side of the `CLAUDE.md` table, under "Choosing an action".
+like and not an instruction to any module. **Tier 2** is the first tier at which
+the engine receives a per-opponent model at all, so it is the earliest point at
+which the rates underlying a flag reach play. Even there no flag-specific
+consumer is specified: Tier 2 consumes per-public-history action frequencies,
+not flags. Feeding a flag into play any earlier is a mechanism this document
+does not contain, and the reconciliation that added it would have to name that
+mechanism and place it on the engine's side of the `CLAUDE.md` table, under
+"Choosing an action".
 
 | Flag | Condition | Confidence gate |
 | --- | --- | --- |
@@ -1287,11 +1289,10 @@ section does not pre-empt it.** `ENGINE_ALTERNATIVES.md` is under review and
 recommends computing decisions at play time instead of solving strategies
 offline at all; its numbers are its own and are deliberately not restated here.
 **That document has not landed: it is not on `main` and not in this
-repository's trunk.** It exists only on the branch `worker/7f09949cb56f`, whose
-head is `6720c8a` locally and `52bd81d` on `origin`, and a reader who cannot
-find the file beside this one should look there. What this subsection is
-conditional on is the pending decision, which stands whether or not the file has
-landed; no figure or claim here is drawn from its text.
+repository's trunk.** It exists only on the branch `worker/7f09949cb56f`, and a
+reader who cannot find the file beside this one should look there. What this
+subsection is conditional on is the pending decision, which stands whether or
+not the file has landed; no figure or claim here is drawn from its text.
 If that recommendation is accepted, the 32 runs below do not happen and Tier 1's
 "select among precomputed strategies" structure is what changes — not the stats,
 the shrinkage, the buckets or the flags, which are what
@@ -1360,7 +1361,7 @@ profile.
 
 | Strategy | Trained against | The bot loads it when… |
 | --- | --- | --- |
-| `S_BASE` | self-play (the blueprint) | any opponent is `UNKNOWN`, or the table is mixed |
+| `S_BASE` | self-play (the blueprint) | any opponent has not passed warm-up or is `UNKNOWN`, or the table is mixed |
 | `S_VS_STATION` | archetype with calls up-weighted, folds and raises down-weighted | the live field is predominantly `STATION` |
 | `S_VS_MANIAC` | archetype with raises up-weighted | the live field is predominantly `MANIAC` |
 | `S_VS_ROCK` | archetype with folds up-weighted, VPIP down-weighted | the live field is predominantly `ROCK` |

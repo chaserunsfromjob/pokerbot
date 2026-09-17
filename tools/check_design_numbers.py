@@ -1558,6 +1558,27 @@ class Checker:
             r"§5\), also per opponent\. (\d+) is a deliberately shorter",
             str(WARMUP_HANDS),
         )
+        # The two gates clear at different hand counts, and §4.5 and §5.2 both
+        # state where each one binds. Those boundaries are MIN_CLASSIFY_HANDS and
+        # WARMUP_HANDS read off against each other, so they are derived figures
+        # and every copy of them has to move when either constant moves.
+        self.every_occurrence(
+            "the hand span over which the two gates disagree, wherever it is stated",
+            r"between (\d+) and (\d+) stored hands|from (\d+) to (\d+) they disagree",
+            str(MIN_CLASSIFY_HANDS),
+            str(WARMUP_HANDS - 1),
+        )
+        self.every_occurrence(
+            "the hand count warm-up clears at, wherever the prose states it bare",
+            r"[Ww]arm-up clears at (\d+)",
+            str(WARMUP_HANDS),
+        )
+        self.every_occurrence(
+            "the two gates' clearing points where §5.2 sets them side by side",
+            r"(\d+) hands against (\d+)",
+            str(WARMUP_HANDS),
+            str(MIN_CLASSIFY_HANDS),
+        )
         self.every_occurrence(
             "the Table C anchors §5.2 reads the warm-up widths at",
             r"its (\d\.\d+) anchor and ±[\d.]+pp on `pfr` at (\d\.\d+)",
