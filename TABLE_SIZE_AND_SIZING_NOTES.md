@@ -144,10 +144,10 @@ configurable poker one is the piece this project would use — OpenSpiel's
 `poker_ai` above and "the vendored `poker_ai`" in the questions at the end,
 stays a reference only; it is written `fedden/poker_ai` wherever its author has
 to be named, which is how a code-sharing site writes a project, author first and
-project second. Written the same way, `dickreuter/Poker` is a third program
-again, and it is the reference for reading the table, never for play. What stays
-open is who chooses the action on top of the engine — the carve-out from the
-forefront rule, which the operator has not granted. That decision is written into
+project second. Written the same way, `dickreuter/Poker` is a third program, and
+it is the reference for reading the table, never for play. What stays open is
+who chooses the action on top of the engine — the carve-out from the forefront
+rule, which the operator has not granted. The engine decision is written into
 `CLAUDE.md` on branch `worker/114e5b3f5b1b`, which has not been pushed and so
 exists only on the machine it was made on. The durable record of it is a dated,
 saved change in the separate `heater` repository where the operator's decisions
@@ -320,9 +320,10 @@ what it should be called.
 
 The same argument applies with different weights to every stat whose opportunity
 definition involves position — `pfr`, `limp`, `open_raise`, `three_bet`,
-`fold_to_steal` — and applies not at all to stats defined on a street-local
-situation, such as `fold_to_cbet` or the share of the hands a player took to a
-showdown that they won money in — **won at showdown**, written `wsd`.
+`fold_to_steal` — and applies not at all to stats whose opportunity is defined
+by a situation rather than by a seat, such as `fold_to_cbet`, or by an outcome
+of the whole hand, such as the share of the hands a player took to a showdown
+that they won money in — **won at showdown**, written `wsd`.
 [§3](#3-recommended-reconciliation-with-opponent_model_designmd)
 turns that split into a per-stat recommendation, because it is what keeps the
 fragmentation cost in [§1.6](#16-what-banding-costs) affordable.
@@ -368,10 +369,11 @@ position" at 6-max is a seat with three players behind and at 9-max is a seat
 with six. **The causally correct key is the number of players still to act behind
 the player preflop**, which is defined at every seat count, means the same thing
 at every seat count, and — by the `1/n` observation in
-[§1.2](#12-why-the-voluntarily-put-money-in-pot-rate-vpip-is-not-comparable-across-seat-counts) — takes each of its
-values exactly once per orbit. Keying on it lets position-dependent stats pool
-*across* seat counts legitimately instead of fragmenting, which is the cheapest
-available answer to [§1.6](#16-what-banding-costs).
+[§1.2](#12-why-the-voluntarily-put-money-in-pot-rate-vpip-is-not-comparable-across-seat-counts)
+— takes each of its values exactly once per orbit. Keying on it lets
+position-dependent stats pool *across* seat counts legitimately instead of
+fragmenting, which is the cheapest available answer to
+[§1.6](#16-what-banding-costs).
 
 **`fold_to_steal`'s opportunity is "in `SB` or `BB` facing a `LP` open with no
 other caller".** At `n = 3` every button open is by construction a late-position
@@ -389,9 +391,12 @@ three different things across the range the operator has now required.
 This one weakens a threshold `OPPONENT_MODEL_DESIGN.md` currently leans on, and
 is worth stating because it changes how much trust the bootstrap deserves.
 
-One of the two thresholds below turns on how hard a player pushes, measured as
-their bets and raises divided by their calls: `OPPONENT_MODEL_DESIGN.md` §4.2
-defines that ratio as the **aggression factor** and writes it `AF`.
+The threshold quoted below turns on how hard a player pushes, measured as their
+bets and raises divided by their calls — `OPPONENT_MODEL_DESIGN.md` §4.2 calls
+that ratio the **aggression factor** and writes it `AF`. The `AF > 1` in the
+quotation is that ratio; `AFQ_SPLIT` is the design's own aggression-frequency
+cut — bets or raises over *all* voluntary actions, folds included, not just
+calls — a different quantity that descends from it.
 `VPIP_SPLIT = 0.28` and `AFQ_SPLIT = 0.50` descend from the "folds ≥ 72% of hands
 is tight, AF > 1 is aggressive" thresholds that [Teofilo &
 Reis 2011](#s-teofilo2011) — which *was* retrieved and read — reports at its §3,
@@ -493,8 +498,10 @@ from logged hands.
 ### 1.7 Heads-up is a different game, and it inverts the design's founding argument
 
 `OPPONENT_MODEL_DESIGN.md` §1 justifies not chasing game-theory-optimal play by
-quoting [Brown 2020](#s-brown2020) §6.6: computing a Nash equilibrium is
-PPAD-complete for multiplayer games, and even a computed equilibrium carries no
+quoting [Brown 2020](#s-brown2020) §6.6: computing a Nash equilibrium for
+multiplayer games belongs to a class of problems for which no method that
+finishes in reasonable time is known or expected — **PPAD-complete** — and even
+a computed equilibrium carries no
 guarantee, because independently-computed equilibrium strategies need not form
 one jointly. That argument is explicitly about games with **more than two
 players**. At `n = 2` it does not apply: heads-up poker is two-player zero-sum,
@@ -744,7 +751,8 @@ directly.
 **One sizing result is derivable rather than cited, and is worth having.** If a
 bettor intends to get all-in by the river using the same pot fraction `f` on each
 of `k` remaining streets, then each bet-and-call multiplies the pot by `(1 + 2f)`,
-so `(1 + 2f)^k = 1 + 2·SPR`, where SPR is the stack-to-pot ratio.
+and, writing the stack-to-pot ratio — the stack behind divided by the pot —
+as `SPR`, getting all-in in `k` such bets means `(1 + 2f)^k = 1 + 2·SPR`.
 
 #### Table 6: pot fraction needed to reach all-in in `k` equal bets
 
@@ -889,8 +897,8 @@ Grounding, and the exact weight it carries:
 cross-band aggregate shift **bound** exceeds both the `0.28` split and the `0.15`
 margin six of the seven §4.4 flags use, so a shift that matters is admitted,
 though a bound does not show one occurs
-([§1.2](#12-why-the-voluntarily-put-money-in-pot-rate-vpip-is-not-comparable-across-seat-counts) names the
-Tier 0 measurement that would) — and
+([§1.2](#12-why-the-voluntarily-put-money-in-pot-rate-vpip-is-not-comparable-across-seat-counts)
+names the Tier 0 measurement that would) — and
 [§1.5](#15-the-published-thresholds-are-themselves-table-size-mixtures), where the
 literature threshold turns out to be a mixture over an unknown set of seat counts
 and so cannot serve as a per-band value for any band. Banding a **population**
@@ -1408,7 +1416,8 @@ strategy. Same use and same caveat as above.
 Malmuth, *Hold'em Poker for Advanced Players*. Full-ring starting requirements
 presented as a table indexed by position — the strategy-literature grounding for
 the position argument in
-[§1.2](#12-why-the-voluntarily-put-money-in-pot-rate-vpip-is-not-comparable-across-seat-counts). The *arithmetic* of
+[§1.2](#12-why-the-voluntarily-put-money-in-pot-rate-vpip-is-not-comparable-across-seat-counts).
+The *arithmetic* of
 [Tables 1–3](#table-1-what-seat-count-mechanically-fixes) is derived here and
 does not rest on this citation.
 
@@ -1421,9 +1430,10 @@ document keeps that exclusion and extends it**: the widely-circulated
 table-size-specific norms — "full ring VPIP is such-and-such, 6-max is
 such-and-such, heads-up is such-and-such" — are exactly the same kind of
 unverifiable folklore and **no such figure appears anywhere above**. That is why
-[§1.2](#12-why-the-voluntarily-put-money-in-pot-rate-vpip-is-not-comparable-across-seat-counts) argues from positional
-weights, which are derivable, rather than from norms, which are not, and why R2
-bands the bot's own measured baseline instead of hardcoding one per band.
+[§1.2](#12-why-the-voluntarily-put-money-in-pot-rate-vpip-is-not-comparable-across-seat-counts)
+argues from positional weights, which are derivable, rather than from norms,
+which are not, and why R2 bands the bot's own measured baseline instead of
+hardcoding one per band.
 
 ---
 
