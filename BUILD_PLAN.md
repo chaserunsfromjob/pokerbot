@@ -25,10 +25,12 @@ a pass.
 **Stage 2, the scoreboard, is done.** Its first full run is kept, in full, at
 `research/results/stage2_search_vs_personas.txt`. The verdict is ACCEPT against
 the version that simply calls every bet. Of the thirteen opponents, the bot
-finishes with more money than it started with against seven of them, and loses
-to two: the player who waits all night for a premium hand, and the tight,
-aggressive one of the two competent players. Against the remaining four the
-result is too close to call. The caveat the README states still stands: those
+beats seven of them and loses to two, counting a result only where its
+ninety-five percent range is clear of zero: the player who waits all night for
+a premium hand, and the tight, aggressive one of the two competent players.
+Against the remaining four the result is too close to call; one of those, the
+player with a bet-size tell, is behind at every seat count but inside the
+range. The caveat the README states still stands: those
 opponents are caricatures who put money in far more freely than people do, so
 the size of that win is a statement about them and not about the bot.
 
@@ -48,9 +50,11 @@ asked for on the screen-reading poker project; and a correction to the speed
 benchmark so it builds its table with the same forced bets the real table uses
 (pull request #23, merged 17 September 2026).
 
-**Not ours to move.** D1, your classmate Rohit's practice arena, is his move.
-The seventeen changes a reviewer asked for before it can be merged are listed on
-issue #4, and none of them has come back yet.
+**Waiting on your classmate, then on you.** D1, Rohit's practice arena, is
+his move first; the call is still yours once his branch is clean. Issue #4
+lists twenty-four required changes: the first seventeen are on the code and
+the rules, the other seven are result files and merge mechanics. None of them
+has come back yet.
 
 ## 1. In plain words: what the bot will be, and how we will know
 
@@ -193,8 +197,7 @@ priority, but game theory optimal play should be the baseline."*
 **Before the flop first, and the honest limit.** Play that truly cannot be
 beaten by anybody, at a table of six to nine people playing no-limit hold'em,
 cannot be worked out on this laptop, and not on any machine we could rent
-either: nobody
-has computed one and it is not close. Saying otherwise would be the one kind of
+either: nobody has computed one and it is not close. Saying otherwise would be the one kind of
 lie this plan cannot afford. What *is* reachable is a rough, sampled
 approximation. The program plays itself millions of times and, at every point,
 keeps a running tally of how much better off it would have been had it made each
@@ -221,12 +224,13 @@ person to justify it, which is Stage 5.
 **Checking the answer against a paid solver.** A handful of commercial websites
 have already solved a great many poker spots and will show you the answer to one
 if you type the spot in. You hold the top plan on one of them, GTO Wizard's NLH
-Cash Ultra, monthly; it is the only tier that carries nine-player solving before
+Cash Ultra, monthly; it is the top tier, the one that carries nine-player solving before
 the flop and three-player solving after it, and nine-player solving exists
-before the flop only (`RESOURCES_SOLVERS.md` entry 17). There is no way for a
-program to ask that site a question — no published way in, what a programmer
-calls an *API* — so a check is always a person typing a spot into a browser and
-reading the answer back. Your words, giving standing permission for that:
+before the flop only (`RESOURCES_SOLVERS.md` entry 17). There is no published way
+for a program to ask that site for a strategy: its one published interface,
+what a programmer calls an *API*, only lets a program play hands against the
+site's own AI, never read a strategy back. So a check is always a person typing
+a spot into a browser and reading the answer back. Your words, giving standing permission for that:
 *"take control of my computer, go into my browser and do so, you have free
 reign."* It stays a reference and never becomes a part of the bot: nothing is
 copied out of it into the bot's own tables, which `CLAUDE.md`'s forefront rule
