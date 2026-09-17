@@ -11,8 +11,8 @@ cover, both now firm requirements from the operator:
 solve budget — it states the 2-to-9 scope in §1 and the 32 solver runs it implies
 in §4.5 — but the rest of it, the stat definitions above all, still reads as
 though the seat count were fixed; and it says nothing at all about bet sizing as
-a source of information. **This document does not edit it.** It is mid-review on
-a separate task, so every cross-reference below is to one fixed revision of it:
+a source of information. **This document does not edit it.** It is on trunk and
+has moved on since, so every cross-reference below is to one fixed revision:
 `OPPONENT_MODEL_DESIGN.md` at commit `5aa40b8`, 2026-09-15. What this document
 does is work out what those two requirements change,
 and end with concrete recommended edits, each naming the exact section of that
@@ -135,8 +135,8 @@ them rests on. What it changes is each recommendation's stated dependency:
   recommendations are ready the day the move is made, not so that they can be
   started before it.
 
-**The engine road is now named, and this is the operator's recorded decision,
-not a fact about the repository.** On 2026-09-16 the operator decided to drop
+**The engine road is now named, and it is on this project's trunk branch, not
+only in the operator's records.** On 2026-09-16 the operator decided to drop
 the short-deck engine as the base. The road now runs through a published
 collection of ready-made implementations of many different games, of which the
 configurable poker one is the piece this project would use — OpenSpiel's
@@ -148,13 +148,12 @@ project second. Written the same way, `dickreuter/Poker` is a third program, and
 it is the reference for reading the table, never for play. What stays open is
 who chooses the action on top of the engine — the carve-out from the forefront
 rule, which the operator has not granted. The engine decision is written into
-`CLAUDE.md` on branch `worker/114e5b3f5b1b`, which has not been pushed and so
-exists only on the machine it was made on. The durable record of it is a dated,
-saved change in the separate `heater` repository where the operator's decisions
-are kept — commit `fb353c6`, 2026-09-16. Nothing about it has reached this
-project's trunk branch, so the two places below that name it do so as the same
-recorded decision, and no recommendation changes. It names what the "waiting"
-above is waiting on.
+`CLAUDE.md` on this project's trunk branch: branch `worker/114e5b3f5b1b` landed
+there as commit `e67825b` on 2026-09-16, and is pushed. The dated record of the
+decision itself is a saved change in the separate `heater` repository where the
+operator's decisions are kept — commit `fb353c6`, 2026-09-16. The two places
+below that name it do so as that same decision, and no recommendation changes.
+It names what the "waiting" above is waiting on.
 
 **One consequence worth stating on its own: E7, E8 and E9 in
 [R10](#r10--add-three-engine-requirements-extension-opponent_model_designmd-engine-requirements)
@@ -318,12 +317,13 @@ admits a shift larger than the thresholds and banding a pooled baseline is cheap
 ([§1.6](#16-what-banding-costs)) — a precaution against a possibility, which is
 what it should be called.
 
-The same argument applies with different weights to every stat whose opportunity
-definition involves position — `pfr`, `limp`, `open_raise`, `three_bet`,
-`fold_to_steal` — and applies not at all to stats whose opportunity is defined
-by a situation rather than by a seat, such as `fold_to_cbet`, or by an outcome
-of the whole hand, such as the share of the hands a player took to a showdown
-that they won money in — **won at showdown**, written `wsd`.
+The same argument applies with different weights to every stat whose rate
+depends on the seat and is therefore a mixture over seats — `pfr`, `limp`,
+`open_raise`, `three_bet`, `fold_to_steal` — and applies not at all to stats
+whose opportunity is defined by a situation rather than by a seat, such as
+`fold_to_cbet`, or by an outcome of the whole hand, such as the share of the
+hands a player took to a showdown that they won money in —
+**won at showdown**, written `wsd`.
 [§3](#3-recommended-reconciliation-with-opponent_model_designmd)
 turns that split into a per-stat recommendation, because it is what keeps the
 fragmentation cost in [§1.6](#16-what-banding-costs) affordable.
@@ -391,12 +391,13 @@ three different things across the range the operator has now required.
 This one weakens a threshold `OPPONENT_MODEL_DESIGN.md` currently leans on, and
 is worth stating because it changes how much trust the bootstrap deserves.
 
-The threshold quoted below turns on how hard a player pushes, measured as their
-bets and raises divided by their calls — `OPPONENT_MODEL_DESIGN.md` §4.2 calls
-that ratio the **aggression factor** and writes it `AF`. The `AF > 1` in the
-quotation is that ratio; `AFQ_SPLIT` is the design's own aggression-frequency
-cut — bets or raises over *all* voluntary actions, folds included, not just
-calls — a different quantity that descends from it.
+The aggression half of the threshold quoted below turns on how hard a player
+pushes, measured as their bets and raises divided by their calls —
+`OPPONENT_MODEL_DESIGN.md` §2.2 calls that ratio the **aggression factor** and
+writes it `AF`. The `AF > 1` in the quotation is that ratio;
+`AFQ_SPLIT` is the cut-off on a different rate — the design's `afq`,
+aggression frequency: bets or raises over *all* voluntary actions, folds
+included — which descends from `AF` but is not it.
 `VPIP_SPLIT = 0.28` and `AFQ_SPLIT = 0.50` descend from the "folds ≥ 72% of hands
 is tight, AF > 1 is aggressive" thresholds that [Teofilo &
 Reis 2011](#s-teofilo2011) — which *was* retrieved and read — reports at its §3,
@@ -501,13 +502,12 @@ from logged hands.
 quoting [Brown 2020](#s-brown2020) §6.6: computing a Nash equilibrium for
 multiplayer games belongs to a class of problems for which no method that
 finishes in reasonable time is known or expected — **PPAD-complete** — and even
-a computed equilibrium carries no
-guarantee, because independently-computed equilibrium strategies need not form
-one jointly. That argument is explicitly about games with **more than two
-players**. At `n = 2` it does not apply: heads-up poker is two-player zero-sum,
-an equilibrium strategy is unbeatable in expectation regardless of the opponent,
-and the design document's own §1 says so two sentences earlier in the same
-paragraph as the one it builds on.
+a computed equilibrium carries no guarantee, because independently-computed
+equilibrium strategies need not form one jointly. That argument is explicitly
+about games with **more than two players**. At `n = 2` it does not apply:
+heads-up poker is two-player zero-sum, an equilibrium strategy is unbeatable
+in expectation regardless of the opponent, and the design document's own §1
+says so two sentences earlier in the same paragraph as the one it builds on.
 
 This is not an academic point. It reverses the risk calculus at one end of the
 now-required range:
@@ -999,8 +999,8 @@ only places where the later revision has already taken the recommendation.
   `ENGINE_ALTERNATIVES.md`, which is the play-time alternative; the survey of
   which *offline* solvers exist and what one run costs on one laptop is
   `RESOURCES_SOLVERS.md`, and that is the survey E5's pass/fail answer will come
-  from if the offline plan survives. Both are in progress and §4.5's budget
-  should name both.
+  from if the offline plan survives. `RESOURCES_SOLVERS.md` is on trunk;
+  `ENGINE_ALTERNATIVES.md` is still in progress. §4.5's budget should name both.
 - **Banding is not the escape.** Solving one representative seat count per band,
   16 runs, contradicts §4.5's own prohibition and must not be adopted silently —
   and it does not rescue the budget anyway, because 16 multi-day runs breach the
@@ -1240,8 +1240,8 @@ pending, not because the offline plan is settled.
 *Recommendation:* treat the 32-run budget as **a requirement the engine choice
 has to meet, not a plan to execute with the vendored `poker_ai`** (R6). Answer E5
 against the cap — minutes per run on one laptop, pass or fail — using the two
-surveys already in progress, `ENGINE_ALTERNATIVES.md` for the play-time
-alternative and `RESOURCES_SOLVERS.md` for the offline solvers. If something
+surveys, `ENGINE_ALTERNATIVES.md` for the play-time alternative, in progress,
+and `RESOURCES_SOLVERS.md` for the offline solvers, on trunk. If something
 passes, solve in the order the operator's own table-size priority sets, recorded
 2026-09-15: **mostly 6-handed play, then 8 and 9 which the operator treats as the
 same thing** — so `n = 6` first, then `n = 8` and `n = 9` together, then the rest
@@ -1417,9 +1417,8 @@ Malmuth, *Hold'em Poker for Advanced Players*. Full-ring starting requirements
 presented as a table indexed by position — the strategy-literature grounding for
 the position argument in
 [§1.2](#12-why-the-voluntarily-put-money-in-pot-rate-vpip-is-not-comparable-across-seat-counts).
-The *arithmetic* of
-[Tables 1–3](#table-1-what-seat-count-mechanically-fixes) is derived here and
-does not rest on this citation.
+The *arithmetic* of [Tables 1–3](#table-1-what-seat-count-mechanically-fixes)
+is derived here and does not rest on this citation.
 
 ---
 
@@ -1461,12 +1460,12 @@ figures quoted from `OPPONENT_MODEL_DESIGN.md` or from the
 arithmetic — and section numbers, dates and anchors. Every row below that names
 the script is checked by it; every row that does not, is not.
 
-**The two checkers should become one.** This document and
-`OPPONENT_MODEL_DESIGN.md` sit on separate branches and each carries its own
-script. What is duplicated between them is the half-up rounding helpers, the
-markdown table reader, the `Checker` surface and the exit-code contract. Merge
-the two into one script once both documents are on the trunk branch, rather
-than attempting it from one branch against the other;
+**The two checkers should become one.** `OPPONENT_MODEL_DESIGN.md` and its
+script are on trunk; this document and its own script are still on a branch, and
+only this document's landing is outstanding. What is duplicated between them is
+the half-up rounding helpers, the markdown table reader, the `Checker` surface
+and the exit-code contract. Merge the two into one script once this document
+lands, rather than attempting it from one branch against the other;
 `tools/check_table_size_numbers.py` says the same in its own docstring.
 
 | Number | Where it comes from |
