@@ -20,6 +20,7 @@ from .table import (
     Action,
     BETTING_ABSTRACTION,
     ENGINE,
+    EngineView,
     Hand,
     IllegalActionError,
     MAX_SEATS,
@@ -29,12 +30,14 @@ from .table import (
     TableConfig,
     deal_check,
     dealable_seat_counts,
+    engine_menu,
 )
 
 __all__ = [
     "Action",
     "BETTING_ABSTRACTION",
     "ENGINE",
+    "EngineView",
     "Event",
     "Hand",
     "HandRecord",
@@ -49,5 +52,6 @@ __all__ = [
     "commit_id",
     "deal_check",
     "dealable_seat_counts",
+    "engine_menu",
     "require",
 ]
