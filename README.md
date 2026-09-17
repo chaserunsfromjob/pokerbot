@@ -99,6 +99,57 @@ and in each square either PASS or NOT RUN. NOT RUN means that check was not made
 not exist at that table size -- and the reason is printed underneath. A NOT RUN
 is never counted as a pass. Nothing should ever say FAIL.
 
+## The scoreboard: how good is a bot?
+
+A poker result over a few hundred hands is mostly luck, so this project never
+reports a bare number. One command sits a bot down against a league of
+deliberately flawed opponents, plays the same deals twice -- once for the new
+version and once for the one it is replacing -- and prints how much each of them
+won, with a range around every figure saying how much of it could be luck:
+
+    .venv/bin/python -m pokerbot.scoreboard --bot always_call --hands 200 --seed 1
+
+`--bot` names the version being measured and `--compare` the one it is being
+measured against; leave `--compare` out and it uses the reference named in the
+config. `--list-bots` prints what the two accept.
+
+**What the opponents are.** Thirteen of them. Four are there to prove the
+scoreboard itself is counting correctly -- one folds every hand, one calls
+everything, one raises everything, one flips a coin between calling and raising.
+The other nine each act out one specific human mistake: the player who calls too
+much, the one who waits all night for a premium hand, the one who bets wildly,
+the one who only ever bets a real hand so you always know where you are, the one
+who gives up the moment the flop misses, two competent ones, the one who plays
+badly for a while after losing a big pot, and the one whose bet size tells you
+what he has.
+
+**Why the opponents change every night.** Each of those nine is built from a few
+settings -- how many hands it plays, how often it raises, how big a loss sets it
+off. Those settings are drawn afresh at the start of every run rather than fixed,
+because a bot polished against one exact opponent looks better than it is. The
+drawn values are printed at the top of the report, so any run can be repeated.
+
+**Why half of them are held back.** The nine are split in two. One half is used
+while a bot is being tuned; the other half is never used for anything but the
+final accept-or-reject decision. The command enforces it rather than trusting
+anyone to remember: ask for a held-back opponent in a tuning run and it refuses
+and stops.
+
+**What the report says at the end.** Big blinds won per hundred hands for every
+opponent at tables of two, six, eight and nine, each with its range; the same
+figures for the difference between the two versions on identical cards; and then
+one verdict, ACCEPT or REJECT, by a rule written down before the run and
+reprinted at the top of it. The rule is that the overall figure -- weighted
+towards six-handed tables, which is what the operator plays most -- has to be
+above zero with its whole range above zero, and that no single opponent may be
+beating the new version. Winning overall while losing to one opponent is the
+signature of a bot that has been polished against the others, and it blocks.
+
+Every number on the page is either a measurement or a decision recorded before
+the run. The settings live in `pokerbot/league_config.toml`, which the report
+reprints in full, and `EVALUATION_STRATEGY.md` sections 3.2 and 3.5 are what
+they implement.
+
 ## Checking the design document's arithmetic
 
 `OPPONENT_MODEL_DESIGN.md` states a small number of settings and then works out

@@ -167,10 +167,32 @@ def table_size_weights(seats_present: Sequence[int], config: Config) -> dict[int
     total = sum(weights.values())
     if total <= 0:  # pragma: no cover - a run with no seat counts has no headline
         raise ValueError("no seat count ran, so there is no headline to weight")
-    # A band with no seat counts in it (a run without any of 8 or 9, say) would
-    # otherwise silently shrink the headline; renormalise so the printed weights
-    # always sum to 1 and say what they mean.
+    # A band with no seat counts in it -- a run that skipped heads-up, say --
+    # would otherwise leave the weights summing to less than one and quietly
+    # shrink the headline by that much. They are rescaled to sum to one instead,
+    # and `missing_bands` tells the report to say so, because rescaling does
+    # move the band weights relative to what the document prints.
     return {n: w / total for n, w in sorted(weights.items())}
+
+
+def missing_bands(seats_present: Sequence[int], config: Config) -> list[str]:
+    """Which of the three bands had no seat count in this run, if any."""
+    weights_config = config.weights
+    primary = [n for n in seats_present if n in weights_config["primary_seats"]]
+    secondary = [n for n in seats_present if n in weights_config["secondary_seats"]]
+    others = [
+        n for n in seats_present
+        if n not in weights_config["primary_seats"]
+        and n not in weights_config["secondary_seats"]
+    ]
+    empty = []
+    if not primary:
+        empty.append("primary (6 seats)")
+    if not secondary:
+        empty.append("secondary (8 and 9)")
+    if not others:
+        empty.append("everything else")
+    return empty
 
 
 def tuning_opponents(config: Config, requested: Iterable[str] | None = None) -> list[str]:

@@ -91,6 +91,12 @@ def print_header(
     write(
         "     numbers are EVALUATION_STRATEGY.md section 3.5's, not the operator's)"
     )
+    empty = league.missing_bands(seats, config)
+    if empty:
+        write(
+            f"    note: no seat count ran in the band(s) {', '.join(empty)}, so the "
+            f"remaining weights were rescaled to sum to 1"
+        )
     write(
         f"  bootstrap: {config.bootstrap['resamples']} resamples, "
         f"{float(config.bootstrap['confidence']) * 100:.0f}% percentile interval, "
