@@ -51,6 +51,7 @@ import json
 import os
 import random
 import resource
+import shlex
 import statistics
 import subprocess
 import sys
@@ -397,7 +398,7 @@ def main() -> int:
     ap.add_argument("--seats", type=int, nargs="+", default=[2, 3, 6])
     ap.add_argument("--budgets", type=float, nargs="+", default=[0.25, 2.0])
     ap.add_argument("--repeats", type=int, default=2)
-    ap.add_argument("--decisions", type=int, default=6)
+    ap.add_argument("--decisions", type=int, default=5)
     ap.add_argument("--odds-sims", type=int, default=200)
     ap.add_argument("--abstraction", default="fcpa", choices=["fcpa", "fullgame"])
     ap.add_argument("--options", nargs="+", default=["equity", "ismcts", "dls", "dls_model"])
@@ -409,6 +410,8 @@ def main() -> int:
     print(f"# bench_decision_layer, open_spiel {version}, python {sys.version.split()[0]}, "
           f"betting={args.abstraction}, odds-sims={args.odds_sims}")
     print(f"# started {time.strftime('%Y-%m-%dT%H:%M:%S%z')}, load1 at start {load_avg():.2f}")
+    # The full command line, so a raw file says on its face what produced it.
+    print(f"# argv {' '.join(shlex.quote(a) for a in sys.argv)}")
     print()
     header = ("option", "seats", "budget_s", "rep", "load1", "latency_s min/med/max",
               "playouts/decision min/med/max", "worlds/decision med", "dec/s", "peak_rss_MiB")

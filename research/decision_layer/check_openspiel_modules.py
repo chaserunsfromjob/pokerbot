@@ -71,9 +71,13 @@ def main() -> int:
     for card in (51, 50, 21, 0):    # As Ah to seat 0, 7d 2c to seat 1
         state.apply_action(card)
     odds = json.loads(state.to_json())["odds"]
+    # A sanity band, chosen here; no published equity table is cited for it.
+    # This says the calculator is wired up and answering, not that it is right
+    # to three decimals against an external source.
     ok = 0.86 <= odds[0] <= 0.90
     print(f"{'OK' if ok else 'FAILED':<60} universal_poker calcOddsNumSims: "
-          f"AA vs 72o = {odds[0]:.3f} win, {odds[1]:.3f} tie (published: ~0.877 win, ~0.004 tie)")
+          f"AA vs 72o = {odds[0]:.3f} win, {odds[1]:.3f} tie "
+          f"(engine's own answer; sanity band 0.86-0.90 win, no published figure cited)")
 
     # The one thing that does not work: world sampling above two players.
     child = (

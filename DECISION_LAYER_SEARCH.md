@@ -13,7 +13,9 @@ waiting, what code picks the action?** It covers the ways that do the thinking
 looked up at the table — is a sibling document, `DECISION_LAYER_BLUEPRINT.md`,
 and nothing about training a strategy with counterfactual regret minimisation
 is decided here. Solvers and equity products bought or downloaded off the shelf
-are `RESOURCES_SOLVERS.md`. Ready-made bots are `RESOURCES_BOTS.md`.
+are `RESOURCES_SOLVERS.md`. Ready-made bots are `RESOURCES_BOTS.md`. Which bet
+sizes the bot offers, and what it does when an opponent bets something not on
+that list, are settled in `ACTION_TRANSLATION.md` and assumed here.
 
 Four options are covered, and each is rated against the same five things:
 
@@ -26,15 +28,26 @@ Four options are covered, and each is rated against the same five things:
 
 ### The rule this document assumes
 
-`CLAUDE.md`'s forefront rule, as it stands on `main`, forbids AI-written code
-from choosing a poker action at all, and closes by saying that who chooses the
-action on top of the engine is "open and the operator's to settle". The
-operator has since settled it: **AI may write the decision code; no AI model
-may decide a live action.** The rewrite of that section is a separate task and
-is not made here. Everything below assumes the settled rule: ordinary, tested,
-committed code choosing the action, with no model call at the table. Where a
-particular option would still cross a line the rule keeps — assigning a hand
-range to an opponent, say — it is said in that option's section.
+`CLAUDE.md`'s forefront rule governs everything below. Its two halves, stated
+as they stand:
+
+- **"What may be coded"** — an AI assistant may write the poker code: the code
+  that picks an action, assigns a range to an opponent, reads the board, and
+  combines opponent rates across the observed population. That code has to be
+  ordinary and testable — the same inputs and seed give the same answer, tests
+  cover it, a reviewer can read it line by line. Card-combinatorics bookkeeping
+  is ours; ranking or valuing a hand is the engine's. Any opponent archetype
+  fed to a solver has to be derived from measured action frequencies alone,
+  never hand-written and never referring to hole cards, board cards or hand
+  strength.
+- **"What may not be coded"** — no model call anywhere in the live decision
+  path, no stored language-model output as the content of a decision, and no
+  hand-rolled hand-strength logic in place of the vendored engine.
+
+So every option below is free to assign ranges to opponents and to combine
+several opponents' rates; what none of them may do is call a model at the
+table, take the content of a decision from stored model output, or rank a hand
+with code written here.
 
 ---
 
@@ -116,11 +129,18 @@ Two programs, both committed, both runnable with no arguments:
 
 | Program | What it does |
 | --- | --- |
-| `research/decision_layer/check_openspiel_modules.py` | imports every OpenSpiel piece this document names, checks `universal_poker`'s own equity calculator against a published figure, and reproduces the crash described below |
+| `research/decision_layer/check_openspiel_modules.py` | imports every OpenSpiel piece this document names, records what `universal_poker`'s own equity calculator answers for a known heads-up matchup, and reproduces the crash described below |
 | `research/decision_layer/bench_decision_layer.py` | times all four options at 2, 3 and 6 players under a 250 ms, a 2 s and a 10 s budget |
 
 Raw output of every run quoted here is committed beside them under
-`research/decision_layer/raw/`.
+`research/decision_layer/raw/`. The benchmark now prints its full command line
+into that header; the committed raw files predate that line, and the flags
+behind them, reconstructed from their own rows, were: `bench_fcpa.txt` the
+defaults; `bench_table_budget_10s.txt` `--seats 3 6 --budgets 10 --repeats 1
+--decisions 2 --options equity dls`; `bench_fullgame.txt` `--abstraction
+fullgame --seats 3 6 --decisions 3 --options dls`. `openspiel_modules.txt`
+likewise predates the wording change described under option 1 and still reads
+"published" where the script now says "engine's own answer".
 
 Conditions, stated because a poker timing without them means nothing:
 
@@ -129,9 +149,9 @@ Conditions, stated because a poker timing without them means nothing:
 | Machine | Apple M4, 10 cores, 16 GiB, macOS 15.2 (24.2.0) |
 | Software | Python 3.13.15, `open_spiel` 2.0.2 (the version this venv installs) |
 | Game | `universal_poker`, 52 cards, no-limit, 4 betting rounds, blinds 100/50, 20,000 chips a seat (200 big blinds) |
-| Betting abstraction | `fcpa` (fold / call / pot bet / all-in) unless a row says `fullgame` |
+| Betting abstraction | `fcpa` (fold / call / pot bet / all-in) unless a row says `fullgame`. The menu `ACTION_TRANSLATION.md` recommends is `fchpa`, which adds a half-pot rung; everything measured here used `fcpa`, so every figure below is one rung short of the recommended menu |
 | Offline training | **none**; nothing below has a blueprint behind it |
-| Repeats | 2 per configuration at 250 ms and 2 s, 1 at 10 s; ranges quoted are across repeats and across the 5 decisions in each |
+| Repeats | 2 per configuration at 250 ms and 2 s, 1 at 10 s; ranges quoted are across repeats and across the timed decisions in each run — 5 in the `fcpa` run, which is what `--decisions` defaults to, 3 in the `fullgame` run, 2 in the 10 s run |
 | Held awake with | `caffeinate -i`, so a sleeping laptop cannot silently ruin a timing |
 
 **The load warning, and it matters here.** This laptop is shared with other
@@ -148,12 +168,15 @@ in one sitting under the same conditions — but the rows marked with a
 dagger (†) were taken at load above 5.5 and should not be compared with the
 others without re-running them.
 
-Every latency figure below is a **deadline that was met**: the measured
-wall-clock time per decision came out at 0.250 s, 2.000 s and 10.001 s against
-budgets of 0.25, 2 and 10 s, at every seat count, for every option that ran at
-all. None of these methods overshoots its budget, because each checks the clock
-before starting another play-out. Latency is therefore not what separates
-them; **what they get done inside it** is.
+Every latency figure below is a **deadline that was met at the median**: the
+median wall-clock time per decision came out at 0.250 s, 2.000 s and 10.001 s
+against budgets of 0.25, 2 and 10 s, at every seat count, for every option that
+ran at all. The worst single decision did overshoot, because each method checks
+the clock before starting another play-out and cannot interrupt the one already
+running: the raw maximum column reaches **0.258 s against the 250 ms budget**
+and **2.004 s against the 2 s budget**, an overshoot of up to 8 ms. At a table
+that is nothing. Latency is therefore not what separates these methods;
+**what they get done inside it** is.
 
 ---
 
@@ -180,19 +203,23 @@ both checked.
 
 Why that matters beyond convenience: it means **no hand is ever ranked by code
 written here**, which is what `CLAUDE.md`'s forefront rule reserves to the
-engine most firmly. Checked against a published figure by
-`check_openspiel_modules.py`: pocket aces against seven-deuce offsuit heads-up
-came back **0.871 win, 0.004 tie over 100,000 simulations**, against the
-published 0.877/0.004.
+engine most firmly. What `check_openspiel_modules.py` records is the engine's
+own answer, not a comparison with a published table: pocket aces against
+seven-deuce offsuit heads-up came back **0.871 win, 0.004 tie over 100,000
+simulations**. The script's only assertion is that the win share falls between
+0.86 and 0.90 — a sanity band chosen here, with no external source behind it —
+so this is a check that the calculator is wired up and answering, not a check
+of its accuracy against a published figure.
 
 **What it does not give**, and this is the catch: it computes the odds from the
 hole cards *it can see*, which at a real table means the bot's own only. To use
 it in play the bot must guess the opponents' cards, and it is our code that
-does the guessing. `bench_decision_layer.py` does it the neutral way — deal
-every unseen card with equal probability — because `CLAUDE.md` reserves
-*assigning a range to an opponent* to the engine. A hand-written range would
-cross that line; a uniform deal does not, being card combinatorics, which the
-rule explicitly grants.
+does the guessing — which the forefront rule allows outright, ranges included.
+`bench_decision_layer.py` does it the neutral way — deal every unseen card with
+equal probability — as a measurement choice, not a rule: these timings are
+meant to carry no opponent model at all. Narrowing the guess to a range is
+open to this option, and the rule's one condition on it is that the narrowing
+come from measured action frequencies rather than a hand-written guess.
 
 ## What it needs precomputed
 
@@ -231,27 +258,35 @@ assumes the opponents' cards are random when they are not.
 
 ## How the opponent model enters
 
-Weakly, and partly illegally under the current rule. The honest routes:
+Weakly, and the limit is the method rather than the rule. The routes:
 
 - **Thresholds per opponent bucket.** Call a little wider against a seat whose
-  aggression is high, because its bets mean less. This is one seat's own rate
-  driving the bot's action — allowed by the rule's left column ("computing a
-  single rate from its own counts"), but it is `OPPONENT_MODEL_DESIGN.md`'s
-  Tier 1 in its thinnest possible form.
+  aggression is high, because its bets mean less. This is one seat's own
+  measured rate driving the bot's action: `OPPONENT_MODEL_DESIGN.md`'s Tier 1
+  in its thinnest possible form.
 - **Narrowing the guessed holdings** of a specific opponent is the route that
-  would actually pay, and it is the one the forefront rule closes: assigning a
-  range is the engine's job. Under this option there is no engine component to
-  hand that job to, which is a reason to prefer a search.
-- Combining the fold rates of several live opponents to gate a bluff stays
-  forbidden, and this method has no way round that.
+  would actually pay, and the forefront rule permits it — assigning a range to
+  an opponent is named under "What may be coded". It is reachable here only
+  through the guessed worlds, since the engine's odds call takes a deal and not
+  a weighted range: the narrower range has to be expressed as which worlds get
+  dealt, and it has to come from that seat's measured frequencies.
+- **Combining several live opponents' fold rates** to gate a bluff is permitted
+  too — the rule treats the observed population as one database — but this
+  method has nowhere to put the combined number, because comparing equity with
+  pot odds does not choose a bet size and cannot bluff on purpose.
+
+Dropping the old prohibition removes one reason this note previously gave for
+preferring a search. The recommendation does not rest on it and survives on the
+two measured reasons: IS-MCTS dies above two players, and what each method gets
+done inside the clock.
 
 ## Rating
 
 | Test | Verdict |
 | --- | --- |
 | (a) 2-9 players | **Yes.** Measured at 2, 3 and 6; the calculator handles any seat count and skips folded seats. |
-| (b) true no-limit sizing | **No.** The rule says fold/call/raise; the size has to come from somewhere else. Translating "raise" into one of 19,803 legal amounts is the gap `ENGINE_ALTERNATIVES.md` records as unbuilt. |
-| (c) exploiting specific opponents | **Barely.** Threshold nudges only; the paying route is closed to it. |
+| (b) true no-limit sizing | **No.** The comparison yields fold/call/raise; the size has to come from somewhere else. Turning an opponent's arbitrary amount into a menu rung is action translation, which `ACTION_TRANSLATION.md` settles: randomised pseudo-harmonic mapping computed in pot fractions, onto the menu it recommends, `fchpa`. |
+| (c) exploiting specific opponents | **Partly.** Both routes are open under the rule — threshold nudges and narrowing the guessed worlds — but the output is one comparison of two numbers, so what a model can buy here is bounded: no bet size, no deliberate bluff. |
 | (d) hours on one laptop | **Yes, minutes.** No training, 34 MiB, works immediately. |
 | (e) public GPL-3.0 | **Yes.** OpenSpiel is Apache-2.0, which GPL-3.0 can absorb; nothing else is needed. |
 
@@ -436,7 +471,15 @@ That is a factor of roughly 20, the same order as the "about fifty times"
 `ENGINE_ALTERNATIVES.md`
 measured for its own chooser, and it is the single strongest argument for
 choosing a small menu of bet sizes rather than the full no-limit tree — a
-decision `TABLE_SIZE_AND_SIZING_NOTES.md` owns.
+decision `TABLE_SIZE_AND_SIZING_NOTES.md` owns and `ACTION_TRANSLATION.md` has
+now settled: the menu is `fchpa` (fold, call, half-pot, pot, all-in), and an
+opponent's off-menu bet is read by randomised pseudo-harmonic mapping in pot
+fractions. Every figure above was measured on `fcpa`, one rung short of that
+menu. The throughput figures are expected to carry across the extra rung
+roughly unchanged — a fifth candidate action costs one more branch to weigh,
+not a costlier play-out, which is what the `fullgame` collapse charges for —
+but what each candidate action gets is then about a fifth fewer play-outs.
+That is an expectation from the shape of the method, not a measurement.
 
 ## What it can do in the 10-25 seconds a real table allows
 
@@ -545,7 +588,7 @@ None of that is optional, and none of it is measured here.
 
 | | (a) 2-9 players | (b) true no-limit sizing | (c) exploits a named opponent | (d) hours on one laptop | (e) public GPL-3.0 |
 | --- | --- | --- | --- | --- | --- |
-| 1. Equity versus pot odds | yes | no | barely | yes | yes |
+| 1. Equity versus pot odds | yes | no | partly | yes | yes |
 | 2. IS-MCTS as shipped | **no — crashes above 2** | no | yes, if it ran | runs, but 330 sims/s | yes |
 | 3. Depth-limited search, biased continuations | yes | partly (about 20× slower) | yes | yes | yes |
 | 4. The same, biased by each opponent's model | yes | partly (about 20× slower) | **yes, best** | yes | yes |
@@ -598,6 +641,12 @@ continuation strategies as soon as `OPPONENT_MODEL_DESIGN.md`'s Tier 1 buckets
 exist. Run the equity rule alongside it as a check. Do not start from
 OpenSpiel's IS-MCTS.**
 
+That dependency is conditional, not scheduled: `OPPONENT_MODEL_DESIGN.md` §4.5
+makes Tier 1 itself conditional on 32 offline solver runs fitting inside the
+compute budget and on an engine that accepts a fixed opponent strategy, and
+says the task must stop and report if either fails — so the buckets are not a
+dated deliverable, which is why the search is built to run without them.
+
 Why this one rather than the obvious alternative: IS-MCTS is the textbook
 answer and OpenSpiel ships it ready to use, which is exactly why it was tried
 first. It does not run at this project's table sizes, and the fix costs the
@@ -622,7 +671,10 @@ baseline, over enough hands to put an interval on the difference — the shape
 - A fix upstream to `universal_poker`'s world sampler would make IS-MCTS worth
   re-timing at 3 and 6 seats, though 330 simulations a second would still hurt.
 - A decision to play true no-limit sizing rather than a small menu of bet sizes
-  costs a factor of roughly 20 in everything measured here.
+  costs a factor of roughly 20 in everything measured here. `ACTION_TRANSLATION.md`
+  settles that decision the other way — the `fchpa` menu, with an opponent's
+  off-menu bet read by randomised pseudo-harmonic mapping — so reopening it
+  would be the change that costs the factor of 20.
 
 ---
 
@@ -683,6 +735,9 @@ URL given.
 - **In this repository:** `ENGINE_ALTERNATIVES.md` (branch
   `worker/7f09949cb56f`) for the engine choice, the `fcpa`-versus-`fullgame`
   cost and the measurement conventions this file follows;
+  `ACTION_TRANSLATION.md` for the bet-size menu (`fchpa`) and for reading an
+  opponent's off-menu bet by randomised pseudo-harmonic mapping in pot
+  fractions, which is the translation gap this file no longer records as open;
   `OPPONENT_MODEL_DESIGN.md` for the stat set, the tiers and the safety
   section; `RESOURCES_SOLVERS.md` for off-the-shelf solvers and equity
   calculators; `TABLE_SIZE_AND_SIZING_NOTES.md` for the bet-sizing menu;
@@ -696,7 +751,7 @@ URL given.
 | Number | Where it comes from |
 | --- | --- |
 | Every play-out, latency, memory and load figure | `research/decision_layer/bench_decision_layer.py`, raw output in `research/decision_layer/raw/bench_fcpa.txt`, `bench_table_budget_10s.txt`, `bench_fullgame.txt` |
-| Which OpenSpiel pieces import, and the AA-versus-72o check | `research/decision_layer/check_openspiel_modules.py`, raw output in `research/decision_layer/raw/openspiel_modules.txt` |
+| Which OpenSpiel pieces import, and the AA-versus-72o equity | `research/decision_layer/check_openspiel_modules.py`, raw output in `research/decision_layer/raw/openspiel_modules.txt`; the 0.871/0.004 is the engine's own answer and is compared with no published table |
 | The IS-MCTS crash | both programs above; exit status -11 (SIGSEGV), 8 of 8 runs at 3 and 6 seats |
 | Line numbers in `universal_poker.cc` and `is_mcts.cc` | the OpenSpiel source at tag `v2.0.2`, fetched 2026-09-16; source quotations, not measurements |
 | Pluribus's costs, timings and win rates | the paper, cited above; not reproduced here |
