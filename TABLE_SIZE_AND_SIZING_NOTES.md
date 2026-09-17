@@ -145,9 +145,11 @@ configurable poker one is the piece this project would use — OpenSpiel's
 stays a reference only; it is written `fedden/poker_ai` wherever its author has
 to be named, which is how a code-sharing site writes a project, author first and
 project second. Written the same way, `dickreuter/Poker` is a third program, and
-it is the reference for reading the table, never for play. What stays open is
-who chooses the action on top of the engine — the carve-out from the forefront
-rule, which the operator has not granted. The engine decision is written into
+it is the reference for reading the table, never for play. Who chooses the
+action on top of the engine is no longer open: `CLAUDE.md`'s forefront rule,
+under "What may be coded", lets code of ours pick it, as ordinary tested code
+that makes no model call while a hand is live and takes hand ranking from the
+engine rather than hand-rolling it. The engine decision is written into
 `CLAUDE.md` on this project's trunk branch: branch `worker/114e5b3f5b1b` landed
 there as commit `e67825b` on 2026-09-16, and is pushed. The dated record of the
 decision itself is a saved change in the separate `heater` repository where the
