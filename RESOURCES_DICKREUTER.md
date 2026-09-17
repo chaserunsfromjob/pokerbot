@@ -1,0 +1,1447 @@
+# dickreuter/Poker: what it is, whether it runs, and what "based on it" could mean
+
+The operator asked, on 2026-09-17: *"the bot should be based off of openspiel or
+whatever, but also should be dickreuter. check the dickreuter poker bot to see
+if it seems good to base it off of and add that in if you think its good."*
+This document is that check. It decides nothing; `CLAUDE.md` is untouched.
+
+Everything below was read or run on **2026-09-17 between 00:47 and 01:11 UTC**,
+except the re-runs appendix B dates to 01:40-01:53 UTC the same day, all
+on the operator's Windows 10 PC (Windows 10 Home 19045, Python 3.13.15). Every
+web address carries the code the server gave back and the minute it was read.
+Anything that could not be confirmed by visiting or running it is marked
+**UNVERIFIED** rather than guessed. The full list of addresses fetched and
+commands run is the verification log at the end.
+
+Companion documents by other workers cover engines (`ENGINE_ALTERNATIVES.md`),
+solvers (`RESOURCES_SOLVERS.md`), ready-made bots (`RESOURCES_BOTS.md`) and
+opponent exploitation (`RESOURCES_EXPLOITATION.md`). This one covers exactly one
+project.
+
+---
+
+## In plain words
+
+`dickreuter/Poker` is a real, finished poker bot that has been played for money.
+It does three jobs, and they are worth keeping apart, because the answer to the
+operator's question is different for each one.
+
+1. **It looks at the poker room's window on screen and works out what is
+   happening.** Which two cards are yours, which cards are face up in the
+   middle, how much money each person has, whose turn it is, which buttons are
+   showing and what numbers are printed on them. It does this by comparing small
+   pictures it was taught earlier against the pixels on screen, and by reading
+   the printed numbers the way a scanner reads a page. Teaching it a new poker
+   room is done by hand, in a window of its own: you take a photograph of the
+   screen, drag a box around each thing, and press a button to save it. **This
+   part is genuinely good, and it is the part this project cannot easily write
+   itself.** It is also the part `CLAUDE.md` already points at.
+
+2. **It decides what to do.** This part is a long list of hand-written rules
+   with numbers in them — "if my chance of winning is above 0.62, and nobody has
+   raised, and this is the flop, then bet half the pot". The numbers sit in a
+   settings sheet a person can edit. There is no solver anywhere in it: nothing
+   works out a strategy that cannot be beaten; nothing looks ahead. The author
+   calls the thing that adjusts those numbers a *genetic algorithm*, but reading
+   the code shows it is nothing of the sort — it is a short list of if-statements
+   that nudge eight numbers up or down by fixed amounts after a batch of hands,
+   at most two of them per run (`poker/decisionmaker/genetic_algorithm.py`,
+   whole file, 160 lines). **This part is the opposite of what `CLAUDE.md`
+   demands**, and the rest of this document is mostly about that collision.
+
+3. **It clicks the buttons**, moving the mouse in a wobbly, human-looking way,
+   optionally inside a separate pretend computer running on the same machine so
+   that it does not fight you for the mouse.
+
+Four things surprised me on reading it, and all four change the answer:
+
+- **There is no opponent modelling at all.** The description and the folklore
+  both suggest there is. There is not. The code that would read other players'
+  names off the screen is commented out and the function returns immediately
+  (`poker/scraper/table_screen_based.py:258-278`). The one place the decision
+  maker asks about a specific opponent calls a function
+  (`get_flop_frequency_of_player`) **that does not exist anywhere in the
+  project** — I searched every file. The call sits inside a `try` that swallows
+  the error, so it silently does nothing, every hand, forever
+  (`poker/decisionmaker/decisionmaker.py:247-268`). No count of how often anyone
+  plays, raises, or folds is kept about anybody. On the criterion the operator
+  cares most about — beating a *named* person — this project scores zero.
+
+- **It cannot run without the author's server.** The cards it matches against,
+  the co-ordinates of every box on every table, the settings sheets, and the
+  trained picture-recogniser are all downloaded from `dickreuter.com:7778` every
+  time it starts. None of them are in the public code. I pointed the program at
+  a dead address and it crashed outright rather than falling back to anything
+  local. The server is alive today and lets a guest account read; that is a
+  thread the project would be hanging from.
+
+- **Its "chance of winning" number is too high, and for two separate reasons.**
+  I measured it. Asked how often ace-king of one suit beats one unknown hand,
+  pooled over 2,400,000 deals it answers **0.6817**. An independent 2,000,000-
+  deal count with `treys` — the outside hand-ranking library this project
+  already uses to check its tests — puts the honest figure at **0.6705** once
+  split pots are halved, and **0.6788** even if you generously count every
+  split as a whole win. dickreuter's answer is above *both*. Counting splits as
+  wins explains most of the gap; the rest comes from a second defect, in the
+  way it deals the opponent's cards, which leaves the opponent holding a pair
+  about a quarter less often than a real deck would (measured: 0.0443 against
+  the true 0.0588). So every number the decision rules are compared against is
+  quietly about one point too high heads-up, and putting it right is two
+  repairs, not one.
+
+- **Its own tests do not test the decisions.** All fourteen tests of the
+  decision maker are switched off in the source, with the note "Fix access
+  issues". What is left and passing is the picture-reading and the draw
+  counting.
+
+The recommendation, in one sentence: **take its shape and its eyes, not its
+brain.** Details, and the four things "based on dickreuter" could mean, are in
+§5 and §7.
+
+---
+
+## How it is rated
+
+The same five criteria as `RESOURCES_SOLVERS.md`, on the same 0-to-3 scale, so
+the two documents can be read side by side. 3 is best. **Two of the five are
+not worded the same way there and here**, and where the wording differs the two
+columns must not simply be lined up. Each is flagged below.
+
+- **(a) 2 to 9 players** — does it produce decisions for 3+ player spots? Same
+  question, same words, as `RESOURCES_SOLVERS.md:171`. It is also
+  `CLAUDE.md`'s first firm requirement: "Play every table size from 2 to 9
+  players; treat no size in that range as out of scope."
+- **(b) true no-limit sizing** — **redefined here, and not comparable.**
+  `RESOURCES_SOLVERS.md:172` asks "arbitrary bet sizes, not fixed-limit?",
+  which a tool passes as soon as it is not playing the fixed-stake form of the
+  game: a per-street *menu* of sizes scores 3 there
+  (`RESOURCES_SOLVERS.md:534`, TexasSolverLib, "(b) 3 (per-street sizing menus,
+  inherited)"). This document asks the harder question — arbitrary bet sizes,
+  **not a fixed menu** — because what is being judged here is a bot that has to
+  name a real amount at a real table, and because `CLAUDE.md`'s second firm
+  requirement forbids exactly a menu: "allow any legal bet size, from a minimum
+  raise to all-in, and never restrict the bot to a fixed ladder of raise
+  amounts." On the solvers wording dickreuter would
+  score **3**; on the wording used here it scores **1** (§4). **Do not read the
+  two (b) columns against each other.**
+- **(c) exploit specific opponents** — can it be biased by an opponent model, or
+  does it play the same way against everyone? `RESOURCES_SOLVERS.md:173-174`
+  words it as node-locking, profiles or player types versus equilibrium only.
+  Same question.
+- **(d) reachable in hours on one laptop** — **reworded.**
+  `RESOURCES_SOLVERS.md:175-176` says "no multi-day compute, runs on macOS or
+  callable from a Mac". This one says no multi-day compute and runs *here*, on
+  this Windows PC, because dickreuter is a Windows program. The Mac half of the
+  solvers' question is not dropped — it is argued in §4(d) and counted against
+  it there — but the two (d) columns are measured on different machines.
+- **(e) licence or price acceptable** — for a project published under the GNU
+  General Public License version 3, written **GPL-3.0**. Same question as
+  `RESOURCES_SOLVERS.md:177-187`, which already asks it in exactly those terms
+  ("fits a public GPL-3.0 project"): can code derived from this be lawfully
+  published under GPL-3.0, and is the price acceptable.
+
+The score is in §4, after the evidence.
+
+---
+
+## 1. What it is, part by part
+
+The version read is commit `cae3a108b6cbf22ed8ef90bc0e70f790346289a4`, "fix
+config", 2025-06-26, the tip of `master`, cloned at 00:47 UTC on 2026-09-17.
+69 Python files, 14,452 lines, of which 5,329 sit in two vendored third-party
+folders (`poker/vboxapi` 4,539 lines, `poker/pymouse` 790). So dickreuter's own
+code is **9,123 lines**.
+
+### 1.1 The table-state capture — the good part
+
+Two ways of reading the cards, and the table decides which:
+
+**Picture matching.** `poker/tools/screen_operations.py:33` calls OpenCV's
+`cv2.matchTemplate(screenshot, template, cv2.TM_SQDIFF_NORMED)` — it slides a
+small stored picture over the screenshot and reports the best-fitting spot and
+how good the fit is. Every card face, every button, the dealer button and the
+face-down card backs are stored pictures. `poker/scraper/table_scraper.py`
+loops over all 13 ranks and 4 suits in two areas of the screen to find your two
+cards and the cards in the middle.
+
+**A trained picture recogniser.** If a table is marked for it, cards go through
+a small convolutional neural network instead — six convolution layers, then
+layers of 2,048 and 1,024, trained for up to 50 passes over pictures generated
+by wobbling, shifting and zooming the stored card templates
+(`poker/scraper/table_scraper_nn.py:107-185`). Cards are squashed to 15 by 50
+pixels first. The point of it is tolerance: a table whose cards slide or fade
+defeats exact picture matching. Training needs TensorFlow; *using* a trained one
+needs TensorFlow too, because the model is rebuilt from a description the server
+sends (`poker/main.py:156-167`).
+
+**Reading the printed numbers.** Pot sizes, stacks and button amounts go through
+Tesseract, the standard open-source text-from-pictures program, via `tesserocr`
+(`poker/tools/screen_operations.py:11,106,291`). The repository ships 15 MB of
+Tesseract language data in `tessdata/`.
+
+**What it hands over.** After a successful read (`poker/main.py:172-199` runs
+twenty-eight steps in a row and stops at the first failure), the table object
+holds: your two cards; the cards in the middle; the stage (PreFlop / Flop /
+Turn / River); how many seats; for each other player their seat, whether they
+are still in the hand, their money and the chips they have pushed in; where the
+dealer button is and how many seats after the first to act you are; your own
+money; the pot this round and the pot in total; whether a check button, a call
+button, a bet button, an all-in-call button are showing, and the amounts printed
+on them. **That is exactly the structure this project needs**, and it is the
+list to copy.
+
+**Adding a new poker room.** The README documents it and there is a video link.
+In the program, press *Table setup*: give the template a name, press *Blank
+new*, press *Take screenshot*, drag a box around the top-left corner of the
+poker window and save it (everything else is measured from there), press *Crop*,
+then drag a box around each item in turn — the button area, the card areas, the
+pot, each seat — pressing the matching save button each time, and separately
+teach it every card face and every button picture. Each save is a network call
+to the author's server (`poker/scraper/table_setup_actions_and_signals.py`,
+`mongo.save_coordinates`, `mongo.update_table_image`, lines 219-438), and the
+server refuses if the computer's name is not the table's registered owner
+(`get_table_owner`, line 213). **There is no way to store a table locally.**
+
+### 1.2 The decision maker — where the poker decision is actually made
+
+One file, one entry point. `poker/main.py:206-207`:
+
+```
+d = Decision(table, history, strategy, self.game_logger)
+d.make_decision(table, history, strategy, self.game_logger)
+```
+
+`make_decision` is `poker/decisionmaker/decisionmaker.py:582-615`. Everything
+below happens inside `Decision`:
+
+1. **`Decision.__init__` (lines 32-277) sets two limits.** The long constructor
+   turns the settings sheet plus the table reading into one *maximum amount I am
+   willing to call* (`finalCallLimit`) and one *maximum amount I am willing to
+   bet* (`finalBetLimit`). Both come out of `Curvefitting`
+   (`poker/decisionmaker/curvefitting.py`), which fits the curve
+   `y = adj1 * (x + adj2) ** pw` through two points — at the minimum chance of
+   winning the answer is one big blind, at certainty it is your whole stack —
+   and reads off the amount for the chance of winning just measured. `pw`, the
+   curvature, is `FlopCallPower`, `TurnBetPower` and so on from the sheet.
+   Before that it applies about a dozen hand-written adjustments: for your seat,
+   for whether somebody raised, for whether somebody called, for how big the pot
+   is, for the second time round the same betting round, and for how many cards
+   would improve your hand.
+
+2. **`calling` (353-363) and `betting` (365-432) compare those limits against
+   what the buttons say.** If the call limit is below the price, fold; otherwise
+   call. If the bet limit clears a threshold, pick one of four bets.
+
+3. **Or, before the flop, a spreadsheet decides.** If `preflop_override` is on,
+   `preflop_table_analyser` (278-340) looks your two cards up in a sheet of
+   `preflop.xlsx`, chosen by how many people raised and called ahead of you,
+   reads a *call* probability and a *raise* probability off the row, draws a
+   random number, and folds, calls or raises accordingly. (The `Default`
+   strategy the server hands a guest has `preflop_override: 0`.)
+
+4. **`bluff` (434-471), `check_deception` (473-504) and `bully` (509-528)** may
+   override the answer. All three are threshold rules, and `bluff` only fires
+   when `isHeadsUp` is true.
+
+5. **`admin` (530-580)** converts the chosen action into an amount and fixes up
+   impossible combinations.
+
+**So: the poker decision is made by hand-written if-statements in
+`poker/decisionmaker/decisionmaker.py`, using thresholds from a settings sheet,
+against a chance-of-winning number from `montecarlo_python.py`.** Nothing
+searches, nothing solves, nothing looks ahead.
+
+**The bet sizes are a menu of five**, set in `admin` (557-573): the table's own
+minimum bet; that minimum bet multiplied by the setting `BetPlusInc` with the
+minimum added back on — `t.minBet * BetPlusInc + t.minBet`
+(`decisionmaker.py:564-566`), a multiple of the minimum bet, **not** the
+minimum plus a number of big blinds; half the pot; the whole pot; and a bluff
+of half the pot. Not arbitrary amounts.
+
+**The one opponent-aware branch is dead.** Lines 247-268 try to fetch
+`l.get_flop_frequency_of_player(t.PlayerNames[0])` and, on the answer, add or
+subtract 2 from both curvature numbers. `t.PlayerNames` is assigned nowhere in
+the project (the only two mentions in any file are lines 251 and 253, both
+reading it) and `GameLogger` has no
+method of that name (its methods are listed at
+`poker/tools/game_logger.py:20-204`). The bare `except` swallows it, the value
+becomes "not a number", both comparisons are then false, and the adjustment is
+always 0. Searching the whole project for `vpip`, `pfr`, `aggression`,
+`fold_rate`, `player_stats` or `opponent_model` returns **nothing**.
+
+### 1.3 The equity Monte Carlo
+
+The share of the pot a hand would take on average if the same spot were played
+out to the end over and over, counting every way the cards still to come could
+fall, is that hand's **equity**. It is one number between 0 and 1 — 0.68 means
+"about two thirds of the pot, on average" — and every threshold in the decision
+rules is compared against it.
+
+`poker/decisionmaker/montecarlo_python.py`, 491 lines, pure Python.
+`run_montecarlo` (line 238) deals the unknown cards at random up to `max_runs`
+times, ranks everybody's seven cards with its own `calc_score`/`eval_best_hand`
+(lines 52-159), and counts how often you come out on top.
+
+**Measured on this PC** (5,000 deals each, one core; command and output in the
+log):
+
+| Spot | Answer | Wall time | Deals per second |
+| --- | --- | --- | --- |
+| AKs, 2 players, before the flop | 0.688 | 0.40 s | 12,493 |
+| AKs, 3 players, before the flop | 0.508 | 0.49 s | 10,154 |
+| AKs, 6 players, before the flop | 0.332 | 0.75 s | 6,643 |
+| AKs, 3 players, flop 7h 8h 9c | 0.245 | 0.44 s | 11,323 |
+| AKs, 6 players, flop 7h 8h 9c | 0.082 | 0.70 s | 7,142 |
+
+Fast enough to answer inside a second, which is all it needs to be. For scale,
+`RESOURCES_SOLVERS.md` measured OMPEval in C++ at 160 to 312 **million** hands a
+second; this is about twenty-thousand times slower, and still fast enough.
+
+**Its answer is too high, and two separate defects push it up.**
+
+*The measurement.* Twelve runs of 200,000 deals of AKs against one unknown
+hand, pooled — 2,400,000 deals in all — gave **0.6817**, give or take 0.0003.
+An independent 2,000,000-deal count with `treys` — the outside hand-ranking
+library this project already uses to check its tests — gave win 0.6623, split
+0.0165, lose 0.3212: **0.6705** when splits are halved and **0.6788** when
+every split is counted as a whole win. dickreuter's answer is **above both** —
+about twenty-five standard errors above the halved figure and about six above
+the generous one. (The two counts' standard errors combine to 0.00045, against
+gaps of 0.0112 and 0.0029.) "It counts split pots as wins" is true, but it is
+not the whole story: even the most forgiving honest count comes out below what
+it reports.
+
+*First defect: ties are awarded to you.* `eval_best_hand` sorts the hands by
+score and takes the first, and Python's sort is stable, so equal hands keep the
+order they were handed in; the caller then treats seat 0 — you — as the winner
+(`montecarlo_python.py:271-277`: `winner = ...index(bestHand)`, then
+`if winner < CollusionPlayers + 1` with `CollusionPlayers = 0`). Splits run at
+0.0165 of deals here, so counting them whole rather than halved lifts the
+answer by about 0.0083 — most, but not all, of the 0.0112 gap to the halved
+figure.
+
+*Second defect: the second card dealt is not the card that was checked.*
+`distribute_cards_to_players` (`montecarlo_python.py:211-225`) picks two
+positions in the deck, checks that the **cards standing at those two
+positions** are inside the opponent's assumed range, and then deals with
+`deck.pop(random_card1)` (line 224) followed by `deck.pop(random_card2)`
+(line 225) — the second one taken from the **already shortened** deck. Two
+things follow. Whenever the second position is past the first, the card
+actually dealt is the one that stood *after* the card that was checked, so the
+range filter vetted one hand and a different hand was dealt. And the card
+sitting immediately after the first card can never be dealt second at all —
+`create_card_deck` lays the deck out rank by rank, four suits at a time
+(`"23456789TJQKA"` crossed with
+`"CDHS"`, lines 160-165), so the card that goes missing is almost always the
+**same rank in the next suit**. The opponent is therefore dealt a pair far too
+rarely. Measured over 400,000 opponent hands drawn through that very function:
+**0.0443**, against the **0.0588** a real 50-card deck gives once your own ace
+and king are out of it. About a quarter of the opponent's pairs are simply
+absent, which makes the opponent's hand weaker than it should be and your own
+chance of winning higher.
+
+The two defects point the same way and they both flatter you.
+
+**It also assigns ranges to opponents.** `get_opponent_allowed_cards_list`
+(line 37) reads `preflop_equity.json`, sorts the 169 starting-hand classes by
+strength and keeps the strongest slice — `range_utg0` through `range_utg5` and
+`range_multiple_players` in the settings sheet decide how big a slice, by the
+opponent's seat. That is a hand-written range assumption, not a measured one.
+
+**And it caps how many opponents it simulates.**
+`montecarlo_python.py:346-347`: `max_assumed_players = t.total_players - 2`,
+then `t.assumedPlayers = min(max(t.assumedPlayers, 2), max_assumed_players)`.
+On a 6-seat table it never simulates more than 4 players, whoever is actually in
+the hand. The ceiling is applied last, so it wins whenever it is the lower of
+the two, and the floor of 2 is not a floor at all below four seats — which is
+what makes the two- and three-seat cases in §1.7 come out at 0 and 1. No comment
+explains why.
+
+### 1.4 The "genetic algorithm"
+
+`poker/decisionmaker/genetic_algorithm.py`, 160 lines, read end to end. It is
+**not** a genetic algorithm: there is no population, no crossover, no mutation,
+no selection. `improve_strategy` runs eight fixed checks — call and bet, for
+each of the four betting rounds — each comparing money won against money lost in
+the stored log, and each may nudge one minimum-chance-of-winning number by 0.01
+to 0.03 and one curvature number by 25 times that, up or down. At most two
+changes per run. The result is saved as a new settings sheet on the author's
+server. The README says you need 2,000 to 5,000 hands before the numbers mean
+anything. It is a manual tuning aid, and honest people should call it that.
+
+### 1.5 The GUI
+
+PyQt6. Eight window layouts in `poker/gui/ui/*.ui`: the main window, table
+setup, the strategy editor, the strategy analyser, the tuner, the updater,
+help, and a general settings window (`setup_form.ui`, titled "Setup" — mouse
+control, virtual machines, timeout, login and password;
+`poker/gui/gui_launcher.py:26` loads it). The analyser draws stacked bars of
+what each action type won and lost at each stage, so a person can walk
+backwards from the river tightening numbers.
+There is also a small React web front end in `website/` and a tiny local web
+service (`poker/restapi_local.py`) that does one thing: hands the browser a
+screenshot.
+
+### 1.6 The remote dependency — still there, still required
+
+It is no longer a MongoDB the program talks to directly. `pymongo` is listed in
+the requirements but **is imported nowhere in the project** — I grepped. What
+exists now is `poker/tools/mongo_manager.py`, which sends web requests to a
+single address read from `poker/config.ini`:
+
+```
+db = https://dickreuter.com:7778/
+login = guest
+password = guest
+```
+
+Everything comes from there: `get_table` (all card pictures and box
+co-ordinates), `get_strategy` and `get_playable_strategy_list` (the settings
+sheets), `get_tensorflow_weights` (the trained recogniser),
+`get_available_tables`, `save_coordinates`, `update_table_image`,
+`save_strategy`, `increment_plays`, `get_rounds`, `get_internal` (which returns
+the download link, the current version number, the purchase link, and the
+address of the before-the-flop spreadsheet). The server code is **not** in the
+repository. `pymongo` is dead weight in the requirements list.
+
+**The traffic also runs the other way: every hand played is uploaded.** The
+file that sounds as though it keeps a log — `poker/tools/game_logger.py` —
+writes nothing to disk at all. Every one of its methods is a web request to
+that same address (lines 34, 69, 121, 125, 138, 144, 161, 171, 178, 185, 192,
+198, 205); it opens no file, no folder and no database of its own.
+
+- `write_log_file` (lines 40-70) fires once per decision, on a background
+  thread (`poker/main.py:251`). It packs the strategy settings, the table
+  reading, the running history and the decision itself into one record, stamps
+  it with the computer's own name (`os.environ['COMPUTERNAME']`, line 57) and
+  the time, and posts it to `insert_round` on `dickreuter.com:7778`.
+- `mark_last_game` (lines 72-117) posts a summary of each finished hand to
+  `insert_games`: the outcome, the money won or lost, the final decision, the
+  final chance of winning, which template and strategy were in use, the
+  software version, and again the computer's name (line 101). It is skipped
+  only when the money change exceeds the `max_abs_fundchange` setting. (The
+  record also carries an `ip` field, which in the shipped code is always empty
+  — `poker/scraper/table.py:19` sets it to `''` and nothing ever fills it in.)
+- `upload_collusion_data` (lines 128-134) posts your own two cards, the hand
+  number, the stage and the computer name whenever the collusion feature runs.
+
+No setting turns any of this off, and no local copy is kept. **Anyone running
+this program as shipped is sending their hand history, and the name of their
+computer, to the author's server.** The point matters twice over here: the same
+address is both the only source of the table definitions and the destination of
+every hand played.
+
+**It is alive today.** At 00:51-00:52 UTC on 2026-09-17, as an anonymous guest:
+`get_internal` returned 200 with the current version 6.76;
+`get_available_tables` returned 200 and a list of about 70 table templates
+including "Official GGPoker 6player", "Official Party Poker" and "PokerStars";
+`get_strategy?name=Default&login=guest&password=guest` returned 200 and a full
+settings sheet; `get_playable_strategy_list` returned 200 and
+`["Official 1","Trial 1","Trial 2","Trial 3"]`. Fetching one whole table
+definition, "Official GGPoker 6player", returned 200 and **532,771 bytes** — 103
+keys of card pictures and co-ordinates.
+
+**Offline it does not degrade, it stops.** `read_strategy`
+(`poker/tools/strategy_handler.py:118-139`) wraps its first request in `try`,
+but the fallback inside the `except` is *another* network request, unguarded. I
+copied the tree, pointed `db` at a dead port, and called it:
+
+```
+read_strategy RAISED: ConnectionError HTTPConnectionPool(host='127.0.0.1',
+port=9): Max retries exceeded with url: /get_strategy?name=Default&
+login=guest&password=guest
+```
+
+There is one local fallback of any kind — a copy of the before-the-flop
+spreadsheet at `poker/decisionmaker/preflop.xlsx`, named as
+`preflop_url_backup` in `poker/tools/update_checker.py:17`. Nothing else.
+
+**What that means for this project:** if the author turns the server off, or
+locks the guest account, or the domain lapses, every table template and every
+settings sheet becomes unreachable. Only what has already been downloaded
+survives, and the program has no code path to read it back from disk. Anyone
+depending on the capture layer should pull the table definitions down and store
+them locally as the very first step.
+
+### 1.7 Rooms, and which computers it runs on
+
+**Rooms.** The repository description names PartyPoker, PokerStars and GGPoker,
+and the README gives per-room setup: PartyPoker "Fast Forward" tables, PokerStars
+"Zoom" tables with the client forced to 4-colour cards and a matching table
+style, and a pictured GGPoker layout. The server's table list also shows
+community-made templates for ClubGG, PokerNow, ACR, Bet365 and others. The
+README's FAQ says plainly: **"Currently the bot only works for tables with 6
+players"** (`readme.rst:291`).
+
+**How many seats it will accept.** The setup window's seat-count box offers
+**every count from 2 to 9**. Its choices are written out one by one in
+`poker/gui/ui/table_setup_form.ui:632-676`, in this order — `6`, `2`, `3`, `4`,
+`5`, `7`, `8`, `9` — six first because it is the default, the rest in plain
+order after it. Whatever is picked goes straight into the table's `max_players`
+value (`poker/scraper/table_setup_actions_and_signals.py:210-219`), and the
+scraper reads that value back, falling back to 6 only when the key is missing
+(`poker/scraper/table_scraper.py:18`).
+
+So the six-player limit is not a limit of the window. It rests on three other
+things:
+
+- **The author's own word**, quoted above.
+- **No published template goes beyond six.** The three official rooms are all
+  six-handed, and "Official GGPoker 6player" carries no `max_players` key at
+  all, so it falls back to 6. The server's list of templates, re-read at
+  01:51 UTC on 2026-09-17 (HTTP 200), holds 78 names and none of them
+  advertises more than six seats. Whether any community-made one sets
+  `max_players` above 6 inside its own definition is **UNVERIFIED**: checking
+  would mean downloading all 78, at roughly half a megabyte each.
+- **The equity simulation caps itself below the table size.**
+  `max_assumed_players = t.total_players - 2`, then
+  `min(max(assumedPlayers, 2), max_assumed_players)`
+  (`montecarlo_python.py:346-347`), so a nine-seat table would be simulated as
+  at most seven players however many are actually in the hand. The floor of 2
+  never binds below four seats, because the ceiling is applied last and is
+  lower: at three seats the clamp gives **1**, and at two seats it gives
+  **0**. Before the flop `run_montecarlo_wrapper` has already set
+  `assumedPlayers = 2` (line 315), so a heads-up table is handed a player count
+  of zero, no hand is assembled to rank, and the call raises `IndexError`
+  rather than returning an equity at all (reproduced, Appendix B item 9).
+
+Nine seats can therefore be *set up*, and nothing in the screen reading stops
+at six. What is missing at nine is a template anyone has built, any claim from
+the author that it works, and an equity number that counts the whole table.
+
+**Operating systems.** The README: *"The current version Only works on
+windows."* Its own automated tests run on `windows-latest` with Python 3.11.
+But the picture is more mixed than that sentence:
+
+- There **is** a `requirements_mac.txt` and a macOS build recipe
+  (`.github/workflows/release mac.yml`, Python 3.11, PyInstaller). It is
+  manual-trigger only.
+- **No macOS build has ever been published.** All five releases carry exactly
+  one file, `DeepMindPokerbot_winstaller.exe`.
+- The mouse layer genuinely is cross-platform: `poker/pymouse/__init__.py`
+  picks `mac.py` (Quartz/AppKit) on macOS, `windows.py` on Windows, `x11.py`
+  otherwise. Screenshots use Pillow's `ImageGrab.grab()`, which works on macOS.
+- But `poker/tools/screen_operations.py:16` imports `vbox_manager`, which
+  imports the `virtualbox` package unconditionally, so even the picture-reading
+  module drags in VirtualBox automation on any platform; and
+  `poker/pymouse/windows.py` needs `pywin32`, which is **not in either
+  requirements file** (I found this the hard way — see §3).
+
+**So can a Mac run any of it?** The reading-and-deciding half, almost certainly
+yes with small edits; a Mac build recipe exists and the platform-specific pieces
+all have Mac branches — but no one has published a Mac build and I did not test
+one, so treat that as **UNVERIFIED**. The *point* of it on a Mac is another
+matter: PokerStars, PartyPoker and GGPoker desktop clients are Windows programs,
+and the whole design assumes a Windows poker client, ideally inside a Windows
+virtual machine. **This PC is Windows 10, which is the supported case.**
+
+---
+
+## 2. The facts
+
+Most of these were read from GitHub's own machine-readable service for
+answering questions about a repository — a web address that hands back plain
+data instead of a page for a person to look at. Such a service is called an
+**application programming interface**, written **API**. The rest came from the
+clone on this PC.
+
+| Fact | Value | How confirmed |
+| --- | --- | --- |
+| Licence | **GPL-3.0** | GitHub API `license.spdx_id = GPL-3.0`, HTTP 200, 00:52 UTC 2026-09-17; and `license.txt` in the clone is the verbatim 673-line GNU GPL v3 text, no added exceptions |
+| Last push | **2025-06-26T21:29:10Z** | GitHub API `pushed_at`, HTTP 200, 00:52 UTC 2026-09-17 |
+| Last commit | `cae3a108`, "fix config", 2025-06-26, Nicolas Dickreuter | `git log -1` in the clone |
+| Stars | **2,463** | GitHub API, same call |
+| Forks / watchers | 589 / 147 | GitHub API, same call |
+| Open issues and pull requests | **34** | GitHub API `open_issues_count`; the list call returned 34 items, 25 issues and 9 pull requests |
+| Created | 2016-03-29 | GitHub API |
+| Repository size | 155,507 KB reported; **92 MB** on disk after a shallow clone | GitHub API; `du -sh` |
+| Archived / disabled | No / No | GitHub API |
+| Python required | **3.11** | Its own test workflow pins `python-version: 3.11`; the README tells you to install a `cp311` Tesseract wheel; `tensorflow==2.12.0` and `pandas==2.0.3` both publish wheels only for cp38 to cp311 (PyPI API, HTTP 200, 00:56 UTC) |
+
+**Dependencies and weight.** `requirements_win.txt` lists 30 packages;
+`requirements_mac.txt` lists the same 30, with `tensorflow` left unpinned and
+`tesserocr` pinned instead. Nine carry a pinned version on Windows:
+`pandas==2.0.3`, `matplotlib==3.7.2`, `pyinstaller==5.13.0`, `pymongo==4.3.3`,
+`numexpr==2.8.4`, `fastapi==0.101.1`, `uvicorn==0.23.2`, `PyJWT==1.7.0` and
+`tensorflow==2.12.0`. (`tesserocr==2.6.1` is the Mac file's pin; on Windows
+`tesserocr` is unpinned, as the sentence before this one says.)
+
+- **TensorFlow: yes, and it is the heavy item.** `tensorflow==2.12.0`. On
+  Windows the published `tensorflow` wheel is a 1,916-byte stub that pulls
+  `tensorflow-intel`, whose Windows wheel is **272.9 MB**; the Linux wheel is
+  **586 MB** and the macOS one 230 MB (PyPI API, HTTP 200, 00:56 UTC). It is
+  CPU-only — no CUDA, no GPU stack. It is needed *at runtime* for any table
+  marked as using the trained recogniser, not only for training.
+- **OpenCV: yes**, `opencv-python`, about 44 MB of wheel on Windows.
+- **Tesseract: yes**, via `tesserocr`, plus 15 MB of bundled language data.
+- **Qt: yes**, PyQt6, about 85 MB of wheel.
+- **Missing from the list: `pywin32`.** The mouse code imports `win32api` and
+  the requirements never ask for it. Collection of the test suite fails without
+  it.
+- **Also listed but never imported anywhere in `poker/`:** `pymongo`, `PyJWT`,
+  `flask_jwt_extended`, `fastapi_auth`, `jupyter`. Checked by searching every
+  Python file for each import. (`xlib` *is* used, by the Linux mouse backend.)
+- **The Dockerfile and README both say `pip install -r requirements.txt`, and no
+  file of that name exists in the repository.** Only `requirements_win.txt` and
+  `requirements_mac.txt`. The Docker build recipe is therefore broken as
+  written.
+
+Installing the seventeen packages the code actually needs, **without**
+TensorFlow, came to **710 MB** in the private install area on this PC (54
+packages once their own dependencies are counted). PyQt6 added a further 229 MB.
+With TensorFlow, budget about 1.2 GB. The README asks for 1.6 GB of disk.
+
+**Release binaries.** Five releases, all in January 2024, each carrying one
+file, `DeepMindPokerbot_winstaller.exe`. The newest,
+`DeepermindPokerbot-10` (2024-01-28), is **445.6 MB** and has been downloaded
+**11,429 times**. No source archives, no macOS build. (GitHub API, HTTP 200,
+00:52 UTC 2026-09-17.)
+
+**The vendor website.** `http://deepermind-pokerbot.com/` and
+`https://deepermind-pokerbot.com/` both return **200** (1,304 bytes, a small
+React page). But the address printed in the README and in the repository
+description, **`http://www.deepermind-pokerbot.com`, is broken**: it redirects to
+`https://www.deepermind-pokerbot.com/`, where the connection fails outright
+(curl exit, code reported as `000`). That is almost certainly the cause of open
+issue #241. The paid "full version" — the right to create and see all settings
+sheets — is sold from that site, or by e-mail, or for Bitcoin to an address
+printed in the README.
+
+**Open issues that say whether it works today.** The 34 open items, newest
+first, read as an alive-but-thin project:
+
+- **#241 "Can't download from deepermind-pokerbot.com"** (2025-09-17). The
+  author replied the same day: *"Just tried it and it seems to work fine. What
+  error are you getting?"* The reporter came back with a screenshot and then
+  found the installer in the GitHub releases instead. Consistent with the broken
+  `www.` address above.
+- **#240 "Program won't open because of JSON-Error"** (2025-04-25, 3 comments).
+  The error text in `mongo_manager.get_table` names exactly this: a table marked
+  as using the trained recogniser when none has been trained.
+- **#228 "Detected by pokerstars"** (2024-02-13, 5 comments). A user reports
+  being caught. Others ask what happened. **This is the single most important
+  open issue for the operator**, and it matches the README's own warning that on
+  PokerStars *"you will be blocked and your account will be frozen within
+  minutes"* without a virtual machine.
+- **#185 "Bot is far too predictable, improvement strategy advices"**
+  (2023-05-23, 3 comments). An honest assessment of the decision maker by a
+  user.
+- **#194, #178, #174** are all picture-reading or number-reading failures on
+  particular tables — the ordinary maintenance load of a screen scraper.
+- Nine of the 34 are pull requests, the oldest from May 2023, several of them
+  automated security bumps that were never merged.
+
+**Is it maintained?** Partly. Last code change **2025-06-26**, about fifteen
+months before this reading. Last release January 2024. Several dependency
+security bumps left open for over three years. **But the author still answers**:
+he replied to issue #241 on 2025-09-17, one day after it was opened. There is a
+Discord. The repository is not archived. The automated test workflow exists but
+**the GitHub API reports zero recorded workflow runs** (`total_count 0`, HTTP
+200, 00:57 UTC) — so nothing has been checked automatically in the window GitHub
+still keeps.
+
+Read that as: **a finished project in light custody, not an abandoned one, and
+not one under development.**
+
+**Licence compatibility with pokerbot.** pokerbot is going GPL-3.0, so taking
+GPL-3.0 code and publishing the result is exactly what the licence contemplates
+— keep the notices, keep the source public. Two wrinkles:
+
+1. **`poker/vboxapi/` is not GPL-3.0.** It is Oracle's VirtualBox glue, and its
+   header reads *"under the terms of the GNU General Public License (GPL) ... in
+   version 2"*, or alternatively version 1.0 of the Common Development and
+   Distribution License, written **CDDL**. GPL **version 2 only** is
+   *incompatible* with GPL-3.0, and so is the CDDL. That folder is 4,539 lines,
+   it is **imported nowhere else in the project**, and it must not be copied
+   into pokerbot. `poker/pymouse/` is fine: version 3 "or any later version".
+2. **The table templates and settings sheets carry no licence at all.** They are
+   not in the repository; they live on the author's server, and they are
+   pictures of PokerStars, PartyPoker and GGPoker client windows. Whether they
+   may be redistributed is **UNVERIFIED** and would have to be asked.
+
+Also worth saying once: dickreuter's own `.py` files carry **no per-file licence
+header**, and the copyright line in the "how to apply this licence" section of
+`license.txt` was never filled in. That is untidy but does not change the
+repository-level GPL-3.0 declaration.
+
+---
+
+## 3. Does it run on this PC
+
+Short answer: **yes, and its picture-reading half passes its own tests here —
+but only after fixing four things the project does not tell you about, and not
+on the Python this project uses.**
+
+**The clone.** `git clone --depth 1 https://github.com/dickreuter/Poker`, 86
+seconds, 92 MB (41 MB of that the repository history, 28 MB of documentation
+pictures, 15 MB of Tesseract data, 5 MB of actual code).
+
+**The install as documented: fails immediately.** A fresh private install area
+made with this PC's `Python313\python.exe` (Python 3.13.15), then
+`pip install -r requirements_win.txt`. It got as far as the first line and
+stopped, 29 seconds in:
+
+```
+Collecting pandas==2.0.3 ...
+  Downloading pandas-2.0.3.tar.gz (5.3 MB)
+  ...
+  ModuleNotFoundError: No module named 'pkg_resources'
+ERROR: Failed to build 'pandas' when getting requirements to build wheel
+```
+
+`pandas==2.0.3` has no ready-made build for Python 3.13, so pip tried to build
+it from source and the build failed. **Its pins top out at Python 3.11**, which
+is what its own test workflow uses. This PC has only Python 3.13 installed
+(`C:\Users\chase\AppData\Local\Programs\Python\` contains `Python313` and
+nothing else; no `py` launcher; no Anaconda). As instructed, I tried anyway, and
+then went round it.
+
+**Going round it.** Installing the packages the code actually imports, with the
+version numbers **taken off**, on Python 3.13 worked: 49 packages pulled in, no
+source builds, nothing touching a GPU. TensorFlow was
+left out deliberately — it has no Python 3.13 build at all, and pulling 273 MB
+for a code path we would not use was outside the time box. Four further things
+were needed that the project's own instructions do not mention:
+
+1. **`tesserocr`** is not on PyPI for Windows. The project's test workflow
+   downloads a third-party Windows build for Python 3.11. That third party does
+   publish a **Python 3.13** build — `tesserocr-2.10.0-cp313-cp313-win_amd64.whl`
+   (GitHub API, HTTP 200, 01:01 UTC) — and it installed cleanly.
+2. **`virtualbox`** (the `pyvbox` package, Apache-2.0, 275 KB) is in the
+   requirements list, but I had left it out; the picture-reading module imports
+   it unconditionally, so it is not optional even if you never use a virtual
+   machine.
+3. **`pywin32`** is **not in the requirements list at all**, and the mouse code
+   needs it. This is a genuine gap in their file.
+4. **PyQt6 would not install into the scratch folder** because the path was too
+   long for Windows' 260-character limit, which is this PC's setting, not
+   dickreuter's fault. Installing it under a shorter path worked.
+
+**Total install time**, everything included, about **4 minutes** of wall time
+across the attempts, well inside the ten-minute box. Disk: 710 MB, plus 229 MB
+for the second Qt install area.
+
+**The test suite.** The README says to run `pytest` from the repository root,
+which is what the project's own workflow does. Result on this PC:
+
+```
+SKIPPED [14] poker\tests\test_decision.py: Fix access issues
+FAILED poker/tests/test_montecarlo.py::TestMonteCarlo::test_monteCarlo
+FAILED poker/tests/test_tensorflow.py::test_save_model
+FAILED poker/tests/test_tensorflow.py::test_train_card_neural_network_and_predict
+================== 3 failed, 28 passed, 14 skipped in 53.63s ==================
+```
+
+45 tests collected. Reading each result:
+
+- **14 skipped**: every test of the decision maker, switched off in the source
+  with `@pytest.mark.skip(reason="Fix access issues")`. Two more test files are
+  switched off entirely (`test_reverseTables.py`, `test_tableScreenBased.py`),
+  so three of the seven test files never run.
+- **1 genuine upstream failure**: `test_monteCarlo` calls
+  `run_montecarlo(maxRuns=...)` but the function was renamed to `max_runs`.
+  `TypeError: MonteCarlo.run_montecarlo() got an unexpected keyword argument
+  'maxRuns'. Did you mean 'max_runs'?` A stale test, broken on any Python, on
+  any machine.
+- **2 failures caused by leaving TensorFlow out**, plus a missing
+  `poker/pics/model.json` that is not in the repository anyway, so
+  `test_save_model` would fail on a clean clone regardless.
+- **28 passed**, and the interesting 24 of them ran cleanly on their own:
+
+```
+$ pytest poker/tests/test_table_and_ocr.py poker/tests/test_outs.py
+........................
+24 passed in 11.17s
+```
+
+Those 24 are **the capture layer and the draw counter**: cropping a screenshot,
+finding the top-left corner, running the whole table scraper over a stored
+screenshot, and reading pot and stack numbers off PartyPoker, PokerStars and
+GGPoker screenshots — nine tests — plus fifteen tests of counting the cards that
+would improve a hand. **They download the table definitions from the author's
+server while they run.** So this is a live end-to-end confirmation that the
+capture layer works today, on this machine, on Python 3.13, against the live
+server.
+
+**What the tests need that they do not say.** They need the network (the shared
+setup code at `poker/tests/__init__.py:39-46` makes two server calls before any
+test body runs). They do **not** need a display or a live poker table; every
+screen they read is a stored `.png`. Nothing was launched that connects to a
+poker site, and no table was played.
+
+---
+
+## 4. The rating
+
+**dickreuter/Poker — Ratings: (a) 2 — (b) 1 — (c) 0 — (d) 2 — (e) 2.**
+
+Two of those five are not on `RESOURCES_SOLVERS.md`'s wording, so they do not
+line up against its rows: **(b)** answers a stricter question here (on the
+solvers wording it would be 3) and **(d)** was measured on this Windows PC
+rather than on a Mac. See "How it is rated".
+
+- **(a) 2 to 9 players — 2.** The decision code does branch on multiway
+  (`isHeadsUp` guards the bluff and profile paths; `range_multiple_players`
+  governs equity when more than one opponent is live), and the setup window
+  offers **every seat count from 2 to 9** (§1.7). The point comes off for what
+  is true past that window: every published template is 6-handed, the README's
+  FAQ says "Currently the bot only works for tables with 6 players", and the
+  equity simulation silently caps itself at `total_players - 2`, so a nine-seat
+  table would never be simulated with more than seven players in it even if
+  somebody built the template. Multiway in principle and selectable up to nine;
+  six-handed in every template anyone has published. `CLAUDE.md`'s first firm
+  requirement treats no size from 2 to 9 as out of scope: dickreuter's setup
+  window offers all eight of those sizes, and its published templates cover
+  one.
+- **(b) true no-limit sizing — 1 on this document's stricter wording, and 3 on
+  `RESOURCES_SOLVERS.md`'s looser one; see "How it is rated" above, and do not
+  line the two up.** A menu of five: the table's minimum bet; that minimum bet
+  multiplied by `BetPlusInc` with the minimum added back on; half the pot; the
+  whole pot; and a bluff of half the pot. One of the five carries a setting,
+  which is why this is 1 here and not 0. A menu of five is "a fixed ladder of
+  raise amounts", which `CLAUDE.md`'s second firm requirement forbids by name,
+  so the stricter wording is the one that decides anything here.
+- **(c) exploit specific opponents — 0.** No per-person memory of any kind; the
+  only branch that would have used one calls a function that does not exist, and
+  name reading is commented out. Not partly, not weakly — zero.
+- **(d) reachable in hours on one laptop — 2.** No training of any kind is
+  needed, and the equity simulation answers in well under a second (measured,
+  §1.3), so on compute alone this is a 3. It loses a point because getting it
+  running here needed a Python it does not support, four undocumented packages,
+  and a live connection to somebody else's server — and because the Mac case,
+  which `RESOURCES_SOLVERS.md` scores, has a build recipe but no published
+  build and no test here.
+- **(e) licence acceptable for a public GPL-3.0 project — 2.** GPL-3.0 and free,
+  which is exactly right for a public GPL-3.0 project, and the price of the
+  code is nothing. It loses a point for two real snags: the GPL-**2**-only
+  `poker/vboxapi/` folder, which must not be copied; and the table templates,
+  which are the part actually worth having, are not in the repository, are not
+  licensed, and are pictures of commercial poker clients. The paid "full
+  version" buys server privileges, not code, so it is not a barrier.
+
+For comparison from `RESOURCES_SOLVERS.md`: OpenSpiel-style entries score (a) 2
+to 3 and (b) 3; GTOpen scores **(a) 2 — (b) 3 — (c) 3 — (d) 3 — (e) 1**
+(`RESOURCES_SOLVERS.md:452-454`; its (e) is 1, not 3, because GTOpen carries no
+licence at all, so none of it may be copied into a published project). Two
+cautions on reading that row beside this one: those (b) 3s answer the solvers
+file's looser question about sizing and dickreuter's (b) 1 answers the stricter
+one asked here, so the (b) column does not compare at all; and GTOpen's (d) 3
+was earned on a Mac, dickreuter's (d) 2 on this PC. dickreuter is not in that
+company **as a source of poker judgment**, and is not trying to be. As a source
+of *eyes*, nothing else in any of the four surveys competes.
+
+---
+
+## 5. What `CLAUDE.md` allows: which parts sit on which side
+
+`CLAUDE.md` is the authority for what may be taken from another project and what
+may not. Three of its sections reach dickreuter, and the words that decide the
+answer are quoted here **verbatim**, so that this section can be checked against
+the authority by inspection rather than trusted.
+
+**The firm requirements.** All three, because all three bear. These are
+requirements of the finished bot, not rules about who writes its code:
+
+> Play every table size from 2 to 9 players; treat no size in that range as out of scope.
+
+> Play true no-limit hold'em: allow any legal bet size, from a minimum raise to all-in, and never restrict the bot to a fixed ladder of raise amounts.
+
+> Play exploitatively against the named player in each seat, keyed to that player's measured tendencies, rather than settling for unexploitable play alone.
+
+**"What may be coded"** — all five of its bullets reach this question:
+
+> Let an AI assistant write the poker code: the code that picks an action, assigns a range to an opponent, reads the board, and combines opponent rates.
+
+> Write decision code as ordinary, testable code: the same inputs and seed give the same answer, tests cover it, and a reviewer can read it line by line.
+
+> Treat the **observed population** as the whole database, seated players' stored rows included, with being seated never the criterion for inclusion, and combine rates across it into a baseline, a classification split, or an archetype.
+
+> Write card-combinatorics bookkeeping ourselves - the 169 preflop hand classes, suit isomorphisms, deck enumeration - and leave ranking or valuing a hand to the engine.
+
+> Derive any opponent archetype fed to the solver from measured action frequencies alone; never hand-write one, and never let it reference hole cards, board cards, or hand strength.
+
+**"What may not be coded"** — two of its five reach it:
+
+> Take the game rules and hand evaluation from the engine road, OpenSpiel `universal_poker`, rather than hand-rolling them; reject a change that hand-rolls hand-strength logic in place of the vendored engine, and adapt the engine instead.
+
+> Ground-truth hand ranking against a named external evaluator (currently `treys`), the reference for standard 52-card ranking, and keep it out of the bot's decision path; it validates tests only, never runtime play.
+
+The other three "may not" bullets are about language models: no model call in
+the live decision path, no poker decision whose content comes from stored
+language-model output, and none of the failure modes named in
+`LLM_POKER_FAILURE_MODES.md`. **Nothing in dickreuter puts a language model
+anywhere.** Its decisions come out of if-statements, a fitted curve and a
+spreadsheet a person filled in by hand; its one neural network reads card faces
+and never poker judgment (§1.1). Those three bullets are not engaged here
+either way.
+
+**One thing has to be said first, because it decides everything after it.**
+
+The rule asks what the code *does*, not who typed it. Picking an action,
+assigning a range to an opponent, reading the board and combining opponent rates
+are all named, in as many words, as things that **may** be coded. So there is no
+question to settle about Nicolas Dickreuter being a person rather than a model,
+and nothing in the rule bars a third party's decision code as such. What the
+rule reserves is narrow and specific: **the game rules and hand evaluation come
+from the engine, and ranking or valuing a hand is left to the engine.** That one
+line decides most of the sorting below. What stops the rest of dickreuter's
+brain is not the forefront rule at all — it is the firm requirements, which say
+what the finished bot must do rather than what may be written.
+
+Two judgments below are the operator's and not mine, and both are marked where
+they fall:
+
+1. whether counting outs is *reading the board*, which may be coded, or a
+   statement about hand strength, which is left to the engine;
+2. whether a hand-written, seat-keyed slice of the 169 starting hands is an
+   *opponent archetype fed to the solver*, which the fourth permitted bullet
+   says may never be hand-written and may never reference hand strength.
+
+This document settles neither, and nothing it recommends depends on either.
+
+Sorting the files:
+
+### Permitted column — what the rule leaves open to us
+
+| Part of dickreuter | Why the rule leaves it open |
+| --- | --- |
+| `poker/scraper/table_scraper.py`, `table_screen_based.py` | reading a screen is not a poker decision, and `CLAUDE.md` already names `dickreuter/Poker` "the reference for table-state capture" |
+| `poker/scraper/table_scraper_nn.py` (the trained card reader) | same; it reads *which card*, never *how good* |
+| `poker/tools/screen_operations.py` (picture matching, number reading) | same |
+| `poker/scraper/table_setup_actions_and_signals.py` + the setup window | tooling around the capture layer; no poker decision inside it |
+| `poker/tools/mouse_mover.py`, `poker/pymouse/`, `poker/tools/vbox_manager.py` | carrying out an action already chosen; no poker decision inside it |
+| `poker/gui/`, `poker/tools/logger.py`, `poker/tools/helper.py` | same |
+| `poker/tools/game_logger.py` — **the shape of the record, not the code.** It keeps no local store of any kind; every method posts to the author's server, and it uploads every hand played (§1.6). What is worth taking is the list of fields it records, not the file | a record of this shape is what an **observed population** is built out of, and combining rates across it is named as ours to code |
+| `MonteCarlo.create_card_deck`, `get_two_short_notation` | deck enumeration and hand-class naming: "card-combinatorics bookkeeping", which the rule puts on our side of the line and not the engine's |
+
+### Closed column — what the rule, or a firm requirement, shuts out
+
+| Part of dickreuter | What shuts it out |
+| --- | --- |
+| `montecarlo_python.calc_score` / `eval_best_hand` (lines 52-159) | a hand-rolled 7-card ranker — exactly the "hand-strength logic in place of the vendored engine" the rule says to reject |
+| `montecarlo_python.run_montecarlo` (the equity number) | it exists only to say how good your hand is, and it is built on that ranker; "ranking or valuing a hand" is left to the engine |
+| `MonteCarlo.get_opponent_allowed_cards_list` + `preflop_equity.json` + `range_utg0..5` | **assigning a range is permitted; this range is not.** It is hand-written, keyed to seat, and sorted by hand strength, so a bot using it is not "keyed to that player's measured tendencies". Whether the archetype bullet reaches it as well is judgment 2 above |
+| `decisionmaker.calling`, `betting`, `bluff`, `check_deception`, `bully`, `make_decision` | **picking an action is permitted; picking it this way is not.** Every threshold in them is compared against the equity number above, so all of them inherit the hand-rolled ranker |
+| `decisionmaker.admin` (557-573) | its five-size bet menu is a "fixed ladder of raise amounts", which the second firm requirement forbids in those words |
+| `decisionmaker.preflop_table_analyser` + `preflop.xlsx` | one sheet for everybody: it plays the same way against every opponent, which is what the third firm requirement rules out. (The ban on decision content taken from stored model output does *not* reach it — a person made the sheet) |
+| `poker/decisionmaker/curvefitting.py` | it converts a chance of winning into an amount of money, so it inherits the ranker at one end and feeds the bet ladder at the other |
+| `poker/decisionmaker/genetic_algorithm.py` | it tunes the thresholds of everything above, so it inherits all of it, and what it tunes is not keyed to any named opponent |
+| `decisionmaker.py:247-268` (the dead player-profile branch) | it would turn one opponent's flop frequency straight into a change in a hand-strength curve. Dead, but it is the shape the archetype bullet names |
+
+### On the line — the one file the rule points at twice
+
+`poker/decisionmaker/outs_calculator.py`, 328 lines of flush draws, open-ended
+straights and gutshots. Counting the cards that would improve a hand is
+**reading the board**, which "What may be coded" names outright; it is also a
+statement about how good a hand is, which is left to the engine. That is
+judgment 1 above. Nothing else here waits on it: the file is not wired into the
+ranker, so it can be settled on its own, later.
+
+The seam still falls where the program itself is jointed. **Its eyes are
+entirely in the permitted column. Its brain is entirely in the closed one** —
+but not for a single reason. Half of the brain is shut out by the engine bullet,
+and half by the firm requirements, which no reading of the forefront rule
+reaches.
+
+### What "based on dickreuter" could legitimately mean
+
+**(i) Its capture layer only — what `CLAUDE.md` already records.**
+Take the scraper, the setup window, the mouse mover, and the structure of the
+table reading. Nothing else.
+*Gains:* the hardest, least glamorous, most tedious part of the project,
+finished and tested, with its own tests passing on this PC today (§3). A way in
+to three named poker rooms and a documented way to teach a fourth.
+*Gives up:* nothing.
+*Permitted as written?* **Yes.** Nothing in "What may not be coded" reaches a
+screen reader, and `CLAUDE.md` already names `dickreuter/Poker` as the reference
+for table-state capture.
+*Cost to be honest about:* the table templates are on somebody else's server and
+must be pulled down and stored locally before anything is built on them; and
+`poker/tools/screen_operations.py` imports VirtualBox automation at the top of
+the file, which would have to be untangled.
+
+**(ii) Capture plus its equity Monte Carlo.**
+Also take `montecarlo_python.py` to answer "how often do I win this hand".
+*Gains:* a working chance-of-winning number, measured here at 6,600 to 12,500
+deals a second, with ranges per seat already wired in. It saves a week.
+*Gives up:* accuracy and trust. Its ranker is hand-rolled Python that counts
+split pots as wins, and its dealing skips a card, so the opponent is dealt a
+pair about a quarter less often than it should be; between them those two put
+its answer above even the most generous honest count (all measured, §1.3). Its
+opponent ranges are hand-written assumptions, and its own test of the
+simulation has been broken since a rename.
+*Permitted as written?* **No.** `calc_score` / `eval_best_hand` is hand-rolled
+hand-strength logic, and the rule says to take hand evaluation "from the engine
+road, OpenSpiel `universal_poker`, rather than hand-rolling them" and to reject
+a change that hand-rolls it "in place of the vendored engine". Assigning a range
+is *not* what stops it — that is named as ours to code — but the ranges it ships
+are hand-written and sorted by hand strength, so they would have to go as well
+for anything keyed to a named opponent's measured tendencies.
+Replacing the ranker would answer the rule, and the replacement has to be **the
+engine, not `treys`**: `treys` is named as the test-time ground truth and kept
+"out of the bot's decision path ... never runtime play". Swapping `calc_score`
+for a call into `universal_poker` is a small, contained change that puts the
+loop back on the right side of the line while keeping the useful shell — but it
+would **not** by itself make the number right. The dealing defect lives in
+`distribute_cards_to_players`, not in the ranker, and no change of evaluator
+touches it. Saying it plainly: **(ii) is one substitution away from being
+*allowed*, and at least two repairs away from being *correct*.**
+
+**(iii) Capture plus its whole decision maker, calling that "the engine".**
+*Gains:* a bot that plays a real table this month. That is not nothing, and it
+is the only option here that produces a playing bot quickly.
+*Gives up:* the project. No solver, no looking ahead, five bet sizes instead of
+any amount, six seats, and — the part that matters most — **no opponent
+modelling at all**, which is stage 2 of the plan and the operator's stated
+reason for the whole thing. Its own users say it plays predictably (issue #185).
+And the thresholds are tuned by a routine that is called a genetic algorithm and
+is not one.
+*Permitted as written?* **No, and not close** — and what stops it is mostly not
+the forefront rule. Three separate things:
+1. Its equity number rests on the hand-rolled ranker, so everything said about
+   (ii) applies here too, inherited by every threshold in the file.
+2. Its bet sizes are a menu of five (§1.2). The second firm requirement forbids
+   that in its own words: "allow any legal bet size, from a minimum raise to
+   all-in, and never restrict the bot to a fixed ladder of raise amounts."
+3. It keeps no record of any opponent at all (§1.2), so the third firm
+   requirement — "Play exploitatively against the named player in each seat,
+   keyed to that player's measured tendencies" — is out of its reach entirely.
+   That requirement is the operator's stated reason for the project.
+
+The forefront rule does not forbid taking a third party's chooser as such:
+picking an action is coded work, whoever writes it. What (iii) runs into is what
+the bot itself is required to do, and that is not something an assessment can
+read its way around. Changing it would mean changing `CLAUDE.md`, which is the
+operator's alone.
+
+**(iv) Its architecture as a template, with OpenSpiel supplying the decisions.**
+Copy the *shape*: screen → one table-state structure → a decision → a mouse
+click, with a settings file and a log. Take the capture code with it. Write the
+decision side against OpenSpiel `universal_poker`.
+*Gains:* everything (i) gains, plus a proven arrangement of the parts, worked
+out over nine years against three live poker rooms, including the unglamorous
+things a first attempt gets wrong — read the whole table before deciding
+anything and abandon the read at the first failure; keep a memory of what you
+did last time round this betting round; move the mouse on a wobbly path; keep
+the poker client in a separate pretend computer.
+*Gives up:* nothing, except that the decision side still has to be built.
+*Permitted as written?* **Yes.** How the parts are arranged is not a poker
+decision, and taking the decisions from OpenSpiel `universal_poker` is exactly
+what "What may not be coded" asks for.
+
+---
+
+## 6. How it would join to OpenSpiel `universal_poker`, concretely
+
+**What dickreuter produces.** After one successful screen read, one object
+holding: `mycards` (`['AS','KS']`), `cardsOnTable` (`['7H','8H','9C']`),
+`gameStage`, `total_players`, `dealer_position`, `position_utg_plus`,
+`myFunds`, `totalPotValue`, `round_pot_value`, `minCall`, `minBet`,
+`checkButton` / `allInCallButton` / bet and raise button flags, and for each
+other seat a small record: `utg_position`, `status` (still in the hand or not),
+`funds`, `pot`.
+
+**What OpenSpiel needs.** `universal_poker` is a wrapper around the rules engine
+of the Annual Computer Poker Competition (its header says so at line 40;
+fetched HTTP 200, 00:56 UTC 2026-09-17). A game is built from named settings
+(`universal_poker.cc:152-212`): `numPlayers`, `numRounds`, `numSuits`,
+`numRanks`, `numHoleCards`, `numBoardCards`, `stack` (one whole-chip figure per
+player), `blind` (one per player), `firstPlayer`, `betting` (`"nolimit"`), and
+`bettingAbstraction`. Setting `bettingAbstraction` to `fullgame`
+(`BettingAbstraction::kFULLGAME`, header line 62) makes every whole-chip raise
+amount its own legal move — genuine no-limit. The ceiling is **10 players**
+(`kMaxUniversalPokerPlayers`, header line 52). Then the position in the hand is
+reached by **replaying the actions** from the start. Header line **56** is one
+line and lists five, not four: `enum ActionType { kFold = 0, kCall = 1,
+kBet = 2, kAllIn = 3, kHalfPot = 4 };`. The first four are the ones this join
+would use. `kHalfPot` is the half-pot action belonging to the `fchpa` betting
+abstraction (`kNumActionsFCHPA`, lines 59-60; `kFCHPA`, line 62), not to
+`fullgame`.
+
+**The seam, named.** One structure and two converters:
+
+```
+TableScraper  --->  TableState  --->  universal_poker game + replayed state
+ (dickreuter)      (ours, new)              (OpenSpiel, unchanged)
+```
+
+`TableState` is a plain record this project owns: seat count, my seat, the
+button's seat, hole cards, board cards, each seat's chips and committed chips,
+whose turn it is, and **the list of actions taken so far this hand**. Capture
+fills it; a builder turns it into an OpenSpiel game and state. Four mismatches
+have to be bridged there, and they are the whole of the work:
+
+1. **A snapshot is not a history.** dickreuter reads the table as it is *now*.
+   OpenSpiel needs the sequence of moves from the first card to this moment.
+   Nothing in dickreuter accumulates that; its `History` object
+   (`poker/decisionmaker/current_hand_memory.py`) remembers only its own last
+   decision, and the per-hand round list it does keep comes from the author's
+   server (`get_rounds`). **This project has to build the action history itself,
+   by differencing consecutive screen reads.** It is the one piece of real new
+   work the join demands, and it belongs squarely in the permitted column:
+   counting the actions we observe, which is what an observed population is
+   built out of.
+2. **Money versus chips.** dickreuter reads dollars as floating-point numbers
+   through a text scanner. OpenSpiel counts whole chips. Divide by the big blind
+   and round, and decide once what a hundredth of a big blind does.
+3. **Card spelling.** dickreuter writes `'AS'`, rank then suit, both capitals,
+   suits `CDHS`. OpenSpiel's card sets use the usual lower-case suit. A ten-line
+   mapping.
+4. **Seat numbering.** dickreuter numbers seats anticlockwise from you, with you
+   always 0. OpenSpiel numbers players 0 upward with the blinds at fixed
+   positions. A rotation, computed from the dealer button.
+
+**Licences fit.** OpenSpiel is Apache-2.0, which may be combined into a GPL-3.0
+work; dickreuter is GPL-3.0; pokerbot is GPL-3.0 and public. The combination is
+lawful in that direction, provided `poker/vboxapi/` is left behind (§2).
+
+---
+
+## 7. The four meanings, ranked, and one recommendation
+
+**Ranked, best first:**
+
+| Rank | Meaning | Allowed by the rule as written? | What it buys |
+| --- | --- | --- | --- |
+| **1** | **(iv)** Its architecture as the template, its capture layer as the eyes, OpenSpiel deciding | **Yes** | The finished hard part, plus a proven layout of the whole program |
+| 2 | **(i)** Its capture layer only | **Yes** | The finished hard part |
+| 3 | **(ii)** Capture plus its equity simulation | **No** — its ranker is hand-rolled hand strength, which the rule says to reject; one substitution, to the engine, turns that into yes | A week saved, at the cost of a number that is quietly wrong |
+| 4 | **(iii)** Capture plus its whole decision maker as "the engine" | **No** — it collides with two of the three firm requirements as well as the engine bullet, so it is a change to `CLAUDE.md`, not a reading of it | A playing bot soon, and the end of the project's actual goal |
+
+### The recommendation
+
+**Take option (iv): copy how dickreuter's program is put together, take its
+screen-reading half, and let OpenSpiel make every poker decision.**
+
+Three reasons, in the order they matter:
+
+1. **The thing dickreuter is genuinely excellent at is the thing this project
+   cannot buy anywhere else.** Reading a poker room's window and turning it into
+   numbers is nine years of fiddly work against three commercial programs that
+   keep changing. It works: on this PC, today, its picture-reading tests passed
+   twenty-four out of twenty-four in eleven seconds. No solver, no engine and no
+   other project in the four surveys does this job at all.
+
+2. **The thing it is weakest at is the thing this project exists to do.** The
+   operator's goal is to beat *specific* human beings by noticing how each of
+   them plays. dickreuter keeps no record of any opponent whatsoever — not a
+   weak version, not a partial version, none. Adopting its brain would not be a
+   shortcut towards the goal; it would be a turn away from it.
+
+3. **It costs nothing to take the shape as well as the eyes, and the shape is
+   worth real time.** The arrangement — read everything, stop at the first thing
+   you cannot read, decide once, click once, write it down, remember what you
+   did last time round — is the part a first attempt gets wrong. Copying it is
+   free and forbidden by nothing.
+
+**What saying yes to this would mean, in practice, in order:**
+(1) download and store locally every table definition the project needs, before
+anything is built on them, because they live on somebody else's computer;
+(2) copy the screen-reading, mouse-moving and table-setup code into the project
+under GPL-3.0, keeping the notices, **leaving `poker/vboxapi/` behind**;
+(3) untangle the VirtualBox import out of the screen-reading module so it is
+optional; (4) define the one table-state structure named in §6 and write the
+piece that builds the action history by comparing one screen read with the next;
+(5) let OpenSpiel make every decision from there.
+
+**What saying no would mean:** nothing is lost today. `CLAUDE.md` already
+records dickreuter as the capture reference, and option (i) — which needs no
+decision at all — is a subset of this recommendation.
+
+**The one thing to decide separately, and soon:** option (ii). If the operator
+wants a chance-of-winning number quickly, dickreuter's simulation is the
+fastest route. Replacing its hand-rolled card ranker with a call into OpenSpiel
+`universal_poker` would stop the loop breaking the rule: that is the **one
+substitution** that makes it allowed. It has to be the engine and not `treys`,
+which `CLAUDE.md` keeps out of the bot's decision path and reserves for checking
+tests. Making the number *right* takes at least one further repair, because the
+way it deals the opponent's cards is broken too and no change of evaluator
+touches that (§1.3). One fix for the rule, two at the least for the
+arithmetic. It is still a smaller question than the four above and can be
+settled on its own.
+
+**Not recommended:** option (iii). Two of `CLAUDE.md`'s three firm
+requirements would have to be struck out for it — the one that forbids "a fixed
+ladder of raise amounts" and the one that requires play "keyed to that player's
+measured tendencies" — and only the operator can strike those out. What it buys
+in exchange — a bot that plays predictably, at six seats, with five bet sizes,
+against everyone the same way — is not the bot that was asked for.
+
+---
+
+## Appendix A. Verification log
+
+Every address fetched, with the code the server returned and the UTC time. All
+fetched with
+`curl -sL -A "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36
+(KHTML, like Gecko) Chrome/128.0 Safari/537.36" --max-time 40`, on 2026-09-17.
+No browser was used.
+
+| Time (UTC) | Address | Code | What it gave |
+| --- | --- | --- | --- |
+| 00:51:42 | `POST https://dickreuter.com:7778/get_internal` | **200** | version 6.76, installer link, purchase link, `preflop_url` |
+| 00:51:59 | `POST https://dickreuter.com:7778/get_available_tables?computer_name=test` | **200** | ~70 table names incl. "Official GGPoker 6player", "Official Party Poker", "PartyPoker", "PokerStarsMesa3" |
+| 00:52:08 | `POST https://dickreuter.com:7778/get_strategy?name=Default&login=guest&password=guest` | **200** | full settings sheet; `preflop_override: 0`, `bigBlind: 0.04`, `strategyIterationGames: 1013` |
+| 00:52:10 | `POST https://dickreuter.com:7778/get_playable_strategy_list?login=guest&password=guest&computer_name=test` | **200** | `["Official 1","Trial 1","Trial 2","Trial 3"]` |
+| 00:52:11 | `http://deepermind-pokerbot.com/preflop.xlsx` | **200** | 180,959 bytes |
+| 00:52:32 | `https://api.github.com/repos/dickreuter/Poker` | **200** | GPL-3.0; 2,463 stars; 589 forks; 147 watchers; 34 open; pushed 2025-06-26T21:29:10Z; created 2016-03-29; size 155,507 KB; not archived |
+| 00:52:40 | `https://api.github.com/repos/dickreuter/Poker/issues?state=open&per_page=40` | **200** | 34 items (25 issues, 9 pull requests), listed in §2 |
+| 00:52:40 | `https://api.github.com/repos/dickreuter/Poker/releases?per_page=10` | **200** | 5 releases, all Jan 2024, one `.exe` each; newest 445.6 MB, 11,429 downloads |
+| 00:52:40 | `https://api.github.com/repos/dickreuter/Poker/commits?per_page=10` | **200** | last commit `cae3a108` 2025-06-26 "fix config"; "add licence" 2024-01-18 |
+| 00:56:17 | `https://raw.githubusercontent.com/google-deepmind/open_spiel/master/open_spiel/games/universal_poker/universal_poker.h` | **200** | 12,986 bytes; `kMaxUniversalPokerPlayers = 10` (l.52); `BettingAbstraction { kFCPA, kFC, kFULLGAME, kFCHPA }` (l.62); ACPC note (l.40) |
+| 00:56:33 | `.../universal_poker/universal_poker.cc` | **200** | 72,804 bytes; game settings at ll.152-212 |
+| 00:56:51 | `https://pypi.org/pypi/tensorflow/2.12.0/json` | **200** | builds only for cp38-cp311; Windows wheel 1,916 bytes (a stub) |
+| 00:56:51 | `https://pypi.org/pypi/tensorflow/json` | **200** | latest 2.21.0, needs Python >= 3.10 |
+| 00:56:51 | `https://pypi.org/pypi/pandas/2.0.3/json` | **200** | builds only for cp38-cp311 |
+| 00:56:5x | `https://pypi.org/pypi/tesserocr/json` | **200** | no Windows builds published on PyPI |
+| 00:56:5x | `https://pypi.org/pypi/tensorflow-intel/2.12.0/json` | **200** | `tensorflow_intel-2.12.0-cp311-cp311-win_amd64.whl` = **272.9 MB** |
+| 00:57:38 | `https://api.github.com/repos/dickreuter/Poker/issues/241/comments` | **200** | author replied 2025-09-17, same day the issue opened |
+| 00:57:38 | `https://api.github.com/repos/dickreuter/Poker/issues/228/comments` | **200** | 5 comments about a PokerStars detection |
+| 00:57:51 | `https://api.github.com/repos/dickreuter/Poker/actions/workflows/python-tests.yml/runs` | **200** | `total_count 0` |
+| 00:57:5x | `https://api.github.com/repos/dickreuter/Poker/actions/runs` | **200** | `total_count 0` |
+| 01:01:37 | `https://api.github.com/repos/simonflueckiger/tesserocr-windows_build/releases?per_page=5` | **200** | Windows builds for cp39-cp314 incl. **cp313**; newest 2026-09-12 |
+| 01:0x | `POST https://dickreuter.com:7778/get_table?table_name=Official%20GGPoker%206player` | **200** | **532,771 bytes**, 103 keys; `max_players` absent; `use_neural_network: 0` |
+| 01:11:09 | `http://www.deepermind-pokerbot.com/` | **301 → fails** | redirects to `https://www.…`, which does not connect (curl reports `000`) |
+| 01:11:16 | `https://deepermind-pokerbot.com/` | **200** | 1,304 bytes, "DeeperMind Pokerbot" React page |
+| 01:11:16 | `http://deepermind-pokerbot.com/` | **200** | same, after redirect to https |
+| 01:51:20 | `https://raw.githubusercontent.com/google-deepmind/open_spiel/master/open_spiel/games/universal_poker/universal_poker.h` | **200** | re-read for §6; 12,986 bytes; `ActionType` is a single line at l.56 with five members, the fifth `kHalfPot = 4`; `kNumActionsFCHPA` ll.59-60; `kFCHPA` l.62 |
+| 01:51:47 | `POST https://dickreuter.com:7778/get_available_tables?computer_name=test` | **200** | re-read for §1.7; 1,205 bytes, **78** template names, none advertising more than six seats |
+
+**UNVERIFIED, and why:**
+
+- **Whether any of it runs on macOS.** A `requirements_mac.txt` and a macOS
+  build recipe exist; no macOS build has ever been released; no Mac was
+  available to this session.
+- **Whether the trained card recogniser works.** TensorFlow has no Python 3.13
+  build, so the two tests that use it were not run. Downloading the trained
+  weights from the server *did* succeed (`test_load_nn_model` passed).
+- **Whether the table templates may be redistributed.** They are not in the
+  repository, carry no licence, and are pictures of commercial poker clients.
+- **Whether any community-made template sets more than six seats.** The 78
+  names were read; the definitions behind them were not, because each is about
+  half a megabyte. Only "Official GGPoker 6player" was downloaded in full, and
+  it carries no seat-count key at all.
+- **What the paid "full version" actually unlocks beyond creating and viewing
+  settings sheets.** The purchase page was not bought from.
+- **Whether the decision maker's 14 switched-off tests would pass.** They are
+  switched off in the source with "Fix access issues"; I did not re-enable them.
+- **How well the capture layer performs against a live table.** Nothing was
+  launched that connects to a poker site, per the brief.
+
+## Appendix B. What I ran
+
+Scratch area:
+`C:\Users\chase\AppData\Local\Temp\claude\C--Users-chase-heater\9b6e4e4f-09aa-4db9-b21b-ae800089dd8f\scratchpad\dickreuter\`.
+Python: `C:\Users\chase\AppData\Local\Programs\Python\Python313\python.exe`,
+**3.13.15**. Nothing outside the scratch area and this repository was changed.
+The larger re-runs in item 6 reused that same clone and install area; `treys`
+0.1.8 was installed into it for the independent count, and the two extra
+scripts (`treys_check2m.py`, `deal_check.py`) sit beside the originals.
+
+**1. Clone.** 00:47:56 → 00:49:22 UTC, 86 s.
+```
+$ git clone --depth 1 https://github.com/dickreuter/Poker
+Cloning into 'Poker'...
+$ du -sh Poker
+92M     Poker
+$ git log -1 --format="%H %ad %an %s" --date=iso-strict
+cae3a108b6cbf22ed8ef90bc0e70f790346289a4 2025-06-26T22:29:09+01:00 Nicolas Dickreuter fix config
+```
+Size breakdown: `.git` 41 M, `doc` 28 M, `tessdata` 15 M, `poker` 5.0 M,
+`notebooks` 3.2 M, `website` 2.2 M. Recounted at 01:40 UTC on 2026-09-17:
+```
+$ git ls-files '*.py' | wc -l
+69
+$ git ls-files '*.py' | xargs wc -l | tail -1
+ 14452 total
+$ grep -c . requirements_win.txt
+30
+$ ls poker/gui/ui/*.ui | wc -l
+8
+```
+
+**2. The documented install, on Python 3.13 — failed.** 00:50:23 → 00:50:52.
+```
+$ python -m venv venv
+$ venv/Scripts/python.exe -m pip install -r Poker/requirements_win.txt
+Collecting pandas==2.0.3 (from -r Poker/requirements_win.txt (line 1))
+  Downloading pandas-2.0.3.tar.gz (5.3 MB)
+  Getting requirements to build wheel: finished with status 'error'
+  ...
+  ModuleNotFoundError: No module named 'pkg_resources'
+ERROR: Failed to build 'pandas' when getting requirements to build wheel
+EXITCODE=1
+```
+(`requirements.txt`, the file the README and the Dockerfile both name, does not
+exist in the repository; `requirements_win.txt` is the Windows one.)
+
+**3. The unpinned install — worked.** 00:58:10 → 00:59:59, plus three extras.
+```
+$ venv/Scripts/python.exe -m pip install pandas numpy scipy matplotlib \
+    opencv-python pillow pytest requests openpyxl xlrd pyyaml lmfit \
+    numexpr tqdm seaborn pymongo fastapi uvicorn
+Successfully installed ... 49 packages ...
+$ venv/Scripts/python.exe -c "import cv2,numpy,pandas;print(...)"
+opencv 5.0.0 numpy 2.5.3 pandas 3.0.5
+$ venv/Scripts/python.exe -m pip install \
+    https://github.com/simonflueckiger/tesserocr-windows_build/releases/download/\
+tesserocr-v2.10.0-tesseract-5.5.2/tesserocr-2.10.0-cp313-cp313-win_amd64.whl
+Successfully installed tesserocr-2.10.0
+$ venv/Scripts/python.exe -m pip install virtualbox
+Successfully installed virtualbox-2.1.1
+$ venv/Scripts/python.exe -m pip install pywin32      # not in requirements
+Successfully installed pywin32-312
+```
+PyQt6 was installed separately under a shorter path because of this PC's
+260-character path limit. TensorFlow was deliberately omitted: no Python 3.13
+build exists and it is 273 MB. Final size: `venv` 710 MB, second area 229 MB.
+
+**4. The test suite.** 01:02:39 → 01:03:53.
+```
+$ pytest
+SKIPPED [14] poker\tests\test_decision.py: Fix access issues
+FAILED poker/tests/test_montecarlo.py::TestMonteCarlo::test_monteCarlo
+FAILED poker/tests/test_tensorflow.py::test_save_model
+FAILED poker/tests/test_tensorflow.py::test_train_card_neural_network_and_predict
+================== 3 failed, 28 passed, 14 skipped in 53.63s ==================
+```
+The three failures, one line each:
+```
+E TypeError: MonteCarlo.run_montecarlo() got an unexpected keyword argument
+  'maxRuns'. Did you mean 'max_runs'?
+E FileNotFoundError: [Errno 2] No such file or directory: '...\poker\pics/model.json'
+E ModuleNotFoundError: No module named 'tensorflow'
+```
+45 tests collected in total. The capture and draw-counting tests on their own,
+01:05:16 → 01:05:29:
+```
+$ pytest poker/tests/test_table_and_ocr.py poker/tests/test_outs.py -q
+........................
+24 passed in 11.17s
+```
+
+**5. Equity simulation, measured.** 01:05:46 → 01:05:49. Script
+`mc_bench.py`, 5,000 deals per row, one core, ace-king of one suit:
+```
+players=2 board=preflop        equity=0.688 runs=5000 wall=0.40s -> 12,493 playouts/s
+players=3 board=preflop        equity=0.508 runs=5000 wall=0.49s -> 10,154 playouts/s
+players=6 board=preflop        equity=0.332 runs=5000 wall=0.75s ->  6,643 playouts/s
+players=3 board=['7H','8H','9C'] equity=0.245 runs=5000 wall=0.44s -> 11,323 playouts/s
+players=6 board=['7H','8H','9C'] equity=0.082 runs=5000 wall=0.70s ->  7,142 playouts/s
+```
+
+**6. The equity check.** First pass 01:06:06 → 01:06:46:
+```
+$ python mc_bench2.py                         # dickreuter's own simulation
+AKs heads-up vs random, 200000 playouts: equity=0.6815 in 16.6s
+$ python treys_check.py                       # independent, using treys 0.1.8
+treys, 200000 deals: win=0.6625 tie=0.0170 lose=0.3205
+                     win+tie=0.6795  win+tie/2=0.6710
+```
+200,000 deals on each side is not enough to separate 0.6815 from 0.6795, so
+both sides were re-run larger, 01:43:14 → 01:49:11 UTC on 2026-09-17. Twelve
+runs of the same unmodified `mc_bench2.py`, 200,000 deals each, 2,400,000 in
+all:
+```
+$ for i in 1..12; do python mc_bench2.py; done
+AKs heads-up vs random, 200000 playouts: equity=0.6795 in 15.4s
+AKs heads-up vs random, 200000 playouts: equity=0.6817 in 15.7s
+AKs heads-up vs random, 200000 playouts: equity=0.6818 in 15.4s
+AKs heads-up vs random, 200000 playouts: equity=0.6824 in 15.5s
+AKs heads-up vs random, 200000 playouts: equity=0.6811 in 15.3s
+AKs heads-up vs random, 200000 playouts: equity=0.6816 in 15.3s
+AKs heads-up vs random, 200000 playouts: equity=0.6832 in 15.4s
+AKs heads-up vs random, 200000 playouts: equity=0.6812 in 15.5s
+AKs heads-up vs random, 200000 playouts: equity=0.6817 in 15.9s
+AKs heads-up vs random, 200000 playouts: equity=0.6807 in 15.7s
+AKs heads-up vs random, 200000 playouts: equity=0.6825 in 16.0s
+AKs heads-up vs random, 200000 playouts: equity=0.6832 in 15.3s
+```
+Pooled: **0.6817**, standard error 0.0003. The independent count, same script
+as before with the count raised to 2,000,000 deals and a fresh seed
+(`treys_check2m.py`, treys 0.1.8):
+```
+$ python treys_check2m.py
+treys, 2000000 deals: win=0.6623 tie=0.0165 lose=0.3212
+                      win+tie=0.6788  win+tie/2=0.6705
+```
+So dickreuter's 0.6817 is above **both** references — 0.6788 with every split
+counted as a whole win, 0.6705 with splits halved — not level with the first.
+A 400,000-deal treys run at 01:44:43 → 01:45:03 with a different seed gave
+win+tie 0.6775, win+tie/2 0.6692, consistent with the larger one.
+
+**6b. The dealing check.** 01:49:40 → 01:49:47. `deal_check.py` calls
+dickreuter's own `distribute_cards_to_players` 400,000 times with the
+opponent's range set to every hand, and counts how often the opponent's two
+cards are a pair:
+```
+$ python deal_check.py
+dickreuter dealing, 400000 opponent hands: pocket pairs = 0.04431
+correct rate from a 50-card deck (AS,KS removed) = 0.05878
+```
+The correct rate is arithmetic, not a simulation: with your own ace and king
+removed there are 11 ranks with all four suits left (6 pairs each) and two
+ranks with three suits left (3 pairs each), so 72 pairs out of the 1,225
+two-card hands, 0.05878.
+
+**7. The offline check.** A copy of the tree with `db` pointed at a dead port:
+```
+read_strategy RAISED: ConnectionError HTTPConnectionPool(host='127.0.0.1',
+port=9): Max retries exceeded with url: /get_strategy?name=Default&
+login=guest&password=guest
+```
+
+**8. This repository's own suite, before and after writing this file**
+(nothing here changes any code, so nothing should move):
+```
+$ python.exe -m pytest tests -q
+.........................                                                [100%]
+25 passed in 0.72s
+```
+Re-run at 01:53 UTC on 2026-09-17, after the round-1 corrections and after
+local `main` had been merged in (`main` added tests of its own):
+```
+$ python.exe -m pytest tests -q
+................................                                         [100%]
+32 passed in 1.77s
+$ python.exe tools/check_design_numbers.py
+684 figures in OPPONENT_MODEL_DESIGN.md all match the constants they derive
+from.
+```
+
+**9. The opponent-count clamp, re-checked.** 2026-09-17, on the Mac worktree
+rather than the PC, against the same clone at `cae3a108`. The clamp at
+`montecarlo_python.py:346-347` was evaluated for every table size, with the
+preflop `assumedPlayers = 2` of line 315:
+```
+total_players=2 max_assumed=0 clamped=0
+total_players=3 max_assumed=1 clamped=1
+total_players=4 max_assumed=2 clamped=2
+...
+total_players=9 max_assumed=7 clamped=2
+```
+The ceiling is applied last, so below four seats it is the ceiling and not the
+floor of 2 that decides. Calling dickreuter's own `run_montecarlo` with the
+player count that produces at two seats:
+```
+$ python3 -c "... m.run_montecarlo(..., player_amount=0, ...)"
+RAISED IndexError list index out of range
+```
+— `eval_best_hand` takes the first of an empty list of hands. The simulation
+was not modified; only `poker.tools.helper`, which needs `pandas`, was stubbed
+so the module would import on this machine.
+
+**10. This repository's own gate, on the merged branch.** After merging
+`origin/main` at `69286e6`, which is 145 commits past item 8's run and brings
+its own tests with it:
+```
+$ bash bin/gate.sh
+collected 340 tests
+339 passed, 1 skipped in 14.15s
+705 figures in OPPONENT_MODEL_DESIGN.md all match the constants they derive from.
+233 figures in TABLE_SIZE_AND_SIZING_NOTES.md all match the constants they derive from.
+234 checks on EVALUATION_STRATEGY.md all match the constants they derive from.
+gate: passed
+```
+Item 8's smaller counts are what the same commands returned before that merge;
+they are left as they were recorded.
