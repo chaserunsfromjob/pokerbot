@@ -18,6 +18,10 @@ ORDER = ["cfr", "cfr_plus", "es_mccfr", "os_mccfr"]
 
 def main(path="research/blueprint_cfr_results.jsonl"):
     rows = [json.loads(line) for line in open(path) if line.strip()]
+    # Which cells have a recorded solve-only run: only those are known to have
+    # solved before the NashConv measurement killed the process.
+    solve_only = {(r["algo"], r["players"]) for r in rows
+                  if r.get("phase") == "solve_only"}
     # Skip the interim "solve_only" records and the --skip-nashconv runs; this table
     # is the full-budget sweep. The six-handed solve-only figures get their own table.
     rows = [r for r in rows
@@ -36,8 +40,13 @@ def main(path="research/blueprint_cfr_results.jsonl"):
                 continue
             if r.get("crashed_exit_code") is not None:
                 code = r["crashed_exit_code"]
-                why = ("solved, then **killed during the NashConv measurement** (signal 9)"
-                       if code == -9 else "**crashed** (exit %s)" % code)
+                if code != -9:
+                    why = "**crashed** (exit %s)" % code
+                elif (algo, players) in solve_only:
+                    why = "solved, then **killed during the NashConv measurement** (signal 9)"
+                else:
+                    why = ("killed (signal 9); the solve is known to complete from the "
+                           "`--skip-nashconv` run")
                 print("| %s | %d | %s | see solve-only table | not measurable here | - | - | - -> %s | %s |" % (
                     NAMES[algo], players, why, r.get("load_1min_end"),
                     "yes" if (r.get("load_1min_end") or 0) > 4.0 else "no"))

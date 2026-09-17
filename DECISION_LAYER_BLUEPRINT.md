@@ -11,7 +11,10 @@ saved answer is called a **blueprint**.
 The other way - think during the hand, about this hand only - is
 `DECISION_LAYER_SEARCH.md`, written by another agent at the same time as this
 one. Nothing here covers it. The two documents are meant to be read together and
-then decided between.
+then decided between. `BUILD_PLAN.md` on `main` has since decided between them:
+decision-time search is the bot, and a blueprint enters only as Stage 5's
+offline per-bucket solve, which is the decision this document's recommendation
+applies to.
 
 This document exists because the project's rules changed. `CLAUDE.md`'s
 forefront rule used to be read as barring us from writing the thing that
@@ -54,11 +57,21 @@ Each is explained in plain words first and named afterwards.
 
 ## How the numbers below were produced
 
-Every figure in the measurement section comes from one committed program,
-`research/bench_blueprint_cfr.py`, and its raw output is committed beside it at
-`research/blueprint_cfr_results.jsonl`. Re-run the whole sweep with:
+Every figure in the two tables of runs below - the iteration counts, speeds,
+NashConv values, memory and load figures, and every ratio drawn from them -
+comes from one committed program, `research/bench_blueprint_cfr.py`, and its raw
+output is committed beside it at `research/blueprint_cfr_results.jsonl`. The
+tree-size figures - decision points, nodes, the time and memory of a walk - do
+**not**: they come from a one-off enumeration with `get_all_states` that was not
+committed, and they are marked as such where they appear. Re-run the sweep with:
 
     .venv/bin/python research/bench_blueprint_cfr.py --all --budget 180
+    .venv/bin/python research/bench_blueprint_cfr.py --skip-nashconv --algo <algo> --players 6
+
+The second command is the one that produced records 14-16 of the results file,
+the six-handed solve-only rows. Both **append** to that file rather than
+regenerating it, so a re-run adds records beside the existing ones instead of
+replacing them.
 
 The program runs each (method, table size) pair in its own separate process, for
 a fixed stopwatch budget, then asks OpenSpiel for NashConv on the resulting
@@ -185,23 +198,24 @@ Those last three figures are measured, by enumerating the tree with
 `open_spiel.python.algorithms.get_all_states`. **The 6-handed one is the number
 to carry away from this whole document.** Seven cards. One card each and one on
 the board. Four-chip stacks. A four-move betting menu. The smallest six-handed
-poker game that can physically be dealt - and it has 47,474 decision points
-across **7,670,880 game states**, took 37.2 seconds merely to *list*, and used
-**5.8 GB of memory** to hold the list (load 3.66, under the line). Real
-six-handed no-limit hold'em, 52 cards, 200-chip stacks, every bet size, is
-larger than this by a factor with well over a hundred zeros in it.
+poker game that can physically be dealt - and it has **47,474 information
+sets** across a tree of **17.9 million nodes**, which a bare walk crosses in
+18.5 seconds; `get_all_states` holding the de-duplicated 7.67 million states in
+memory needs about 5.8 GB (not a committed measurement). Real six-handed
+no-limit hold'em, 52 cards, 200-chip stacks, every bet size, is larger than this
+by a factor with well over a hundred zeros in it.
 
 | Method | Seats | Iterations in 180 s | Iterations / second | NashConv reached | Time to measure NashConv | Peak memory | Load (start -> end) | Over 4.0? |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | Vanilla CFR | 2 | 67,864 | 377 | 7.92587e-05 | 0.02 s | 28 MB | 3.81 -> 4.38 | **yes** |
 | Vanilla CFR | 3 | 1,134 | 6 | 0.0105112 | 0.99 s | 29 MB | 4.38 -> 5.69 | **yes** |
-| Vanilla CFR | 6 | solved, then **killed during the NashConv measurement** (signal 9) | see solve-only table | not measurable here | - | - | - -> 5.07 | yes |
+| Vanilla CFR | 6 | killed (signal 9); the solve is known to complete from the `--skip-nashconv` run | see solve-only table | not measurable here | - | - | - -> 5.07 | yes |
 | CFR+ | 2 | 77,832 | 432 | 4.4234e-06 | 0.01 s | 28 MB | 5.07 -> 3.11 | **yes** |
 | CFR+ | 3 | 1,317 | 7 | 0.000229915 | 0.88 s | 29 MB | 3.11 -> 3.16 | no |
-| CFR+ | 6 | solved, then **killed during the NashConv measurement** (signal 9) | see solve-only table | not measurable here | - | - | - -> 3.19 | no |
+| CFR+ | 6 | killed (signal 9); the solve is known to complete from the `--skip-nashconv` run | see solve-only table | not measurable here | - | - | - -> 3.19 | no |
 | External-sampling MCCFR | 2 | 18,222,370 | 101,235 | 0.000525606 | 0.01 s | 28 MB | 3.19 -> 3.72 | no |
 | External-sampling MCCFR | 3 | 6,580,433 | 36,558 | 0.00764683 | 0.85 s | 29 MB | 3.72 -> 3.7 | no |
-| External-sampling MCCFR | 6 | solved, then **killed during the NashConv measurement** (signal 9) | see solve-only table | not measurable here | - | - | - -> 4.64 | yes |
+| External-sampling MCCFR | 6 | killed (signal 9); the solve is known to complete from the `--skip-nashconv` run | see solve-only table | not measurable here | - | - | - -> 4.64 | yes |
 | Outcome-sampling MCCFR | 2 | 29,829,600 | 165,720 | 0.022658 | 0.01 s | 28 MB | 4.64 -> 2.85 | **yes** |
 | Outcome-sampling MCCFR | 3 | 12,198,280 | 67,768 | 0.0258964 | 0.87 s | 28 MB | 2.85 -> 4.65 | **yes** |
 | Outcome-sampling MCCFR | 6 | solved, then **killed during the NashConv measurement** (signal 9) | see solve-only table | not measurable here | - | - | - -> 3.13 | no |
@@ -210,16 +224,16 @@ The six-handed rows needed a correction that is worth recording, because an
 earlier draft of this document nearly stated the opposite of the truth. Every
 six-handed cell was killed by the operating system with signal 9, which reads
 as "no method reaches six players on this laptop". That is not what happened.
-**NashConv walks the entire 7.67-million-state tree, and it is the NashConv step
-that exhausts the memory, not the solving.** Outcome-sampling MCCFR proved it:
-the measuring program was changed to write the solve figures out *before*
+**NashConv walks the entire tree - 17.9 million nodes - and it is the NashConv
+step that exhausts the memory, not the solving.** Outcome-sampling MCCFR proved
+it: the measuring program was changed to write the solve figures out *before*
 attempting NashConv, and that cell then recorded 3,780,746 completed iterations
 in 33 MB before being killed in the measurement.
 
 So the six-handed cells were re-run with the measurement switched off
 (`--skip-nashconv`), which times the solve alone:
 
-| Method | Seats | Iterations in 180 s | Iterations / second | Peak memory | Load (start -> end) |
+| Method | Seats | Iterations completed (180 s budget; the two exhaustive cells overran to 226 s and 181 s, since an iteration cannot be interrupted) | Iterations / second | Peak memory | Load (start -> end) |
 | --- | --- | --- | --- | --- | --- |
 | Vanilla CFR | 6 | **4** | 0.018 | 45 MB | 3.54 -> 3.55 |
 | CFR+ | 6 | **3** | 0.017 | 45 MB | 3.55 -> 3.39 |
@@ -244,19 +258,21 @@ what grows - but within this project's budget the binding constraint measured is
 the clock, not the memory.
 
 **Two. Walking the whole tree stops working between three and six seats.** Read
-vanilla CFR across its row: 67,864 complete passes in three minutes at two
-seats, 1,134 at three seats, **four** at six seats. Three more players cost a
-factor of about seventeen thousand. CFR+ is the same shape - 77,832, then 1,317,
-then three. Three passes over a game tree is not a strategy, it is barely a
-start. Neither exhaustive method is usable at a six-handed table, and the reason
-is arithmetic that no faster laptop fixes.
+vanilla CFR across its row: 67,864 complete passes in the 180-second budget at
+two seats, 1,134 at three seats, **four** at six seats - and that six-handed
+cell ran 226 seconds, not 180, because an iteration cannot be interrupted once
+it has started. Three more players cost a factor of about seventeen thousand.
+CFR+ is the same shape - 77,832, then 1,317, then three in 181 seconds. Three
+passes over a game tree is not a strategy, it is barely a start. Neither
+exhaustive method is usable at a six-handed table, and the reason is arithmetic
+that no faster laptop fixes.
 
 **Three. Sampling survives the same jump almost unharmed.** External-sampling
 MCCFR does 101,235 iterations per second at two seats and still 10,141 at six -
 a factor of ten, against the exhaustive methods' factor of seventeen thousand.
 That one comparison is the whole case for the sampling family. At six seats
-external-sampling MCCFR completes about **560,000 times** as many iterations as
-vanilla CFR in the same three minutes.
+external-sampling MCCFR completes about **450,000 times** as many iterations as
+vanilla CFR in the same budget (1,825,371 against 4).
 
 **Four. Where the whole tree does fit, walking it wins, and it is not close.**
 At three seats CFR+ reaches a NashConv of 0.00023, while external-sampling
@@ -305,16 +321,18 @@ is the size of the whole tree. Card abstraction: unavoidable and ours to write.
 Action abstraction: `fcpa` or `fchpa`.
 
 **Reachable in hours here?** At the 2-handed toy it is not merely reachable, it
-is *finished*: 67,864 complete passes in three minutes, NashConv 0.000079. At
-6-handed it manages **four** passes in three minutes, because one iteration
-costs a full walk over those 7.67 million states. Four is not a strategy.
+is *finished*: 67,864 complete passes in the 180-second budget, NashConv
+0.000079. At 6-handed it manages **four** passes, overrunning the budget to 226
+seconds to finish the fourth, because one iteration costs a full walk over those
+7.67 million states. Four is not a strategy.
 
 **Opponent modelling.** The Python implementation is short enough to modify, and
 the modification wanted is well defined: hold some players' strategies fixed at
 what an opponent model says they do, and run regret updates for our seat only.
 That is a **best response**, and `open_spiel.python.algorithms.best_response`
-already computes one. `CLAUDE.md` explicitly allows this shape - "Substituting
-an opponent model into the engine's own solver" sits in the allowed column.
+already computes one. `CLAUDE.md` allows this shape: the only condition it sets
+is that any opponent archetype fed to the solver be "derived from measured
+action frequencies alone".
 
 **Rating.** (a) yes, the solver is n-player. (b) no - needs an action menu.
 (c) yes in principle, by fixing opponents' strategies, but at the cost of a
@@ -378,8 +396,8 @@ rather than *time per iteration*.
 added, and it is the measured claim the recommendation rests on: 101,235
 iterations per second at two seats and still 10,141 at six, a factor of ten
 where the exhaustive methods lose a factor of seventeen thousand. At six seats
-it completes about 560,000 times as many iterations as vanilla CFR in the same
-three minutes, in 35 MB.
+it completes about **450,000 times** as many iterations as vanilla CFR in the
+same budget (1,825,371 against 4), in 35 MB.
 
 **Opponent modelling.** Better suited than the exhaustive methods, for a
 practical reason: the opponents' moves are *sampled*, so an opponent model is
@@ -512,9 +530,10 @@ There are three shapes, in increasing cost.
 **One: pick which blueprint to load.** Solve two or three blueprints in advance,
 each against a different archetype of opponent, and choose at the table by what
 the opponent model has observed. Costs nothing at the table; costs one full
-solve per archetype in advance. `CLAUDE.md` puts "Selecting *which* engine
-strategy to load" squarely in the allowed column, so this shape needs no rule
-change at all.
+solve per archetype in advance. `OPPONENT_MODEL_DESIGN.md`:582 already names
+this shape as realistic - "Selecting among a **small, fixed set of
+engine-produced strategies**, one per bucket, precomputed offline" - so it needs
+no rule change at all.
 
 **Two: re-solve with the opponents' strategies held fixed.** Replace the
 opponents in the solver with what the model says they do, and run CFR for our
@@ -523,19 +542,21 @@ exploitative and maximally fragile - it loses badly the moment the opponent
 changes. The published fix is to blend: solve against a mixture of "the model"
 and "the equilibrium", tuned by how much data the model rests on. Johanson,
 Zinkevich and Bowling, *Computing Robust Counter-Strategies*, NIPS 2007, is the
-method - the **restricted Nash response**. This is the shape `CLAUDE.md` names
-explicitly in the allowed column, "Substituting an opponent model into the
-engine's own solver".
+method - the **restricted Nash response**. It is also the solve that sits
+behind shape one: `OPPONENT_MODEL_DESIGN.md`:582 names "Selecting among a
+**small, fixed set of engine-produced strategies**, one per bucket, precomputed
+offline" as the realistic form of it, with the expensive part moved offline.
 
 **Three: re-solve during the hand.** Out of scope - `DECISION_LAYER_SEARCH.md`.
 
 The rule boundary to keep hold of while reading these: `CLAUDE.md` allows our
 own code to count what opponents did, turn those counts into rates, shrink them
-toward a baseline, and sort players into buckets. It forbids our code from
-assigning a range, reading board texture, or choosing an action. All three
-shapes above stay on the right side of that line, because in all three the
-opponent model supplies only **frequencies** and the solver still does the
-poker. `OPPONENT_MODEL_DESIGN.md` already specifies the counting and shrinking
+toward a baseline, and sort players into buckets. It requires only that
+anything fed to the solver from that model be derived from measured action
+frequencies alone - never a hand-written archetype, and never referencing hole
+cards, board cards or hand strength. All three shapes above stay on the right
+side of that line, because in all three the opponent model supplies only
+**frequencies** and the solver still does the poker. `OPPONENT_MODEL_DESIGN.md` already specifies the counting and shrinking
 half. Shape two is the join between that document and this one.
 
 One warning that applies to all three. Squashing the game can make things
@@ -710,4 +731,6 @@ does not converge here; **`RESOURCES_SOLVERS.md`** for the solvers and paid
 services that could supply poker judgment instead of our computing it;
 **`OPPONENT_MODEL_DESIGN.md`** for the counting and shrinking that feeds shape
 one and shape two above; **`DECISION_LAYER_SEARCH.md`** for the alternative to
-everything in this file.
+everything in this file; **`BUILD_PLAN.md`** on `main` for the decision between
+the two, which makes decision-time search the bot and puts a blueprint at
+Stage 5 as the offline per-bucket solve.
