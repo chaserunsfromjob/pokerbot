@@ -436,6 +436,13 @@ class Checker:
             f"{len(SEAT_COUNTS)} seat counts × {STRATEGIES_PER_SEAT_COUNT} strategies, "
             f"and {BANDS} bands × {STRATEGIES_PER_SEAT_COUNT} strategies",
         )
+        # Q4 writes the same count in words once. The digit pattern above cannot
+        # see that copy, so it would survive a change to the constants silently.
+        self.every_occurrence(
+            "32 runs spelled out in Q4",
+            r"(\w+(?:-\w+)?) runs are inside that cap",
+            spell(full).capitalize(),
+        )
         self.every_occurrence(
             "16 runs under banding",
             r"one representative seat count per band, (\d+) runs",
@@ -478,6 +485,11 @@ class Checker:
 
 
 def spell(n: int) -> str:
+    """The document writes some counts out in words; this builds the same word.
+
+    Q4 writes the full solver-run count as "Thirty-two", which no digit-matching
+    pattern can see, so the phrase has to be built from the constants too.
+    """
     words = {
         1: "one",
         2: "two",
@@ -488,11 +500,43 @@ def spell(n: int) -> str:
         7: "seven",
         8: "eight",
         9: "nine",
+        10: "ten",
+        11: "eleven",
+        12: "twelve",
+        13: "thirteen",
+        14: "fourteen",
+        15: "fifteen",
+        16: "sixteen",
+        17: "seventeen",
+        18: "eighteen",
+        19: "nineteen",
     }
-    return words.get(n, str(n))
+    tens = {
+        2: "twenty",
+        3: "thirty",
+        4: "forty",
+        5: "fifty",
+        6: "sixty",
+        7: "seventy",
+        8: "eighty",
+        9: "ninety",
+    }
+    if n in words:
+        return words[n]
+    if 20 <= n <= 99:
+        ten, unit = divmod(n, 10)
+        return tens[ten] if unit == 0 else f"{tens[ten]}-{words[unit]}"
+    return str(n)
 
 
 def main(argv: list[str]) -> int:
+    # The failure lines quote the document's own characters -- "<=" as the real
+    # sign in Table 3, the real minus sign in Table 5 -- and a plain Windows
+    # console is cp1252, where `print` raises UnicodeEncodeError and the detail
+    # lines are lost while the exit code still reads 1, which disguises the
+    # crash as an ordinary mismatch. trunk's tools/check_design_numbers.py has
+    # the same shape; carry this line over when the two scripts are merged.
+    sys.stdout.reconfigure(encoding="utf-8", errors="replace")
     path = Path(argv[1]) if len(argv) > 1 else DEFAULT_DOC
     if not path.exists():
         print(f"table-size notes not found: {path}", file=sys.stderr)

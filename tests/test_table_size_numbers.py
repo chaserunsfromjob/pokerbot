@@ -13,6 +13,7 @@ No engine, no network, no dependencies: standard library only.
 
 from __future__ import annotations
 
+import os
 import subprocess
 import sys
 from pathlib import Path
@@ -22,23 +23,30 @@ SCRIPT = REPO_ROOT / "tools" / "check_table_size_numbers.py"
 DOCUMENT = REPO_ROOT / "TABLE_SIZE_AND_SIZING_NOTES.md"
 
 
-def run_checker(*args: str) -> subprocess.CompletedProcess:
+def run_checker(*args: str, env: dict | None = None) -> subprocess.CompletedProcess:
+    # Read the checker's output as the UTF-8 it makes itself write, so this side
+    # of the pipe never turns a detail line into a decoding accident of its own.
     return subprocess.run(
         [sys.executable, str(SCRIPT), *args],
         capture_output=True,
         text=True,
+        encoding="utf-8",
+        errors="replace",
         cwd=str(REPO_ROOT),
+        env=env,
     )
 
 
-def mutate(tmp_path: Path, old: str, new: str) -> subprocess.CompletedProcess:
+def mutate(
+    tmp_path: Path, old: str, new: str, env: dict | None = None
+) -> subprocess.CompletedProcess:
     """Write a copy of the document with one figure changed, and check it."""
     text = DOCUMENT.read_text(encoding="utf-8")
     broken = text.replace(old, new, 1)
     assert broken != text, f"the text this test edits has moved: {old!r}"
     target = tmp_path / DOCUMENT.name
     target.write_text(broken, encoding="utf-8")
-    return run_checker(str(target))
+    return run_checker(str(target), env=env)
 
 
 def test_script_and_document_exist():
@@ -80,6 +88,26 @@ def test_drift_in_table_3(tmp_path):
     )
     assert result.returncode == 1
     assert "Table 3 9 vs 2 bound at spread 0.3" in result.stdout
+
+
+def test_the_failure_detail_survives_a_cp1252_console(tmp_path):
+    """The detail lines must arrive on a plain Windows console, which is cp1252.
+
+    The figures the checker quotes back carry characters cp1252 has no code for:
+    "≤" in Table 3 and a real minus sign in Table 5. With the checker printing
+    at the console's own encoding, `print` raised UnicodeEncodeError, every
+    detail line was lost, and the exit code still read 1 — so a crash looked
+    exactly like an ordinary mismatch.
+    """
+    result = mutate(
+        tmp_path,
+        "| 9-max vs heads-up | 0.778 | ≤ 0.233 |",
+        "| 9-max vs heads-up | 0.778 | ≤ 0.234 |",
+        env={**os.environ, "PYTHONIOENCODING": "cp1252"},
+    )
+    assert result.returncode == 1
+    assert "Table 3 9 vs 2 bound at spread 0.3" in result.stdout
+    assert "UnicodeEncodeError" not in result.stderr
 
 
 def test_drift_in_table_4(tmp_path):
@@ -134,6 +162,17 @@ def test_drift_in_the_solver_run_count(tmp_path):
     result = mutate(tmp_path, "= 32 offline solver runs", "= 30 offline solver runs")
     assert result.returncode == 1
     assert "32 offline solver runs" in result.stdout
+
+
+def test_drift_in_the_spelled_out_solver_run_count(tmp_path):
+    """Q4 writes the run count in words, where no digit pattern can see it."""
+    result = mutate(
+        tmp_path,
+        "Thirty-two runs are inside that cap",
+        "Thirty-one runs are inside that cap",
+    )
+    assert result.returncode == 1
+    assert "32 runs spelled out in Q4" in result.stdout
 
 
 def test_a_missing_table_is_reported_not_crashed(tmp_path):
