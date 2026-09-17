@@ -49,26 +49,27 @@ Plain-language note first, because two words recur throughout:
   on 2023-04-03, so it accepts no issues and no pull requests. Nothing we fix
   can ever go upstream, and there will be no upstream fixes to re-apply: every
   patch in `vendor/poker_ai/` is permanently ours to carry.
-- Licence: GPL-3.0. The full text is `vendor/poker_ai/LICENSE`, where it sits
-  with the code it covers; there is deliberately no `LICENSE` at the repository
-  root, because a licence file at the root of a repository conventionally reads
-  as a grant of *this* project to whoever holds it, and this project grants
-  nothing to anyone. GPL-3.0's obligations - publishing source, licensing
-  derived work alike - are triggered by *distributing* the software, not by
-  using it. The operator's position, recorded under "Licence" in `CLAUDE.md`, is
-  that pokerbot is never distributed, so those obligations do not bite; that
-  decision reopens before the code is ever handed to anyone.
+- Licence: GPL-3.0. The engine's own copy of the full text is
+  `vendor/poker_ai/LICENSE`, where it sits with the code it covers, and there
+  is a second copy at `LICENSE` in the repository root, which puts the whole
+  of pokerbot under the same licence. GPL-3.0's obligations - publishing
+  source, licensing derived work alike - are triggered by *distributing* the
+  software, and publishing a repository is distributing it, so they apply to
+  this project and are met by its source being public. The operator's
+  position, recorded under "Licence" in `CLAUDE.md`, is that pokerbot is
+  public at `github.com/chaserunsfromjob/pokerbot` so classmates can
+  collaborate on it; closing the repository, or moving to another licence,
+  goes to the operator first.
 - Location in this repo: `vendor/poker_ai/`, as a **plain copy of the source
   tree**, not a git submodule.
 
-Why a copy and not a submodule: stage 1 of the plan in `CLAUDE.md` is to move
-this engine off the 20-card deck, which means editing its source. A submodule
-turns every such edit into a fork we have to host and track separately, and
-makes `git clone` of this repo produce a directory that is empty until someone
-remembers a second command. A copy is one clone, one diff, one review. The
-cost would normally be that upstream fixes have to be re-applied by hand, and
-here there is no such cost at all: the repository is archived, so there will be
-no upstream fixes.
+Why a copy and not a submodule: the engine's source is ours to edit and ours to
+carry. A submodule turns every such edit into a fork we have to host and track
+separately, and makes `git clone` of this repo produce a directory that is empty
+until someone remembers a second command. A copy is one clone, one diff, one
+review. The cost would normally be that upstream fixes have to be re-applied by
+hand, and here there is no such cost at all: the repository is archived, so
+there will be no upstream fixes.
 
 ### Changes made to the vendored code
 
@@ -302,7 +303,7 @@ Taken piece by piece, cheapest first:
   use real short-deck rules (where a flush beats a full house). That is an
   upstream fidelity gap that simply disappears when we move to 52 cards.
 
-  One caveat that matters for this repo specifically. `CLAUDE.md:17` treats
+  One caveat that matters for this repo specifically. `CLAUDE.md:19` treats
   `treys` as an *external* evaluator used to check hand rankings. It is not
   external to this engine in the way that wording suggests: `poker_ai`'s
   evaluator is itself a fork of the same library. Both descend from Cactus
@@ -342,7 +343,7 @@ Taken piece by piece, cheapest first:
     return one number each, and the ten non-pair branches return a suited or an
     unsuited number. A 52-card deck has **169** starting hand classes
     (13 pairs + 78 suited + 78 unsuited). Writing that enumeration ourselves is
-    allowed by `CLAUDE.md:16`, the forefront-rule bullet that puts card
+    allowed by `CLAUDE.md:18`, the forefront-rule bullet that puts card
     combinatorics - the 169 preflop classes, suit isomorphisms, deck
     enumeration - on our side of the line and leaves ranking, valuing and
     choosing with the engine. Deciding "which of the 169 classes is this hand"
@@ -404,7 +405,7 @@ decision, against upstream defaults of 50 and 6). Full numbers in the run log
 at the end.
 
 The budget these numbers answer to is the compute-budget bullet at
-`CLAUDE.md:29` - **no multi-day computing; a playable bot has to be reachable in
+`CLAUDE.md:47` - **no multi-day computing; a playable bot has to be reachable in
 hours, on one laptop** - which the operator stated on 2026-09-15. Measure every
 cost below against that bullet.
 
