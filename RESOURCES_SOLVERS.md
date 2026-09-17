@@ -135,7 +135,7 @@ for two reasons stated plainly here and again in the recommendation:
 - The obvious way to cover multiway postflop with the tools listed here is
   **an equity-driven rule set biased by the opponent model**. No engine in
   this survey contains such rules; they would be code we write, and code that
-  picks the action. `CLAUDE.md:13-15` forbids exactly that without a recorded
+  picks the action. `CLAUDE.md:15-17` forbids exactly that without a recorded
   carve-out in the project rules. So it is a rule decision, not a tooling
   decision, and this file does not take it.
 - `ENGINE_ALTERNATIVES.md` (under review, not accepted) proposes a different
@@ -994,7 +994,7 @@ was run here; everything below it was read about.
    working five seconds after the install finishes. Whether anything ranks
    hands at decision time, and if so what, is not this file's to say; see the
    recommendation. `treys` is not the comparison for that question in any
-   case, because `CLAUDE.md:17` already keeps it to tests only.
+   case, because `CLAUDE.md:19` already keeps it to tests only.
 3. **OMPEval** — 160 to 312 M hands/s of multiway Monte-Carlo equity, which is
    free speed compared with anything in Python, but **hard-capped at six
    players** (`omp/Constants.h:6`) and it needs a C++ patch and a wrapper you
@@ -1066,7 +1066,7 @@ and the open parts left open.
   hands **5 to 15 times faster than `treys`** from the same Python, and
   installs with one command. OMPEval is faster again once a Monte-Carlo loop
   is hot, and carries a **hard cap of 6 players** (`omp/Constants.h:6`): at 7,
-  8 or 9 seats it cannot be handed every live range at once. `CLAUDE.md:17`
+  8 or 9 seats it cannot be handed every live range at once. `CLAUDE.md:19`
   already keeps `treys` off the bot's decision path — it is the ground-truth
   oracle for tests and nothing else — so nothing at runtime is being displaced
   by any of that. These are speeds, not a nomination; which evaluator the bot
@@ -1093,7 +1093,7 @@ and the open parts left open.
     the opponent**. The first four are bookkeeping. The range is not. Nothing
     in this survey produces it: TexasSolver takes a range as input and never
     infers one, and the opponent model can supply counted rates and a bucket
-    but `CLAUDE.md:24` reserves **"Assigning a range to an opponent"** to the
+    but `CLAUDE.md:26` reserves **"Assigning a range to an opponent"** to the
     engine, exactly as it reserves choosing an action. So whatever turns "this
     player folds to 62% of continuation bets" into a weighted list of holdings
     would be code we write doing a job the rules give the engine. The earlier
@@ -1107,7 +1107,7 @@ and the open parts left open.
   $69 to $319, so no preflop solving is needed to obtain them. What that does
   not settle is what the bot plays preflop from when it has to act. That is a
   decision-path choice of the same class as the heads-up engine above —
-  `CLAUDE.md:26` reserves **"Producing the strategy itself"** to the engine —
+  `CLAUDE.md:28` reserves **"Producing the strategy itself"** to the engine —
   and nothing measured here bears on it. An earlier draft of this file put
   "buy or transcribe ranges for 2 to 9 seats rather than solving preflop at
   all" in the settled list above. **No measurement stood behind it, and it is
@@ -1126,7 +1126,7 @@ and the open parts left open.
 - **What plays multiway postflop.** The obvious fit with the tools above is an
   equity-driven rule set biased by the opponent model. Say plainly what that
   is: **code we would write that picks the action**, with the opponent model
-  as its input. `CLAUDE.md:13-15` forbids hand-rolled decision logic in place
+  as its input. `CLAUDE.md:15-17` forbids hand-rolled decision logic in place
   of engine code, so it cannot be adopted on a survey's say-so; it needs a
   recorded carve-out in the project rules, and the reconciliation is where
   that is written or refused.
