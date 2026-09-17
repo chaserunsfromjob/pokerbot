@@ -672,13 +672,13 @@ flags are designed to punish.
 ### 3.3 The forefront rule and the personas
 
 `CLAUDE.md`'s forefront rule, in its current form, draws the line by job rather
-than by file. Bookkeeping about cards is ours to write — it names *enumerating
-the 169 preflop hand classes*, suit isomorphisms and deck enumeration — but
-**"anything that ranks or values a hand, or chooses an action"** goes to the
-vendored engine, and its two-column table reserves *evaluating hand strength*
-and *choosing an action* to the engine by name. The external evaluator (`treys`)
-is licensed only in the test role, never in the bot's decision path. Personas
-both rank hands and choose actions. This needs saying out loud rather than being
+than by file. Under "What may be coded", bookkeeping about cards is ours to
+write — it names *enumerating the 169 preflop hand classes*, suit isomorphisms
+and deck enumeration — and so is the code that picks an action. Under "What may
+not be coded", **ranking or valuing a hand** comes from the vendored engine
+rather than being hand-rolled, and the external evaluator (`treys`) is licensed
+only in the test role, never in the bot's decision path. Personas both rank
+hands and choose actions. This needs saying out loud rather than being
 left ambiguous:
 
 - **Personas are test-only code, in the same category as

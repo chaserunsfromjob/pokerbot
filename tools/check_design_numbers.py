@@ -286,6 +286,10 @@ DEFAULT_DOC = Path(__file__).resolve().parent.parent / "OPPONENT_MODEL_DESIGN.md
 FOREFRONT_SOURCE = "CLAUDE.md"
 FOREFRONT_SECTION = "## The forefront rule"
 FOREFRONT_QUOTED_IN = "### The forefront rule and this design"
+# Exactly this many bullets are quoted there. A floor lets an added quote
+# through without comment, so the count is compared exactly: any change to what
+# §1 quotes has to be a deliberate edit here.
+FOREFRONT_QUOTE_COUNT = 3
 
 # ---------------------------------------------------------------------------
 # Arithmetic the document states inline, written once.
@@ -1546,7 +1550,11 @@ class Checker:
         rule = section_bullets(Document(source), FOREFRONT_SECTION)
         self.true(f"{FOREFRONT_SOURCE} states its forefront rule as bullets", bool(rule), "no bullets")
         quotes = section_quotes(self.doc, FOREFRONT_QUOTED_IN)
-        self.true("§1 quotes the forefront rule", len(quotes) >= 3, f"{len(quotes)} quoted lines")
+        self.equal(
+            "the number of forefront-rule bullets §1 quotes",
+            FOREFRONT_QUOTE_COUNT,
+            len(quotes),
+        )
         for quote in quotes:
             opener = " ".join(quote.split()[:4])
             match = next((bullet for bullet in rule if bullet.startswith(opener)), None)

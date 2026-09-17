@@ -303,9 +303,10 @@ Taken piece by piece, cheapest first:
   use real short-deck rules (where a flush beats a full house). That is an
   upstream fidelity gap that simply disappears when we move to 52 cards.
 
-  One caveat that matters for this repo specifically. `CLAUDE.md:19` treats
-  `treys` as an *external* evaluator used to check hand rankings. It is not
-  external to this engine in the way that wording suggests: `poker_ai`'s
+  One caveat that matters for this repo specifically. `CLAUDE.md`'s forefront
+  rule, under "What may not be coded", treats `treys` as an *external*
+  evaluator used to check hand rankings. It is not external to this engine in
+  the way that wording suggests: `poker_ai`'s
   evaluator is itself a fork of the same library. Both descend from Cactus
   Kev via Will Drevo's `deuces`, and
   `vendor/poker_ai/poker_ai/poker/evaluation/eval_card.py` still carries the
@@ -405,8 +406,8 @@ deliberately set below anything usable (5 buckets per street, 2 simulations per
 decision, against upstream defaults of 50 and 6). Full numbers in the run log
 at the end.
 
-The budget these numbers answer to is the compute-budget bullet at
-`CLAUDE.md:47` - **no multi-day computing; a playable bot has to be reachable in
+The budget these numbers answer to is the bullet under `CLAUDE.md`'s "Compute
+budget" - **no multi-day computing; a playable bot has to be reachable in
 hours, on one laptop** - which the operator stated on 2026-09-15. Measure every
 cost below against that bullet.
 
