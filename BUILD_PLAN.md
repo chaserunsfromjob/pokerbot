@@ -31,27 +31,32 @@ part that answers your bar. The bot's notebook on each player records only *what
 they did* — how often they put money in, raised, folded to a bet — never a hunch
 and never their cards.
 
-**What it will not be.** No language model is anywhere near the bot when it
-acts: plain arithmetic runs, the same table and the same dice give the same
-answer every time, and a reviewer can read the code line by line. An assistant
-writes that code; no assistant *is* the decision. Nor does the bot judge poker
-hands for itself: who won, what beats what and what is legal all come from a
-real tested engine we call. Both are `CLAUDE.md`'s forefront rule.
+**What it will not be.** No program that writes text by predicting the next
+word — a *language model* — is anywhere near the bot when it acts: plain
+arithmetic runs, the same table and the same dice give the same answer every
+time, and a reviewer can read the code line by line. An assistant writes that
+code; no assistant *is* the decision. Nor does the bot judge poker hands for
+itself: who won, what beats what and what is legal all come from a real tested
+engine we call. Both are `CLAUDE.md`'s forefront rule.
 
 **How we will know it beats real players.** Three things, in order, none of them
 an opinion formed while watching it play.
 
-1. **The table is honest before any score is believed.** Chips conserved, side
-   pots to the right people, the same seed replaying identically. A strength
-   number off a table that mis-pays a pot is a fiction: `EVALUATION_STRATEGY.md`
-   §4.5's seven invariants.
+1. **The table is honest before any score is believed.** Chips conserved, when
+   two people run out of chips for different amounts, each is paid only out of
+   the money actually matched against them — the *side pot* — and replaying a
+   session from the same starting number for the shuffle, its *seed*, deals the
+   identical hands. A strength number off a table that mis-pays a pot is a
+   fiction: `EVALUATION_STRATEGY.md` §4.5's seven invariants.
 2. **It beats a league of bad players, with an error bar.** Opponents that each
-   embody one real human mistake — calls everything, only bets real hands, tilts
-   after a big loss — over hundreds of thousands of hands at six seats, at eight
-   and nine, and heads-up. The score is big blinds per hundred hands *with a
-   range around it*, because poker is noisy enough that a bare number means
-   nothing, and half the opponents are held back from tuning so we cannot fool
-   ourselves (§3.2, §3.5).
+   embody one real human mistake — calls everything, only bets real hands,
+   tilts after a big loss — over hundreds of thousands of hands at six seats,
+   at eight and nine, and heads-up. The score is how much it wins per hundred
+   hands, counted in the forced bet one player must post before any cards come
+   out — the *big blind* — and always printed with a range around it, because
+   poker is noisy enough that a bare number means nothing, and half the
+   opponents are held back from tuning so we cannot fool ourselves (§3.2,
+   §3.5).
 3. **It beats an outside bot we did not write.** Slumbot is free, live and
    answers over the internet today. Two-handed only, so it checks one seat count
    and no more — but nobody here can rig it (`RESOURCES_BOTS.md` §5).
@@ -72,9 +77,9 @@ cheap check. Its opponents this week are the arena's simple players (D1).
 unconditionally, five and a half times faster than the next working engine. Bet
 menu: `ACTION_TRANSLATION.md` §7 — `fchpa` as shipped, randomized
 pseudo-harmonic translation, `A = 0` below the smallest bet. Decision layer:
-`DECISION_LAYER_SEARCH.md` :594 — option 3's search first, equity rule as a
+`DECISION_LAYER_SEARCH.md` :637 — option 3's search first, equity rule as a
 floor, and **not** IS-MCTS, which crashes the process at three or more players
-(:285). Invariants and order: `EVALUATION_STRATEGY.md` §4.5, §3.7 Tier 0.
+(:322). Invariants and order: `EVALUATION_STRATEGY.md` §4.5, §3.7 Tier 0.
 **Done when, and how big.** I1–I7 pass at every seat count 2 to 9, and any count
 that will not deal is recorded NOT RUN, never passed; the bot plays 1,000
 complete hands at six seats against those simple players with zero invariant
@@ -89,10 +94,11 @@ versions meet the same cards, bootstrap confidence intervals, and a rule fixed
 in advance for what counts as an improvement. Half the personas are held back
 for accept/reject only; Slumbot is called from here.
 **What settles it.** `EVALUATION_STRATEGY.md` §3.2 (the persona set; randomise
-parameters per session, hold half back), §3.5 (the decision rule and your own
-table-size weights — 6 seats 0.50, 8 and 9 together 0.30, the rest 0.20), §3.7
-Tiers 1 and 2 with "stop at Tier 2 if time runs out". `RESOURCES_BOTS.md` §5 for
-Slumbot.
+parameters per session, hold half back), §3.5 (the decision rule, and the
+table-size weights 0.50 / 0.30 / 0.20 that implement your ordering — mostly
+six-handed, then eight and nine as one band; the ordering is yours, the three
+numbers are that document's design choice and stay revisable), §3.7 Tiers 1 and
+2 with "stop at Tier 2 if time runs out". `RESOURCES_BOTS.md` §5 for Slumbot.
 **Done when, and how big.** one command prints big blinds per hundred hands with
 an interval for every persona at seats 2, 6, 8 and 9; `always_fold`'s result
 matches the closed-form blinds figure, which proves the accounting; and the rule
@@ -104,13 +110,20 @@ rejects a deliberately-worse bot. 12–18 hours.
 action of every named player, count the opportunities, shrink each rate towards
 the population average so nine hands do not look like a read, and print a profile
 with a confidence beside each number and a bucket label.
-**What settles it.** `OPPONENT_MODEL_DESIGN.md` §4.2 (the stat table), §4.3 (the
-update `rate = (BASELINE·s + k)/(s + n)`), §4.4 (buckets and exploit flags),
-§4.5 Tier 0 with its worked report, and §7 Q2 — the identifier is the player's
-name and the per-table fallback is dropped. Seat count enters as a context
-value, not a new table, and both split thresholds are per band:
-`TABLE_SIZE_AND_SIZING_NOTES.md` R1–R4, R8. Counting logic is ported, never
-imported: `RESOURCES_EXPLOITATION.md` Recommendation item 2.
+**What settles it.** `OPPONENT_MODEL_DESIGN.md` §4.2 (the stat table), §4.3
+(the update `rate = (BASELINE·s + k)/(s + n)`), §4.4 (buckets and exploit
+flags), §4.5 Tier 0 with its worked report, and §7 Q2 — the identifier is the
+player's name and the per-table fallback is dropped. Where `BASELINE` comes
+from is settled by `OPPONENT_BASELINE.md` §5: observe first, seed from no
+archive, and leave §4.3 and `s = 50` exactly as they are — the best prior
+either archive offers is worth fewer than about thirty observed hands of an
+opponent, which Tier 0 collects in minutes; use the IRC corpus only as a test
+fixture for the counter, and replace the design's invented opportunity rates
+with §2's measured ones, which fixes a five-fold error in Table C's
+fold-to-continuation-bet row. Seat count enters as a context value, not a new
+table, and both split thresholds are per band: `TABLE_SIZE_AND_SIZING_NOTES.md`
+R1–R4, R8. Counting logic is ported, never imported:
+`RESOURCES_EXPLOITATION.md` Recommendation item 2.
 **Done when, and how big.** `pokerbot profile <name>` reproduces §4.5's worked
 example number for number from its counts, fixtures cover §4.7's edge cases, and
 a test asserts no stat reads a hole card or a board card. 12–18 hours.
@@ -122,7 +135,7 @@ of the hand, each seat plays the way *that seat* has been measured to play
 rather than the way a generic stranger would. This is the stage meant to produce
 the "by a lot".
 **What settles it.** `ENGINE_ALTERNATIVES.md` "Hook A — the rollout policy, per
-seat" (:953 onward): the cheaper, better-specified hook, one weighted draw per
+seat" (:969 onward): the cheaper, better-specified hook, one weighted draw per
 node, the one to build first. `DECISION_LAYER_SEARCH.md` option 4 — it costs
 nothing measurable at the table (3,651 play-outs against 4,404 at three
 players). Policy inputs are `OPPONENT_MODEL_DESIGN.md` §4.2's measured action
@@ -152,17 +165,17 @@ plausibility. 8–14 hours per candidate.
 
 **What it is.** Getting a real table's state into the bot and its action back
 out, then the first live sessions at small stakes with the notebook filling up.
-**What settles it.** Nothing on `main` — this is D3, and it waits on you naming
+**What settles it.** Nothing on `main` — this is D2, and it waits on you naming
 where you play; `RESOURCES_EXPLOITATION.md` Recommendation, "What stays open",
 says buy nothing until it is answered, and `CLAUDE.md` names `dickreuter/Poker`
 as the capture reference if screen capture wins.
 **Done when, and how big.** a hundred real hands are captured, replayed through
-the engine, and the replay agrees with what happened. Unsizable until D3 is
+the engine, and the replay agrees with what happened. Unsizable until D2 is
 answered: about 10 hours if hand-entry, 25–40 if screen capture.
 
 ## 3. Decisions still yours
 
-Three; everything else above is settled by a cited document.
+Two; everything else above is settled by a cited document.
 
 ### D1 — Do we take your classmate's practice arena and his betting-rules fix?
 
@@ -184,24 +197,7 @@ working fix to a rule bug we would otherwise have to find ourselves. Either way
 a reviewer wants seventeen other changes on his branch first, none about the
 arena itself; a merge chore, not a decision.
 
-### D2 — Where do the first numbers about how people play come from?
-
-**Recommendation: seed from the public archive of real hands now, and retire it
-the moment the bot's own notebook is big enough.** The model must know what an
-*ordinary* player's rates look like before it can tell you someone is unusual.
-The archive — 21.6 million real-money no-limit hands, players anonymised,
-repository MIT-licensed, data reusable with credit — gives those numbers free
-this week, the parser is already written (`research/parse_handhq_baseline.py`),
-and it replaces guessed split thresholds with measured ones.
-`RESOURCES_EXPLOITATION.md` Recommendation item 1 leads with it and says the call
-is yours, not the survey's.
-
-**The alternatives.** Watch first: the bot sits at a real table, folds every hand
-and records for a few hundred hands before it plays — `OPPONENT_MODEL_DESIGN.md`
-§7 Q1's own recommendation, unimpeachable, and it cannot start until D3 is
-answered. Or both, which I expect anyway.
-
-### D3 — How does the bot see a real table?
+### D2 — How does the bot see a real table?
 
 **Recommendation: for the first real sessions, you type the table in, and we
 build the reader afterwards.** A small console where you enter seats, stacks,
@@ -229,24 +225,27 @@ with a reason, and the same seed plus the same commit replays byte-identical
 hand records.
 
 **T2 — The first bot.** Build the depth-limited search of
-`DECISION_LAYER_SEARCH.md` :594 — search to the end of the current betting round
+`DECISION_LAYER_SEARCH.md` :637 — search to the end of the current betting round
 over the engine's own tree, finish the hand at the depth limit with four
 hand-set continuation strategies, return the best action inside 250 ms — and
 beside it the equity-versus-pot-odds rule on the engine's own Monte Carlo equity
 calculator, as a logged check rather than as the decision. Not IS-MCTS: it
-crashes the process above two players (same file, :285). *Done
+crashes the process above two players (same file, :322). *Done
 when:* the bot plays 1,000 complete hands at six seats against the arena's
 existing simple players with zero invariant failures, no decision over 250 ms,
 and a win rate against a random-playing baseline whose 95% confidence interval
-excludes zero.
+excludes zero. If D1 is unanswered when T2 starts, stand up three trivial
+opponents — always-fold, always-call, uniform-random — and run the same
+measurement against those instead; the arena only saves the day it would take
+to write them.
 
 **T3 — The scoreboard.** Build `EVALUATION_STRATEGY.md` §3.7 Tiers 1 and 2: the
 four calibration agents, the nine behavioural personas of §3.2 with parameters
 drawn per session and the set split into a development half and a held-back
 evaluation half, paired deals, bootstrap confidence intervals, and §3.5's
-decision rule with your table-size weights (6 at 0.50, 8 and 9 together at 0.30,
-the rest at 0.20) fixed in the config and reprinted. *Done
-when:* one command produces a report giving big blinds per hundred hands with an
-interval for every persona at seats 2, 6, 8 and 9; `always_fold`'s measured
-result matches the closed-form blinds figure; and the rule correctly rejects a
-bot deliberately made worse.
+decision rule with the table-size weights that implement your ordering (6 at
+0.50, 8 and 9 together at 0.30, the rest at 0.20) fixed in the config and
+reprinted. *Done when:* one command produces a report giving big blinds per
+hundred hands with an interval for every persona at seats 2, 6, 8 and 9;
+`always_fold`'s measured result matches the closed-form blinds figure; and the
+rule correctly rejects a bot deliberately made worse.

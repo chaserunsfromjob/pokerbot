@@ -31,8 +31,8 @@ capture.
 ## Plan
 
 1. Superseded; the engine road is OpenSpiel `universal_poker`. What replaces this
-   stage is settled by the reconciliation of the four survey documents, which is
-   still to come.
+   stage is settled by `BUILD_PLAN.md`, the reconciliation of the four survey
+   documents.
 2. Layer in opponent modeling: track each player's tendencies and adjust
    against them specifically. This is the part that actually beats humans.
 3. Only if time remains: refine with a trained model on top of stage 2.
