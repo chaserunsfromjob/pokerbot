@@ -6,6 +6,7 @@ if it seems good to base it off of and add that in if you think its good."*
 This document is that check. It decides nothing; `CLAUDE.md` is untouched.
 
 Everything below was read or run on **2026-09-17 between 00:47 and 01:11 UTC**,
+except the re-runs appendix B dates to 01:40-01:53 UTC the same day, all
 on the operator's Windows 10 PC (Windows 10 Home 19045, Python 3.13.15). Every
 web address carries the code the server gave back and the minute it was read.
 Anything that could not be confirmed by visiting or running it is marked
@@ -327,9 +328,10 @@ positions** are inside the opponent's assumed range, and then deals with
 (line 225) — the second one taken from the **already shortened** deck. Two
 things follow. Whenever the second position is past the first, the card
 actually dealt is the one that stood *after* the card that was checked, so the
-range filter vetted one hand and a different hand was dealt. And the card sitting immediately after the
-first card can never be dealt second at all — `create_card_deck` lays the deck
-out rank by rank, four suits at a time (`"23456789TJQKA"` crossed with
+range filter vetted one hand and a different hand was dealt. And the card
+sitting immediately after the first card can never be dealt second at all —
+`create_card_deck` lays the deck out rank by rank, four suits at a time
+(`"23456789TJQKA"` crossed with
 `"CDHS"`, lines 160-165), so the card that goes missing is almost always the
 **same rank in the next suit**. The opponent is therefore dealt a pair far too
 rarely. Measured over 400,000 opponent hands drawn through that very function:
@@ -846,11 +848,13 @@ requirements of the finished bot, not rules about who writes its code:
 
 > Play exploitatively against the named player in each seat, keyed to that player's measured tendencies, rather than settling for unexploitable play alone.
 
-**"What may be coded"** — four of its five bullets reach this question:
+**"What may be coded"** — all five of its bullets reach this question:
 
 > Let an AI assistant write the poker code: the code that picks an action, assigns a range to an opponent, reads the board, and combines opponent rates.
 
 > Write decision code as ordinary, testable code: the same inputs and seed give the same answer, tests cover it, and a reviewer can read it line by line.
+
+> Treat the **observed population** as the whole database, seated players' stored rows included, with being seated never the criterion for inclusion, and combine rates across it into a baseline, a classification split, or an archetype.
 
 > Write card-combinatorics bookkeeping ourselves - the 169 preflop hand classes, suit isomorphisms, deck enumeration - and leave ranking or valuing a hand to the engine.
 
@@ -929,7 +933,7 @@ Sorting the files:
 `poker/decisionmaker/outs_calculator.py`, 328 lines of flush draws, open-ended
 straights and gutshots. Counting the cards that would improve a hand is
 **reading the board**, which "What may be coded" names outright; it is also a
-statement about how good a hand is, which is "left to the engine". That is
+statement about how good a hand is, which is left to the engine. That is
 judgment 1 above. Nothing else here waits on it: the file is not wired into the
 ranker, so it can be settled on its own, later.
 
@@ -1152,9 +1156,9 @@ substitution** that makes it allowed. It has to be the engine and not `treys`,
 which `CLAUDE.md` keeps out of the bot's decision path and reserves for checking
 tests. Making the number *right* takes at least one further repair, because the
 way it deals the opponent's cards is broken too and no change of evaluator
-touches that (§1.3). One fix for the rule, two
-at the least for the arithmetic. It is still a smaller question than the four
-above and can be settled on its own.
+touches that (§1.3). One fix for the rule, two at the least for the
+arithmetic. It is still a smaller question than the four above and can be
+settled on its own.
 
 **Not recommended:** option (iii). Two of `CLAUDE.md`'s three firm
 requirements would have to be struck out for it — the one that forbids "a fixed
