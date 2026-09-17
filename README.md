@@ -32,15 +32,17 @@ Run these four lines once, from the top of the repository, in order:
 
     python3 -m venv .venv
     .venv/bin/pip install --upgrade pip setuptools wheel
-    .venv/bin/pip install -r requirements-vendor.txt -r tests/ground_truth/requirements.txt
+    .venv/bin/pip install -r requirements-vendor.txt -r requirements-research.txt -r tests/ground_truth/requirements.txt
     .venv/bin/pip install --no-deps --no-build-isolation -e vendor/poker_ai
 
 Line by line: the first makes the private area; the second updates the three
-tools that do the installing; the third installs the outside code, both what the
-borrowed engine needs and what our own tests need; the fourth makes the borrowed
-engine in `vendor/poker_ai` importable from that area, without letting it pull
-in its own five-year-old package list. `REFERENCE_NOTES.md` explains why those
-last two flags are there.
+tools that do the installing; the third installs the outside code -- what the
+borrowed engine needs, what the engine this project deals its own hands on
+needs (that is `requirements-research.txt`, which pins OpenSpiel), and what our
+own tests need; the fourth makes the borrowed engine in `vendor/poker_ai`
+importable from that area, without letting it pull in its own five-year-old
+package list. `REFERENCE_NOTES.md` explains why those last two flags are
+there.
 
 ## The gate
 
@@ -66,7 +68,8 @@ if nobody counts.
 
 ## Running the tests
 
-Two sets of tests, both from the top of the repository:
+Two sets of tests come with the borrowed code, both run from the top of the
+repository:
 
     .venv/bin/python -m pytest tests/ground_truth -v
     cd vendor/poker_ai && ../../.venv/bin/python -m pytest test -q
@@ -79,6 +82,22 @@ PASSED. The second set is the borrowed engine's own tests, which come with it.
 `treys` is used only to check the tests. It never takes part in the bot's own
 play -- `CLAUDE.md` states that rule, in the section called "The forefront
 rule", under the heading "What may not be coded".
+
+### The table and its invariants
+
+The `pokerbot` package deals hands on the OpenSpiel engine, and there are seven
+statements about a dealt hand that must hold every time -- the chips add up, the
+same seed deals the same cards, the engine's own showdown agrees with an outside
+hand evaluator, and so on. Those seven are called the invariants, and they are
+checked at every table size from two seats to nine. Run them with:
+
+    .venv/bin/python -m pytest -q
+
+At the end it prints a table: one row per table size, one column per invariant,
+and in each square either PASS or NOT RUN. NOT RUN means that check was not made
+-- because the engine will not deal that many seats, or because the check does
+not exist at that table size -- and the reason is printed underneath. A NOT RUN
+is never counted as a pass. Nothing should ever say FAIL.
 
 ## Checking the design document's arithmetic
 

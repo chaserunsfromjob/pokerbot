@@ -1710,7 +1710,7 @@ many seat counts they carry:
 
 | What the run buys | Nightly acceptance, as designed | The same run on today's engine |
 | --- | --- | --- |
-| Seat counts | 2, 6, 8, 9 + one of 3/4/5/7 — **five** | 2, 3, 4, 5, 6, 7 — **six**; 8 and 9 do not deal |
+| Seat counts | 2, 6, 8, 9 + one of 3/4/5/7 — **five** | 2, 3, 4, 5, 6, 7 — **six**; the vendored engine's 20-card deck will not deal 8 or 9, a limit of that engine and not of the game — OpenSpiel 2.0.2 deals all of 2 to 9, which `tests/test_table_invariants.py` measures: invariants I1-I7 pass at every one of them, except I3 at two seats, which does not exist there and is recorded NOT RUN |
 | Compositions × stack depths | 4 × 1 | 4 × 1 |
 | Cells | **20** | **24** |
 | Hands per cell | 7,064 | 7,064 |
