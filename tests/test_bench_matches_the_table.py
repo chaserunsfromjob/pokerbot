@@ -21,7 +21,7 @@ import pyspiel
 import pytest
 
 from pokerbot.equity_rule import with_odds
-from pokerbot.table import TableConfig, _game_string, game_string
+from pokerbot.table import BETTING_ABSTRACTION, TableConfig, _game_string, game_string
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
 BENCH_PATH = ROOT / "research" / "decision_layer" / "bench_decision_layer.py"
@@ -32,6 +32,18 @@ SEAT_COUNTS = [2, 6]
 
 #: The three parameters that say who posts what and who acts when.
 SHARED_FIELDS = ("numPlayers", "blind", "firstPlayer")
+
+#: The engine's own bet menus, written out here rather than read from the
+#: adapter so that this file, not the code under test, says which names are
+#: allowed.
+ENGINE_BET_MENUS = ("fchpa", "fcpa", "fullgame")
+
+#: A bet menu with a second `blind` and a second `firstPlayer` hidden behind
+#: it. `universal_poker` reads the last of a duplicated key, so if this ever
+#: reaches the game definition the engine loads the reversed heads-up game --
+#: the big blind on engine seat 0 and the acting order turned around -- and
+#: says nothing about it.
+SMUGGLED_BET_MENU = "fcpa,blind=100 50,firstPlayer=2 1 1 1"
 
 
 @pytest.fixture(scope="module")
@@ -72,15 +84,15 @@ def test_bench_keeps_its_own_stacks_abstraction_and_odds_sims(bench, seats):
         assert measured[field] == expected[field]
 
 
-def test_game_string_has_no_knob_that_can_overwrite_the_table():
-    """The bet menu is the only thing a caller may change.
+def test_the_bet_menu_is_the_only_knob_game_string_offers():
+    """A signature check, and only that.
 
-    `universal_poker` reads the last of any duplicated key, so a knob that
-    appended free-form parameters could set `blind` or `firstPlayer` a second
-    time and load a game the bot never sits at -- the reversal this change
-    removes, through the front door. An engine parameter is added instead by
-    `equity_rule.with_odds`, which refuses a game definition that already sets
-    `calcOddsNumSims`.
+    It says the bet menu is the one thing a caller may pass, so no second
+    argument can reach the game definition. It says nothing about what a
+    caller may pass *as* the bet menu; that is held down below, by
+    `test_game_string_refuses_a_bet_menu_that_smuggles_in_parameters` and
+    `test_every_accepted_bet_menu_keeps_the_table_s_blinds_and_order`, which
+    are the proof, because a signature is not a behaviour.
     """
     keyword_only = [
         name
@@ -89,9 +101,45 @@ def test_game_string_has_no_knob_that_can_overwrite_the_table():
     ]
     assert keyword_only == ["betting_abstraction"], (
         f"game_string takes the keyword-only knobs {keyword_only!r}; only "
-        "betting_abstraction may be one, because any other route into the "
-        "game definition can overwrite the table's blinds or acting order"
+        "betting_abstraction may be one, because a second free-form argument "
+        "would be another route into the game definition"
     )
+
+
+def test_the_table_s_own_bet_menu_is_an_accepted_one():
+    """Whatever the adapter plays on must be a value `game_string` accepts."""
+    assert BETTING_ABSTRACTION in ENGINE_BET_MENUS
+
+
+def test_game_string_refuses_a_bet_menu_that_smuggles_in_parameters():
+    """The one knob cannot be used to move the blinds or the acting order.
+
+    This is the route the signature check cannot see: the value itself, not
+    an extra argument. It must be refused before it is written into the game
+    definition, because once the engine has loaded it there is nothing left
+    to complain about -- the reversed game loads cleanly.
+    """
+    config = TableConfig(seats=2, stacks=(20000, 20000))
+    with pytest.raises(ValueError):
+        game_string(config, betting_abstraction=SMUGGLED_BET_MENU)
+
+
+@pytest.mark.parametrize("abstraction", ENGINE_BET_MENUS)
+@pytest.mark.parametrize("seats", SEAT_COUNTS, ids=[str(n) for n in SEAT_COUNTS])
+def test_every_accepted_bet_menu_keeps_the_table_s_blinds_and_order(seats, abstraction):
+    """Each accepted value changes the menu and nothing else."""
+    config = TableConfig(seats=seats, stacks=(20000,) * seats)
+    measured = pyspiel.load_game(
+        game_string(config, betting_abstraction=abstraction)
+    ).get_parameters()
+    expected = table_parameters(seats, 20000)
+    assert measured["bettingAbstraction"] == abstraction
+    for field in SHARED_FIELDS:
+        assert measured[field] == expected[field], (
+            f"with the bet menu {abstraction!r} at {seats} seats the game's "
+            f"{field} is {measured[field]!r}, but the table's is "
+            f"{expected[field]!r}; the bet menu must change the menu only"
+        )
 
 
 @pytest.mark.parametrize("seats", SEAT_COUNTS, ids=[str(n) for n in SEAT_COUNTS])

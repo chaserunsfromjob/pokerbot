@@ -46,6 +46,12 @@ from .record import Event, HandRecord, SCHEMA
 
 ENGINE = "open_spiel.universal_poker"
 BETTING_ABSTRACTION = "fchpa"
+
+#: Every bet menu `universal_poker` ships that this adapter will name. The
+#: value is written straight into the game definition, so it is checked
+#: against this list first: anything else -- a name the engine does not know,
+#: or a name with further parameters hidden behind it -- is refused.
+BETTING_ABSTRACTIONS = ("fchpa", "fcpa", "fullgame")
 MIN_SEATS = 2
 MAX_SEATS = 9
 
@@ -148,14 +154,24 @@ def game_string(
     `engine_stacks` out and the config's own stacks are used, in engine seat
     order.
 
-    There is deliberately no knob for adding engine parameters. An engine
-    parameter is added by `equity_rule.with_odds`, which appends
-    `calcOddsNumSims` to a finished game definition and raises if it is
-    already set; a free-form one here could name `blind` or `firstPlayer` a
-    second time, and `universal_poker` reads the last of a duplicated key, so
-    the table's own blinds and acting order could be overwritten without a
-    word of complaint.
+    Nothing here can add an engine parameter. `universal_poker` reads the last
+    of a duplicated key, so anything written into this definition freely could
+    name `blind` or `firstPlayer` a second time and quietly load a game the
+    bot never sits at. So there is no free-form knob, and the one knob there
+    is, `betting_abstraction`, must be one of the engine's own menu names in
+    `BETTING_ABSTRACTIONS`; any other value raises `ValueError` before it
+    reaches the definition. An engine parameter is added instead by
+    `equity_rule.with_odds`, which appends `calcOddsNumSims` to a finished
+    definition and raises if it is already set.
     """
+    if betting_abstraction not in BETTING_ABSTRACTIONS:
+        raise ValueError(
+            f"betting_abstraction must be one of "
+            f"{', '.join(BETTING_ABSTRACTIONS)}, not {betting_abstraction!r}; "
+            "the value is written into the game definition, where anything "
+            "else could name blind or firstPlayer a second time and load a "
+            "game the table never plays"
+        )
     n = config.seats
     if n == 2:
         blind = f"{config.small_blind} {config.big_blind}"
