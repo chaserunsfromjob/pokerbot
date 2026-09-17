@@ -22,7 +22,7 @@ def run_checker(*args: str) -> subprocess.CompletedProcess:
     return subprocess.run(
         [sys.executable, str(SCRIPT), *args],
         capture_output=True,
-        text=True,
+        text=True, encoding="utf-8", errors="replace",
         cwd=str(REPO_ROOT),
     )
 
@@ -146,3 +146,15 @@ def test_missing_document_is_reported():
     result = run_checker("no/such/document.md")
     assert result.returncode == 2
     assert "not found" in result.stderr
+
+
+def test_checker_reports_a_two_digit_majority_rule(tmp_path):
+    """A copy of ⌈2n/3⌉ drifting to a two-digit denominator must be seen, not skipped."""
+    text = DOCUMENT.read_text(encoding="utf-8")
+    broken = text.replace("`⌈2n/3⌉` fraction", "`⌈2n/10⌉` fraction", 1)
+    assert broken != text, "the sentence this test edits has moved"
+    target = tmp_path / "OPPONENT_MODEL_DESIGN.md"
+    target.write_text(broken, encoding="utf-8")
+    result = run_checker(str(target))
+    assert result.returncode == 1
+    assert "the majority rule wherever the document writes it" in result.stdout

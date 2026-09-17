@@ -928,7 +928,7 @@ class Checker:
         self.prose("section 4.5 majority rule", f"`{MAJORITY_RULE}` of the `n` live opponents")
         self.every_occurrence(
             "the majority rule wherever the document writes it",
-            r"(⌈\dn/\d⌉)",
+            r"(⌈\d+n/\d+⌉)",
             MAJORITY_RULE,
         )
         self.prose(
@@ -1816,6 +1816,12 @@ def spell(n: int) -> str:
 
 
 def main(argv: list[str]) -> int:
+    # A failing figure named with a character the console cannot encode
+    # (the ceiling brackets in the majority rule, on a cp1252 Windows
+    # console) must print as a replacement character, not crash the run.
+    for stream in (sys.stdout, sys.stderr):
+        if hasattr(stream, "reconfigure"):
+            stream.reconfigure(encoding="utf-8", errors="replace")
     path = Path(argv[1]) if len(argv) > 1 else DEFAULT_DOC
     if not path.exists():
         print(f"design document not found: {path}", file=sys.stderr)
