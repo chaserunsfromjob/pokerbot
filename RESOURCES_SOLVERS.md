@@ -100,7 +100,7 @@ Four findings drive the recommendation:
    own :418-428: the engine table's last column, complete hands dealt from
    scratch, and the chooser's play-outs per 250 ms decision, which continue a
    hand already part-played. Neither is this file's ten-thousand figure: both
-   play a hand out to a showdown inside a game engine, where these count deals
+   play a hand out to the end inside a game engine, where these count deals
    of the remaining cards to settle one hand's equity in a Python loop. On
    that assumption, and counting one hand ranking per play-out, 10,000
    rankings at the measured 2.6 million a second take 10,000 ÷ 2,600,000 =
@@ -1345,7 +1345,8 @@ CARGO_TARGET_DIR=<scratch>/GTOpen/target_clean cargo build --release -p server
 #     computers"
 #   https://gtoplus.com/purchase   "Main License: $75  Second License: $40
 #     Upgrade from CREV: $50" and "The registration fee is one-time. All
-#     future updates are included."
+#     future updates are included. Taxes may still be added depending on
+#     your location."
 #   https://jesolver.com/ and https://jesolver.com/index.html   one byte each,
 #     no price anywhere; https://jesolver.com/cmdref.html is a command list
 #     with no price either
