@@ -28,13 +28,22 @@ than one place has to be checked in *every* place. `Checker.every_occurrence` is
 how that question is asked; `Checker.prose` is only safe for a phrase that
 appears once.
 
-What this script does and does not promise. It promises that for every figure a
-check below names, mutating ANY copy of that figure anywhere in the document
-makes this script exit 1 -- that is what `every_occurrence` is for, and
-`tests/test_evaluation_numbers.py` mutates one copy of each to prove it. It does
-NOT promise that every number in the document is pinned: a figure no check names
-is not checked at all, and the honest way to find out whether one is pinned is
-to change it and run this.
+What this script does and does not promise. Each check below names what it pins,
+and that naming is the whole promise -- there is no blanket claim on top of it.
+Concretely: a check written with `every_occurrence` pins every copy of its figure
+in the document, so mutating any one of them exits 1; a check written with
+`prose` pins only the one phrasing it quotes, and a second copy of the same
+figure worded differently is pinned only if some other check quotes that wording
+too. `tests/test_evaluation_numbers.py` mutates one copy per pin to prove each.
+
+It does NOT promise that every number in the document is pinned, and one block is
+deliberately left unpinned: the per-seat and per-persona win rates and confidence
+intervals in the example `arena report` of section 3.5. The document's own
+provenance table records that this output is invented and only illustrates the
+report's format, so there is no constant they could be derived from; what IS
+pinned in that block is listed in `check_example_report` and `check_release_gate`.
+For any other number, the honest way to find out whether it is pinned is to
+change it and run this.
 
 This checker is deliberately standalone: the branch it was written on predates
 trunk's checker, so it shares no code with it. Once both have landed the two
@@ -139,6 +148,10 @@ ENGINE_SURVEY_COMMIT = "6720c8a"
 ENGINE_SUPERSEDED_COMMIT = "54afe67"
 ENGINE_HANDS_PER_SEC_REAL_SIZING = 4438
 ENGINE_HANDS_PER_SEC_MENU = 47564
+# The superseded figure is not banned outright: the provenance table quotes it,
+# labelled as superseded and not comparable. This constant exists only so that
+# `check_engine_throughput` can assert it never comes back in any of the
+# phrasings the document uses to print a *live* throughput.
 ENGINE_SUPERSEDED_HANDS_PER_SEC = "56,414"
 
 # -- The grid and the budget ------------------------------------------------
@@ -255,6 +268,17 @@ def weights_for(seats: list[int]) -> dict[int, float]:
 
 def sum_of_squared_weights(seats: list[int]) -> float:
     return sum(w * w for w in weights_for(seats).values())
+
+
+def weight_order(seats: list[int]) -> list[int]:
+    """Seat counts in the order the report block prints them: primary, then
+    secondary, then whatever else ran -- the banding of section 3.5 point 2."""
+    rest = sorted(n for n in seats if n not in PRIMARY_SEATS and n not in SECONDARY_SEATS)
+    return (
+        [n for n in PRIMARY_SEATS if n in seats]
+        + [n for n in SECONDARY_SEATS if n in seats]
+        + rest
+    )
 
 
 def detectable_delta(n_eff: float, sigma: float = BUDGET_SIGMA) -> float:
@@ -571,13 +595,38 @@ class Checker:
 
     # -- Section 3.5: the example report block -----------------------------
     def check_example_report(self) -> None:
-        """The example report prints figures section 3.6 derives, so it is pinned too.
+        """The example report prints figures sections 3.5 and 3.6 derive, and those
+        are pinned here: the cell count, the budget and elapsed hours, the fixed
+        seats and the rotation cycle, the weights line, the pooled and per-cell
+        effects, and the family size. (The four-run window it also prints is
+        pinned by `check_release_gate`.)
 
-        Every figure here also appears elsewhere in the document, so each is
-        asked for with `every_occurrence`: a copy that drifts anywhere fails.
+        Figures that also appear elsewhere in the document are asked for with
+        `every_occurrence`, so a copy that drifts anywhere fails. The seats line
+        and the weights line appear once each, so they are asked for with `prose`.
+
+        NOT pinned, deliberately: the per-seat and per-persona win rates and
+        confidence intervals the block prints. They are invented illustration of
+        the format -- the document's provenance table says so -- and no constant
+        derives them.
         """
         cells, _, hours = nightly_totals()
         _, pooled_delta = nightly_pooled()
+        night_seats = NIGHTLY_FIXED_SEATS + [ROTATION_CYCLE[0]]
+        self.prose(
+            "the report block's fixed seats, rotating seat and rotation cycle",
+            "seats: "
+            + " ".join(str(n) for n in weight_order(NIGHTLY_FIXED_SEATS))
+            + f" fixed + {ROTATION_CYCLE[0]} rotating (cycle "
+            + ">".join(str(n) for n in ROTATION_CYCLE)
+            + f"; night 1 of {len(ROTATION_CYCLE)})",
+        )
+        weights = weights_for(night_seats)
+        self.prose(
+            "the report block's weights line",
+            "weights: "
+            + " ".join(f"n{n}={fmt(weights[n], 2)}" for n in weight_order(night_seats)),
+        )
         self.every_occurrence(
             "the report block's cell count, hour budget and elapsed time",
             r"cells: (\d+) budget: (\d+)h elapsed: (\d+h\d+m)",
@@ -722,17 +771,45 @@ class Checker:
 
         rows = self.doc.table_after("| Run | Seat counts | Cells | Hands/cell |")[1:]
         self.equal("budget row count", 3, len(rows))
+        # Columns 1 and 2 -- the run's name and the seat counts it runs -- are
+        # checked like every other column: the names are the three runs this
+        # document defines, and the seat lists come from NIGHTLY_FIXED_SEATS,
+        # ROTATION_CYCLE and SEAT_COUNTS, so a seat dropped from the table's own
+        # seat axis fails here.
+        fixed_seats = ", ".join(str(n) for n in NIGHTLY_FIXED_SEATS)
+        rotating_seats = "/".join(str(n) for n in ROTATION_CYCLE)
+        all_seats = f"all of {min(SEAT_COUNTS)}…{max(SEAT_COUNTS)}"
         expected = [
-            ("Routine check", routine_cells, routine_per_cell, ROUTINE_DELTA),
-            ("Nightly acceptance", nightly_cells, nightly_per_cell, NIGHTLY_DELTA),
-            ("Full grid (aspirational)", full_cells, full_per_cell, FULL_GRID_DELTA),
+            (
+                "Routine check",
+                f"{fixed_seats} (no rotating seat)",
+                routine_cells,
+                routine_per_cell,
+                ROUTINE_DELTA,
+            ),
+            (
+                "Nightly acceptance",
+                f"{fixed_seats} + one of {rotating_seats}",
+                nightly_cells,
+                nightly_per_cell,
+                NIGHTLY_DELTA,
+            ),
+            (
+                "Full grid (aspirational)",
+                all_seats,
+                full_cells,
+                full_per_cell,
+                FULL_GRID_DELTA,
+            ),
         ]
         # Only the nightly run pools its cells into a weighted headline; the
         # other two rows print an em dash in that last column.
         pooled = [None, nightly_pooled()[1], None]
-        for (name, cells, per_cell, delta), row, pool in zip(expected, rows, pooled):
+        for (name, seats, cells, per_cell, delta), row, pool in zip(expected, rows, pooled):
             hands = cells * per_cell
             hours = hands / hands_per_hour()
+            self.equal(f"{name} row name", name, row[0])
+            self.equal(f"{name} seat counts", seats, row[1])
             self.equal(f"{name} cells", grouped(cells), row[2])
             self.equal(f"{name} hands per cell", grouped(per_cell), row[3])
             self.equal(f"{name} total hands", grouped(hands), row[4])
@@ -1001,10 +1078,31 @@ class Checker:
             f"**{grouped(round(ratio / 50) * 50)}** — {fmt(real_seconds / 60)} minutes "
             f"against {grouped(hours)} hours",
         )
-        self.absent(
-            "the superseded throughput figure",
-            f"{ENGINE_SUPERSEDED_HANDS_PER_SEC} complete six-player hands",
+        # Both throughput figures are stated in more than one place -- section
+        # 3.6, the X7 paragraph and the provenance table -- so every copy is
+        # asked for, not just the phrasings quoted above.
+        self.every_occurrence(
+            "the real-sizing throughput, everywhere the document states it",
+            r"it deals \*\*([\d,]+)\*\* \(median|"
+            r"\*\*([\d,]+) is the figure that applies here|"
+            r"÷ ([\d,]+) = \*\*[\d,]+ seconds|"
+            r"([\d,]+) engine hands/second",
+            grouped(ENGINE_HANDS_PER_SEC_REAL_SIZING),
         )
+        self.every_occurrence(
+            "the menu-mode throughput, everywhere the document states it",
+            r"it deals \*\*([\d,]+) complete hands per|and ([\d,]+) in menu mode",
+            grouped(ENGINE_HANDS_PER_SEC_MENU),
+        )
+        # The superseded figure may be quoted as superseded, which the provenance
+        # table does; what must never come back is the same figure printed as a
+        # live throughput, so the guard names the phrasings that would do that.
+        for phrase in (
+            f"it deals **{ENGINE_SUPERSEDED_HANDS_PER_SEC}",
+            f"{ENGINE_SUPERSEDED_HANDS_PER_SEC} complete hands per",
+            f"{ENGINE_SUPERSEDED_HANDS_PER_SEC} engine hands/second",
+        ):
+            self.absent("the superseded throughput figure as a live throughput", phrase)
 
     # -- The provenance table ---------------------------------------------
     def check_provenance_rows(self) -> None:

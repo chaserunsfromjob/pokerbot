@@ -160,6 +160,70 @@ def test_checker_reports_a_superseded_engine_figure(tmp_path):
     assert "superseded" in result.stdout
 
 
+def test_checker_reports_a_renamed_budget_run(tmp_path):
+    """The budget table's first column names the three runs this document defines."""
+    target = broken_copy(tmp_path, "| **Routine check** |", "| **Routine smoke check** |")
+    result = run_checker(str(target))
+    assert result.returncode == 1
+    assert "row name" in result.stdout
+
+
+def test_checker_reports_a_stale_seat_list_in_the_budget_table(tmp_path):
+    """The budget table's seat column is the run's seat axis, and is checked."""
+    target = broken_copy(
+        tmp_path,
+        "2, 6, 8, 9 (no rotating seat)",
+        "2, 6, 8, 7 (no rotating seat)",
+    )
+    result = run_checker(str(target))
+    assert result.returncode == 1
+    assert "seat counts" in result.stdout
+
+
+def test_checker_reports_a_stale_full_grid_seat_range(tmp_path):
+    """The full grid runs all of 2 to 9; the table must not quietly say otherwise."""
+    target = broken_copy(tmp_path, "| all of 2…9 |", "| all of 2…8 |")
+    result = run_checker(str(target))
+    assert result.returncode == 1
+    assert "seat counts" in result.stdout
+
+
+def test_checker_reports_a_stale_real_sizing_throughput(tmp_path):
+    """4,438 is stated five times; a copy that drifts anywhere must fail."""
+    target = broken_copy(
+        tmp_path,
+        "**4,438 is the figure that applies here.**",
+        "**4,439 is the figure that applies here.**",
+    )
+    result = run_checker(str(target))
+    assert result.returncode == 1
+    assert "real-sizing throughput" in result.stdout
+
+
+def test_checker_reports_a_stale_menu_mode_throughput(tmp_path):
+    """47,564 is stated in the prose and again in the provenance table."""
+    target = broken_copy(tmp_path, "and 47,564 in menu mode", "and 47,565 in menu mode")
+    result = run_checker(str(target))
+    assert result.returncode == 1
+    assert "menu-mode throughput" in result.stdout
+
+
+def test_checker_reports_a_stale_weights_line_in_the_example_report(tmp_path):
+    """The example report prints the whole weighting, not just the headline."""
+    target = broken_copy(tmp_path, "weights: n6=0.50", "weights: n6=0.55")
+    result = run_checker(str(target))
+    assert result.returncode == 1
+    assert "weights line" in result.stdout
+
+
+def test_checker_reports_a_stale_rotation_cycle_in_the_example_report(tmp_path):
+    """The example report prints the rotation cycle in its own shorthand."""
+    target = broken_copy(tmp_path, "(cycle 3>4>5>7;", "(cycle 3>4>5>8;")
+    result = run_checker(str(target))
+    assert result.returncode == 1
+    assert "rotation cycle" in result.stdout
+
+
 def test_checker_reports_a_stale_weight(tmp_path):
     """The table-size weights drive the headline arithmetic; drift must fail."""
     target = broken_copy(tmp_path, "| Primary | 6 | 0.50 |", "| Primary | 6 | 0.55 |")

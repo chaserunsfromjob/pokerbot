@@ -272,6 +272,13 @@ opponent, which is not something the paper does or evaluates.
 
 ### 2.4 Variance reduction: duplicate, baseline, MIVAT, AIVAT
 
+*(The two sets of initials in the heading are the names two of these techniques
+were given by the people who invented them, and both are spelled out where the
+technique is introduced below: **MIVAT**, the Informed Value Assessment Tool, at
+(c), and **AIVAT**, the action-informed value assessment tool, at (d). Both
+correct for the luck of the cards; AIVAT also corrects for the players' own
+actions.)*
+
 These are the techniques that make win-rate measurement affordable. They all do
 the same thing — shrink the error bar without changing what is being estimated —
 and they differ enormously in what they demand of you. In cost order:
@@ -1462,7 +1469,7 @@ of them, n = 2 to 7 on the engine vendored today
 rather than being reported. A seat count the engine cannot deal is recorded as
 **NOT RUN**, never as passed, and Tier 0
 ([§3.7](#37-tiers-what-to-build-in-what-order)) is green when every invariant
-passes at every seat count that did run.
+passes at every seat count the engine can actually deal.
 
 | # | Invariant | Why |
 | --- | --- | --- |
@@ -1987,21 +1994,54 @@ power settings, the seat counts, the grid's axes, the table-size band weights,
 the per-decision and per-hand placeholders, the worker count, the two run-length
 caps, the short deck's size, the LBR bet-size grid and the engine survey's two
 throughput figures — in one place and recomputes from them, naming any printed
-value that disagrees: **every cell of the sample-size table, the paired-ρ table,
-the variance-reduction multipliers, the duplicate factorials, every column of
-the budget table, the rotation-night table and the today's-engine table, every
-hand count and hour in [§3.6](#36-the-run-budget-turning-hands-into-hours),
-every figure the example `arena report` block of
-[§3.5](#35-the-decision-rule-is-this-change-an-improvement) prints, the budget
-figures the table below restates, and the five copies of the release gate, which
-it checks are byte-identical.** **Where the script pins a figure that this
-document states in more than one place, it checks every place**, because asking
-only that some copy is right lets the others go stale — and the test suite
-proves that by changing one copy of each and requiring the script to fail. What
-it does **not** claim is that every number here is pinned: a figure no check in
-it names is not checked at all, and the way to find out which a number is, is to
-change it and run the script. The table below says where each constant itself
-came from; the script says whether the arithmetic on top of it still holds.
+value that disagrees. What it checks, exactly:
+
+- **every cell of the sample-size table, the paired-ρ table, the
+  variance-reduction multipliers and the duplicate factorials**, headers and row
+  labels included;
+- **every column of the budget table** — each run's name, the seat counts it
+  runs, its cells, its hands per cell, its total hands, its wall clock and the
+  effects it detects per cell and pooled;
+- **every row of the rotation-night table** — its Σwᵢ², its effective sample
+  size, the effect it detects, and the rotating seat its weights column names;
+- **the today's-engine table's** cells, total hands, wall clock and family size
+  on both sides, its hands per cell, and the seat counts today's engine can
+  deal;
+- **every hand count and hour in
+  [§3.6](#36-the-run-budget-turning-hands-into-hours)**, including the worker
+  breakeven and the headroom under the cap;
+- **in the example `arena report` block of
+  [§3.5](#35-the-decision-rule-is-this-change-an-improvement)**: the cell count,
+  the budget and elapsed hours, the fixed seats and the rotation cycle, the
+  whole weights line, the pooled and per-cell effects it is powered to detect,
+  the multiple-comparison family size, and the four-run window;
+- **both engine throughput figures**, in every place this document states
+  either of them, and the superseded figure's absence from every phrasing that
+  would print it as a live throughput;
+- **the budget figures the provenance table below restates**;
+- **and the five copies of the release gate, which it checks are byte-identical.**
+
+**Where a figure is stated in more than one place, the check that pins it says
+whether it pins every copy.** The script asks in two ways: one quotes a single
+sentence and pins that sentence only; the other matches every place the document
+states the figure and fails if any copy disagrees. The second is used for the
+figures this document repeats most — the engine's two throughput figures, the
+release gate's four-run window, the machine's cores, the nightly and full-grid
+budget figures, and the pooled headline — because asking only that some copy is
+right lets the others go stale, and the test suite proves each by changing one
+copy and requiring the script to fail.
+
+What the script does **not** claim is that every number here is pinned, and one
+block is left unpinned deliberately: the per-seat and per-persona win rates and
+confidence intervals in that same example report — the win-rate line printed for
+each seat count and each persona, and the bracketed interval beside it. As the
+table below records, that output is **invented and only
+illustrates the report's format**, so no constant derives it, no check names it,
+and changing those numbers leaves the script at exit 0. Anywhere else, a figure
+no check in the script names is not checked at all, and the way to find out
+which a number is, is to change it and run the script. The table below says
+where each constant itself came from; the script says whether the arithmetic on
+top of it still holds.
 
 *(There are now two such checkers in the project — this one and
 `tools/check_design_numbers.py`, which pins `OPPONENT_MODEL_DESIGN.md` — and they
