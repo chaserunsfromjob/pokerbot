@@ -66,8 +66,7 @@ REPO_ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__fi
 if REPO_ROOT not in sys.path:
     sys.path.insert(0, REPO_ROOT)
 
-from pokerbot.equity_rule import with_odds  # noqa: E402  (after the path fix)
-from pokerbot.table import TableConfig, game_string  # noqa: E402
+from pokerbot.table import TableConfig, game_string  # noqa: E402  (after the path fix)
 
 CARD_SUITS = "cdhs"
 CARD_RANKS = "23456789TJQKA"
@@ -102,17 +101,14 @@ def build_game(seats: int, abstraction: str = "fcpa", odds_sims: int = 0):
     Three things here are the benchmark's own and are passed in: the stack
     depth, the betting abstraction (this benchmark compares `fcpa` with
     `fullgame`, where the table always plays `fchpa`), and the engine's equity
-    simulator count, which the table never asks for. The first two are
-    arguments to `game_string`; the third is added afterwards by
-    `pokerbot.equity_rule.with_odds`, the project's one guarded way to switch
-    the engine's equity calculator on, which refuses a game definition that
-    already sets `calcOddsNumSims`.
+    simulator count, which the table never asks for.
     """
     config = TableConfig(seats=seats, stacks=(BENCH_STACK,) * seats)
     return pyspiel.load_game(
-        with_odds(
-            game_string(config, betting_abstraction=abstraction),
-            odds_sims,
+        game_string(
+            config,
+            betting_abstraction=abstraction,
+            extra_params={"calcOddsNumSims": odds_sims},
         )
     )
 
