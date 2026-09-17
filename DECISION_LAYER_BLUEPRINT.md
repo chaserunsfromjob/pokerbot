@@ -399,3 +399,113 @@ requires opponent modelling has to answer Pluribus.
 **Rating.** (a) yes - six-handed is the case it was built for. (b) no.
 (c) **no, by design.** (d) no. (e) yes for the OpenSpiel parts; Pluribus itself
 was never released, so this is a recipe to reimplement, not code to take.
+
+---
+
+## How an opponent model could bend a blueprint
+
+Requirement (c) - beating *these* people, not an imaginary perfect opponent - is
+the project's stated reason for existing (`CLAUDE.md`: "consistently beat real
+human players at a table of 3 or more, not chase a theoretical optimum that does
+not exist at that table size"). A blueprint is, by construction, the opposite of
+that: it is an approximation to the play that nobody can exploit, which is also
+the play that exploits nobody. So the question is how to bend one.
+
+There are three shapes, in increasing cost.
+
+**One: pick which blueprint to load.** Solve two or three blueprints in advance,
+each against a different archetype of opponent, and choose at the table by what
+the opponent model has observed. Costs nothing at the table; costs one full
+solve per archetype in advance. `CLAUDE.md` puts "Selecting *which* engine
+strategy to load" squarely in the allowed column, so this shape needs no rule
+change at all.
+
+**Two: re-solve with the opponents' strategies held fixed.** Replace the
+opponents in the solver with what the model says they do, and run CFR for our
+seat only. Done to the limit this is simply a best response, which is maximally
+exploitative and maximally fragile - it loses badly the moment the opponent
+changes. The published fix is to blend: solve against a mixture of "the model"
+and "the equilibrium", tuned by how much data the model rests on. Johanson,
+Zinkevich and Bowling, *Computing Robust Counter-Strategies*, NIPS 2007, is the
+method - the **restricted Nash response**. This is the shape `CLAUDE.md` names
+explicitly in the allowed column, "Substituting an opponent model into the
+engine's own solver".
+
+**Three: re-solve during the hand.** Out of scope - `DECISION_LAYER_SEARCH.md`.
+
+The rule boundary to keep hold of while reading these: `CLAUDE.md` allows our
+own code to count what opponents did, turn those counts into rates, shrink them
+toward a baseline, and sort players into buckets. It forbids our code from
+assigning a range, reading board texture, or choosing an action. All three
+shapes above stay on the right side of that line, because in all three the
+opponent model supplies only **frequencies** and the solver still does the
+poker. `OPPONENT_MODEL_DESIGN.md` already specifies the counting and shrinking
+half. Shape two is the join between that document and this one.
+
+One warning that applies to all three. Squashing the game can make things
+*worse* in ways that are not gradual: a finer abstraction can produce a strategy
+that is **more** exploitable than a coarser one, so "add more buckets until it
+is good" is not a reliable plan. Waugh, Schnizlein, Bowling and Szafron,
+*Abstraction pathologies in extensive games*, AAMAS 2009. And every NashConv
+figure in this document is measured **inside** the squashed game; a strategy
+with NashConv near zero in a toy game can be badly exploitable in the real one.
+The numbers below say a method converged. They do not say a bot is good.
+
+## Ratings, all six side by side
+
+Key: **yes** meets it; **part** meets it with a named condition; **no** does not.
+
+| Option | (a) 2-9 players | (b) true no-limit sizing | (c) exploits named opponents | (d) hours on this laptop | (e) GPL-3.0 public repo |
+| --- | --- | --- | --- | --- | --- |
+| 1. Vanilla CFR | yes | no - needs a bet menu | part - one solve per line-up | no, toy sizes only | yes |
+| 2. CFR+ | yes | no - needs a bet menu | part - one solve per line-up | no, toy sizes only | yes |
+| 3. External-sampling MCCFR | yes | no - needs a bet menu | part - sample from the model | part - furthest reach of the six | yes |
+| 4. Outcome-sampling MCCFR | yes | no - needs a bet menu | part - sample from the model | part - fastest iterations, slowest progress | yes |
+| 5. Deep CFR | yes in principle | no - needs a bet menu | part, unpublished for multiway | **no** - and will not import here | yes |
+| 6. Pluribus-style blueprint | yes | no - needs a bet menu | **no, by design** | **no** - server-scale | yes, as a recipe to rebuild |
+
+**Nothing scores yes on (b).** That is not six failures; it is one fact about
+blueprints. A strategy computed in advance has to be *finite*, and real no-limit
+betting is not. Recovering real bet sizes on top of a menu-based blueprint needs
+a translation step both ways - map the opponent's odd-sized bet onto the nearest
+menu item, map our menu item back onto a real number of chips - and
+`ENGINE_ALTERNATIVES.md` records that nobody on this project has built it. Any
+route that goes through (b) pays that cost once, and pays it whichever option
+above is chosen.
+
+**(e) is a clean yes throughout, and worth stating because it was checked rather
+than assumed.** OpenSpiel is licensed Apache-2.0, read from the project's own
+`LICENSE` file on 2026-09-16. Apache-2.0 code may be combined into a GPL-3.0
+work; the combination is then GPL-3.0. That is the direction this project needs
+and it is the permitted direction. Nothing in this document introduces a
+licence that would conflict with `LICENSE` at this repository's root.
+
+## Sources, and how each one was checked
+
+Every source below was fetched on 2026-09-16 from this machine and its title,
+authors, year and the specific claim taken from it were read off what came back.
+Where a fetch failed, that is recorded here rather than papered over.
+
+| Source | Authors, year | What is taken from it | How checked |
+| --- | --- | --- | --- |
+| *Regret Minimization in Games with Incomplete Information*, NIPS 2007, https://papers.nips.cc/paper_files/paper/2007/hash/08d98638c6fcd194a4b1e6992063e944-Abstract.html | Zinkevich, Johanson, Bowling, Piccione, 2007 | CFR itself (Option 1) | fetched; title and all four authors confirmed on the proceedings page |
+| *Monte Carlo Sampling for Regret Minimization in Extensive Games*, NIPS 2009, https://papers.nips.cc/paper_files/paper/2009/hash/00411460f7c92d2124a67ea0f4cb5f85-Abstract.html | Lanctot, Waugh, Zinkevich, Bowling, 2009 | External-sampling and outcome-sampling MCCFR (Options 3, 4) | fetched; title and all four authors confirmed |
+| *Solving Large Imperfect Information Games Using CFR+*, arXiv:1407.5042 | Tammelin, 2014 | CFR+ (Option 2) | fetched; title, sole author and date 2014-07-18 confirmed |
+| *Heads-up limit hold'em poker is solved*, Science 347(6218):145-149, doi:10.1126/science.1259433 | Bowling, Burch, Johanson, Tammelin, 2015 | the Cepheus result, and the scale it cost (Option 2) | publisher metadata fetched via Crossref; title, four authors, 2015-01-09, volume 347, pages 145-149 confirmed |
+| *Deep Counterfactual Regret Minimization*, arXiv:1811.00164 | Brown, Lerer, Gross, Sandholm, 2018 | Deep CFR (Option 5) | fetched; title, all four authors and date 2018-11-01 confirmed |
+| *Superhuman AI for multiplayer poker*, Science 365(6456):885-890, doi:10.1126/science.aay2400 | Brown, Sandholm, 2019 | Pluribus (Option 6): six-handed no-limit, beat elite professionals, no opponent modelling | metadata and the publisher's abstract fetched; title, both authors, 2019-08-30, volume 365, pages 885-890 confirmed. **Full text returned HTTP 403 - paywalled.** Compute figures therefore NOT verified and not quoted |
+| *Solving Imperfect-Information Games via Discounted Regret Minimization*, arXiv:1809.04040 | Brown, Sandholm, 2018 | Linear and Discounted CFR, the family behind `discounted_cfr` (Option 6) | fetched; title, both authors and date 2018-09-11 confirmed |
+| *Computing Robust Counter-Strategies*, NIPS 2007 | Johanson, Zinkevich, Bowling, 2007 | the restricted Nash response, shape two of opponent modelling | confirmed via the Semantic Scholar record: title, three authors, 2007, NIPS |
+| *Abstraction pathologies in extensive games*, AAMAS 2009 | Waugh, Schnizlein, Bowling, Szafron, 2009 | a finer abstraction can be more exploitable than a coarser one | confirmed via Crossref: title, four authors, 2009, AAMAS proceedings |
+| *Potential-Aware Imperfect-Recall Abstraction with Earth Mover's Distance in Imperfect-Information Games*, AAAI 2014 | Ganzfried, Sandholm, 2014 | the published way to build the card abstraction OpenSpiel does not ship | confirmed via Crossref: title, both authors, 2014 |
+| *OpenSpiel: A Framework for Reinforcement Learning in Games*, arXiv:1908.09453 | Lanctot, Lockhart, Lespiau, Zambaldi, Upadhyay, Perolat, Srinivasan, Timbers, Tuyls and others, 2019 | the framework itself | fetched; title and author list confirmed |
+| OpenSpiel's licence, https://raw.githubusercontent.com/google-deepmind/open_spiel/master/LICENSE | Google DeepMind | Apache-2.0, for requirement (e) | fetched; the file's opening lines read "Apache License, Version 2.0, January 2004" |
+
+Sibling documents in this repository, cited rather than repeated: **`ENGINE_ALTERNATIVES.md`**
+(currently on branch `worker/7f09949cb56f`) for why `universal_poker` is the
+engine and for the finding that training in advance without a card abstraction
+does not converge here; **`RESOURCES_SOLVERS.md`** for the solvers and paid
+services that could supply poker judgment instead of our computing it;
+**`OPPONENT_MODEL_DESIGN.md`** for the counting and shrinking that feeds shape
+one and shape two above; **`DECISION_LAYER_SEARCH.md`** for the alternative to
+everything in this file.
