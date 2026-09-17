@@ -32,19 +32,44 @@ Run these four lines once, from the top of the repository, in order:
 
     python3 -m venv .venv
     .venv/bin/pip install --upgrade pip setuptools wheel
-    .venv/bin/pip install -r requirements-vendor.txt -r tests/ground_truth/requirements.txt
+    .venv/bin/pip install -r requirements-vendor.txt -r requirements-research.txt -r tests/ground_truth/requirements.txt
     .venv/bin/pip install --no-deps --no-build-isolation -e vendor/poker_ai
 
 Line by line: the first makes the private area; the second updates the three
-tools that do the installing; the third installs the outside code, both what the
-borrowed engine needs and what our own tests need; the fourth makes the borrowed
-engine in `vendor/poker_ai` importable from that area, without letting it pull
-in its own five-year-old package list. `REFERENCE_NOTES.md` explains why those
-last two flags are there.
+tools that do the installing; the third installs the outside code -- what the
+borrowed engine needs, what the engine this project deals its own hands on
+needs (that is `requirements-research.txt`, which pins OpenSpiel), and what our
+own tests need; the fourth makes the borrowed engine in `vendor/poker_ai`
+importable from that area, without letting it pull in its own five-year-old
+package list. `REFERENCE_NOTES.md` explains why those last two flags are
+there.
+
+## The gate
+
+One command that runs every check this project has and says, in one word,
+whether the change is good to go:
+
+    bin/gate.sh
+
+Run it from anywhere in the repository. It does the setting-up itself: if the
+private area of outside code (`.venv`, described above) is missing it builds
+one, and it installs the three outside packages the tests need -- `pytest`,
+`treys` and `open_spiel` -- only when one of them is actually missing, so a
+second run takes a couple of seconds.
+
+Then it runs the tests, and the three arithmetic checkers described further
+down. It finishes with either `gate: passed`, or `gate: FAILED` followed by the
+names of the steps that went wrong.
+
+One thing it deliberately refuses to do is call a run of no tests at all a
+success. Before running the suite it counts what the suite found, and treats a
+count of zero as a failure, because an empty run looks exactly like a clean one
+if nobody counts.
 
 ## Running the tests
 
-Two sets of tests, both from the top of the repository:
+Two sets of tests come with the borrowed code, both run from the top of the
+repository:
 
     .venv/bin/python -m pytest tests/ground_truth -v
     cd vendor/poker_ai && ../../.venv/bin/python -m pytest test -q
@@ -55,7 +80,194 @@ outside library that does nothing but rank poker hands. Every case should say
 PASSED. The second set is the borrowed engine's own tests, which come with it.
 
 `treys` is used only to check the tests. It never takes part in the bot's own
-play -- `CLAUDE.md` states that rule.
+play -- `CLAUDE.md` states that rule, in the section called "The forefront
+rule", under the heading "What may not be coded".
+
+### The table and its invariants
+
+The `pokerbot` package deals hands on the OpenSpiel engine, and there are seven
+statements about a dealt hand that must hold every time -- the chips add up, the
+same seed deals the same cards, the engine's own showdown agrees with an outside
+hand evaluator, and so on. Those seven are called the invariants, and they are
+checked at every table size from two seats to nine. Run them with:
+
+    .venv/bin/python -m pytest -q
+
+At the end it prints a table: one row per table size, one column per invariant,
+and in each square either PASS or NOT RUN. NOT RUN means that check was not made
+-- because the engine will not deal that many seats, or because the check does
+not exist at that table size -- and the reason is printed underneath. A NOT RUN
+is never counted as a pass. Nothing should ever say FAIL.
+
+### The first bot, and how it is scored
+
+The bot thinks at the table rather than remembering a book of answers. When it
+is its turn it takes each move the engine is offering -- fold, call, half the
+pot, the pot, all of its chips -- and imagines the hand finishing a few hundred
+times for each one: it deals the other players a hand out of the cards nobody
+has shown, plays out the rest of the current round of betting, and from there
+hands every player one of four fixed ways of playing on -- one that gives up
+easily, one that calls everything, one that raises constantly, and one in
+between -- and lets the engine run the hand to the end. It then makes the move
+that finished with the most chips on average. That is called *depth-limited
+search*, and it is the shape of the only published bot that has beaten top
+humans at a six-player table.
+
+Beside it, and never instead of it, a much simpler sum runs: how often would
+this hand win if everyone stayed to the end, against what it costs to stay in.
+Both answers are written down every time, with whether they agreed. Only the
+search's answer is played.
+
+To watch it play a thousand hands against five opponents that pick moves at
+random:
+
+    .venv/bin/python -m pokerbot.arena --seats 6 --hands 1000 --seed 20260917 \
+        --bot search --opponents random
+
+`--opponents` also takes `fold` (an opponent that gives up whenever it is asked
+for money) and `call` (one that never folds and never raises), or a
+comma-separated list to seat a different one in each chair.
+
+It prints how many hands were played, how many of the table's seven statements
+were broken -- which should always be none, and the run stops dead if one is --
+how long its slowest decision took, and how much it won. The winnings are
+counted in big blinds per hundred hands: the big blind is the forced bet one
+player puts in before any cards are dealt, and is the usual unit for saying how
+much a poker player wins. It comes with a range around it, because poker is
+noisy enough that a single number means nothing; if that range does not include
+zero, the win is not something the shuffle could have produced on its own.
+
+What that score does not cover, said plainly: against opponents who bet at
+random almost every hand is over before the three shared cards are turned face
+up -- the *flop* -- so this measures the bot's first decision and little else,
+and T3's personas will test the rest. The printed report says how many
+decisions fell on each round of betting, so the caveat is visible in the number
+itself.
+
+The run that was recorded as evidence is kept, in summary, at
+`tests/data/arena_6seat_1000hands.json`, and `tests/test_arena_summary.py`
+checks it still says what it has to say.
+
+## The scoreboard: how good is a bot?
+
+A poker result over a few hundred hands is mostly luck, so this project never
+reports a bare number. One command sits a bot down against a league of
+deliberately flawed opponents, plays the same deals twice -- once for the new
+version and once for the one it is replacing -- and prints how much each of them
+won, with a range around every figure saying how much of it could be luck:
+
+    .venv/bin/python -m pokerbot.scoreboard --bot always_call --hands 200 --seed 1
+
+`--bot` names the version being measured and `--compare` the one it is being
+measured against; leave `--compare` out and it uses the reference named in the
+config. `--list-bots` prints what the two accept.
+
+**What the opponents are.** Thirteen of them. Four are there to prove the
+scoreboard itself is counting correctly -- one folds every hand, one calls
+everything, one raises everything, one flips a coin between calling and raising.
+The other nine each act out one specific human mistake: the player who calls too
+much, the one who waits all night for a premium hand, the one who bets wildly,
+the one who only ever bets a real hand so you always know where you are, the one
+who gives up the moment the flop misses, two competent ones, the one who plays
+badly for a while after losing a big pot, and the one whose bet size tells you
+what he has.
+
+**Why the opponents change every night.** Each of those nine is built from a few
+settings -- how many hands it plays, how often it raises, how big a loss sets it
+off. Those settings are drawn afresh at the start of every run rather than fixed,
+because a bot polished against one exact opponent looks better than it is. The
+drawn values are printed at the top of the report, so any run can be repeated.
+
+**Why half of them are held back.** The nine are split in two. One half is used
+while a bot is being tuned; the other half is never used for anything but the
+final accept-or-reject decision. The command enforces it rather than trusting
+anyone to remember: ask for a held-back opponent in a tuning run and it refuses
+and stops.
+
+**What the report says at the end.** Big blinds won per hundred hands for every
+opponent at tables of two, six, eight and nine, each with its range; the same
+figures for the difference between the two versions on identical cards; and then
+one verdict, ACCEPT or REJECT, by a rule written down before the run and
+reprinted at the top of it. The rule is that the overall figure -- weighted
+towards six-handed tables, which is what the operator plays most -- has to be
+above zero with its whole range above zero, and that no single opponent may be
+beating the new version. Winning overall while losing to one opponent is the
+signature of a bot that has been polished against the others, and it blocks.
+
+Every number on the page is either a measurement or a decision recorded before
+the run. The settings live in `pokerbot/league_config.toml`, which the report
+reprints in full, and `EVALUATION_STRATEGY.md` sections 3.2 and 3.5 are what
+they implement.
+
+**What the first real run of it says.** That run is kept, in full, at
+`research/results/stage2_search_vs_personas.txt`: the bot against all thirteen
+opponents at tables of two, six, eight and nine, five hundred hands in each of
+the fifty-two squares of that grid for each of the two versions compared. It
+took twenty-three minutes, which is why it is five hundred hands a square and
+not the thousand the settings ask for. The verdict is ACCEPT: the bot finished
+about 2,370 big blinds per hundred hands ahead of the version it was measured
+against, with the whole range around that figure above zero. That 2,370 is how
+much better the bot did than the call-everything version on the very same
+deals, while "beats" and "loses to" below mean something else: simply whether
+the bot finished with more money than it started with. It beats seven of the
+thirteen -- the one that gives up every hand, the one that calls everything,
+the one that raises everything, the coin-flipper, the player who calls too
+much, the one who bets wildly, and the one who plays badly after losing a big
+pot. Each of those seven wins is bigger than the shuffle could account for at
+at least one table size, and at the two-handed table six of the seven are,
+before allowing for the fact that fifty-two squares were looked at and the best
+one picked. It loses to two: the player who waits all night for a premium hand,
+and one of the two competent players, the tight and aggressive one. Against the
+remaining four -- the one who only ever bets a real hand, the one who gives up
+when the flop misses, the other competent player, and the one whose bet size
+tells you what he has -- the result is too close to call, meaning the range
+around it still contains zero. The caveat, and it is the big one: these
+opponents are caricatures who put their money in far more freely than people
+do, and the version the bot is measured against is one that calls every bet, so
+a figure in the thousands of big blinds is a statement about how bad that
+opposition is and not about how good the bot is. Nothing has been adjusted on
+the strength of it.
+
+## The notebook: what the bot has noticed about a player
+
+The notebook is the bot's memory of the people it plays against. It watches
+every hand and writes down, for each player by name, how often the game offered
+them a particular spot and how often they did a particular thing in it: how
+often they put money in before the flop, how often they raised, how often they
+folded when someone bet at them, and a dozen more of the same shape. The one
+hand it does not treat as a chance to put money in is the one where everybody
+folds and the last player left wins without playing, because nobody there was
+offered a pot worth entering; that hand counts as a hand watched and nothing
+more. It changes nothing about how the bot plays. It only counts.
+
+Two things stop it fooling itself. A player who has raised four times out of six
+is not a wild raiser, so every rate is pulled towards the average of everyone
+else the notebook has watched: everyone it has on file and not just the people
+at the table right now, which would be a different and much shakier thing, and
+never the player themselves, which would be a pull towards the very number it
+is meant to steady. The pull only lets go as the number of hands grows, so a
+number resting on six hands reads close to that average and one resting on six
+hundred reads close to what was actually seen. That makes it weak until several
+people are on file: with one name and nobody to compare them to there is no
+average to pull towards, so the rate is pulled towards nought rather than
+towards the player's own figure. And beside every number it prints how much of
+it is the player and how much is still that average, as a figure between nought
+and one. It also never looks at anybody's cards: the account of the hand is
+copied without the cards in it before a single number is counted, so no count
+can be about a card even by accident.
+
+To see what it has on somebody, give it a file of recorded hands and a name:
+
+    .venv/bin/python -m pokerbot.profile ada --records hands.jsonl \
+        --names 0=ada,1=grace,2=ida,3=mary,4=edith,5=nina
+
+Hand files come from the arena's `--records-out`. A recorded hand knows which
+seat did what but not who was sitting there, so `--names` says who was in which
+seat; leave it out and the players are called `seat0`, `seat1` and so on. What
+it prints is a block of one line per number, then the player's overall type in
+one word, marked as too close to call when it is, then a short list of the
+specific weaknesses it has seen enough hands to name. Those are notes for a
+person reading them, and nothing in the bot reads them back.
 
 ## Checking the design document's arithmetic
 

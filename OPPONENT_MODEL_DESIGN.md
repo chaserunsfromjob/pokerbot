@@ -44,20 +44,23 @@ have to fold, and the odds of that collapse fast — the arithmetic is in
 [Table B](#table-b-the-multiway-problem). This is why the plan leans on getting
 paid with good hands rather than on bluffing.
 
-One rule constrains everything below. `CLAUDE.md` in this repository forbids any
-AI-written code from deciding a poker action, evaluating a hand, or reading a
-board. Nothing in this design breaks that. Everything the opponent model hands to
-the bot in play is one of three things: **numbers describing what an opponent
-does**, **summaries of those numbers across the whole observed
-population** — a baseline to shrink toward, a
+One rule constrains everything below. `CLAUDE.md` in this repository lets an AI
+assistant write the poker code — the code that picks an action, assigns a range
+to an opponent, reads the board and combines opponent rates — while keeping
+every model call out of the live decision path, refusing to let a decision's
+content come from stored model output, and taking the game rules and hand
+evaluation from the vendored engine. Nothing in this design breaks that.
+Everything the opponent model hands to the bot in play is counted from observed
+actions: **numbers describing what an opponent does**, **summaries of those
+numbers across the whole observed population** — a baseline to shrink toward, a
 threshold to classify against, an archetype for the engine to solve against — and
-**a choice of which engine-produced strategy to load**. It never combines the
-numbers of the opponents in the current hand into anything that moves the bot's
-own action; that is the engine's job. The engine keeps every piece of poker
-judgment. `CLAUDE.md` states exactly where the line falls, in its own two-column
-table under "The forefront rule";
+**a choice of which engine-produced strategy to load**. No model is called while
+a hand is live, nothing a model produced is stored and replayed as a decision,
+and ranking a hand stays with the engine. `CLAUDE.md` states exactly where the
+line falls, in its "What may be coded" and "What may not be coded" lists under
+"The forefront rule";
 [The forefront rule and this design](#the-forefront-rule-and-this-design) below
-points at that table and this design obeys it.
+points at those lists and this design obeys them.
 
 ---
 
@@ -117,34 +120,37 @@ already what `CLAUDE.md` says.
 
 ### The forefront rule and this design
 
-`CLAUDE.md` forbids AI-written code from deciding a poker action, evaluating a
-hand, or reading a board. **The exact boundary for opponent modelling lives in
-`CLAUDE.md`, under "The forefront rule", as a two-column table.** That table is
-the authority; this document only has to obey it. Both of its columns are
-reproduced here **verbatim**, item for item, so that this summary can be checked
-against the authority by inspection rather than trusted:
+`CLAUDE.md`, under "The forefront rule", is the authority for what this design
+may write, and this document only has to obey it. Three of its bullets govern
+everything below, and they are quoted here **verbatim**, so that this summary
+can be checked against the authority by inspection rather than trusted:
 
-- **Allowed to AI-written opponent-model code:** Counting observed actions;
-  Computing a single rate from its own counts; Shrinking a rate toward a
-  baseline; Sorting an opponent into a bucket; Selecting *which* engine strategy
-  to load; Substituting an opponent model into the engine's own solver;
-  Reporting several rates side by side.
-- **Reserved to the engine:** Evaluating hand strength; Choosing an action;
-  Assigning a range to an opponent; Reading board texture; Producing the strategy
-  itself; Solving; Combining live-field rates into a quantity that drives a poker
-  decision — multiplying the fold rates of the opponents in the current hand to
-  gate a bluff, for one.
+> Let an AI assistant write the poker code: the code that picks an action, assigns a range to an opponent, reads the board, and combines opponent rates.
 
-**Live field versus observed population.** That last reserved item turns on a
-distinction `CLAUDE.md` draws between that row and the observed-population bullet
-directly beneath its table, and this design leans on it everywhere, so it is
-worth restating in full. Combining rates across the **live field** — the
-opponents in the current hand — into anything that adjusts the bot's own action
-is reserved to the engine. Combining
+> Keep every model call out of the live decision path; when the bot acts it runs ordinary code only, with no language-model inference, no network call to a model, and no prompt.
+
+> Treat the **observed population** as the whole database, seated players' stored rows included, with being seated never the criterion for inclusion, and combine rates across it into a baseline, a classification split, or an archetype.
+
+So an AI assistant may write the opponent-model code in this document, including
+the code that picks an action, assigns a range, reads the board, and combines
+opponent rates. What that code may never do is call a model while a hand is
+live, or take the content of a poker decision from stored model output — a
+table, a set of weights, or text a model produced. It is ordinary code: the same
+inputs and seed give the same answer, tests cover it, and a reviewer reads it
+line by line. The game rules and hand evaluation still come from the engine
+road, OpenSpiel `universal_poker`, rather than being hand-rolled, which is why
+the non-goals above rule out a hand-strength estimator.
+
+**Live field versus observed population.** This design leans everywhere on a
+split between two ways of pooling rates, so it is worth restating in full.
+Combining rates across the **live field** — the opponents in the current hand —
+into anything that adjusts the bot's own action is left to the engine
+throughout, and where a section below declines such a combination that is this
+design's own architecture, not a prohibition the rule imposes. Combining
 rates across the **observed population** — the whole database, seated players'
 stored rows included, with being seated never the criterion for inclusion — into
 a baseline, a classification split, or an archetype handed to the engine is
-allowed AI-written work, because the engine still chooses the action.
+work this document's own code does, exactly as the quoted bullet describes.
 
 "The whole database" is meant literally, and the ambiguity is worth killing
 outright, because it is the one that would otherwise be read the wrong way.
@@ -153,8 +159,8 @@ currently seated players held out. Their stored rows are in the pool like anyone
 else's. What makes the pool population-level is that nobody is selected *for*
 being at the table: the pool is every opponent meeting the stored-hands
 threshold, and seating neither adds an opponent to it nor removes one. Filtering
-the pool down to the players in the current hand is the reserved live-field
-combination; leaving them in it is not.
+the pool down to the players in the current hand is the live-field combination
+this design leaves to the engine; leaving them in it is not.
 
 **Every rate combination this design puts on the live decision path — anything
 computed while a hand is in progress, or loaded into play from something that
@@ -174,7 +180,8 @@ to a poker decision the bot acts on. The only place *on the live decision path*
 where the *live field* is looked at collectively is choosing which precomputed
 strategy to load ([§4.5](#45-tiers-what-to-build-in-what-order)), which counts
 already-assigned buckets rather than combining rates, and whose whole output is a
-strategy handle — the "Selecting *which* engine strategy to load" row above.
+strategy handle — a choice of which engine strategy to load, not a rate
+combination.
 
 **Away from the decision path this design also combines rates offline, over
 logged hands, and those combinations are not enumerated above because none of
@@ -401,11 +408,12 @@ three opponents that requires each of them to fold 79% of the time
    opponent.** The bucket of the *one* player you want to fold is irrelevant if
    three others are still in. State this carefully, because the forefront rule
    is next to it: the fold-rate product is **a property the engine-produced
-   strategy must exhibit, not a calculation for AI-written code to do at the
-   table**. No module outside the engine may multiply the live field's fold
-   rates together and adjust a bluff frequency by the result; that is deciding a
-   poker action, and `CLAUDE.md` forbids it — it is the exact case named in the
-   reserved column, and the live-field side of the line summarised in
+   strategy must exhibit**, and no module in this design multiplies the live
+   field's fold rates together at the table and adjusts a bluff frequency by
+   the result. `CLAUDE.md`'s forefront rule, under "What may be coded", would
+   permit code of ours that did — combining opponent rates is ours to write —
+   so this is a design choice about where the multiway discount comes from,
+   not a rule forbidding it; see the line summarised in
    [§1](#the-forefront-rule-and-this-design). The multiway discount arrives
    instead through the engine: Tier 1 solves each counter-strategy offline
    against a full table of population-derived archetype opponents
@@ -638,7 +646,7 @@ rates any of them pools across opponents are the population-level ones in
 [§4.4](#44-bucketing-an-opponent), read from stored history. `select.py` is the
 only module that looks at the live field as a whole, and it does that by counting
 bucket labels ([§4.5](#45-tiers-what-to-build-in-what-order)), never by combining
-live opponents' rates — the line drawn in
+live opponents' rates — a design choice, held to in
 [§1](#the-forefront-rule-and-this-design).
 
 ### 4.2 The stat table
@@ -673,8 +681,8 @@ downstream number.**
 
 | `stat_name` | Numerator increments when… | Denominator increments when… | Context key |
 | --- | --- | --- | --- |
-| `vpip` | opponent voluntarily put chips in preflop (call or raise; a posted blind alone does not count) | opponent was dealt in | — |
-| `pfr` | opponent raised preflop | opponent was dealt in | — |
+| `vpip` | opponent voluntarily put chips in preflop (call or raise; a posted blind alone does not count) | opponent was dealt in and the hand was not a walk ([§4.7](#47-edge-cases-a-coding-task-will-hit) row 2) | — |
+| `pfr` | opponent raised preflop | opponent was dealt in and the hand was not a walk ([§4.7](#47-edge-cases-a-coding-task-will-hit) row 2) | — |
 | `limp` | opponent called exactly the big blind, first voluntary action, no prior raise | opponent was dealt in and had the option to limp | — |
 | `open_raise` | opponent made the first raise preflop | opponent was first-in with no prior raiser | seat bucket: `EP`/`MP`/`LP`/`SB`/`BB` |
 | `three_bet` | opponent reraised over an open | opponent faced exactly one open raise with chips behind | — |
@@ -708,37 +716,48 @@ anchors chosen to show the shape of the requirement, **not claims about any
 real population**; the width of the interval barely moves for `p̂` between 0.2
 and 0.8. Computed by `tools/check_design_numbers.py`, 2026-09-15.
 
-The **"Opportunities per hand" column is an illustrative estimate on the same
-footing as `p̂`, not a sourced fact.** No published figure was found for how
-often a real multiway table hands a given player these spots, and none is
-invented here: 0.08, 0.15 and 0.30 are round order-of-magnitude placeholders for
-"rare", "occasional" and "common". Only `vpip` and `pfr` carry a rate of 1.00,
-and they carry it because their [§4.2](#42-the-stat-table) denominator is
-literally "opponent was dealt in" — one opportunity per hand by definition, not
-an estimate. **Every other row takes a placeholder**, because every other
-denominator in [§4.2](#42-the-stat-table) is a spot the game has to hand the
-player: `three_bet`'s is "faced exactly one open raise with chips behind",
-`fold_to_three_bet`'s is "had open-raised and then faced a reraise",
-`fold_to_cbet`'s is "faced a continuation bet on that street", `wtsd`'s is "saw
-a flop". The "Hands needed" column inherits that uncertainty and scales
-inversely with them — halve an opportunity rate and the hands double. **Replace
-every placeholder with measurement as soon as Tier 0 has logged any hands**:
-each is exactly `denominator / hands_dealt` for that stat, pooled
-across the observed population (not the live field, and not a behaviour rate at
-all — it is how often the game hands somebody that spot). What survives the
-uncertainty is the *ordering* — Tier A stats need hundreds of hands and postflop
-stats need thousands — and that ordering is what the rest of this document leans
-on.
+The **"Opportunities per hand" column is measured in two rows and an
+illustrative estimate in two others.** `fold_to_cbet` at **0.030** and `wtsd` at
+**0.187** are the nine-handed pooled rates in
+[`OPPONENT_BASELINE.md` §2](OPPONENT_BASELINE.md#2-corpus-a-the-2009-no-limit-population-per-table-size),
+whose "FtCB chances per hand" and "Flops seen per hand" columns are exactly the
+[§4.2](#42-the-stat-table) denominators of those two stats — "faced a
+continuation bet on that street" and "saw a flop" — counted over that
+document's 70,685 nine-handed hands of 2009 no-limit play. Carry its caveat with
+the number: both were measured on the sample its §1 describes, which lacks
+PartyPoker and leans high-stakes, and on a seventeen-year-old archive rather
+than on the table this bot will sit at. For the other two rows no published
+figure was found for how often a real multiway table hands a given player those
+spots, and none is invented here: 0.08 and 0.15 are round order-of-magnitude
+placeholders for "rare" and "occasional". Only `vpip` and `pfr` carry a rate of
+1.00, and they carry it because their [§4.2](#42-the-stat-table) denominator is
+"opponent was dealt in and the hand was not a walk"
+([§4.7](#47-edge-cases-a-coding-task-will-hit) row 2). That makes 1.00 an
+**upper bound**, not an estimate: the true rate is 1.00 minus the walk rate,
+the share of hands nobody enters, and Table C keeps 1.00 as that bound and says
+so in its last column. **Every row that is neither measured nor forced takes a
+placeholder**, because every other denominator in [§4.2](#42-the-stat-table) is
+a spot the game has to hand the player: `three_bet`'s is "faced exactly one open
+raise with chips behind", `fold_to_three_bet`'s is "had open-raised and then
+faced a reraise". The "Hands needed" column inherits whatever its rate is worth
+and scales inversely with it — halve an opportunity rate and the hands double.
+**Replace every remaining placeholder, and both archive rates, with measurement
+as soon as Tier 0 has logged any hands**: each is exactly
+`denominator / hands_dealt` for that stat, pooled across the observed population
+(not the live field, and not a behaviour rate at all — it is how often the game
+hands somebody that spot). What survives the uncertainty is the *ordering* —
+Tier A stats need hundreds of hands and postflop stats need thousands — and that
+ordering is what the rest of this document leans on.
 
-| Stat | Anchor `p̂` (illustrative) | Opportunities per hand (illustrative) | Target width | Opportunities needed | **Hands needed** |
-| --- | --- | --- | --- | --- | --- |
-| `vpip` | 0.30 | 1.00 | ±5pp | 323 | **323** |
-| `vpip` | 0.30 | 1.00 | ±3pp | 896 | **896** |
-| `pfr` | 0.20 | 1.00 | ±5pp | 246 | **246** |
-| `three_bet` | 0.07 | 0.15 | ±2pp | 625 | **4,168** |
-| `fold_to_three_bet` | 0.60 | 0.08 | ±10pp | 92 | **1,152** |
-| `fold_to_cbet` | 0.50 | 0.15 | ±10pp | 96 | **640** |
-| `wtsd` | 0.25 | 0.30 | ±5pp | 288 | **960** |
+| Stat | Anchor `p̂` (illustrative) | Opportunities per hand | Target width | Opportunities needed | **Hands needed** | Where the rate comes from |
+| --- | --- | --- | --- | --- | --- | --- |
+| `vpip` | 0.30 | 1.00 | ±5pp | 323 | **323** | one per hand dealt, less the walk rate: an upper bound (§4.7 row 2) |
+| `vpip` | 0.30 | 1.00 | ±3pp | 896 | **896** | one per hand dealt, less the walk rate: an upper bound (§4.7 row 2) |
+| `pfr` | 0.20 | 1.00 | ±5pp | 246 | **246** | one per hand dealt, less the walk rate: an upper bound (§4.7 row 2) |
+| `three_bet` | 0.07 | 0.15 | ±2pp | 625 | **4,168** | illustrative placeholder |
+| `fold_to_three_bet` | 0.60 | 0.08 | ±10pp | 92 | **1,152** | illustrative placeholder |
+| `fold_to_cbet` | 0.50 | 0.030 | ±10pp | 96 | **3,201** | measured, `OPPONENT_BASELINE.md` §2, nine-handed |
+| `wtsd` | 0.25 | 0.187 | ±5pp | 288 | **1,541** | measured, `OPPONENT_BASELINE.md` §2, nine-handed |
 
 **This table is the honest expectation-setter for the whole project.** VPIP and
 PFR are usable inside one long session. Everything postflop needs many sessions
@@ -824,13 +843,13 @@ probability. `MIN_POOL_HANDS = 200` and `MIN_POOL_OPPONENTS = 20` are both
 **unmeasured starting values chosen for this design**, belong in a config file,
 and are to be raised if the pooled rates prove unstable.
 
-**That Σ is population-level, not live-field, and that is what makes it
-allowed.** It sums over every qualifying opponent in the database — people not at
-the current table, and past sessions — and its output is a prior mean that a
-single opponent's rate is shrunk toward. It is never a combination of the rates
-of the opponents in the current hand, and it adjusts no action by itself; the
-engine still chooses every action. This is the allowed side of the live-field
-versus observed-population line in `CLAUDE.md`, summarised in
+**That Σ is population-level, and that is exactly the baseline the rule
+names.** It sums over every qualifying opponent in the database — people not at
+the current table, past sessions, and the stored rows of seated players too,
+since being seated is never the criterion for inclusion — and its output is a
+prior mean that a single opponent's rate is shrunk toward. It adjusts no action
+by itself. This is the observed-population baseline named in the forefront
+rule's "What may be coded", summarised in
 [§1](#the-forefront-rule-and-this-design). A coding task must compute it from
 stored history only, and must never restrict the pool to the players currently
 seated.
@@ -954,14 +973,15 @@ same status. Both belong in a config file and are to be tuned by
   rationale as `BASELINE`: a fixed constant would be a guess about a population
   nobody here has measured.
 
-**That median is population-level, not live-field, and that is what makes it
-allowed.** It is taken over every qualifying opponent in the database, including
-people not at the current table, and it produces a classification threshold — the
-"Sorting an opponent into a bucket" row of the `CLAUDE.md` table — not an
-adjustment to any action. It must never be recomputed over just the opponents in
-the current hand: that would be combining live-field rates, which
-[§1](#the-forefront-rule-and-this-design) reserves to the engine. Each opponent
-is then compared to the threshold **individually**; no opponent's rate is ever
+**That median is population-level, and that is exactly the split the rule
+names.** It is taken over every qualifying opponent in the database, including
+people not at the current table and the stored rows of seated players, and it
+produces a classification split — named in the forefront rule's "What may be
+coded" — not an adjustment to any action. It must never be recomputed over just
+the opponents in the current hand: that would make being seated the criterion
+for inclusion, which the same bullet refuses
+([§1](#the-forefront-rule-and-this-design)). Each opponent is then compared to
+the threshold **individually**; no opponent's rate is ever
 mixed with another live opponent's.
 
 **Hysteresis.** An opponent near a boundary must not flip bucket every hand.
@@ -1049,8 +1069,9 @@ which the rates underlying a flag reach play. Even there no flag-specific
 consumer is specified: Tier 2 consumes per-public-history action frequencies,
 not flags. Feeding a flag into play any earlier is a mechanism this document
 does not contain, and the reconciliation that added it would have to name that
-mechanism and place it on the engine's side of the `CLAUDE.md` table, under
-"Choosing an action".
+mechanism and show it meets "The forefront rule" in `CLAUDE.md`: reviewable
+decision code, no model call on the live decision path, and no decision content
+taken from stored model output.
 
 | Flag | Condition | Confidence gate |
 | --- | --- | --- |
@@ -1397,29 +1418,30 @@ live field collectively as well, and neither touches a live decision:
 live opponents, and the "Multiway gate" column in
 [§4.6](#46-what-each-bucket-means-in-plain-strategic-terms).) It counts bucket
 labels that were each assigned to one opponent on that opponent's own rates; no
-rate is combined with another live
-opponent's rate, and the output is a strategy handle — the "Selecting *which*
-engine strategy to load" row of the `CLAUDE.md` table, not the reserved
-live-field combination described in
-[§1](#the-forefront-rule-and-this-design). A coding task must not "improve" this
-by averaging or multiplying the live opponents' rates to decide what to load;
-that crosses the line.
+rate is combined with another live opponent's rate, and the output is a
+strategy handle. A coding task must not
+"improve" this by pooling the live opponents' rates into a baseline or a split
+to decide what to load: a pool whose criterion is who is seated is not the
+observed population the forefront rule's "What may be coded" names, which is
+the whole database with being seated never the criterion for inclusion
+([§1](#the-forefront-rule-and-this-design)).
 
-**Where the forefront rule comes under strain, and how it is handled.** Defining
-the archetype perturbation ("calls up-weighted") is a judgment about poker made
-outside the engine. It is kept inside the rule by these constraints, which a
-coding task must not relax:
+**Where the forefront rule binds hardest, and how it is met.** Defining the
+archetype perturbation ("calls up-weighted") is a judgment about poker, and the
+rule requires an archetype to be derived rather than hand-written. It is kept
+inside the rule by these constraints, which a coding task must not relax:
 
 - The perturbation is **derived from measured statistics**, not chosen by hand:
   the archetype's action frequencies are set to the pooled shrunk rates of real
   opponents in that bucket, from the bot's own database. **That pooling is
-  population-level, not live-field, and that is what makes it allowed.** It runs
-  offline, over every stored opponent in the bucket — not over the players at any
-  table the bot is sitting at — and what it produces is an archetype handed to
-  the engine's solver, which `CLAUDE.md` permits explicitly. Pooling the rates of
-  the opponents in the current hand to shape a strategy mid-session would be the
-  reserved live-field combination instead; see
-  [§1](#the-forefront-rule-and-this-design).
+  population-level, and that is exactly what the rule names.** It runs offline,
+  over every stored opponent in the bucket — the whole database, not a pool cut
+  down to the players at any table the bot is sitting at — and what it produces
+  is an archetype derived from measured action frequencies alone and handed to
+  the engine's solver, which the forefront rule's "What may be coded" permits
+  explicitly. Cutting the pool down to the opponents in the current hand would
+  make being seated the criterion for inclusion, which that same bullet
+  refuses; see [§1](#the-forefront-rule-and-this-design).
 - The perturbation touches **only action probabilities**. It never references
   hole cards, board cards, or hand strength.
 - The bot's *own* strategy is then computed **entirely by the engine's solver**
@@ -1485,7 +1507,7 @@ test.
 | Case | Required handling |
 | --- | --- |
 | Posting the blind | Does **not** count toward `vpip`. A player who checks their option in the big blind has not voluntarily put money in |
-| Walk (everyone folds to the big blind) | Increments `hands_dealt` only. No `vpip` opportunity for anyone |
+| Walk (everyone folds to the big blind) | Increments `hands_dealt` only: no opportunity for `vpip`, `pfr` or any other preflop stat, for anyone, so `vpip` and `pfr` share one denominator and `gap` stays coherent. Escalation `241e2f235c94` is the authority for this row, over [§4.2](#42-the-stat-table)'s "opponent was dealt in" |
 | Player sits out or is dealt out | No `hands_dealt` increment |
 | All-in for less than a full raise | Counts as a raise for `pfr`/`afq`; the incomplete-raise rule must not reopen action in the state model |
 | Straddle / ante structures | Must be recorded; `vpip` opportunity definitions shift. If the target table has straddles, this is a schema question, not an afterthought |
@@ -1703,9 +1725,9 @@ now settled rather than conditional:**
 - The per-*table* pooled-profile fallback that this question previously offered
   is **dropped**. It was only ever the answer to "identifiers are unstable",
   and they are not. It is also not to be reintroduced for any other reason:
-  pooling the rates of the players at the current table is a live-field
-  combination, which [§1](#the-forefront-rule-and-this-design) reserves to the
-  engine.
+  pooling the rates of the players at the current table would make being seated
+  the criterion for inclusion, which the forefront rule's observed-population
+  bullet refuses ([§1](#the-forefront-rule-and-this-design)).
 - The rest of this document needs no change: per-opponent tracking was the
   assumption throughout, and every stat, bucket and exploit flag is already
   keyed on `opponent_id`.
@@ -1853,7 +1875,7 @@ inputs, never from another figure's printed value.
 | --- | --- |
 | Tables A, B, C, D, E, the flag margin-versus-interval table in [§4.4](#44-bucketing-an-opponent), and the inline `0.5^(1/3) ≈ 0.794` reading of them | Computed by `tools/check_design_numbers.py`, 2026-09-15, which also re-checks them on every run. Formulas are stated inline beside each table; all are elementary arithmetic (binomial standard error, independent-event products, Beta posterior means) |
 | Table C's anchor `p̂` column (0.30, 0.20, 0.07, 0.60, 0.50, 0.25) | **Illustrative anchors, not measured or cited.** Labelled as such beside the table; the interval width barely moves across `p̂` in 0.2–0.8 |
-| Table C's opportunities-per-hand column (`three_bet` 0.15, `fold_to_three_bet` 0.08, `fold_to_cbet` 0.15, `wtsd` 0.30) | **Illustrative estimates, not measured or cited.** No source exists for them; labelled as such beside the table. Each is to be replaced by `denominator / hands_dealt` from the bot's own logged hands. The "Hands needed" column scales inversely with them. Only `vpip` and `pfr` escape the placeholder, at 1.00, and only because their [§4.2](#42-the-stat-table) denominator is "opponent was dealt in" |
+| Table C's opportunities-per-hand column (`three_bet` 0.15, `fold_to_three_bet` 0.08, `fold_to_cbet` 0.030, `wtsd` 0.187) | **Two measured, two illustrative.** `fold_to_cbet` 0.030 and `wtsd` 0.187 are the nine-handed pooled rates in [`OPPONENT_BASELINE.md` §2](OPPONENT_BASELINE.md#2-corpus-a-the-2009-no-limit-population-per-table-size) — its "FtCB chances per hand" and "Flops seen per hand" columns, over 70,685 nine-handed hands — measured on the sample its §1 describes, which lacks PartyPoker and leans high-stakes; adopting them is that document's §5 recommendation 2. `three_bet` 0.15 and `fold_to_three_bet` 0.08 are **illustrative estimates, not measured or cited**, because that measurement does not reach their denominators; no source exists for them, and they are labelled as such beside the table. Each of the four is to be replaced by `denominator / hands_dealt` from the bot's own logged hands. The "Hands needed" column scales inversely with them. Only `vpip` and `pfr` escape the placeholder, at 1.00, and only because their [§4.2](#42-the-stat-table) denominator is "opponent was dealt in and the hand was not a walk" ([§4.7](#47-edge-cases-a-coding-task-will-hit) row 2). That 1.00 is an upper bound, not a measurement: the true rate is 1.00 minus the walk rate, and Table C keeps the bound, saying so in its last column |
 | The bucket boundary's noise exposure — ±12.4pp raw and ±6.2pp shrunk on `vpip` at the `0.5` gate, ±19.6pp and ±9.8pp on `afq`, and the 1,835 hands / 2,351 opportunities a `0.02`-tight gate would need ([§4.4](#44-bucketing-an-opponent)) | Computed by `tools/check_design_numbers.py` from `VPIP_SPLIT`, `AFQ_SPLIT`, `PRIOR_STRENGTH`, the `0.5` gate and the `0.02` band, by the same `n = s·c/(1−c)` and `w = 1.96·√(p̂(1−p̂)/n)` used for the flag margins |
 | **Hours on one laptop for the whole offline build, no multi-day computing** ([§4.5](#45-tiers-what-to-build-in-what-order), [E5](#engine-requirements)) | **The operator's stated cap, 2026-09-15**, not a derived or negotiable figure. It is what E5's answer has to clear, and what makes Tier 1's 32 runs conditional on a minutes-long single solve |
 | The table-size priority — 6-handed first, then 8- and 9-handed as one band, then the rest ([§4.5](#45-tiers-what-to-build-in-what-order)) | **The operator's stated priority, 2026-09-15**, recorded as heater task `65bba741bf40` and quoted verbatim at its point of use. Not derived and not negotiable here; it fixes only the order of the solve plan, never which seat counts are required |

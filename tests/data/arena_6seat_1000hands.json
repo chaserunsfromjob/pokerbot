@@ -1,0 +1,69 @@
+{
+  "big_blind": 100,
+  "bootstrap_resamples": 10000,
+  "bot": "search",
+  "bot_seat": 0,
+  "budget_s": 0.25,
+  "commit": "9a8d3cce1ebf37de7057314957cc4514d3b64c28",
+  "confidence": 0.95,
+  "decision_time_max_s": 0.08167450013570487,
+  "decision_time_median_s": 0.03374520898796618,
+  "decision_time_p99_s": 0.0576702079270035,
+  "decisions": 1242,
+  "decisions_by_street": {
+    "flop": 25,
+    "preflop": 1216,
+    "river": 0,
+    "turn": 1
+  },
+  "decisions_starved": 0,
+  "decisions_truncated": 0,
+  "hands_played": 1000,
+  "invariant_failures": 0,
+  "invariants_checked": [
+    "I1",
+    "I2",
+    "I3",
+    "I4",
+    "I5",
+    "I6",
+    "I7"
+  ],
+  "invariants_partial": {
+    "I3": "the side-pot ceiling only; the showdown half needs the outside evaluator, which CLAUDE.md keeps out of live play",
+    "I6": "sampled: 10 of 1000 hands replayed",
+    "I7": "the pot arithmetic only; the showdown half is the test suite's"
+  },
+  "load_at_end": [
+    3.75390625,
+    3.9443359375,
+    4.0478515625
+  ],
+  "load_at_start": [
+    3.59423828125,
+    3.9404296875,
+    4.05224609375
+  ],
+  "opponents": {
+    "1": "random",
+    "2": "random",
+    "3": "random",
+    "4": "random",
+    "5": "random"
+  },
+  "playouts_per_candidate": 200,
+  "records_sha256": "f15d7bf5f56883723053e70b0cd419a66ed4cccc053847768398a1366605155a",
+  "rule_agreed": 589,
+  "rule_agreement": 0.4742351046698873,
+  "rule_decisions": 1242,
+  "rule_time_max_s": 0.0032244580797851086,
+  "schema": "pokerbot.arena_report/1",
+  "seats": 6,
+  "seed": 20260917,
+  "small_blind": 50,
+  "started": "2026-09-17T01:21:35-0400",
+  "wall_clock_s": 43.058109667152166,
+  "win_rate_bb_per_100": 2286.204833333333,
+  "win_rate_ci_high": 3823.836666666667,
+  "win_rate_ci_low": 801.0726666666667
+}

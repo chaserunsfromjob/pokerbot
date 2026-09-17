@@ -1,0 +1,678 @@
+# second session, 2026-09-16, taken to check the six-repeat session above reproduces
+# uptime at session start: 22:33  up 44 days,  4:49, 2 users, load averages: 3.68 3.12 2.93
+# command: caffeinate -i ../../.venv-engines/bin/python paired_session.py 2 8 0
+# the third argument 0 means: do not wait for the load to fall. The laptop was
+# shared with other work all evening and the load never settled below 4 for long,
+# so every figure here is recorded with the load it was taken at and nothing was
+# discarded for load. Two repeats, not six, and eight seconds a row, not ten.
+# uptime at session end: 22:43  up 44 days,  4:59, 2 users, load averages: 4.37 4.18 3.64
+paired session: 2 repeats, each running chooser fcpa, chooser fullgame, bench_speed 8s per row, resample_opponents 8s per position, back to back
+load gate: wait while the 1-minute load average is above 4.0, up to 0s (0 = run under whatever load there is, and record it)
+python=/Users/chasethompson/.heater/worktrees/pokerbot/92e2a2c459ef/.venv-engines/bin/python
+
+=== repeat 1 ===
+--- repeat 1: chooser fcpa [1-minute load average at start: 3.56, 22:39:41] ---
+abstraction=fcpa budget=0.25s decisions=20 seed=20260915 6 players, 52 cards, 200bb, blinds 50/100
+decision 0: legal=4 candidates=4 rollouts=13099 in 0.252s chose player=2 move=AllIn
+    player=2 move=Fold n= 3275 mean=   +0.00 bb  sem=  0.00 bb
+    player=2 move=Call n= 3275 mean=  +23.38 bb  sem=  4.19 bb
+    player=2 move=Bet n= 3275 mean=  +21.41 bb  sem=  4.16 bb
+    player=2 move=AllIn n= 3274 mean=  +51.96 bb  sem=  5.81 bb
+decision 1: legal=4 candidates=4 rollouts=13296 in 0.252s chose player=2 move=Fold
+    player=2 move=Fold n= 3324 mean=   +0.00 bb  sem=  0.00 bb
+    player=2 move=Call n= 3324 mean=  -22.66 bb  sem=  3.58 bb
+    player=2 move=Bet n= 3324 mean=  -19.54 bb  sem=  3.61 bb
+    player=2 move=AllIn n= 3324 mean=  -47.87 bb  sem=  4.85 bb
+decision 2: legal=4 candidates=4 rollouts=13291 in 0.252s chose player=2 move=AllIn
+    player=2 move=Fold n= 3323 mean=   +0.00 bb  sem=  0.00 bb
+    player=2 move=Call n= 3323 mean=   +5.92 bb  sem=  3.93 bb
+    player=2 move=Bet n= 3323 mean=   +5.10 bb  sem=  3.97 bb
+    player=2 move=AllIn n= 3322 mean=  +17.92 bb  sem=  5.48 bb
+decision 3: legal=4 candidates=4 rollouts=13244 in 0.252s chose player=2 move=AllIn
+    player=2 move=Fold n= 3311 mean=   +0.00 bb  sem=  0.00 bb
+    player=2 move=Call n= 3311 mean=  +44.69 bb  sem=  4.59 bb
+    player=2 move=Bet n= 3311 mean=  +37.98 bb  sem=  4.42 bb
+    player=2 move=AllIn n= 3311 mean=  +74.28 bb  sem=  5.98 bb
+decision 4: legal=4 candidates=4 rollouts=13321 in 0.252s chose player=2 move=Fold
+    player=2 move=Fold n= 3331 mean=   +0.00 bb  sem=  0.00 bb
+    player=2 move=Call n= 3330 mean=  -20.33 bb  sem=  3.62 bb
+    player=2 move=Bet n= 3330 mean=  -20.81 bb  sem=  3.72 bb
+    player=2 move=AllIn n= 3330 mean=  -43.05 bb  sem=  4.97 bb
+decision 5: legal=4 candidates=4 rollouts=13203 in 0.252s chose player=2 move=Call
+    player=2 move=Fold n= 3301 mean=   +0.00 bb  sem=  0.00 bb
+    player=2 move=Call n= 3301 mean=   +3.03 bb  sem=  4.01 bb
+    player=2 move=Bet n= 3301 mean=   +0.98 bb  sem=  3.87 bb
+    player=2 move=AllIn n= 3300 mean=   +0.06 bb  sem=  5.34 bb
+decision 6: legal=4 candidates=4 rollouts=13278 in 0.252s chose player=2 move=Fold
+    player=2 move=Fold n= 3320 mean=   +0.00 bb  sem=  0.00 bb
+    player=2 move=Call n= 3320 mean=  -37.10 bb  sem=  3.30 bb
+    player=2 move=Bet n= 3319 mean=  -31.98 bb  sem=  3.46 bb
+    player=2 move=AllIn n= 3319 mean=  -64.72 bb  sem=  4.59 bb
+decision 7: legal=4 candidates=4 rollouts=13266 in 0.252s chose player=2 move=Bet
+    player=2 move=Fold n= 3317 mean=   +0.00 bb  sem=  0.00 bb
+    player=2 move=Call n= 3317 mean=   +8.56 bb  sem=  4.09 bb
+    player=2 move=Bet n= 3316 mean=  +11.87 bb  sem=  4.18 bb
+    player=2 move=AllIn n= 3316 mean=   +5.66 bb  sem=  5.47 bb
+decision 8: legal=4 candidates=4 rollouts=12228 in 0.256s chose player=2 move=AllIn
+    player=2 move=Fold n= 3057 mean=   +0.00 bb  sem=  0.00 bb
+    player=2 move=Call n= 3057 mean=   +8.83 bb  sem=  4.12 bb
+    player=2 move=Bet n= 3057 mean=   -3.49 bb  sem=  3.88 bb
+    player=2 move=AllIn n= 3057 mean=  +11.83 bb  sem=  5.60 bb
+decision 9: legal=4 candidates=4 rollouts=12749 in 0.252s chose player=2 move=Fold
+    player=2 move=Fold n= 3188 mean=   +0.00 bb  sem=  0.00 bb
+    player=2 move=Call n= 3187 mean=  -38.14 bb  sem=  3.33 bb
+    player=2 move=Bet n= 3187 mean=  -33.84 bb  sem=  3.45 bb
+    player=2 move=AllIn n= 3187 mean=  -65.53 bb  sem=  4.59 bb
+decision 10: legal=4 candidates=4 rollouts=13186 in 0.252s chose player=2 move=AllIn
+    player=2 move=Fold n= 3297 mean=   +0.00 bb  sem=  0.00 bb
+    player=2 move=Call n= 3297 mean=  +34.43 bb  sem=  4.30 bb
+    player=2 move=Bet n= 3296 mean=  +33.57 bb  sem=  4.30 bb
+    player=2 move=AllIn n= 3296 mean=  +68.27 bb  sem=  5.87 bb
+decision 11: legal=4 candidates=4 rollouts=13066 in 0.252s chose player=2 move=AllIn
+    player=2 move=Fold n= 3267 mean=   +0.00 bb  sem=  0.00 bb
+    player=2 move=Call n= 3267 mean=   +7.33 bb  sem=  3.89 bb
+    player=2 move=Bet n= 3266 mean=  +18.84 bb  sem=  4.12 bb
+    player=2 move=AllIn n= 3266 mean=  +27.47 bb  sem=  5.61 bb
+decision 12: legal=4 candidates=4 rollouts=12938 in 0.252s chose player=2 move=Fold
+    player=2 move=Fold n= 3235 mean=   +0.00 bb  sem=  0.00 bb
+    player=2 move=Call n= 3235 mean=  -35.39 bb  sem=  3.49 bb
+    player=2 move=Bet n= 3234 mean=  -27.42 bb  sem=  3.69 bb
+    player=2 move=AllIn n= 3234 mean=  -65.85 bb  sem=  4.71 bb
+decision 13: legal=4 candidates=4 rollouts=12913 in 0.252s chose player=2 move=AllIn
+    player=2 move=Fold n= 3229 mean=   +0.00 bb  sem=  0.00 bb
+    player=2 move=Call n= 3228 mean=  +23.96 bb  sem=  4.17 bb
+    player=2 move=Bet n= 3228 mean=  +23.28 bb  sem=  4.31 bb
+    player=2 move=AllIn n= 3228 mean=  +52.42 bb  sem=  5.82 bb
+decision 14: legal=4 candidates=4 rollouts=13084 in 0.252s chose player=2 move=AllIn
+    player=2 move=Fold n= 3271 mean=   +0.00 bb  sem=  0.00 bb
+    player=2 move=Call n= 3271 mean=  +23.57 bb  sem=  4.19 bb
+    player=2 move=Bet n= 3271 mean=  +19.63 bb  sem=  4.26 bb
+    player=2 move=AllIn n= 3271 mean=  +38.19 bb  sem=  5.76 bb
+decision 15: legal=4 candidates=4 rollouts=13158 in 0.252s chose player=2 move=Fold
+    player=2 move=Fold n= 3290 mean=   +0.00 bb  sem=  0.00 bb
+    player=2 move=Call n= 3290 mean=   -8.75 bb  sem=  3.74 bb
+    player=2 move=Bet n= 3289 mean=  -15.20 bb  sem=  3.66 bb
+    player=2 move=AllIn n= 3289 mean=  -13.16 bb  sem=  5.18 bb
+decision 16: legal=4 candidates=4 rollouts=13235 in 0.252s chose player=2 move=AllIn
+    player=2 move=Fold n= 3309 mean=   +0.00 bb  sem=  0.00 bb
+    player=2 move=Call n= 3309 mean= +125.54 bb  sem=  4.96 bb
+    player=2 move=Bet n= 3309 mean= +135.73 bb  sem=  5.15 bb
+    player=2 move=AllIn n= 3308 mean= +259.33 bb  sem=  6.23 bb
+decision 17: legal=4 candidates=4 rollouts=13188 in 0.252s chose player=2 move=Fold
+    player=2 move=Fold n= 3297 mean=   +0.00 bb  sem=  0.00 bb
+    player=2 move=Call n= 3297 mean=  -19.33 bb  sem=  3.69 bb
+    player=2 move=Bet n= 3297 mean=  -16.68 bb  sem=  3.81 bb
+    player=2 move=AllIn n= 3297 mean=  -47.29 bb  sem=  4.90 bb
+decision 18: legal=4 candidates=4 rollouts=13215 in 0.252s chose player=2 move=AllIn
+    player=2 move=Fold n= 3304 mean=   +0.00 bb  sem=  0.00 bb
+    player=2 move=Call n= 3304 mean=  +28.43 bb  sem=  4.22 bb
+    player=2 move=Bet n= 3304 mean=  +26.97 bb  sem=  4.34 bb
+    player=2 move=AllIn n= 3303 mean=  +41.45 bb  sem=  5.77 bb
+decision 19: legal=4 candidates=4 rollouts=13203 in 0.252s chose player=2 move=Fold
+    player=2 move=Fold n= 3301 mean=   +0.00 bb  sem=  0.00 bb
+    player=2 move=Call n= 3301 mean=  -16.50 bb  sem=  3.74 bb
+    player=2 move=Bet n= 3301 mean=   -7.86 bb  sem=  3.78 bb
+    player=2 move=AllIn n= 3300 mean=  -27.77 bb  sem=  5.08 bb
+rollouts per 0.25s decision: n=20 decisions, min=12228 max=13321 mean=13108
+--- end repeat 1: chooser fcpa [load at end: 3.51, 22:39:46] ---
+--- repeat 1: chooser fullgame [1-minute load average at start: 3.51, 22:39:46] ---
+abstraction=fullgame budget=0.25s decisions=20 seed=20260915 6 players, 52 cards, 200bb, blinds 50/100
+decision 0: legal=19803 candidates=8 rollouts=254 in 0.252s chose player=2 move=Call
+    player=2 move=Fold n=   32 mean=   +0.00 bb  sem=  0.00 bb
+    player=2 move=Call n=   32 mean= +105.15 bb  sem= 45.28 bb
+    player=2 move=Bet200 n=   32 mean=  +29.50 bb  sem= 51.66 bb
+    player=2 move=Bet400 n=   32 mean=  +28.28 bb  sem= 44.05 bb
+    player=2 move=Bet800 n=   32 mean=  +91.33 bb  sem= 50.06 bb
+    player=2 move=Bet1600 n=   32 mean=   -7.23 bb  sem= 42.90 bb
+    player=2 move=Bet3200 n=   31 mean=  +63.48 bb  sem= 58.61 bb
+    player=2 move=Bet20000 n=   31 mean=  +71.47 bb  sem= 57.66 bb
+decision 1: legal=19803 candidates=8 rollouts=270 in 0.251s chose player=2 move=Bet400
+    player=2 move=Fold n=   34 mean=   +0.00 bb  sem=  0.00 bb
+    player=2 move=Call n=   34 mean=  +39.88 bb  sem= 47.46 bb
+    player=2 move=Bet200 n=   34 mean=   +5.54 bb  sem= 45.43 bb
+    player=2 move=Bet400 n=   34 mean=  +65.46 bb  sem= 42.91 bb
+    player=2 move=Bet800 n=   34 mean=   -0.13 bb  sem= 45.27 bb
+    player=2 move=Bet1600 n=   34 mean=  -29.65 bb  sem= 36.18 bb
+    player=2 move=Bet3200 n=   33 mean=  +62.53 bb  sem= 50.54 bb
+    player=2 move=Bet20000 n=   33 mean=  -11.80 bb  sem= 49.26 bb
+decision 2: legal=19803 candidates=8 rollouts=242 in 0.252s chose player=2 move=Call
+    player=2 move=Fold n=   31 mean=   +0.00 bb  sem=  0.00 bb
+    player=2 move=Call n=   31 mean=  +77.44 bb  sem= 61.10 bb
+    player=2 move=Bet200 n=   30 mean=  -53.45 bb  sem= 33.51 bb
+    player=2 move=Bet400 n=   30 mean=   -5.86 bb  sem= 42.76 bb
+    player=2 move=Bet800 n=   30 mean=  -34.00 bb  sem= 44.17 bb
+    player=2 move=Bet1600 n=   30 mean=  -56.97 bb  sem= 36.04 bb
+    player=2 move=Bet3200 n=   30 mean=  +46.48 bb  sem= 50.27 bb
+    player=2 move=Bet20000 n=   30 mean=  -79.74 bb  sem= 42.52 bb
+decision 3: legal=19803 candidates=8 rollouts=254 in 0.251s chose player=2 move=Bet200
+    player=2 move=Fold n=   32 mean=   +0.00 bb  sem=  0.00 bb
+    player=2 move=Call n=   32 mean=   +6.77 bb  sem= 48.92 bb
+    player=2 move=Bet200 n=   32 mean=  +72.17 bb  sem= 47.30 bb
+    player=2 move=Bet400 n=   32 mean=  +38.33 bb  sem= 45.37 bb
+    player=2 move=Bet800 n=   32 mean=  -11.45 bb  sem= 44.09 bb
+    player=2 move=Bet1600 n=   32 mean=  +28.14 bb  sem= 49.15 bb
+    player=2 move=Bet3200 n=   31 mean=  -45.68 bb  sem= 34.73 bb
+    player=2 move=Bet20000 n=   31 mean=  +26.09 bb  sem= 61.38 bb
+decision 4: legal=19803 candidates=8 rollouts=252 in 0.251s chose player=2 move=Bet20000
+    player=2 move=Fold n=   32 mean=   +0.00 bb  sem=  0.00 bb
+    player=2 move=Call n=   32 mean=  +36.24 bb  sem= 50.48 bb
+    player=2 move=Bet200 n=   32 mean=  +15.52 bb  sem= 55.55 bb
+    player=2 move=Bet400 n=   32 mean=   +6.52 bb  sem= 45.30 bb
+    player=2 move=Bet800 n=   31 mean=   +9.19 bb  sem= 49.84 bb
+    player=2 move=Bet1600 n=   31 mean=  -20.52 bb  sem= 39.90 bb
+    player=2 move=Bet3200 n=   31 mean=  +66.84 bb  sem= 51.66 bb
+    player=2 move=Bet20000 n=   31 mean=  +68.02 bb  sem= 54.59 bb
+decision 5: legal=19803 candidates=8 rollouts=249 in 0.251s chose player=2 move=Bet3200
+    player=2 move=Fold n=   32 mean=   +0.00 bb  sem=  0.00 bb
+    player=2 move=Call n=   31 mean=   -1.39 bb  sem= 42.81 bb
+    player=2 move=Bet200 n=   31 mean=   -2.37 bb  sem= 46.51 bb
+    player=2 move=Bet400 n=   31 mean=  +54.81 bb  sem= 45.64 bb
+    player=2 move=Bet800 n=   31 mean=   -4.16 bb  sem= 40.44 bb
+    player=2 move=Bet1600 n=   31 mean=  -30.81 bb  sem= 44.64 bb
+    player=2 move=Bet3200 n=   31 mean=  +57.29 bb  sem= 49.05 bb
+    player=2 move=Bet20000 n=   31 mean=  +23.00 bb  sem= 59.40 bb
+decision 6: legal=19803 candidates=8 rollouts=259 in 0.251s chose player=2 move=Bet20000
+    player=2 move=Fold n=   33 mean=   +0.00 bb  sem=  0.00 bb
+    player=2 move=Call n=   33 mean=  -15.20 bb  sem= 41.67 bb
+    player=2 move=Bet200 n=   33 mean=   -8.51 bb  sem= 39.23 bb
+    player=2 move=Bet400 n=   32 mean=  -24.45 bb  sem= 46.26 bb
+    player=2 move=Bet800 n=   32 mean=   -5.95 bb  sem= 46.59 bb
+    player=2 move=Bet1600 n=   32 mean=  -13.82 bb  sem= 41.69 bb
+    player=2 move=Bet3200 n=   32 mean=  -74.95 bb  sem= 22.17 bb
+    player=2 move=Bet20000 n=   32 mean=  +69.08 bb  sem= 65.18 bb
+decision 7: legal=19803 candidates=8 rollouts=245 in 0.252s chose player=2 move=Bet400
+    player=2 move=Fold n=   31 mean=   +0.00 bb  sem=  0.00 bb
+    player=2 move=Call n=   31 mean=  -34.68 bb  sem= 30.54 bb
+    player=2 move=Bet200 n=   31 mean=  +19.81 bb  sem= 44.56 bb
+    player=2 move=Bet400 n=   31 mean=  +26.38 bb  sem= 49.47 bb
+    player=2 move=Bet800 n=   31 mean=  -59.32 bb  sem= 34.60 bb
+    player=2 move=Bet1600 n=   30 mean=  -76.65 bb  sem= 29.70 bb
+    player=2 move=Bet3200 n=   30 mean=  -27.45 bb  sem= 45.51 bb
+    player=2 move=Bet20000 n=   30 mean=  -59.73 bb  sem= 45.95 bb
+decision 8: legal=19803 candidates=8 rollouts=249 in 0.251s chose player=2 move=Bet200
+    player=2 move=Fold n=   32 mean=   +0.00 bb  sem=  0.00 bb
+    player=2 move=Call n=   31 mean=   -4.76 bb  sem= 35.26 bb
+    player=2 move=Bet200 n=   31 mean=  +50.55 bb  sem= 50.77 bb
+    player=2 move=Bet400 n=   31 mean=  -63.25 bb  sem= 31.46 bb
+    player=2 move=Bet800 n=   31 mean=  +31.01 bb  sem= 47.97 bb
+    player=2 move=Bet1600 n=   31 mean=   -6.79 bb  sem= 46.59 bb
+    player=2 move=Bet3200 n=   31 mean=  -47.76 bb  sem= 32.85 bb
+    player=2 move=Bet20000 n=   31 mean=  -25.61 bb  sem= 57.79 bb
+decision 9: legal=19803 candidates=8 rollouts=244 in 0.251s chose player=2 move=Bet800
+    player=2 move=Fold n=   31 mean=   +0.00 bb  sem=  0.00 bb
+    player=2 move=Call n=   31 mean=  -44.89 bb  sem= 34.21 bb
+    player=2 move=Bet200 n=   31 mean= -106.99 bb  sem= 27.79 bb
+    player=2 move=Bet400 n=   31 mean=   +4.69 bb  sem= 43.53 bb
+    player=2 move=Bet800 n=   30 mean=   +4.70 bb  sem= 50.28 bb
+    player=2 move=Bet1600 n=   30 mean=  -41.17 bb  sem= 39.75 bb
+    player=2 move=Bet3200 n=   30 mean=  -78.30 bb  sem= 32.44 bb
+    player=2 move=Bet20000 n=   30 mean=  -46.33 bb  sem= 49.59 bb
+decision 10: legal=19803 candidates=8 rollouts=250 in 0.251s chose player=2 move=Bet800
+    player=2 move=Fold n=   32 mean=   +0.00 bb  sem=  0.00 bb
+    player=2 move=Call n=   32 mean=  +40.84 bb  sem= 50.15 bb
+    player=2 move=Bet200 n=   31 mean=  +92.38 bb  sem= 53.19 bb
+    player=2 move=Bet400 n=   31 mean=   -8.67 bb  sem= 44.15 bb
+    player=2 move=Bet800 n=   31 mean= +109.60 bb  sem= 52.91 bb
+    player=2 move=Bet1600 n=   31 mean=   +6.36 bb  sem= 46.07 bb
+    player=2 move=Bet3200 n=   31 mean=  +10.94 bb  sem= 45.04 bb
+    player=2 move=Bet20000 n=   31 mean=  +97.07 bb  sem= 66.19 bb
+decision 11: legal=19803 candidates=8 rollouts=236 in 0.251s chose player=2 move=Bet20000
+    player=2 move=Fold n=   30 mean=   +0.00 bb  sem=  0.00 bb
+    player=2 move=Call n=   30 mean=  -25.73 bb  sem= 36.67 bb
+    player=2 move=Bet200 n=   30 mean=  -44.57 bb  sem= 38.40 bb
+    player=2 move=Bet400 n=   30 mean=  +38.42 bb  sem= 50.01 bb
+    player=2 move=Bet800 n=   29 mean=  +26.00 bb  sem= 44.00 bb
+    player=2 move=Bet1600 n=   29 mean=  -11.74 bb  sem= 43.10 bb
+    player=2 move=Bet3200 n=   29 mean=  +44.74 bb  sem= 48.78 bb
+    player=2 move=Bet20000 n=   29 mean= +138.36 bb  sem= 70.33 bb
+decision 12: legal=19803 candidates=8 rollouts=243 in 0.251s chose player=2 move=Bet200
+    player=2 move=Fold n=   31 mean=   +0.00 bb  sem=  0.00 bb
+    player=2 move=Call n=   31 mean=  -47.42 bb  sem= 41.53 bb
+    player=2 move=Bet200 n=   31 mean=  +13.34 bb  sem= 49.64 bb
+    player=2 move=Bet400 n=   30 mean=  -18.93 bb  sem= 46.90 bb
+    player=2 move=Bet800 n=   30 mean= -102.08 bb  sem= 29.56 bb
+    player=2 move=Bet1600 n=   30 mean=  -72.67 bb  sem= 40.58 bb
+    player=2 move=Bet3200 n=   30 mean=  -45.87 bb  sem= 33.50 bb
+    player=2 move=Bet20000 n=   30 mean=  -39.69 bb  sem= 52.05 bb
+decision 13: legal=19803 candidates=8 rollouts=222 in 0.251s chose player=2 move=Bet200
+    player=2 move=Fold n=   28 mean=   +0.00 bb  sem=  0.00 bb
+    player=2 move=Call n=   28 mean=  +73.25 bb  sem= 53.17 bb
+    player=2 move=Bet200 n=   28 mean=  +76.38 bb  sem= 62.24 bb
+    player=2 move=Bet400 n=   28 mean=   +8.54 bb  sem= 41.73 bb
+    player=2 move=Bet800 n=   28 mean=   +7.52 bb  sem= 46.98 bb
+    player=2 move=Bet1600 n=   28 mean=  +33.12 bb  sem= 53.97 bb
+    player=2 move=Bet3200 n=   27 mean=  -23.76 bb  sem= 39.33 bb
+    player=2 move=Bet20000 n=   27 mean=  +59.67 bb  sem= 68.26 bb
+decision 14: legal=19803 candidates=8 rollouts=230 in 0.251s chose player=2 move=Bet800
+    player=2 move=Fold n=   29 mean=   +0.00 bb  sem=  0.00 bb
+    player=2 move=Call n=   29 mean=  +36.53 bb  sem= 41.40 bb
+    player=2 move=Bet200 n=   29 mean=  -34.84 bb  sem= 38.33 bb
+    player=2 move=Bet400 n=   29 mean=   -5.00 bb  sem= 46.16 bb
+    player=2 move=Bet800 n=   29 mean= +101.79 bb  sem= 62.25 bb
+    player=2 move=Bet1600 n=   29 mean=  +79.26 bb  sem= 54.16 bb
+    player=2 move=Bet3200 n=   28 mean=  -54.05 bb  sem= 40.19 bb
+    player=2 move=Bet20000 n=   28 mean=  -42.73 bb  sem= 61.20 bb
+decision 15: legal=19803 candidates=8 rollouts=213 in 0.252s chose player=2 move=Bet400
+    player=2 move=Fold n=   27 mean=   +0.00 bb  sem=  0.00 bb
+    player=2 move=Call n=   27 mean=  +59.02 bb  sem= 48.57 bb
+    player=2 move=Bet200 n=   27 mean= +110.19 bb  sem= 62.50 bb
+    player=2 move=Bet400 n=   27 mean= +119.17 bb  sem= 63.51 bb
+    player=2 move=Bet800 n=   27 mean=  +74.48 bb  sem= 62.25 bb
+    player=2 move=Bet1600 n=   26 mean=  +81.96 bb  sem= 61.36 bb
+    player=2 move=Bet3200 n=   26 mean=  +45.92 bb  sem= 58.45 bb
+    player=2 move=Bet20000 n=   26 mean=  +77.46 bb  sem= 63.88 bb
+decision 16: legal=19803 candidates=8 rollouts=234 in 0.252s chose player=2 move=Bet1600
+    player=2 move=Fold n=   30 mean=   +0.00 bb  sem=  0.00 bb
+    player=2 move=Call n=   30 mean=  +91.80 bb  sem= 56.20 bb
+    player=2 move=Bet200 n=   29 mean= +253.22 bb  sem= 74.63 bb
+    player=2 move=Bet400 n=   29 mean= +105.21 bb  sem= 46.04 bb
+    player=2 move=Bet800 n=   29 mean=  +88.88 bb  sem= 39.32 bb
+    player=2 move=Bet1600 n=   29 mean= +287.26 bb  sem= 67.12 bb
+    player=2 move=Bet3200 n=   29 mean=  +84.59 bb  sem= 60.39 bb
+    player=2 move=Bet20000 n=   29 mean= +276.41 bb  sem= 65.42 bb
+decision 17: legal=19803 candidates=8 rollouts=258 in 0.251s chose player=2 move=Bet20000
+    player=2 move=Fold n=   33 mean=   +0.00 bb  sem=  0.00 bb
+    player=2 move=Call n=   33 mean=   +0.52 bb  sem= 41.78 bb
+    player=2 move=Bet200 n=   32 mean=  -89.67 bb  sem= 30.28 bb
+    player=2 move=Bet400 n=   32 mean=  +89.98 bb  sem= 54.79 bb
+    player=2 move=Bet800 n=   32 mean=  -22.19 bb  sem= 39.46 bb
+    player=2 move=Bet1600 n=   32 mean=   +2.77 bb  sem= 36.37 bb
+    player=2 move=Bet3200 n=   32 mean=  -31.59 bb  sem= 34.37 bb
+    player=2 move=Bet20000 n=   32 mean=  +94.12 bb  sem= 66.04 bb
+decision 18: legal=19803 candidates=8 rollouts=255 in 0.253s chose player=2 move=Bet20000
+    player=2 move=Fold n=   32 mean=   +0.00 bb  sem=  0.00 bb
+    player=2 move=Call n=   32 mean=   +2.84 bb  sem= 45.58 bb
+    player=2 move=Bet200 n=   32 mean=  -29.33 bb  sem= 43.57 bb
+    player=2 move=Bet400 n=   32 mean=  +36.45 bb  sem= 51.89 bb
+    player=2 move=Bet800 n=   32 mean=  -51.67 bb  sem= 21.86 bb
+    player=2 move=Bet1600 n=   32 mean=  -19.91 bb  sem= 44.80 bb
+    player=2 move=Bet3200 n=   32 mean=  +21.53 bb  sem= 42.69 bb
+    player=2 move=Bet20000 n=   31 mean=  +64.84 bb  sem= 63.88 bb
+decision 19: legal=19803 candidates=8 rollouts=241 in 0.251s chose player=2 move=Bet20000
+    player=2 move=Fold n=   31 mean=   +0.00 bb  sem=  0.00 bb
+    player=2 move=Call n=   30 mean=  +26.18 bb  sem= 58.95 bb
+    player=2 move=Bet200 n=   30 mean=  -16.49 bb  sem= 39.24 bb
+    player=2 move=Bet400 n=   30 mean=   -0.33 bb  sem= 43.25 bb
+    player=2 move=Bet800 n=   30 mean=  -48.68 bb  sem= 27.71 bb
+    player=2 move=Bet1600 n=   30 mean=  -59.08 bb  sem= 27.53 bb
+    player=2 move=Bet3200 n=   30 mean=  +22.73 bb  sem= 52.17 bb
+    player=2 move=Bet20000 n=   30 mean=  +40.36 bb  sem= 61.00 bb
+rollouts per 0.25s decision: n=20 decisions, min=213 max=270 mean=245
+--- end repeat 1: chooser fullgame [load at end: 3.39, 22:39:51] ---
+--- repeat 1: bench_speed [1-minute load average at start: 3.39, 22:39:51] ---
+seed=20260915 seconds per engine=8.0 players=6 stack=20000 blinds=50/100
+engine                                      hands/s  actions/hand    hands
+OpenSpiel universal_poker fcpa menu           48572           7.9   388575
+OpenSpiel universal_poker fullgame             4423           8.8    35387
+texasholdem 0.11.0 menu                        8548           8.5    68385
+texasholdem 0.11.0 real sizing                 8371           9.9    66971
+PokerKit 0.7.5 menu                             660           8.7     5283
+PokerKit 0.7.5 real sizing                      786          10.5     6285
+PyPokerEngine 1.0.1 menu                        885           7.9     7082
+PyPokerEngine 1.0.1 real sizing                 769          12.3     6155
+--- end repeat 1: bench_speed [load at end: 4.16, 22:40:55] ---
+    [load 4.16 still above 4.0 after 0s; running anyway, figures are under load]
+--- repeat 1: resample_opponents [1-minute load average at start: 4.16, 22:40:55] ---
+resample_opponents, first decision after the deal: n=680082 draws in 8.00s = 85010 per second (history 12 long)
+resample_opponents, a later decision in the same hand: n=675098 draws in 8.00s = 84387 per second (history 17 long)
+6 players, 52 cards, fcpa; hidden positions and card positions computed once per decision, not once per draw; seed=20260915
+--- end repeat 1: resample_opponents [load at end: 4.27, 22:41:11] ---
+    [load 4.27 still above 4.0 after 0s; running anyway, figures are under load]
+--- repeat 1: pypoker_playouts [1-minute load average at start: 4.27, 22:41:11] ---
+pypokerengine 1.0.1, Emulator API, 6 players, 52 cards, blinds 50/100, 20000 chips a seat (200bb), seed=20260915, 8s of play-outs
+play-out policy: uniform over fold / call / pot-sized raise / all-in, the same four-move menu bench_speed.py gives the other Python engines
+per-seat stacks asked for      : [100, 500, 20000, 20000, 20000, 20000]
+per-seat stacks the table took : [100, 450, 19900, 20000, 20000, 20000]
+generate_possible_actions here : ['fold', 'call', 'raise'], raise-to range {'min': 150, 'max': 20000} (19851 distinct whole-chip amounts)
+pypokerengine play-outs, first decision after the deal: n=7664 play-outs in 8.00s = 958 per second (239 in a 0.25s decision); 3 action kinds legal at the position
+--- end repeat 1: pypoker_playouts [load at end: 4.41, 22:41:19] ---
+
+=== repeat 2 ===
+    [load 4.41 still above 4.0 after 0s; running anyway, figures are under load]
+--- repeat 2: chooser fcpa [1-minute load average at start: 4.41, 22:41:19] ---
+abstraction=fcpa budget=0.25s decisions=20 seed=20260915 6 players, 52 cards, 200bb, blinds 50/100
+decision 0: legal=4 candidates=4 rollouts=11841 in 0.252s chose player=2 move=AllIn
+    player=2 move=Fold n= 2961 mean=   +0.00 bb  sem=  0.00 bb
+    player=2 move=Call n= 2960 mean=  +23.07 bb  sem=  4.40 bb
+    player=2 move=Bet n= 2960 mean=  +21.66 bb  sem=  4.38 bb
+    player=2 move=AllIn n= 2960 mean=  +51.79 bb  sem=  6.11 bb
+decision 1: legal=4 candidates=4 rollouts=11569 in 0.252s chose player=2 move=AllIn
+    player=2 move=Fold n= 2893 mean=   +0.00 bb  sem=  0.00 bb
+    player=2 move=Call n= 2892 mean=  +29.32 bb  sem=  4.63 bb
+    player=2 move=Bet n= 2892 mean=  +38.96 bb  sem=  4.72 bb
+    player=2 move=AllIn n= 2892 mean=  +63.93 bb  sem=  6.32 bb
+decision 2: legal=4 candidates=4 rollouts=11526 in 0.252s chose player=2 move=Fold
+    player=2 move=Fold n= 2882 mean=   +0.00 bb  sem=  0.00 bb
+    player=2 move=Call n= 2882 mean=   -5.82 bb  sem=  4.05 bb
+    player=2 move=Bet n= 2881 mean=   -9.44 bb  sem=  4.05 bb
+    player=2 move=AllIn n= 2881 mean=  -16.92 bb  sem=  5.55 bb
+decision 3: legal=4 candidates=4 rollouts=11536 in 0.251s chose player=2 move=AllIn
+    player=2 move=Fold n= 2884 mean=   +0.00 bb  sem=  0.00 bb
+    player=2 move=Call n= 2884 mean=  +18.61 bb  sem=  4.44 bb
+    player=2 move=Bet n= 2884 mean=  +18.05 bb  sem=  4.43 bb
+    player=2 move=AllIn n= 2884 mean=  +52.19 bb  sem=  6.17 bb
+decision 4: legal=4 candidates=4 rollouts=11995 in 0.252s chose player=2 move=Fold
+    player=2 move=Fold n= 2999 mean=   +0.00 bb  sem=  0.00 bb
+    player=2 move=Call n= 2999 mean=  -25.03 bb  sem=  3.79 bb
+    player=2 move=Bet n= 2999 mean=  -16.12 bb  sem=  3.92 bb
+    player=2 move=AllIn n= 2998 mean=  -49.33 bb  sem=  5.06 bb
+decision 5: legal=4 candidates=4 rollouts=11745 in 0.252s chose player=2 move=Fold
+    player=2 move=Fold n= 2937 mean=   +0.00 bb  sem=  0.00 bb
+    player=2 move=Call n= 2936 mean=  -38.84 bb  sem=  3.47 bb
+    player=2 move=Bet n= 2936 mean=  -37.30 bb  sem=  3.62 bb
+    player=2 move=AllIn n= 2936 mean=  -86.12 bb  sem=  4.62 bb
+decision 6: legal=4 candidates=4 rollouts=11531 in 0.252s chose player=2 move=AllIn
+    player=2 move=Fold n= 2883 mean=   +0.00 bb  sem=  0.00 bb
+    player=2 move=Call n= 2883 mean=   -0.52 bb  sem=  4.13 bb
+    player=2 move=Bet n= 2883 mean=   +2.74 bb  sem=  4.20 bb
+    player=2 move=AllIn n= 2882 mean=   +7.67 bb  sem=  5.73 bb
+decision 7: legal=4 candidates=4 rollouts=11181 in 0.252s chose player=2 move=AllIn
+    player=2 move=Fold n= 2796 mean=   +0.00 bb  sem=  0.00 bb
+    player=2 move=Call n= 2795 mean=   +3.11 bb  sem=  4.24 bb
+    player=2 move=Bet n= 2795 mean=   +5.99 bb  sem=  4.45 bb
+    player=2 move=AllIn n= 2795 mean=  +15.56 bb  sem=  6.05 bb
+decision 8: legal=4 candidates=4 rollouts=11779 in 0.252s chose player=2 move=AllIn
+    player=2 move=Fold n= 2945 mean=   +0.00 bb  sem=  0.00 bb
+    player=2 move=Call n= 2945 mean=  +22.58 bb  sem=  4.45 bb
+    player=2 move=Bet n= 2945 mean=  +20.33 bb  sem=  4.45 bb
+    player=2 move=AllIn n= 2944 mean=  +52.87 bb  sem=  6.17 bb
+decision 9: legal=4 candidates=4 rollouts=11530 in 0.252s chose player=2 move=AllIn
+    player=2 move=Fold n= 2883 mean=   +0.00 bb  sem=  0.00 bb
+    player=2 move=Call n= 2883 mean=  +47.00 bb  sem=  4.77 bb
+    player=2 move=Bet n= 2882 mean=  +49.44 bb  sem=  4.77 bb
+    player=2 move=AllIn n= 2882 mean=  +86.50 bb  sem=  6.39 bb
+decision 10: legal=4 candidates=4 rollouts=11702 in 0.252s chose player=2 move=AllIn
+    player=2 move=Fold n= 2926 mean=   +0.00 bb  sem=  0.00 bb
+    player=2 move=Call n= 2926 mean=  +24.01 bb  sem=  4.48 bb
+    player=2 move=Bet n= 2925 mean=  +15.09 bb  sem=  4.32 bb
+    player=2 move=AllIn n= 2925 mean=  +27.34 bb  sem=  5.96 bb
+decision 11: legal=4 candidates=4 rollouts=11605 in 0.252s chose player=2 move=AllIn
+    player=2 move=Fold n= 2902 mean=   +0.00 bb  sem=  0.00 bb
+    player=2 move=Call n= 2901 mean=  +33.14 bb  sem=  4.56 bb
+    player=2 move=Bet n= 2901 mean=  +33.78 bb  sem=  4.66 bb
+    player=2 move=AllIn n= 2901 mean=  +54.81 bb  sem=  6.20 bb
+decision 12: legal=4 candidates=4 rollouts=10754 in 0.260s chose player=2 move=AllIn
+    player=2 move=Fold n= 2689 mean=   +0.00 bb  sem=  0.00 bb
+    player=2 move=Call n= 2689 mean=  +21.86 bb  sem=  4.58 bb
+    player=2 move=Bet n= 2688 mean=  +21.09 bb  sem=  4.68 bb
+    player=2 move=AllIn n= 2688 mean=  +46.89 bb  sem=  6.38 bb
+decision 13: legal=4 candidates=4 rollouts=11253 in 0.252s chose player=2 move=AllIn
+    player=2 move=Fold n= 2814 mean=   +0.00 bb  sem=  0.00 bb
+    player=2 move=Call n= 2813 mean=  +31.10 bb  sem=  4.69 bb
+    player=2 move=Bet n= 2813 mean=  +27.97 bb  sem=  4.65 bb
+    player=2 move=AllIn n= 2813 mean=  +47.59 bb  sem=  6.31 bb
+decision 14: legal=4 candidates=4 rollouts=11787 in 0.252s chose player=2 move=AllIn
+    player=2 move=Fold n= 2947 mean=   +0.00 bb  sem=  0.00 bb
+    player=2 move=Call n= 2947 mean=  +12.68 bb  sem=  4.21 bb
+    player=2 move=Bet n= 2947 mean=  +15.82 bb  sem=  4.53 bb
+    player=2 move=AllIn n= 2946 mean=  +23.23 bb  sem=  5.86 bb
+decision 15: legal=4 candidates=4 rollouts=11452 in 0.252s chose player=2 move=Fold
+    player=2 move=Fold n= 2863 mean=   +0.00 bb  sem=  0.00 bb
+    player=2 move=Call n= 2863 mean=  -17.92 bb  sem=  3.85 bb
+    player=2 move=Bet n= 2863 mean=  -36.70 bb  sem=  3.71 bb
+    player=2 move=AllIn n= 2863 mean=  -44.93 bb  sem=  5.29 bb
+decision 16: legal=4 candidates=4 rollouts=11763 in 0.252s chose player=2 move=Fold
+    player=2 move=Fold n= 2941 mean=   +0.00 bb  sem=  0.00 bb
+    player=2 move=Call n= 2941 mean=  -25.37 bb  sem=  3.71 bb
+    player=2 move=Bet n= 2941 mean=  -27.51 bb  sem=  3.78 bb
+    player=2 move=AllIn n= 2940 mean=  -49.68 bb  sem=  5.08 bb
+decision 17: legal=4 candidates=4 rollouts=11304 in 0.252s chose player=2 move=Fold
+    player=2 move=Fold n= 2826 mean=   +0.00 bb  sem=  0.00 bb
+    player=2 move=Call n= 2826 mean=  -17.54 bb  sem=  4.02 bb
+    player=2 move=Bet n= 2826 mean=  -21.96 bb  sem=  3.97 bb
+    player=2 move=AllIn n= 2826 mean=  -46.80 bb  sem=  5.29 bb
+decision 18: legal=4 candidates=4 rollouts=11231 in 0.252s chose player=2 move=Fold
+    player=2 move=Fold n= 2808 mean=   +0.00 bb  sem=  0.00 bb
+    player=2 move=Call n= 2808 mean=  -29.71 bb  sem=  3.64 bb
+    player=2 move=Bet n= 2808 mean=  -23.74 bb  sem=  3.74 bb
+    player=2 move=AllIn n= 2807 mean=  -48.20 bb  sem=  5.20 bb
+decision 19: legal=4 candidates=4 rollouts=11622 in 0.252s chose player=2 move=Fold
+    player=2 move=Fold n= 2906 mean=   +0.00 bb  sem=  0.00 bb
+    player=2 move=Call n= 2906 mean=   -9.15 bb  sem=  4.04 bb
+    player=2 move=Bet n= 2905 mean=  -10.04 bb  sem=  4.09 bb
+    player=2 move=AllIn n= 2905 mean=  -10.79 bb  sem=  5.73 bb
+rollouts per 0.25s decision: n=20 decisions, min=10754 max=11995 mean=11535
+--- end repeat 2: chooser fcpa [load at end: 4.29, 22:41:24] ---
+    [load 4.29 still above 4.0 after 0s; running anyway, figures are under load]
+--- repeat 2: chooser fullgame [1-minute load average at start: 4.29, 22:41:24] ---
+abstraction=fullgame budget=0.25s decisions=20 seed=20260915 6 players, 52 cards, 200bb, blinds 50/100
+decision 0: legal=19803 candidates=8 rollouts=218 in 0.252s chose player=2 move=Bet800
+    player=2 move=Fold n=   28 mean=   +0.00 bb  sem=  0.00 bb
+    player=2 move=Call n=   28 mean=  +78.15 bb  sem= 47.88 bb
+    player=2 move=Bet200 n=   27 mean=  +18.00 bb  sem= 47.25 bb
+    player=2 move=Bet400 n=   27 mean=  +28.96 bb  sem= 45.76 bb
+    player=2 move=Bet800 n=   27 mean= +100.19 bb  sem= 57.56 bb
+    player=2 move=Bet1600 n=   27 mean=  -17.31 bb  sem= 49.62 bb
+    player=2 move=Bet3200 n=   27 mean=  +70.46 bb  sem= 66.48 bb
+    player=2 move=Bet20000 n=   27 mean=  +44.89 bb  sem= 60.78 bb
+decision 1: legal=19803 candidates=8 rollouts=212 in 0.251s chose player=2 move=Bet800
+    player=2 move=Fold n=   27 mean=   +0.00 bb  sem=  0.00 bb
+    player=2 move=Call n=   27 mean=  +35.96 bb  sem= 49.43 bb
+    player=2 move=Bet200 n=   27 mean=  -24.85 bb  sem= 32.85 bb
+    player=2 move=Bet400 n=   27 mean=   -4.87 bb  sem= 43.02 bb
+    player=2 move=Bet800 n=   26 mean=  +74.17 bb  sem= 51.95 bb
+    player=2 move=Bet1600 n=   26 mean=  +34.92 bb  sem= 50.69 bb
+    player=2 move=Bet3200 n=   26 mean=  +47.12 bb  sem= 51.57 bb
+    player=2 move=Bet20000 n=   26 mean=  +61.88 bb  sem= 75.89 bb
+decision 2: legal=19803 candidates=8 rollouts=196 in 0.251s chose player=2 move=Bet800
+    player=2 move=Fold n=   25 mean=   +0.00 bb  sem=  0.00 bb
+    player=2 move=Call n=   25 mean=  -13.56 bb  sem= 49.94 bb
+    player=2 move=Bet200 n=   25 mean=   -5.59 bb  sem= 35.73 bb
+    player=2 move=Bet400 n=   25 mean=   +7.76 bb  sem= 47.89 bb
+    player=2 move=Bet800 n=   24 mean=  +84.71 bb  sem= 63.09 bb
+    player=2 move=Bet1600 n=   24 mean=   +0.35 bb  sem= 46.60 bb
+    player=2 move=Bet3200 n=   24 mean=  +30.65 bb  sem= 57.31 bb
+    player=2 move=Bet20000 n=   24 mean=  -58.10 bb  sem= 55.85 bb
+decision 3: legal=19803 candidates=8 rollouts=195 in 0.253s chose player=2 move=Bet3200
+    player=2 move=Fold n=   25 mean=   +0.00 bb  sem=  0.00 bb
+    player=2 move=Call n=   25 mean=   +1.18 bb  sem= 51.56 bb
+    player=2 move=Bet200 n=   25 mean=  +34.32 bb  sem= 62.69 bb
+    player=2 move=Bet400 n=   24 mean=  -24.38 bb  sem= 33.07 bb
+    player=2 move=Bet800 n=   24 mean=   +8.73 bb  sem= 59.46 bb
+    player=2 move=Bet1600 n=   24 mean=  -10.71 bb  sem= 44.01 bb
+    player=2 move=Bet3200 n=   24 mean=  +73.71 bb  sem= 68.72 bb
+    player=2 move=Bet20000 n=   24 mean=  +16.90 bb  sem= 66.98 bb
+decision 4: legal=19803 candidates=8 rollouts=193 in 0.251s chose player=2 move=Bet3200
+    player=2 move=Fold n=   25 mean=   +0.00 bb  sem=  0.00 bb
+    player=2 move=Call n=   24 mean=  -30.56 bb  sem= 50.46 bb
+    player=2 move=Bet200 n=   24 mean=   +0.65 bb  sem= 61.04 bb
+    player=2 move=Bet400 n=   24 mean=  -21.98 bb  sem= 58.91 bb
+    player=2 move=Bet800 n=   24 mean=   -0.58 bb  sem= 56.24 bb
+    player=2 move=Bet1600 n=   24 mean=   +0.56 bb  sem= 45.61 bb
+    player=2 move=Bet3200 n=   24 mean=  +13.67 bb  sem= 52.41 bb
+    player=2 move=Bet20000 n=   24 mean=  -58.17 bb  sem= 58.40 bb
+decision 5: legal=19803 candidates=8 rollouts=203 in 0.251s chose player=2 move=Bet400
+    player=2 move=Fold n=   26 mean=   +0.00 bb  sem=  0.00 bb
+    player=2 move=Call n=   26 mean=  -60.77 bb  sem= 33.52 bb
+    player=2 move=Bet200 n=   26 mean=  -10.49 bb  sem= 39.49 bb
+    player=2 move=Bet400 n=   25 mean= +118.87 bb  sem= 59.21 bb
+    player=2 move=Bet800 n=   25 mean=  -24.94 bb  sem= 60.21 bb
+    player=2 move=Bet1600 n=   25 mean=  +71.44 bb  sem= 55.64 bb
+    player=2 move=Bet3200 n=   25 mean=  -15.66 bb  sem= 39.03 bb
+    player=2 move=Bet20000 n=   25 mean=  -43.74 bb  sem= 49.75 bb
+decision 6: legal=19803 candidates=8 rollouts=217 in 0.253s chose player=2 move=Bet200
+    player=2 move=Fold n=   28 mean=   +0.00 bb  sem=  0.00 bb
+    player=2 move=Call n=   27 mean=  -31.98 bb  sem= 38.03 bb
+    player=2 move=Bet200 n=   27 mean=  +99.28 bb  sem= 67.58 bb
+    player=2 move=Bet400 n=   27 mean=  +18.50 bb  sem= 49.69 bb
+    player=2 move=Bet800 n=   27 mean=  -10.02 bb  sem= 40.09 bb
+    player=2 move=Bet1600 n=   27 mean=  -47.83 bb  sem= 43.62 bb
+    player=2 move=Bet3200 n=   27 mean=  +36.24 bb  sem= 49.41 bb
+    player=2 move=Bet20000 n=   27 mean=  -99.86 bb  sem= 46.26 bb
+decision 7: legal=19803 candidates=8 rollouts=221 in 0.251s chose player=2 move=Call
+    player=2 move=Fold n=   28 mean=   +0.00 bb  sem=  0.00 bb
+    player=2 move=Call n=   28 mean=  +22.17 bb  sem= 51.04 bb
+    player=2 move=Bet200 n=   28 mean=  -58.73 bb  sem= 27.77 bb
+    player=2 move=Bet400 n=   28 mean=  -16.58 bb  sem= 45.80 bb
+    player=2 move=Bet800 n=   28 mean=  -69.46 bb  sem= 27.61 bb
+    player=2 move=Bet1600 n=   27 mean=  -75.17 bb  sem= 28.97 bb
+    player=2 move=Bet3200 n=   27 mean=   -8.22 bb  sem= 48.90 bb
+    player=2 move=Bet20000 n=   27 mean= -125.76 bb  sem= 32.34 bb
+decision 8: legal=19803 candidates=8 rollouts=198 in 0.252s chose player=2 move=Fold
+    player=2 move=Fold n=   25 mean=   +0.00 bb  sem=  0.00 bb
+    player=2 move=Call n=   25 mean= -100.30 bb  sem= 23.91 bb
+    player=2 move=Bet200 n=   25 mean=  -29.44 bb  sem= 28.07 bb
+    player=2 move=Bet400 n=   25 mean=  -18.70 bb  sem= 42.65 bb
+    player=2 move=Bet800 n=   25 mean=  -36.18 bb  sem= 46.37 bb
+    player=2 move=Bet1600 n=   25 mean=  -54.36 bb  sem= 43.77 bb
+    player=2 move=Bet3200 n=   24 mean=  -14.62 bb  sem= 46.59 bb
+    player=2 move=Bet20000 n=   24 mean=  -74.85 bb  sem= 56.27 bb
+decision 9: legal=19803 candidates=8 rollouts=197 in 0.251s chose player=2 move=Call
+    player=2 move=Fold n=   25 mean=   +0.00 bb  sem=  0.00 bb
+    player=2 move=Call n=   25 mean=  +42.70 bb  sem= 41.43 bb
+    player=2 move=Bet200 n=   25 mean=   -0.26 bb  sem= 53.85 bb
+    player=2 move=Bet400 n=   25 mean=  +23.90 bb  sem= 59.75 bb
+    player=2 move=Bet800 n=   25 mean=   -8.74 bb  sem= 56.80 bb
+    player=2 move=Bet1600 n=   24 mean=  -56.65 bb  sem= 37.22 bb
+    player=2 move=Bet3200 n=   24 mean=  -76.98 bb  sem= 26.67 bb
+    player=2 move=Bet20000 n=   24 mean=   +0.33 bb  sem= 62.64 bb
+decision 10: legal=19803 candidates=8 rollouts=202 in 0.253s chose player=2 move=Bet800
+    player=2 move=Fold n=   26 mean=   +0.00 bb  sem=  0.00 bb
+    player=2 move=Call n=   26 mean=  +76.90 bb  sem= 57.83 bb
+    player=2 move=Bet200 n=   25 mean=  +65.62 bb  sem= 47.51 bb
+    player=2 move=Bet400 n=   25 mean=  -45.23 bb  sem= 39.20 bb
+    player=2 move=Bet800 n=   25 mean=  +98.96 bb  sem= 60.59 bb
+    player=2 move=Bet1600 n=   25 mean=  +28.88 bb  sem= 54.83 bb
+    player=2 move=Bet3200 n=   25 mean=  -21.34 bb  sem= 46.33 bb
+    player=2 move=Bet20000 n=   25 mean=   +0.36 bb  sem= 58.09 bb
+decision 11: legal=19803 candidates=8 rollouts=204 in 0.252s chose player=2 move=Fold
+    player=2 move=Fold n=   26 mean=   +0.00 bb  sem=  0.00 bb
+    player=2 move=Call n=   26 mean=  -60.67 bb  sem= 48.73 bb
+    player=2 move=Bet200 n=   26 mean= -145.08 bb  sem= 16.37 bb
+    player=2 move=Bet400 n=   26 mean=  -61.50 bb  sem= 35.49 bb
+    player=2 move=Bet800 n=   25 mean=  -97.96 bb  sem= 34.49 bb
+    player=2 move=Bet1600 n=   25 mean= -102.18 bb  sem= 35.56 bb
+    player=2 move=Bet3200 n=   25 mean=  -21.76 bb  sem= 45.28 bb
+    player=2 move=Bet20000 n=   25 mean= -103.64 bb  sem= 38.61 bb
+decision 12: legal=19803 candidates=8 rollouts=211 in 0.252s chose player=2 move=Call
+    player=2 move=Fold n=   27 mean=   +0.00 bb  sem=  0.00 bb
+    player=2 move=Call n=   27 mean=  +95.94 bb  sem= 53.91 bb
+    player=2 move=Bet200 n=   27 mean=  -17.04 bb  sem= 41.75 bb
+    player=2 move=Bet400 n=   26 mean=  +47.98 bb  sem= 47.07 bb
+    player=2 move=Bet800 n=   26 mean=  -14.08 bb  sem= 47.50 bb
+    player=2 move=Bet1600 n=   26 mean=  -43.92 bb  sem= 41.53 bb
+    player=2 move=Bet3200 n=   26 mean=  +59.37 bb  sem= 49.54 bb
+    player=2 move=Bet20000 n=   26 mean=   -7.46 bb  sem= 59.27 bb
+decision 13: legal=19803 candidates=8 rollouts=206 in 0.251s chose player=2 move=Bet1600
+    player=2 move=Fold n=   26 mean=   +0.00 bb  sem=  0.00 bb
+    player=2 move=Call n=   26 mean=  -79.99 bb  sem= 19.15 bb
+    player=2 move=Bet200 n=   26 mean= -118.19 bb  sem= 18.09 bb
+    player=2 move=Bet400 n=   26 mean=   -3.07 bb  sem= 36.22 bb
+    player=2 move=Bet800 n=   26 mean=  +15.01 bb  sem= 41.74 bb
+    player=2 move=Bet1600 n=   26 mean=  +43.06 bb  sem= 58.75 bb
+    player=2 move=Bet3200 n=   25 mean=  -11.06 bb  sem= 54.54 bb
+    player=2 move=Bet20000 n=   25 mean= -103.75 bb  sem= 43.49 bb
+decision 14: legal=19803 candidates=8 rollouts=183 in 0.252s chose player=2 move=Bet3200
+    player=2 move=Fold n=   23 mean=   +0.00 bb  sem=  0.00 bb
+    player=2 move=Call n=   23 mean=   -2.85 bb  sem= 46.55 bb
+    player=2 move=Bet200 n=   23 mean= +112.78 bb  sem= 67.55 bb
+    player=2 move=Bet400 n=   23 mean=  +88.20 bb  sem= 70.43 bb
+    player=2 move=Bet800 n=   23 mean= +107.04 bb  sem= 57.37 bb
+    player=2 move=Bet1600 n=   23 mean=  +68.72 bb  sem= 71.03 bb
+    player=2 move=Bet3200 n=   23 mean= +159.89 bb  sem= 76.59 bb
+    player=2 move=Bet20000 n=   22 mean= +127.89 bb  sem= 75.17 bb
+decision 15: legal=19803 candidates=8 rollouts=210 in 0.251s chose player=2 move=Bet1600
+    player=2 move=Fold n=   27 mean=   +0.00 bb  sem=  0.00 bb
+    player=2 move=Call n=   27 mean=  +34.85 bb  sem= 58.90 bb
+    player=2 move=Bet200 n=   26 mean=  +16.38 bb  sem= 58.62 bb
+    player=2 move=Bet400 n=   26 mean=  +57.92 bb  sem= 58.55 bb
+    player=2 move=Bet800 n=   26 mean= +110.77 bb  sem= 67.11 bb
+    player=2 move=Bet1600 n=   26 mean= +166.54 bb  sem= 64.67 bb
+    player=2 move=Bet3200 n=   26 mean=  -24.52 bb  sem= 51.27 bb
+    player=2 move=Bet20000 n=   26 mean= +104.35 bb  sem= 59.92 bb
+decision 16: legal=19803 candidates=8 rollouts=188 in 0.251s chose player=2 move=Bet400
+    player=2 move=Fold n=   24 mean=   +0.00 bb  sem=  0.00 bb
+    player=2 move=Call n=   24 mean=  -44.29 bb  sem= 40.80 bb
+    player=2 move=Bet200 n=   24 mean=  +71.02 bb  sem= 63.01 bb
+    player=2 move=Bet400 n=   24 mean= +119.04 bb  sem= 69.97 bb
+    player=2 move=Bet800 n=   23 mean=  -13.67 bb  sem= 39.65 bb
+    player=2 move=Bet1600 n=   23 mean=  +22.96 bb  sem= 54.94 bb
+    player=2 move=Bet3200 n=   23 mean=  +21.54 bb  sem= 60.95 bb
+    player=2 move=Bet20000 n=   23 mean= +113.43 bb  sem= 79.40 bb
+decision 17: legal=19803 candidates=8 rollouts=197 in 0.251s chose player=2 move=Bet400
+    player=2 move=Fold n=   25 mean=   +0.00 bb  sem=  0.00 bb
+    player=2 move=Call n=   25 mean=  -75.30 bb  sem= 44.73 bb
+    player=2 move=Bet200 n=   25 mean=  +36.46 bb  sem= 62.36 bb
+    player=2 move=Bet400 n=   25 mean= +102.44 bb  sem= 66.66 bb
+    player=2 move=Bet800 n=   25 mean=   -8.91 bb  sem= 37.36 bb
+    player=2 move=Bet1600 n=   24 mean=  -26.48 bb  sem= 38.84 bb
+    player=2 move=Bet3200 n=   24 mean=  -77.92 bb  sem= 15.20 bb
+    player=2 move=Bet20000 n=   24 mean=  -33.10 bb  sem= 63.39 bb
+decision 18: legal=19803 candidates=8 rollouts=217 in 0.253s chose player=2 move=Bet3200
+    player=2 move=Fold n=   28 mean=   +0.00 bb  sem=  0.00 bb
+    player=2 move=Call n=   27 mean=  +14.50 bb  sem= 40.27 bb
+    player=2 move=Bet200 n=   27 mean=  +14.17 bb  sem= 55.56 bb
+    player=2 move=Bet400 n=   27 mean=  +28.06 bb  sem= 64.36 bb
+    player=2 move=Bet800 n=   27 mean=  +13.35 bb  sem= 46.79 bb
+    player=2 move=Bet1600 n=   27 mean=  +52.72 bb  sem= 52.77 bb
+    player=2 move=Bet3200 n=   27 mean=  +98.20 bb  sem= 64.56 bb
+    player=2 move=Bet20000 n=   27 mean=  +78.35 bb  sem= 52.99 bb
+decision 19: legal=19803 candidates=8 rollouts=179 in 0.254s chose player=2 move=Bet1600
+    player=2 move=Fold n=   23 mean=   +0.00 bb  sem=  0.00 bb
+    player=2 move=Call n=   23 mean=  +13.17 bb  sem= 58.26 bb
+    player=2 move=Bet200 n=   23 mean=  -25.00 bb  sem= 61.91 bb
+    player=2 move=Bet400 n=   22 mean=  +34.16 bb  sem= 48.16 bb
+    player=2 move=Bet800 n=   22 mean=  -48.39 bb  sem= 25.08 bb
+    player=2 move=Bet1600 n=   22 mean=  +57.14 bb  sem= 68.98 bb
+    player=2 move=Bet3200 n=   22 mean=   +6.02 bb  sem= 66.97 bb
+    player=2 move=Bet20000 n=   22 mean=   +0.27 bb  sem= 68.45 bb
+rollouts per 0.25s decision: n=20 decisions, min=179 max=221 mean=202
+--- end repeat 2: chooser fullgame [load at end: 4.11, 22:41:29] ---
+    [load 4.11 still above 4.0 after 0s; running anyway, figures are under load]
+--- repeat 2: bench_speed [1-minute load average at start: 4.11, 22:41:29] ---
+seed=20260915 seconds per engine=8.0 players=6 stack=20000 blinds=50/100
+engine                                      hands/s  actions/hand    hands
+OpenSpiel universal_poker fcpa menu           42541           7.9   340328
+OpenSpiel universal_poker fullgame             3267           8.8    26139
+texasholdem 0.11.0 menu                        6240           8.5    49923
+texasholdem 0.11.0 real sizing                 5978           9.9    47826
+PokerKit 0.7.5 menu                             600           8.7     4799
+PokerKit 0.7.5 real sizing                      637          10.4     5097
+PyPokerEngine 1.0.1 menu                        702           7.9     5620
+PyPokerEngine 1.0.1 real sizing                 751          12.3     6011
+--- end repeat 2: bench_speed [load at end: 4.54, 22:42:33] ---
+    [load 4.54 still above 4.0 after 0s; running anyway, figures are under load]
+--- repeat 2: resample_opponents [1-minute load average at start: 4.54, 22:42:33] ---
+resample_opponents, first decision after the deal: n=638799 draws in 8.00s = 79850 per second (history 12 long)
+resample_opponents, a later decision in the same hand: n=597695 draws in 8.00s = 74712 per second (history 17 long)
+6 players, 52 cards, fcpa; hidden positions and card positions computed once per decision, not once per draw; seed=20260915
+--- end repeat 2: resample_opponents [load at end: 4.42, 22:42:49] ---
+    [load 4.42 still above 4.0 after 0s; running anyway, figures are under load]
+--- repeat 2: pypoker_playouts [1-minute load average at start: 4.42, 22:42:49] ---
+pypokerengine 1.0.1, Emulator API, 6 players, 52 cards, blinds 50/100, 20000 chips a seat (200bb), seed=20260915, 8s of play-outs
+play-out policy: uniform over fold / call / pot-sized raise / all-in, the same four-move menu bench_speed.py gives the other Python engines
+per-seat stacks asked for      : [100, 500, 20000, 20000, 20000, 20000]
+per-seat stacks the table took : [100, 450, 19900, 20000, 20000, 20000]
+generate_possible_actions here : ['fold', 'call', 'raise'], raise-to range {'min': 150, 'max': 20000} (19851 distinct whole-chip amounts)
+pypokerengine play-outs, first decision after the deal: n=7022 play-outs in 8.00s = 878 per second (219 in a 0.25s decision); 3 action kinds legal at the position
+--- end repeat 2: pypoker_playouts [load at end: 4.66, 22:42:57] ---
+
+=== summary over the repeats above, computed from them ===
+repeat  load  fcpa play-outs/250ms  load  fullgame play-outs/250ms  load  OpenSpiel fcpa hands/s  fcpa play-outs / hands in 250ms
+     1  3.56                 13108  3.51                       245  3.39                   48572                             1.08
+     2  4.41                 11535  4.29                       202  4.11                   42541                             1.08
+
+chooser fcpa play-outs per 250 ms decision           n=2 repeats x 20 decisions  min=   11535  median=   12322  max=   13108  (single decisions 10754-13321)
+chooser fullgame play-outs per 250 ms                n=2 repeats x 20 decisions  min=     202  median=     224  max=     245  (single decisions 179-270)
+OpenSpiel universal_poker fcpa menu                  n=2 repeats  min=   42541  median=   45556  max=   48572
+OpenSpiel universal_poker fullgame                   n=2 repeats  min=    3267  median=    3845  max=    4423
+texasholdem 0.11.0 menu                              n=2 repeats  min=    6240  median=    7394  max=    8548
+texasholdem 0.11.0 real sizing                       n=2 repeats  min=    5978  median=    7174  max=    8371
+PokerKit 0.7.5 menu                                  n=2 repeats  min=     600  median=     630  max=     660
+PokerKit 0.7.5 real sizing                           n=2 repeats  min=     637  median=     712  max=     786
+PyPokerEngine 1.0.1 menu                             n=2 repeats  min=     702  median=     794  max=     885
+PyPokerEngine 1.0.1 real sizing                      n=2 repeats  min=     751  median=     760  max=     769
+resample_opponents, first decision after the deal    n=2 repeats  min=   79850  median=   82430  max=   85010
+resample_opponents, a later decision in the same hand n=2 repeats  min=   74712  median=   79550  max=   84387
+pypokerengine play-outs/s, first decision after the deal n=2 repeats  min=     878  median=     918  max=     958
+
+OpenSpiel fcpa / texasholdem, both menu              per-repeat ratio min=  5.68 median=  6.25 max=  6.82
+OpenSpiel fullgame / texasholdem, both real sizing   per-repeat ratio min=  0.53 median=  0.54 max=  0.55
+OpenSpiel fcpa / PokerKit, both menu                 per-repeat ratio min= 70.90 median= 72.25 max= 73.59
+OpenSpiel fullgame / PokerKit, both real sizing      per-repeat ratio min=  5.13 median=  5.38 max=  5.63
+OpenSpiel fcpa / PyPokerEngine, both menu            per-repeat ratio min= 54.88 median= 57.74 max= 60.60
+OpenSpiel fullgame / PyPokerEngine, both real sizing per-repeat ratio min=  4.35 median=  5.05 max=  5.75
+OpenSpiel fcpa / OpenSpiel fullgame                  per-repeat ratio min= 10.98 median= 12.00 max= 13.02
+chooser fcpa play-outs / complete fcpa hands, same 250 ms per-repeat ratio min=  1.08 median=  1.08 max=  1.08
+chooser fcpa / chooser fullgame play-outs            per-repeat ratio min= 53.50 median= 55.30 max= 57.10
+chooser fcpa play-outs / PyPokerEngine play-outs     per-repeat ratio min= 52.55 median= 53.64 max= 54.73

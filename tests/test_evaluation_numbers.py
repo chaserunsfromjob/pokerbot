@@ -1,0 +1,238 @@
+"""The evaluation strategy's derived numbers must match the constants they come from.
+
+`tools/check_evaluation_numbers.py` holds every constant `EVALUATION_STRATEGY.md`
+declares and recomputes every figure the document derives from them. This test
+runs it, so a stale number fails the suite rather than waiting for a reviewer.
+
+The same arrangement pins `OPPONENT_MODEL_DESIGN.md` on `main`, through
+`tools/check_design_numbers.py` and `tests/test_design_numbers.py`. The two
+checkers are deliberately separate for now because this branch was cut before
+that one existed; consolidating them is filed as a finding, not done here.
+
+No engine, no network, no dependencies: standard library only.
+"""
+
+from __future__ import annotations
+
+import subprocess
+import sys
+from pathlib import Path
+
+REPO_ROOT = Path(__file__).resolve().parent.parent
+SCRIPT = REPO_ROOT / "tools" / "check_evaluation_numbers.py"
+DOCUMENT = REPO_ROOT / "EVALUATION_STRATEGY.md"
+
+
+def run_checker(*args: str) -> subprocess.CompletedProcess:
+    return subprocess.run(
+        [sys.executable, str(SCRIPT), *args],
+        capture_output=True,
+        text=True,
+        encoding="utf-8",
+        cwd=str(REPO_ROOT),
+    )
+
+
+def broken_copy(tmp_path, old: str, new: str) -> Path:
+    """The document with one figure changed, written where the checker can read it."""
+    text = DOCUMENT.read_text(encoding="utf-8")
+    broken = text.replace(old, new, 1)
+    assert broken != text, f"the passage this test edits has moved: {old!r}"
+    target = tmp_path / "EVALUATION_STRATEGY.md"
+    target.write_text(broken, encoding="utf-8")
+    return target
+
+
+def test_script_and_document_exist():
+    assert SCRIPT.exists(), f"missing {SCRIPT}"
+    assert DOCUMENT.exists(), f"missing {DOCUMENT}"
+
+
+def test_every_derived_number_matches_its_constants():
+    result = run_checker()
+    assert result.returncode == 0, (
+        "tools/check_evaluation_numbers.py found figures in EVALUATION_STRATEGY.md "
+        "that no longer match the constants they derive from:\n"
+        + result.stdout
+        + result.stderr
+    )
+    assert "all match" in result.stdout
+
+
+def test_checker_reports_a_stale_sample_size(tmp_path):
+    """A changed cell of the sample-size table must fail."""
+    target = broken_copy(
+        tmp_path,
+        "| 1,500 (6-max, AIVAT) | 353,200 | 56,512 | 14,128 | 3,532 | 883 |",
+        "| 1,500 (6-max, AIVAT) | 353,200 | 56,512 | 14,129 | 3,532 | 883 |",
+    )
+    result = run_checker(str(target))
+    assert result.returncode == 1
+    assert "do not match" in result.stdout
+    assert "sample-size" in result.stdout
+
+
+def test_checker_reports_a_stale_wall_clock(tmp_path):
+    """A changed hour in the budget table must fail."""
+    target = broken_copy(tmp_path, "| **4.9 h** |", "| **4.8 h** |")
+    result = run_checker(str(target))
+    assert result.returncode == 1
+    assert "wall clock" in result.stdout
+
+
+def test_checker_reports_a_stale_todays_engine_figure(tmp_path):
+    """The today's-engine grid is derived too, and must not drift."""
+    target = broken_copy(tmp_path, "169,536", "169,530")
+    result = run_checker(str(target))
+    assert result.returncode == 1
+    assert "today's-engine" in result.stdout
+
+
+def test_checker_reports_a_stale_cell_count_in_the_example_report(tmp_path):
+    """The example report block prints the nightly run's cell count."""
+    target = broken_copy(tmp_path, "cells: 20   budget", "cells: 25   budget")
+    result = run_checker(str(target))
+    assert result.returncode == 1
+    assert "report block's cell count" in result.stdout
+
+
+def test_checker_reports_a_stale_powered_to_detect(tmp_path):
+    """The pooled effect the nightly run can detect is stated in several places."""
+    target = broken_copy(
+        tmp_path,
+        "powered to detect: 28.1 mbb/hand pooled",
+        "powered to detect: 28.7 mbb/hand pooled",
+    )
+    result = run_checker(str(target))
+    assert result.returncode == 1
+    assert "powered to detect" in result.stdout
+
+
+def test_checker_reports_a_stale_elapsed_time(tmp_path):
+    """The example report's elapsed time is the nightly run's wall clock."""
+    target = broken_copy(tmp_path, "elapsed: 4h54m", "elapsed: 4h59m")
+    result = run_checker(str(target))
+    assert result.returncode == 1
+    assert "elapsed time" in result.stdout
+
+
+def test_checker_reports_a_stale_pooled_detect_in_the_budget_table(tmp_path):
+    """The budget table's last column is the same pooled figure, and is checked."""
+    target = broken_copy(
+        tmp_path,
+        "| 100 mbb/hand | **28.1 mbb/hand** |",
+        "| 100 mbb/hand | **28.7 mbb/hand** |",
+    )
+    result = run_checker(str(target))
+    assert result.returncode == 1
+    assert "detects pooled" in result.stdout
+
+
+def test_checker_reports_a_stale_cell_count_in_section_4_1(tmp_path):
+    """Section 4.1 restates the full grid's size in a sentence of its own."""
+    target = broken_copy(tmp_path, "stack depths, is 240\ncells", "stack depths, is 260\ncells")
+    result = run_checker(str(target))
+    assert result.returncode == 1
+    assert "cells and days" in result.stdout
+
+
+def test_checker_reports_a_drifted_release_gate(tmp_path):
+    """The gate is stated in five places and every copy must be identical."""
+    target = broken_copy(
+        tmp_path,
+        "prints as NOT GATED and blocks the release exactly as a failure would.",
+        "prints as NOT GATED and blocks the release just as a failure would.",
+    )
+    result = run_checker(str(target))
+    assert result.returncode == 1
+    assert "release gate" in result.stdout
+
+
+def test_checker_reports_a_superseded_engine_figure(tmp_path):
+    """The engine survey's withdrawn throughput figure must not come back."""
+    target = broken_copy(
+        tmp_path,
+        "it deals **47,564 complete hands per",
+        "it deals **56,414 complete six-player hands per",
+    )
+    result = run_checker(str(target))
+    assert result.returncode == 1
+    assert "superseded" in result.stdout
+
+
+def test_checker_reports_a_renamed_budget_run(tmp_path):
+    """The budget table's first column names the three runs this document defines."""
+    target = broken_copy(tmp_path, "| **Routine check** |", "| **Routine smoke check** |")
+    result = run_checker(str(target))
+    assert result.returncode == 1
+    assert "row name" in result.stdout
+
+
+def test_checker_reports_a_stale_seat_list_in_the_budget_table(tmp_path):
+    """The budget table's seat column is the run's seat axis, and is checked."""
+    target = broken_copy(
+        tmp_path,
+        "2, 6, 8, 9 (no rotating seat)",
+        "2, 6, 8, 7 (no rotating seat)",
+    )
+    result = run_checker(str(target))
+    assert result.returncode == 1
+    assert "seat counts" in result.stdout
+
+
+def test_checker_reports_a_stale_full_grid_seat_range(tmp_path):
+    """The full grid runs all of 2 to 9; the table must not quietly say otherwise."""
+    target = broken_copy(tmp_path, "| all of 2…9 |", "| all of 2…8 |")
+    result = run_checker(str(target))
+    assert result.returncode == 1
+    assert "seat counts" in result.stdout
+
+
+def test_checker_reports_a_stale_real_sizing_throughput(tmp_path):
+    """4,438 is stated five times; a copy that drifts anywhere must fail."""
+    target = broken_copy(
+        tmp_path,
+        "**4,438 is the figure that applies here.**",
+        "**4,439 is the figure that applies here.**",
+    )
+    result = run_checker(str(target))
+    assert result.returncode == 1
+    assert "real-sizing throughput" in result.stdout
+
+
+def test_checker_reports_a_stale_menu_mode_throughput(tmp_path):
+    """47,564 is stated in the prose and again in the provenance table."""
+    target = broken_copy(tmp_path, "and 47,564 in menu mode", "and 47,565 in menu mode")
+    result = run_checker(str(target))
+    assert result.returncode == 1
+    assert "menu-mode throughput" in result.stdout
+
+
+def test_checker_reports_a_stale_weights_line_in_the_example_report(tmp_path):
+    """The example report prints the whole weighting, not just the headline."""
+    target = broken_copy(tmp_path, "weights: n6=0.50", "weights: n6=0.55")
+    result = run_checker(str(target))
+    assert result.returncode == 1
+    assert "weights line" in result.stdout
+
+
+def test_checker_reports_a_stale_rotation_cycle_in_the_example_report(tmp_path):
+    """The example report prints the rotation cycle in its own shorthand."""
+    target = broken_copy(tmp_path, "(cycle 3>4>5>7;", "(cycle 3>4>5>8;")
+    result = run_checker(str(target))
+    assert result.returncode == 1
+    assert "rotation cycle" in result.stdout
+
+
+def test_checker_reports_a_stale_weight(tmp_path):
+    """The table-size weights drive the headline arithmetic; drift must fail."""
+    target = broken_copy(tmp_path, "| Primary | 6 | 0.50 |", "| Primary | 6 | 0.55 |")
+    result = run_checker(str(target))
+    assert result.returncode == 1
+    assert "weight" in result.stdout
+
+
+def test_missing_document_is_reported():
+    result = run_checker("no/such/document.md")
+    assert result.returncode == 2
+    assert "not found" in result.stderr

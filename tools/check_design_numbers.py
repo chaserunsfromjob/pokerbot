@@ -135,10 +135,41 @@ FOLD_RATES = [0.50, 0.60, 0.70, 0.80, 0.90]
 OPPONENT_COUNTS = [1, 2, 3, 4, 5]
 
 # Table C -- illustrative anchors, opportunity rates, and target widths.
-# `rate` 1.00 is not a placeholder: it is forced by a "was dealt in" denominator
-# in section 4.2. Every other rate is one of the three placeholders below.
-PLACEHOLDER_RATES = {0.08, 0.15, 0.30}
+# `rate` 1.00 is not a placeholder: it is the bound forced by section 4.2's
+# "was dealt in and the hand was not a walk" denominator, which section 4.7
+# row 2 fixes on the authority of escalation 241e2f235c94. The rate a real
+# population would show is 1.00 less its walk rate, so the table prints 1.00 as
+# an upper bound and its last column says so.
+# Two rates are measured (below); the rest are placeholders.
+PLACEHOLDER_RATES = {0.08, 0.15}
 DEALT_IN_STATS = {"vpip", "pfr"}
+# Measured per-hand opportunity rates: the nine-handed pooled figures in
+# OPPONENT_BASELINE.md section 2's pooled table, whose "FtCB chances per hand"
+# and "Flops seen per hand" columns are exactly these two stats' section 4.2
+# denominators, over its 70,685 nine-handed hands. Measured on the sample that
+# document's section 1 describes (no PartyPoker, leaning high-stakes); adopting
+# them is its section 5 recommendation 2. A measured rate is printed to three
+# decimals, the precision it was measured to; a placeholder prints to two.
+MEASURED_RATES = {"fold_to_cbet": 0.030, "wtsd": 0.187}
+# The "Where the rate comes from" cell each kind of rate carries, as the table
+# prints it once backticks and bold markers are stripped by `clean_cell`.
+RATE_SOURCE_MEASURED = "measured, OPPONENT_BASELINE.md §2, nine-handed"
+RATE_SOURCE_PLACEHOLDER = "illustrative placeholder"
+RATE_SOURCE_DEALT_IN = "one per hand dealt, less the walk rate: an upper bound (§4.7 row 2)"
+# The postflop rows, which section 4.2's `three_bet` sentence claims to be
+# nearer than `three_bet` itself.
+POSTFLOP_STATS = {"fold_to_cbet", "wtsd"}
+# Where the two measured rates are cited from, and how to find them there, so a
+# rate re-measured in that document cannot leave a stale copy here.
+BASELINE_SOURCE = "OPPONENT_BASELINE.md"
+BASELINE_SECTION = "## 2. Corpus A: the 2009 no-limit population, per table size"
+BASELINE_POOLED_TABLE = "**The pooled rate**"
+BASELINE_SEATS = "9"  # the nine-handed row, the table size this design cites
+BASELINE_COLUMNS = {  # Table C stat -> the pooled table's column heading
+    "fold_to_cbet": "FtCB chances per hand",
+    "wtsd": "Flops seen per hand",
+}
+BASELINE_NINE_HANDED_HANDS = "70,685"  # quoted beside the rates in section 4.2
 TABLE_C_ROWS = [
     # (stat, anchor p-hat, opportunities per hand, target half-width)
     ("vpip", 0.30, 1.00, 0.05),
@@ -146,8 +177,8 @@ TABLE_C_ROWS = [
     ("pfr", 0.20, 1.00, 0.05),
     ("three_bet", 0.07, 0.15, 0.02),
     ("fold_to_three_bet", 0.60, 0.08, 0.10),
-    ("fold_to_cbet", 0.50, 0.15, 0.10),
-    ("wtsd", 0.25, 0.30, 0.05),
+    ("fold_to_cbet", 0.50, MEASURED_RATES["fold_to_cbet"], 0.10),
+    ("wtsd", 0.25, MEASURED_RATES["wtsd"], 0.05),
 ]
 # The anchor each stat is read at wherever an interval is taken for it.
 TABLE_C_ANCHORS = {stat: p for stat, p, _rate, _w in TABLE_C_ROWS}
@@ -281,10 +312,15 @@ EXAMPLE_STREET_CEILING = {
 
 DEFAULT_DOC = Path(__file__).resolve().parent.parent / "OPPONENT_MODEL_DESIGN.md"
 
-# Section 1 reproduces this file's forefront-rule table verbatim, so the copy is
+# Section 1 quotes this file's forefront-rule bullets verbatim, so every quote is
 # compared against the authority rather than trusted.
 FOREFRONT_SOURCE = "CLAUDE.md"
-FOREFRONT_HEADER = "| Allowed to AI-written opponent-model code | Reserved to the engine |"
+FOREFRONT_SECTION = "## The forefront rule"
+FOREFRONT_QUOTED_IN = "### The forefront rule and this design"
+# Exactly this many bullets are quoted there. A floor lets an added quote
+# through without comment, so the count is compared exactly: any change to what
+# §1 quotes has to be a deliberate edit here.
+FOREFRONT_QUOTE_COUNT = 3
 
 # ---------------------------------------------------------------------------
 # Arithmetic the document states inline, written once.
@@ -324,6 +360,24 @@ def raw_margin(margin: float, c: float) -> float:
 def anchor_for(stat: str) -> float:
     """The p-hat a stat's interval is read at."""
     return TABLE_C_ANCHORS.get(stat, LEAST_FAVOURABLE_P)
+
+
+def rate_text(stat: str, rate: float) -> str:
+    """Table C's opportunity rate as the document prints it.
+
+    A measured rate keeps the three decimals OPPONENT_BASELINE.md measured it
+    to; a placeholder and the forced 1.00 print to two.
+    """
+    return fmt(rate, 3 if stat in MEASURED_RATES else 2)
+
+
+def hands_needed(stat: str) -> float:
+    """The fewest hands any Table C row for `stat` needs."""
+    return min(
+        opportunities_needed(p, w) / rate
+        for st, p, rate, w in TABLE_C_ROWS
+        if st == stat
+    )
 
 
 def baseline_bound_for_leg(margin: float, gate: float, s: float) -> float:
@@ -438,6 +492,33 @@ def clean_cell(cell: str) -> str:
     return cell.replace("**", "").replace("`", "").strip()
 
 
+def _section_lines(doc: "Document", heading: str) -> list[str]:
+    """The lines under `heading`, up to the next heading of the same depth or higher."""
+    depth = len(heading) - len(heading.lstrip("#"))
+    out: list[str] = []
+    inside = False
+    for line in doc.lines:
+        if line.startswith("#"):
+            if line.strip() == heading:
+                inside = True
+                continue
+            if inside and len(line) - len(line.lstrip("#")) <= depth:
+                break
+        if inside:
+            out.append(line)
+    return out
+
+
+def section_bullets(doc: "Document", heading: str) -> list[str]:
+    """Every top-level bullet under `heading`, without its marker."""
+    return [line[2:].strip() for line in _section_lines(doc, heading) if line.startswith("- ")]
+
+
+def section_quotes(doc: "Document", heading: str) -> list[str]:
+    """Every block-quoted line under `heading`, without its marker."""
+    return [line[2:].strip() for line in _section_lines(doc, heading) if line.startswith("> ")]
+
+
 # ---------------------------------------------------------------------------
 # The checker.
 # ---------------------------------------------------------------------------
@@ -531,26 +612,41 @@ class Checker:
             tag = f"Table C {stat} ±{w}"
             self.equal(f"{tag} stat", stat, row[0])
             self.equal(f"{tag} anchor", fmt(p, 2), row[1])
-            self.equal(f"{tag} opportunities per hand", fmt(rate, 2), row[2])
+            self.equal(f"{tag} opportunities per hand", rate_text(stat, rate), row[2])
             self.equal(f"{tag} target width", "±" + fmt(w * 100, 0) + "pp", row[3])
             opps = opportunities_needed(p, w)
             self.equal(f"{tag} opportunities needed", fmt(opps, 0, thousands=True), row[4])
             self.equal(f"{tag} hands needed", fmt(opps / rate, 0, thousands=True), row[5])
-            # Every rate is either forced by a "dealt in" denominator or a placeholder.
+            # Every rate is forced by a "dealt in" denominator, measured, or a
+            # placeholder -- and the last column says which, in every row.
             if stat in DEALT_IN_STATS:
                 self.true(f"{tag} rate is one per hand dealt", rate == 1.00, f"rate {rate}")
+                self.equal(f"{tag} rate source", RATE_SOURCE_DEALT_IN, row[6])
+            elif stat in MEASURED_RATES:
+                self.equal(f"{tag} measured rate", repr(MEASURED_RATES[stat]), repr(rate))
+                self.equal(f"{tag} rate source", RATE_SOURCE_MEASURED, row[6])
             else:
                 self.true(
                     f"{tag} rate is a placeholder",
                     rate in PLACEHOLDER_RATES,
                     f"rate {rate} is not one of {sorted(PLACEHOLDER_RATES)}",
                 )
+                self.equal(f"{tag} rate source", RATE_SOURCE_PLACEHOLDER, row[6])
         three_bet_rate = next(rate for stat, _p, rate, _w in TABLE_C_ROWS if stat == "three_bet")
         three_bet_row = next(row for row in TABLE_C_ROWS if row[0] == "three_bet")
         self.prose(
             "section 4.2 three_bet expectation sentence",
             f"at a placeholder {fmt(three_bet_rate, 2)}\nopportunities per hand a "
             f"±{fmt(three_bet_row[3] * 100, 0)}pp reading of a {fmt(three_bet_row[1] * 100, 0)}% behaviour",
+        )
+        # The same sentence claims three_bet sits further off than any postflop
+        # row. Re-pinning a postflop rate upward is exactly what would break it.
+        self.true(
+            "section 4.2 three_bet really is further off than every postflop row",
+            all(hands_needed("three_bet") > hands_needed(stat) for stat in POSTFLOP_STATS),
+            "a postflop row needs more hands than three_bet: "
+            + ", ".join(f"{stat} {hands_needed(stat):.0f}" for stat in sorted(POSTFLOP_STATS))
+            + f" against three_bet {hands_needed('three_bet'):.0f}",
         )
 
     # -- Table D ----------------------------------------------------------
@@ -1412,7 +1508,7 @@ class Checker:
         )
         rates = []
         for stat, _p, rate, _w in TABLE_C_ROWS:
-            entry = f"`{stat}` {fmt(rate, 2)}"
+            entry = f"`{stat}` {rate_text(stat, rate)}"
             if stat not in DEALT_IN_STATS and entry not in rates:
                 rates.append(entry)
         self.prose(
@@ -1506,38 +1602,96 @@ class Checker:
             f"fmt gives {fmt(float(example), 1)}, half-up gives {half_up}",
         )
 
-    # -- The forefront-rule table, reproduced from CLAUDE.md ---------------
-    def check_forefront_table(self) -> None:
-        """§1's two bullets claim to reproduce CLAUDE.md's table verbatim."""
+    # -- The forefront-rule bullets, quoted from CLAUDE.md -----------------
+    def check_forefront_quotes(self) -> None:
+        """§1 quotes CLAUDE.md's forefront bullets verbatim; drift must fail."""
         source = self.doc.path.parent / FOREFRONT_SOURCE
         if not source.exists():
             source = DEFAULT_DOC.parent / FOREFRONT_SOURCE
         self.true(f"{FOREFRONT_SOURCE} is readable", source.exists(), f"no {source}")
         if not source.exists():
             return
-        rows = Document(source).table_after(FOREFRONT_HEADER)
-        header, body = rows[0], rows[1:]
+        rule = section_bullets(Document(source), FOREFRONT_SECTION)
+        self.true(f"{FOREFRONT_SOURCE} states its forefront rule as bullets", bool(rule), "no bullets")
+        quotes = section_quotes(self.doc, FOREFRONT_QUOTED_IN)
         self.equal(
-            f"{FOREFRONT_SOURCE} forefront table header",
-            "Allowed to AI-written opponent-model code | Reserved to the engine",
-            " | ".join(header),
+            "the number of forefront-rule bullets §1 quotes",
+            FOREFRONT_QUOTE_COUNT,
+            len(quotes),
         )
-        columns = {
-            "Allowed to AI-written opponent-model code": [row[0] for row in body],
-            "Reserved to the engine": [row[1] for row in body],
-        }
-        m = re.search(
-            r"\*\*Allowed to AI-written opponent-model code:\*\* (.+?) "
-            r"- \*\*Reserved to the engine:\*\* (.+?) \*\*Live field",
-            self.doc.flat,
-        )
-        self.true("§1 reproduces both forefront columns as bullets", m is not None, "bullets not found")
-        if m is None:
+        for quote in quotes:
+            opener = " ".join(quote.split()[:4])
+            match = next((bullet for bullet in rule if bullet.startswith(opener)), None)
+            self.equal(
+                f"§1 quotes {FOREFRONT_SOURCE}'s '{opener}...' bullet verbatim",
+                match if match is not None else f"no {FOREFRONT_SOURCE} bullet opening '{opener}'",
+                quote,
+            )
+
+    # -- The measured rates, checked against the document they are cited from
+    def check_baseline_citation(self) -> None:
+        """Table C's two measured rates must still be what OPPONENT_BASELINE says.
+
+        The design cites them by section; this reads that section and compares,
+        so re-measuring there and not here fails the run rather than passing
+        quietly with a stale number.
+        """
+        source = self.doc.path.parent / BASELINE_SOURCE
+        if not source.exists():
+            source = DEFAULT_DOC.parent / BASELINE_SOURCE
+        self.true(f"{BASELINE_SOURCE} is readable", source.exists(), f"no {source}")
+        if not source.exists():
             return
-        for (label, expected), text in zip(columns.items(), m.groups()):
-            items = [clean_cell(part) for part in text.rstrip(".").split("; ")]
-            self.equal(f"§1 reproduces {FOREFRONT_SOURCE}'s '{label}' column verbatim",
-                       " | ".join(expected), " | ".join(items))
+        baseline = Document(source)
+        self.true(
+            f"{BASELINE_SOURCE} still carries the cited section",
+            BASELINE_SECTION in baseline.lines,
+            f"no heading {BASELINE_SECTION!r}",
+        )
+        pooled = baseline.table_after(BASELINE_POOLED_TABLE)
+        header, body = pooled[0], pooled[1:]
+        row = next((r for r in body if r[0] == BASELINE_SEATS), None)
+        self.true(
+            f"{BASELINE_SOURCE} §2 has a {BASELINE_SEATS}-seat pooled row",
+            row is not None,
+            f"no row for {BASELINE_SEATS} seats",
+        )
+        if row is None:
+            return
+        for stat, column in BASELINE_COLUMNS.items():
+            self.true(
+                f"{BASELINE_SOURCE} §2 still has a {column!r} column",
+                column in header,
+                f"columns are {header}",
+            )
+            if column not in header:
+                continue
+            cited = row[header.index(column)]
+            here = rate_text(stat, MEASURED_RATES[stat])
+            self.true(
+                f"Table C's measured {stat} rate against {BASELINE_SOURCE} §2",
+                cited == here,
+                f"{BASELINE_SOURCE} §2 measures {cited!r} in its {column!r} column, "
+                f"Table C carries {here!r}",
+            )
+        per_size = baseline.table_after(BASELINE_SECTION)
+        header = per_size[0]
+        row = next((r for r in per_size[1:] if r[0] == BASELINE_SEATS), None)
+        cited_hands = row[header.index("Hands")] if row is not None else "no nine-seat row"
+        self.true(
+            f"the {BASELINE_SEATS}-handed hand count §4.2 quotes from {BASELINE_SOURCE} §2",
+            cited_hands == BASELINE_NINE_HANDED_HANDS,
+            f"{BASELINE_SOURCE} §2 counts {cited_hands!r} nine-handed hands, "
+            f"the citation says {BASELINE_NINE_HANDED_HANDS!r}",
+        )
+        self.prose(
+            "section 4.2 quotes the hand count the measured rates rest on",
+            f"document's {BASELINE_NINE_HANDED_HANDS} nine-handed hands",
+        )
+        self.prose(
+            "the provenance table quotes the same hand count",
+            f"over {BASELINE_NINE_HANDED_HANDS} nine-handed hands",
+        )
 
     # -- Figures the document states in more than one place ----------------
     def check_restated_constants(self) -> None:
@@ -1701,9 +1855,19 @@ class Checker:
             *[str(s) for s in TABLE_D_S if s not in {v for _t, v, _ in PRIOR_STRENGTH_GROUPS}],
         )
         self.every_occurrence(
-            "Table C's three placeholder opportunity rates",
-            r"invented here: (\d\.\d+), (\d\.\d+) and (\d\.\d+) are round",
+            "Table C's remaining placeholder opportunity rates",
+            r"invented here: (\d\.\d+) and (\d\.\d+) are round",
             *[fmt(r, 2) for r in sorted(PLACEHOLDER_RATES)],
+        )
+        self.every_occurrence(
+            "the measured opportunity rates wherever §4.2 names them together",
+            r"`fold_to_cbet` at \*\*(\d\.\d+)\*\* and `wtsd` at\s+\*\*(\d\.\d+)\*\*",
+            *[rate_text(stat, MEASURED_RATES[stat]) for stat in ("fold_to_cbet", "wtsd")],
+        )
+        self.every_occurrence(
+            "the measured opportunity rates where the provenance table names them",
+            r"`fold_to_cbet` (\d\.\d+) and `wtsd` (\d\.\d+) are the nine-handed",
+            *[rate_text(stat, MEASURED_RATES[stat]) for stat in ("fold_to_cbet", "wtsd")],
         )
         self.every_occurrence(
             "the rate the dealt-in stats are forced to",
@@ -1787,7 +1951,8 @@ class Checker:
             ("Tier 1 solve cost arithmetic", self.check_solve_cost),
             ("operator seat priority", self.check_seat_priority),
             ("provenance table", self.check_provenance_rows),
-            ("forefront-rule table copy", self.check_forefront_table),
+            ("measured-rate citation", self.check_baseline_citation),
+            ("forefront-rule quotes", self.check_forefront_quotes),
             ("restated constants", self.check_restated_constants),
         ]
         for name, check in checks:

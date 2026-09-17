@@ -303,9 +303,10 @@ Taken piece by piece, cheapest first:
   use real short-deck rules (where a flush beats a full house). That is an
   upstream fidelity gap that simply disappears when we move to 52 cards.
 
-  One caveat that matters for this repo specifically. `CLAUDE.md:19` treats
-  `treys` as an *external* evaluator used to check hand rankings. It is not
-  external to this engine in the way that wording suggests: `poker_ai`'s
+  One caveat that matters for this repo specifically. `CLAUDE.md`'s forefront
+  rule, under "What may not be coded", treats `treys` as an *external*
+  evaluator used to check hand rankings. It is not external to this engine in
+  the way that wording suggests: `poker_ai`'s
   evaluator is itself a fork of the same library. Both descend from Cactus
   Kev via Will Drevo's `deuces`, and
   `vendor/poker_ai/poker_ai/poker/evaluation/eval_card.py` still carries the
@@ -343,13 +344,14 @@ Taken piece by piece, cheapest first:
     return one number each, and the ten non-pair branches return a suited or an
     unsuited number. A 52-card deck has **169** starting hand classes
     (13 pairs + 78 suited + 78 unsuited). Writing that enumeration ourselves is
-    allowed by `CLAUDE.md:18`, the forefront-rule bullet that puts card
-    combinatorics - the 169 preflop classes, suit isomorphisms, deck
-    enumeration - on our side of the line and leaves ranking, valuing and
-    choosing with the engine. Deciding "which of the 169 classes is this hand"
-    only sorts hands into named boxes; it never says which box is better. It
-    must still be generated and tested against the evaluator, not typed out by
-    hand or by a model.
+    allowed by `CLAUDE.md`'s forefront rule, under "What may be coded", which
+    names card combinatorics - the 169 preflop classes, suit isomorphisms, deck
+    enumeration - as ours to write and leaves ranking or valuing a hand to the
+    engine. Deciding "which of the 169 classes is this hand" only sorts hands
+    into named boxes; it never says which box is better. It must still be
+    generated and tested against the evaluator, and its content must never come
+    from stored model output, which the same rule forbids under "What may not
+    be coded".
 
 ### The blocker
 
@@ -404,8 +406,8 @@ deliberately set below anything usable (5 buckets per street, 2 simulations per
 decision, against upstream defaults of 50 and 6). Full numbers in the run log
 at the end.
 
-The budget these numbers answer to is the compute-budget bullet at
-`CLAUDE.md:47` - **no multi-day computing; a playable bot has to be reachable in
+The budget these numbers answer to is the bullet under `CLAUDE.md`'s "Compute
+budget" - **no multi-day computing; a playable bot has to be reachable in
 hours, on one laptop** - which the operator stated on 2026-09-15. Measure every
 cost below against that bullet.
 
