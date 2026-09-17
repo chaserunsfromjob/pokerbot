@@ -12,14 +12,21 @@ capture.
 
 ## The forefront rule
 
+### What may be coded
+
 - Let an AI assistant write the poker code: the code that picks an action, assigns a range to an opponent, reads the board, and combines opponent rates.
-- Keep every model call out of the live decision path; when the bot acts it runs ordinary code only, with no language-model inference, no network call to a model, and no prompt.
 - Write decision code as ordinary, testable code: the same inputs and seed give the same answer, tests cover it, and a reviewer can read it line by line.
+- Treat the **observed population** as the whole database, seated players' stored rows included, with being seated never the criterion for inclusion, and combine rates across it into a baseline, a classification split, or an archetype.
+- Write card-combinatorics bookkeeping ourselves - the 169 preflop hand classes, suit isomorphisms, deck enumeration - and leave ranking or valuing a hand to the engine.
+- Derive any opponent archetype fed to the solver from measured action frequencies alone; never hand-write one, and never let it reference hole cards, board cards, or hand strength.
+
+### What may not be coded
+
+- Keep every model call out of the live decision path; when the bot acts it runs ordinary code only, with no language-model inference, no network call to a model, and no prompt.
+- Take the content of every poker decision from code a reviewer can follow, never from stored language-model output: a table, a set of weights, or text a model produced.
 - Take the game rules and hand evaluation from the engine road, OpenSpiel `universal_poker`, rather than hand-rolling them; reject a change that hand-rolls hand-strength logic in place of the vendored engine, and adapt the engine instead.
 - Ground-truth hand ranking against a named external evaluator (currently `treys`), the reference for standard 52-card ranking, and keep it out of the bot's decision path; it validates tests only, never runtime play.
-- Write card-combinatorics bookkeeping ourselves - the 169 preflop hand classes, suit isomorphisms, deck enumeration - and leave ranking or valuing a hand to the engine.
 - Keep every way language models play poker badly, as named in `LLM_POKER_FAILURE_MODES.md`, out of the decision code, and reject a change that reintroduces one of them.
-- Derive any opponent archetype fed to the solver from measured action frequencies alone; never hand-write one, and never let it reference hole cards, board cards, or hand strength.
 
 ## Plan
 
@@ -50,7 +57,7 @@ capture.
 - Keep pokerbot public at `github.com/chaserunsfromjob/pokerbot` so classmates can collaborate on it.
 - License pokerbot under the GNU General Public License version 3 — GPL-3.0 — whose full text is `LICENSE` at the root, because the vendored engine is GPL-3.0 and publishing is distribution.
 - Keep every derived work under GPL-3.0 with its source published; the vendored engine's terms bind whatever is built on or combined with its code, not a separate program that merely ships beside it.
-- Use third-party code and data when they help, and never let a licence question block a change; making the repository private later is the operator's call.
+- Use third-party code and data now, and wait for the repository to go private, which is the operator's call, before publishing anything whose licence conflicts with GPL-3.0.
 
 Rules in `~/.claude/CLAUDE.md` (deployed machine-wide from the `heater` fleet
 repository) apply on top of this file.

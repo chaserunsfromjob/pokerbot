@@ -281,10 +281,11 @@ EXAMPLE_STREET_CEILING = {
 
 DEFAULT_DOC = Path(__file__).resolve().parent.parent / "OPPONENT_MODEL_DESIGN.md"
 
-# Section 1 reproduces this file's forefront-rule table verbatim, so the copy is
+# Section 1 quotes this file's forefront-rule bullets verbatim, so every quote is
 # compared against the authority rather than trusted.
 FOREFRONT_SOURCE = "CLAUDE.md"
-FOREFRONT_HEADER = "| Allowed to AI-written opponent-model code | Reserved to the engine |"
+FOREFRONT_SECTION = "## The forefront rule"
+FOREFRONT_QUOTED_IN = "### The forefront rule and this design"
 
 # ---------------------------------------------------------------------------
 # Arithmetic the document states inline, written once.
@@ -436,6 +437,33 @@ class Document:
 
 def clean_cell(cell: str) -> str:
     return cell.replace("**", "").replace("`", "").strip()
+
+
+def _section_lines(doc: "Document", heading: str) -> list[str]:
+    """The lines under `heading`, up to the next heading of the same depth or higher."""
+    depth = len(heading) - len(heading.lstrip("#"))
+    out: list[str] = []
+    inside = False
+    for line in doc.lines:
+        if line.startswith("#"):
+            if line.strip() == heading:
+                inside = True
+                continue
+            if inside and len(line) - len(line.lstrip("#")) <= depth:
+                break
+        if inside:
+            out.append(line)
+    return out
+
+
+def section_bullets(doc: "Document", heading: str) -> list[str]:
+    """Every top-level bullet under `heading`, without its marker."""
+    return [line[2:].strip() for line in _section_lines(doc, heading) if line.startswith("- ")]
+
+
+def section_quotes(doc: "Document", heading: str) -> list[str]:
+    """Every block-quoted line under `heading`, without its marker."""
+    return [line[2:].strip() for line in _section_lines(doc, heading) if line.startswith("> ")]
 
 
 # ---------------------------------------------------------------------------
@@ -1506,38 +1534,27 @@ class Checker:
             f"fmt gives {fmt(float(example), 1)}, half-up gives {half_up}",
         )
 
-    # -- The forefront-rule table, reproduced from CLAUDE.md ---------------
-    def check_forefront_table(self) -> None:
-        """§1's two bullets claim to reproduce CLAUDE.md's table verbatim."""
+    # -- The forefront-rule bullets, quoted from CLAUDE.md -----------------
+    def check_forefront_quotes(self) -> None:
+        """§1 quotes CLAUDE.md's forefront bullets verbatim; drift must fail."""
         source = self.doc.path.parent / FOREFRONT_SOURCE
         if not source.exists():
             source = DEFAULT_DOC.parent / FOREFRONT_SOURCE
         self.true(f"{FOREFRONT_SOURCE} is readable", source.exists(), f"no {source}")
         if not source.exists():
             return
-        rows = Document(source).table_after(FOREFRONT_HEADER)
-        header, body = rows[0], rows[1:]
-        self.equal(
-            f"{FOREFRONT_SOURCE} forefront table header",
-            "Allowed to AI-written opponent-model code | Reserved to the engine",
-            " | ".join(header),
-        )
-        columns = {
-            "Allowed to AI-written opponent-model code": [row[0] for row in body],
-            "Reserved to the engine": [row[1] for row in body],
-        }
-        m = re.search(
-            r"\*\*Allowed to AI-written opponent-model code:\*\* (.+?) "
-            r"- \*\*Reserved to the engine:\*\* (.+?) \*\*Live field",
-            self.doc.flat,
-        )
-        self.true("§1 reproduces both forefront columns as bullets", m is not None, "bullets not found")
-        if m is None:
-            return
-        for (label, expected), text in zip(columns.items(), m.groups()):
-            items = [clean_cell(part) for part in text.rstrip(".").split("; ")]
-            self.equal(f"§1 reproduces {FOREFRONT_SOURCE}'s '{label}' column verbatim",
-                       " | ".join(expected), " | ".join(items))
+        rule = section_bullets(Document(source), FOREFRONT_SECTION)
+        self.true(f"{FOREFRONT_SOURCE} states its forefront rule as bullets", bool(rule), "no bullets")
+        quotes = section_quotes(self.doc, FOREFRONT_QUOTED_IN)
+        self.true("§1 quotes the forefront rule", len(quotes) >= 3, f"{len(quotes)} quoted lines")
+        for quote in quotes:
+            opener = " ".join(quote.split()[:4])
+            match = next((bullet for bullet in rule if bullet.startswith(opener)), None)
+            self.equal(
+                f"§1 quotes {FOREFRONT_SOURCE}'s '{opener}...' bullet verbatim",
+                match if match is not None else f"no {FOREFRONT_SOURCE} bullet opening '{opener}'",
+                quote,
+            )
 
     # -- Figures the document states in more than one place ----------------
     def check_restated_constants(self) -> None:
@@ -1787,7 +1804,7 @@ class Checker:
             ("Tier 1 solve cost arithmetic", self.check_solve_cost),
             ("operator seat priority", self.check_seat_priority),
             ("provenance table", self.check_provenance_rows),
-            ("forefront-rule table copy", self.check_forefront_table),
+            ("forefront-rule quotes", self.check_forefront_quotes),
             ("restated constants", self.check_restated_constants),
         ]
         for name, check in checks:

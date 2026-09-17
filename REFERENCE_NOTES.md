@@ -343,13 +343,14 @@ Taken piece by piece, cheapest first:
     return one number each, and the ten non-pair branches return a suited or an
     unsuited number. A 52-card deck has **169** starting hand classes
     (13 pairs + 78 suited + 78 unsuited). Writing that enumeration ourselves is
-    allowed by `CLAUDE.md:18`, the forefront-rule bullet that puts card
-    combinatorics - the 169 preflop classes, suit isomorphisms, deck
-    enumeration - on our side of the line and leaves ranking, valuing and
-    choosing with the engine. Deciding "which of the 169 classes is this hand"
-    only sorts hands into named boxes; it never says which box is better. It
-    must still be generated and tested against the evaluator, not typed out by
-    hand or by a model.
+    allowed by `CLAUDE.md`'s forefront rule, under "What may be coded", which
+    names card combinatorics - the 169 preflop classes, suit isomorphisms, deck
+    enumeration - as ours to write and leaves ranking or valuing a hand to the
+    engine. Deciding "which of the 169 classes is this hand" only sorts hands
+    into named boxes; it never says which box is better. It must still be
+    generated and tested against the evaluator, and its content must never come
+    from stored model output, which the same rule forbids under "What may not
+    be coded".
 
 ### The blocker
 

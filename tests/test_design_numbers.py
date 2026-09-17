@@ -54,15 +54,15 @@ def test_checker_reports_a_mismatch(tmp_path):
     assert "break-even fold frequency" in result.stdout
 
 
-def test_checker_reports_a_drifted_forefront_table(tmp_path):
-    """§1 claims to reproduce CLAUDE.md's table verbatim; drift must fail."""
+def test_checker_reports_a_drifted_forefront_quote(tmp_path):
+    """§1 claims to quote CLAUDE.md's forefront bullets verbatim; drift must fail."""
     text = DOCUMENT.read_text(encoding="utf-8")
     broken = text.replace(
-        "Sorting an opponent into a bucket;",
-        "Sorting an opponent into a group;",
+        "> Keep every model call out of the live decision path;",
+        "> Keep most model calls out of the live decision path;",
         1,
     )
-    assert broken != text, "the forefront-rule bullet this test edits has moved"
+    assert broken != text, "the forefront-rule quote this test edits has moved"
     target = tmp_path / "OPPONENT_MODEL_DESIGN.md"
     target.write_text(broken, encoding="utf-8")
     result = run_checker(str(target))
