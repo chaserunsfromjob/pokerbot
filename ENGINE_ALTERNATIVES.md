@@ -413,10 +413,11 @@ at, in `research/engine_alternatives/raw/paired_session_2.txt`. The result is
 the one to expect: **the ratios held and the absolute speeds came out lower.**
 The chooser got 11,535 - 13,108 play-outs per `fcpa` decision and 202 - 245 per
 `fullgame` decision; OpenSpiel ran 42,541 - 48,572 complete `fcpa` hands a
-second, about 12 per cent under the quieter sitting at its worst. Every ratio
-this document argues from was at least as favourable as the figure quoted
-below: OpenSpiel over `texasholdem` on the menu 5.7 - 6.8 (quoted 5.5),
-over PokerKit 71 - 74 (quoted 64.5), over PyPokerEngine 55 - 61 (quoted 51).
+second - its slowest repeat is 11 per cent under the quieter sitting's median
+of 47,564, and its fastest is above that median. Every ratio this document
+argues from was at least as favourable as the figure quoted below: OpenSpiel
+over `texasholdem` on the menu 5.7 - 6.8 (quoted 5.5), over PokerKit 71 - 74
+(quoted 64.5), over PyPokerEngine 55 - 61 (quoted 51).
 **This is why the document argues from ratios within a sitting and not from the
 absolute speeds:** the absolute speeds move with whatever else the laptop is
 doing, and the ratios do not.
