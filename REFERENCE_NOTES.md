@@ -49,15 +49,17 @@ Plain-language note first, because two words recur throughout:
   on 2023-04-03, so it accepts no issues and no pull requests. Nothing we fix
   can ever go upstream, and there will be no upstream fixes to re-apply: every
   patch in `vendor/poker_ai/` is permanently ours to carry.
-- Licence: GPL-3.0. The full text is `vendor/poker_ai/LICENSE`, where it sits
-  with the code it covers; there is deliberately no `LICENSE` at the repository
-  root, because a licence file at the root of a repository conventionally reads
-  as a grant of *this* project to whoever holds it, and this project grants
-  nothing to anyone. GPL-3.0's obligations - publishing source, licensing
-  derived work alike - are triggered by *distributing* the software, not by
-  using it. The operator's position, recorded under "Licence" in `CLAUDE.md`, is
-  that pokerbot is never distributed, so those obligations do not bite; that
-  decision reopens before the code is ever handed to anyone.
+- Licence: GPL-3.0. The engine's own copy of the full text is
+  `vendor/poker_ai/LICENSE`, where it sits with the code it covers, and there
+  is a second copy at `LICENSE` in the repository root, which puts the whole
+  of pokerbot under the same licence. GPL-3.0's obligations - publishing
+  source, licensing derived work alike - are triggered by *distributing* the
+  software, and publishing a repository is distributing it, so they apply to
+  this project and are met by its source being public. The operator's
+  position, recorded under "Licence" in `CLAUDE.md`, is that pokerbot is
+  public at `github.com/chaserunsfromjob/pokerbot` so classmates can
+  collaborate on it; closing the repository, or moving to another licence,
+  goes to the operator first.
 - Location in this repo: `vendor/poker_ai/`, as a **plain copy of the source
   tree**, not a git submodule.
 

@@ -115,10 +115,18 @@ Each resource gets a mark on five criteria:
 | b | True no-limit bet sizing | yes | abstracted / few sizes | limit or not stated |
 | c | Exploits a specific opponent by identity | built in, keyed by name | some opponent modelling, not by name | none |
 | d | Reachable in hours on **this** laptop (Apple M4, 16 GB memory), Python preferred | yes | possible with real work (other language, or a whole second computer simulated in software inside this one so that Windows programs will run — a *virtual machine*, or **VM**) | days of compute, more memory than the machine has, or a dead platform |
-| e | Fits private use (licence and price) | free and open, or affordable | paid but affordable, or copyleft that is fine for private use | closed with no purchase path |
+| e | Fits this project (licence and price) | free and GPL-3.0-compatible, or affordable | paid but affordable, or copyleft with a condition attached | incompatible with GPL-3.0, or closed with no purchase path |
 
-"Runs on macOS / Python?" is answered literally. GPL/AGPL is fine for us
-because the project is never distributed.
+"Runs on macOS / Python?" is answered literally. The licence half of (e) is
+judged against what this project now is: published on GitHub for anyone to
+read, and itself under the GNU General Public License version 3 — *GPL-3.0*,
+whose full text is `LICENSE` at the root. So code under GPL-3.0, or under a
+licence that can be combined with it, is fine, because publishing our own
+source is exactly what such a licence asks of us. A paid tool is still fine
+for the operator's own use: buying one and running it is not distributing it.
+The two to watch are the Affero variant — *AGPL* — whose extra clause is set
+off by letting people reach the software over a network, and any licence that
+cannot be combined with GPL-3.0 at all.
 
 Two rules about the marks themselves:
 
@@ -457,7 +465,8 @@ Two rules about the marks themselves:
 - Ratings: a ✗ (2 only) · b ~ (its README: "hand abstraction technique and
   action abstraction", i.e. a fixed bet menu) · c ✗ · d ? (both the Mac build
   and whether the blueprint download still serves are unverified; the training
-  it replaces took 48 cores for 3-4 days) · e ✓.
+  it replaces took 48 cores for 3-4 days) · e ~ (AGPL-3.0: combinable with
+  GPL-3.0, but its network clause travels with it).
 
 ### 3.9 robopoker (krukah)
 
