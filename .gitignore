@@ -1,5 +1,10 @@
 .venv/
 __pycache__/
-*.pyc
+*.py[cod]
 .pytest_cache/
 .venv-engines/
+*.egg-info/
+# Clustering / training artefacts - regenerate them, never commit them.
+*.joblib
+card_info_lut.joblib
+centroids.joblib
