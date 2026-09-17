@@ -68,7 +68,7 @@ def build_game(num_players):
     return pyspiel.load_game("universal_poker", params), params
 
 
-def run_cell(algo, num_players, budget_s, seed=1):
+def run_cell(algo, num_players, budget_s, seed=1, skip_nashconv=False, out=None):
     import pyspiel
 
     game, params = build_game(num_players)
@@ -98,6 +98,36 @@ def run_cell(algo, num_players, budget_s, seed=1):
     load_end = load_avg_1min()
     rss_mb = resource.getrusage(resource.RUSAGE_SELF).ru_maxrss / 1e6
 
+    base = {
+        "algo": algo,
+        "players": num_players,
+        "deck": CONFIGS[num_players]["numRanks"] * CONFIGS[num_players]["numSuits"],
+        "stack": CONFIGS[num_players]["stack"],
+        "params": params,
+        "budget_s": budget_s,
+        "seed": seed,
+        "iterations": iters,
+        "solve_s": round(solve_s, 2),
+        "iters_per_s": round(iters / solve_s, 3),
+        "peak_rss_mb": round(rss_mb, 1),
+        "load_1min_start": load_start,
+        "load_1min_end": load_end,
+        "load_over_4": max(load_start, load_end) > LOAD_ALARM,
+        "finished_utc": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+    }
+
+    # The solve figures are written out BEFORE NashConv is attempted. NashConv walks the
+    # whole tree and can cost far more memory than the solve did, so a process killed
+    # during it would otherwise look exactly like a solve that failed. They are different
+    # findings and must not be confused.
+    if skip_nashconv:
+        base["nash_conv"] = None
+        base["nash_conv_error"] = "skipped (--skip-nashconv)"
+        return base
+    if out:
+        with open(out, "a") as fh:
+            fh.write(json.dumps(dict(base, phase="solve_only")) + "\n")
+
     # NashConv: the total each player could gain by unilaterally best-responding.
     # Zero means a Nash equilibrium of the abstract game. OpenSpiel computes it by
     # walking the whole tree, so it can cost more than the solve itself.
@@ -110,26 +140,12 @@ def run_cell(algo, num_players, budget_s, seed=1):
         nc_err = "%s: %s" % (type(exc).__name__, str(exc)[:200])
         nc_s = time.time() - t1
 
-    return {
-        "algo": algo,
-        "players": num_players,
-        "deck": CONFIGS[num_players]["numRanks"] * CONFIGS[num_players]["numSuits"],
-        "stack": CONFIGS[num_players]["stack"],
-        "params": params,
-        "budget_s": budget_s,
-        "seed": seed,
-        "iterations": iters,
-        "solve_s": round(solve_s, 2),
-        "iters_per_s": round(iters / solve_s, 3),
-        "nash_conv": nc,
-        "nash_conv_s": round(nc_s, 2) if nc_s is not None else None,
-        "nash_conv_error": nc_err,
-        "peak_rss_mb": round(rss_mb, 1),
-        "load_1min_start": load_start,
-        "load_1min_end": load_end,
-        "load_over_4": max(load_start, load_end) > LOAD_ALARM,
-        "finished_utc": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
-    }
+    base["nash_conv"] = nc
+    base["nash_conv_s"] = round(nc_s, 2) if nc_s is not None else None
+    base["nash_conv_error"] = nc_err
+    base["peak_rss_mb"] = round(
+        resource.getrusage(resource.RUSAGE_SELF).ru_maxrss / 1e6, 1)
+    return base
 
 
 def main():
@@ -140,6 +156,8 @@ def main():
     ap.add_argument("--seed", type=int, default=1)
     ap.add_argument("--all", action="store_true", help="sweep every algo x table size")
     ap.add_argument("--out", default="research/blueprint_cfr_results.jsonl")
+    ap.add_argument("--skip-nashconv", action="store_true",
+                    help="measure the solve only; do not attempt NashConv")
     args = ap.parse_args()
 
     if args.all:
@@ -164,7 +182,8 @@ def main():
 
     if not args.algo or not args.players:
         ap.error("give --algo and --players, or --all")
-    rec = run_cell(args.algo, args.players, args.budget, args.seed)
+    rec = run_cell(args.algo, args.players, args.budget, args.seed,
+                   skip_nashconv=args.skip_nashconv, out=args.out)
     with open(args.out, "a") as fh:
         fh.write(json.dumps(rec) + "\n")
     print(json.dumps(rec, indent=2), flush=True)
