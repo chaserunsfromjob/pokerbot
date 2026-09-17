@@ -127,8 +127,8 @@ them rests on. What it changes is each recommendation's stated dependency:
   [R12](#r12--add-v6-the-bots-own-sizing-distribution-extension-6)). What they
   wait on is the reconciliation of four survey documents —
   `ENGINE_ALTERNATIVES.md`, `RESOURCES_BOTS.md`, `RESOURCES_SOLVERS.md` and
-  `RESOURCES_EXPLOITATION.md`, which landed on the trunk branch on 2026-09-17 —
-  and the move to the engine that reconciliation is made against.
+  `RESOURCES_EXPLOITATION.md` — and the move to the engine that reconciliation
+  is made against.
   `REFERENCE_NOTES.md` is not one of those four: it is the survey of the engine
   being replaced, already on trunk, and it is where the answers above come from
   rather than an input to the choice. This document is written so that those
@@ -137,14 +137,24 @@ them rests on. What it changes is each recommendation's stated dependency:
 
 **The engine road is now named, and this is the operator's recorded decision,
 not a fact about the repository.** On 2026-09-16 the operator decided to drop
-the short-deck engine as the base: the engine road is OpenSpiel's
-`universal_poker`, `fedden/poker_ai` stays a reference only, and
-`dickreuter/Poker` is the reference for reading the table, never for play. What
-stays open is who chooses the action on top of the engine — the carve-out from
-the forefront rule, which the operator has not granted. That decision is
-written into `CLAUDE.md` on branch `worker/114e5b3f5b1b` and has not reached
-the trunk branch, so nothing below is rewritten on the strength of it and no
-recommendation changes. It names what the "waiting" above is waiting on.
+the short-deck engine as the base. The road now runs through a published
+collection of ready-made implementations of many different games, of which the
+configurable poker one is the piece this project would use — OpenSpiel's
+`universal_poker`. The engine the repository already has, called plain
+`poker_ai` above and "the vendored `poker_ai`" in the questions at the end,
+stays a reference only; it is written `fedden/poker_ai` wherever its author has
+to be named, which is how a code-sharing site writes a project, author first and
+project second. Written the same way, `dickreuter/Poker` is a third program
+again, and it is the reference for reading the table, never for play. What stays
+open is who chooses the action on top of the engine — the carve-out from the
+forefront rule, which the operator has not granted. That decision is written into
+`CLAUDE.md` on branch `worker/114e5b3f5b1b`, which has not been pushed and so
+exists only on the machine it was made on. The durable record of it is a dated,
+saved change in the separate `heater` repository where the operator's decisions
+are kept — commit `fb353c6`, 2026-09-16. Nothing about it has reached this
+project's trunk branch, so the two places below that name it do so as the same
+recorded decision, and no recommendation changes. It names what the "waiting"
+above is waiting on.
 
 **One consequence worth stating on its own: E7, E8 and E9 in
 [R10](#r10--add-three-engine-requirements-extension-opponent_model_designmd-engine-requirements)
@@ -179,14 +189,14 @@ three-way after the flop; a three-handed table very often plays heads-up after
 the flop. **Seat count determines the *distribution* of field sizes; it does not
 determine the field size.** Every consequence below sorts into one of the two.
 
-### 1.2 Why VPIP is not comparable across seat counts
+### 1.2 Why the voluntarily-put-money-in-pot rate (VPIP) is not comparable across seat counts
 
-The argument is structural and needs no population data, which matters because
-`OPPONENT_MODEL_DESIGN.md` deliberately refuses to cite table-size-specific
-population averages for how often a player puts money in by choice rather than
-because a blind forced them to — written out, **voluntarily put money in pot**,
-and written `VPIP` everywhere below — and this document keeps that refusal
-([Sources](#sources), "Deliberately not cited").
+How often a player puts money in by choice, rather than because a blind forced
+them to, is written out **voluntarily put money in pot** and written `VPIP`
+everywhere below. The argument here is structural and needs no population data,
+which matters because `OPPONENT_MODEL_DESIGN.md` deliberately refuses to cite
+table-size-specific population averages for that rate, and this document keeps
+that refusal ([Sources](#sources), "Deliberately not cited").
 
 Preflop, action starts to the left of the big blind and ends on the big blind.
 So at a table of `n` players, the seats in preflop action order have exactly
@@ -311,7 +321,9 @@ what it should be called.
 The same argument applies with different weights to every stat whose opportunity
 definition involves position — `pfr`, `limp`, `open_raise`, `three_bet`,
 `fold_to_steal` — and applies not at all to stats defined on a street-local
-situation, such as `fold_to_cbet` or `wsd`. [§3](#3-recommended-reconciliation-with-opponent_model_designmd)
+situation, such as `fold_to_cbet` or the share of the hands a player took to a
+showdown that they won money in — **won at showdown**, written `wsd`.
+[§3](#3-recommended-reconciliation-with-opponent_model_designmd)
 turns that split into a per-stat recommendation, because it is what keeps the
 fragmentation cost in [§1.6](#16-what-banding-costs) affordable.
 
@@ -345,7 +357,9 @@ These are not adjustments. They are definitions in `OPPONENT_MODEL_DESIGN.md`
 §4.2 that produce wrong or empty counters at small seat counts, and a coding task
 implementing them literally would silently corrupt the affected stats.
 
-**`open_raise` is keyed on `EP`/`MP`/`LP`/`SB`/`BB`.** At `n = 3` the only
+**`open_raise` is keyed on which named group of seats the player is sitting in —
+early position, middle position, late position, small blind and big blind,
+written `EP`, `MP`, `LP`, `SB` and `BB` here and below.** At `n = 3` the only
 non-blind seat is the button, so `EP` and `MP` are empty for every hand and `LP`
 absorbs all of it; at `n = 2` there is no non-blind seat at all, because the
 small blind is the button. The context key is not defined below about six
@@ -354,7 +368,7 @@ position" at 6-max is a seat with three players behind and at 9-max is a seat
 with six. **The causally correct key is the number of players still to act behind
 the player preflop**, which is defined at every seat count, means the same thing
 at every seat count, and — by the `1/n` observation in
-[§1.2](#12-why-vpip-is-not-comparable-across-seat-counts) — takes each of its
+[§1.2](#12-why-the-voluntarily-put-money-in-pot-rate-vpip-is-not-comparable-across-seat-counts) — takes each of its
 values exactly once per orbit. Keying on it lets position-dependent stats pool
 *across* seat counts legitimately instead of fragmenting, which is the cheapest
 available answer to [§1.6](#16-what-banding-costs).
@@ -375,15 +389,16 @@ three different things across the range the operator has now required.
 This one weakens a threshold `OPPONENT_MODEL_DESIGN.md` currently leans on, and
 is worth stating because it changes how much trust the bootstrap deserves.
 
+One of the two thresholds below turns on how hard a player pushes, measured as
+their bets and raises divided by their calls: `OPPONENT_MODEL_DESIGN.md` §4.2
+defines that ratio as the **aggression factor** and writes it `AF`.
 `VPIP_SPLIT = 0.28` and `AFQ_SPLIT = 0.50` descend from the "folds ≥ 72% of hands
 is tight, AF > 1 is aggressive" thresholds that [Teofilo &
 Reis 2011](#s-teofilo2011) — which *was* retrieved and read — reports at its §3,
 citing two works it took them from: [Billings 2006](#s-billings2006)
 (**not retrieved by either survey**) for the numeric classification and
 [Sklansky](#s-sklansky) (**also not retrieved**) for the tight/loose,
-passive/aggressive taxonomy behind it. `AF` there is the **aggression factor**,
-which `OPPONENT_MODEL_DESIGN.md` §4.2 defines as a player's bets and raises
-divided by their calls. That is the attribution
+passive/aggressive taxonomy behind it. That is the attribution
 `OPPONENT_MODEL_DESIGN.md` makes at its §2.2 and in its Sources, and this
 document follows it. The
 design document already flags two problems with them: they are cited at second
@@ -436,9 +451,9 @@ is as trustworthy as the unstratified stat was.
 
 Applied to two of Table C's rows. **Those row values are illustrative in the
 source table and stay illustrative here**; what is real is the multiplier. The
-`±5pp` and `±10pp` in the first column are interval half-widths in **percentage
-points**, `pp` here and everywhere below — a gap between two percentages, not a
-percentage of a percentage.
+first column's `±5pp` and `±10pp` are interval half-widths measured in
+**percentage points** — a gap between two percentages, not a percentage of a
+percentage — written `pp` here and everywhere below.
 Computed and checked by `tools/check_table_size_numbers.py`, 2026-09-15.
 
 | Stat | Table C hands (illustrative) | × 4 bands | × 4 size buckets ([§2.5](#25-what-sizing-buckets-cost)) | × both |
@@ -500,13 +515,13 @@ now-required range:
 
 The recommendation that follows is a single one, and it is cheap: **the deviation
 cap in §5.2 should be a function of seat count**, tightest at `n = 2` and loosest
-at large `n`. It reuses machinery already specified — the `Pmax` of **DBR**,
-the data-biased response of [Johanson & Bowling 2009](#s-johanson2009), who
-describe it as setting "a tradeoff between" exploitation and exploitability —
-by making one constant into a small table. `DBR` here and `DBBR` in
-[§2.2](#22-sizing-as-a-signal-about-the-opponent) are two different methods by
-two different sets of authors, not one name spelt two ways: DBBR is the
-deviation-based best response of Ganzfried and Sandholm.
+at large `n`. It reuses machinery already specified — the `Pmax` of the
+**data-biased response** of [Johanson & Bowling 2009](#s-johanson2009), who
+describe it as setting "a tradeoff between" exploitation and exploitability and
+who write it `DBR` — by making one constant into a small table. `DBR` here and
+`DBBR` in [§2.2](#22-sizing-as-a-signal-about-the-opponent) are two different
+methods by two different sets of authors, not one name spelt two ways: DBBR is
+the deviation-based best response of Ganzfried and Sandholm.
 
 Note also that the two solved-poker results sit on opposite sides of this line:
 heads-up limit hold'em was solved to a known approximation
@@ -564,14 +579,15 @@ form, all computable from observed actions alone and none requiring a showdown.
 **(a) `bet_size_dist[street, role]` — a distribution, not a rate.** For each
 street and each role (bettor first-in, raiser, three-bettor), the counts of the
 opponent's bets falling in each size bucket. This does not fit the binomial
-shrinkage in §4.3, but it fits its source directly: Equation 1 of **DBBR**, the
-deviation-based best response of
-[Ganzfried & Sandholm 2011](#s-ganzfried2011) §4.2, is already stated over an
-action set `a` at a public history, which **the paper** indexes with `n` — the
-paper's own letter for its own quantity, and not this document's seat count. It
-is a Dirichlet posterior over a categorical outcome. Making `BASELINE[stat]` a
-*vector* over size buckets and applying the identical equation is the natural
-extension and requires no new mechanism, only a vector-valued baseline.
+shrinkage in §4.3, but it fits its source directly: Equation 1 of the
+**deviation-based best response** of
+[Ganzfried & Sandholm 2011](#s-ganzfried2011) §4.2, written `DBBR`, is already
+stated over an action set `a` at a public history, which **the paper** indexes
+with `n` — the paper's own letter for its own quantity, and not this document's
+seat count. It is a Dirichlet posterior over a categorical outcome. Making
+`BASELINE[stat]` a *vector* over size buckets and applying the identical
+equation is the natural extension and requires no new mechanism, only a
+vector-valued baseline.
 `confidence = n/(n+s)` is unchanged, where that `n` is **the design document's
 opportunity count** — a third use of the letter again, and again not the seat
 count.
@@ -873,7 +889,7 @@ Grounding, and the exact weight it carries:
 cross-band aggregate shift **bound** exceeds both the `0.28` split and the `0.15`
 margin six of the seven §4.4 flags use, so a shift that matters is admitted,
 though a bound does not show one occurs
-([§1.2](#12-why-vpip-is-not-comparable-across-seat-counts) names the
+([§1.2](#12-why-the-voluntarily-put-money-in-pot-rate-vpip-is-not-comparable-across-seat-counts) names the
 Tier 0 measurement that would) — and
 [§1.5](#15-the-published-thresholds-are-themselves-table-size-mixtures), where the
 literature threshold turns out to be a mixture over an unknown set of seat counts
@@ -986,11 +1002,12 @@ See [Q4](#4-questions-for-the-operator).
 
 ### R7 — Cross-tabulate V5's bluff-frequency report by seat count. *(Extension. §6.)*
 
-**What exists today.** V5 is an exploitation A/B — `S_BASE` against the
-counter-strategy by hand parity, compared in bb/100, **big blinds won per 100
-hands**, the standard way of stating a win rate — and §6 gives it **one extra
-report** on top of that comparison: *bluff frequency broken down by the number of
-live opponents*. That index is field size `m`, which is the correct one
+**What exists today.** V5 runs two versions side by side and compares them for
+exploitation, the arrangement usually written **A/B** — `S_BASE` against the
+counter-strategy by hand parity, compared in **big blinds won per 100 hands**,
+the standard way of stating a win rate, written `bb/100`. On top of that
+comparison §6 gives it **one extra report**: *bluff frequency broken down by the
+number of live opponents*. That index is field size `m`, which is the correct one
 ([§1.3](#13-table-size-versus-field-size-where-the-multiway-arithmetic-actually-attaches)).
 The bb/100 comparison is not what this item touches; the extra report is.
 
@@ -1078,9 +1095,9 @@ chosen size at all and E8 has nothing to translate between (:523-542); and the
 [§1.0](#10-the-engine-this-project-has-today-already-answers-two-of-these-questions-and-answers-them-no)
 sets out what that does and does not change. These three rows are selection
 criteria to put to OpenSpiel `universal_poker`, the engine road the operator's
-recorded decision names, as the reconciliation of the four survey documents —
-`ENGINE_ALTERNATIVES.md`, `RESOURCES_BOTS.md`, `RESOURCES_SOLVERS.md` and
-`RESOURCES_EXPLOITATION.md` — is made against it.
+recorded decision names. That is the engine the reconciliation of the four
+survey documents — `ENGINE_ALTERNATIVES.md`, `RESOURCES_BOTS.md`,
+`RESOURCES_SOLVERS.md` and `RESOURCES_EXPLOITATION.md` — is made against.
 
 E7 and E9 are answerable without writing any code and should be answered before
 the Tier 1 solve budget in R6 is committed to. **Each of the three carries its own
@@ -1391,7 +1408,7 @@ strategy. Same use and same caveat as above.
 Malmuth, *Hold'em Poker for Advanced Players*. Full-ring starting requirements
 presented as a table indexed by position — the strategy-literature grounding for
 the position argument in
-[§1.2](#12-why-vpip-is-not-comparable-across-seat-counts). The *arithmetic* of
+[§1.2](#12-why-the-voluntarily-put-money-in-pot-rate-vpip-is-not-comparable-across-seat-counts). The *arithmetic* of
 [Tables 1–3](#table-1-what-seat-count-mechanically-fixes) is derived here and
 does not rest on this citation.
 
@@ -1404,7 +1421,7 @@ document keeps that exclusion and extends it**: the widely-circulated
 table-size-specific norms — "full ring VPIP is such-and-such, 6-max is
 such-and-such, heads-up is such-and-such" — are exactly the same kind of
 unverifiable folklore and **no such figure appears anywhere above**. That is why
-[§1.2](#12-why-vpip-is-not-comparable-across-seat-counts) argues from positional
+[§1.2](#12-why-the-voluntarily-put-money-in-pot-rate-vpip-is-not-comparable-across-seat-counts) argues from positional
 weights, which are derivable, rather than from norms, which are not, and why R2
 bands the bot's own measured baseline instead of hardcoding one per band.
 
