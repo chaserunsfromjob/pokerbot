@@ -130,9 +130,10 @@ than two players, so it keeps a door open that the others close.
 advance - subject to two things this document cannot settle by itself:**
 
 1. A **ruling on the forefront rule.** The thing that chooses the action would
-   be code we wrote, which is what `CLAUDE.md:13-15` exists to prevent. See
-   "Does this contradict the forefront rule?" at the end. Until that is
-   recorded, the chooser measured here stays a research artefact.
+   be code we wrote, which is what `CLAUDE.md`'s "The forefront rule" section
+   exists to prevent. See "Does this contradict the forefront rule?" at the
+   end. Until that is recorded, the chooser measured here stays a research
+   artefact.
 2. **Comparison against adopting an existing bot** that chooses the action with
    its own code and needs no such ruling - `RESOURCES_BOTS.md` (under review)
    shortlists one that covers 2 to 6 players.
@@ -471,15 +472,16 @@ candidate's newest release is from 2024 or earlier. PokerKit is too
 slow to think with, but it is well suited to replaying a hand we captured off a
 screen and confirming the rules were applied exactly right.
 
-That is the same role `treys` plays for hand ranking, and the bullet that puts
-`treys` there is **`CLAUDE.md:17`**: it names one external evaluator -
-"currently `treys`" - as the ground-truth reference and requires that it stay
-out of the bot's decision path. Adding a second borrowed engine as a reference
-is the same kind of choice, about a different job, and `CLAUDE.md:17` does not
-currently record it. **This document does not make that choice.** It goes to the
-same reconciliation of `ENGINE_ALTERNATIVES.md`, `RESOURCES_BOTS.md` and
-`RESOURCES_SOLVERS.md` as the rule question at the end, where the operator
-decides whether to record it and in which words.
+That is the same role `treys` plays for hand ranking, and what puts `treys`
+there is the ground-truth-evaluator bullet of `CLAUDE.md`'s **"The forefront
+rule"** section: it names one external evaluator - "currently `treys`" - as the
+ground-truth reference and requires that it stay out of the bot's decision
+path. Adding a second borrowed engine as a reference is the same kind of
+choice, about a different job, and that bullet does not currently record it.
+**This document does not make that choice.** It goes to the same reconciliation
+of `ENGINE_ALTERNATIVES.md`, `RESOURCES_BOTS.md` and `RESOURCES_SOLVERS.md` as
+the rule question at the end, where the operator decides whether to record it
+and in which words.
 
 ---
 
@@ -820,11 +822,12 @@ research-grade rewrite after it. **Recommend stopping here.**
    parameters - a day or two of plumbing with no poker judgment in it, which
    `CLAUDE.md`'s forefront rule permits us to write.
 5. **A ruling on the forefront rule.** Items 2 and 3 are the parts that choose
-   the action and guess the cards, and `CLAUDE.md:13-15` is what says whether
-   we may write them at all. This is not costed in days because it is not
-   coding work; it is a decision, and the section "Does this contradict the
-   forefront rule?" below sets out what has to be decided and where. **Until
-   it is made, items 2 and 3 stay research artefacts.**
+   the action and guess the cards, and `CLAUDE.md`'s "The forefront rule"
+   section is what says whether we may write them at all. This is not costed
+   in days because it is not coding work; it is a decision, and the section
+   "Does this contradict the forefront rule?" below sets out what has to be
+   decided and where. **Until it is made, items 2 and 3 stay research
+   artefacts.**
 
 **Total offline computing: zero.** The remaining coding work is integration,
 which is exactly the category `CLAUDE.md` says is ours; the chooser is not.
@@ -928,12 +931,13 @@ comparable hook: it is a fixed table, and adapting it means re-solving.
 
 An earlier draft of this document said "nothing here contradicts the forefront
 rule". That settled by assertion the one thing that most needs deciding.
-`CLAUDE.md:13-15` says never to let an AI model decide a poker action, and to
-reject a change that adds hand-rolled decision logic in place of the vendored
-engine. **A rollout loop we wrote, taking the highest average chip result, is
-logic that chooses the action.** That it was typed by hand rather than produced
-by a model does not exempt it: line 15 is about hand-rolled decision logic in
-its own right.
+`CLAUDE.md`'s "The forefront rule" section says never to let an AI model decide
+a poker action, and to reject a change that adds hand-rolled decision logic in
+place of the vendored engine. **A rollout loop we wrote, taking the highest
+average chip result, is logic that chooses the action.** That it was typed by
+hand rather than produced by a model does not exempt it: the bullet rejecting
+hand-rolled decision logic in place of the vendored engine is about hand-rolled
+logic in its own right, whoever or whatever typed it.
 
 Split precisely, for the bot measured here:
 
