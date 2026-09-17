@@ -52,9 +52,19 @@ those papers were not retrieved.
   ([BS17] Table 4). One missing size, best published mapping, still an order of
   magnitude worse than not needing the mapping.
 - **Finer is not always better.** Kuhn poker's unique equilibrium bet is 0.4 pot,
-  yet every mapping was *more* exploitable with {fold, check, 0.4 pot, all-in}
-  than with {fold, check, pot, all-in} — deterministic arithmetic 0.301 → 3.714
-  at stack 100 ([GS13] Tables 3–4). Copying human sizes is not a safe method.
+  yet at stacks of 20 pots and up every mapping was *more* exploitable with
+  {fold, check, 0.4 pot, all-in} than with {fold, check, pot, all-in} —
+  deterministic arithmetic 0.301 → 3.714 at stack 100 ([GS13] Tables 3–4; at
+  stacks of 1 and 3 every mapping improved). Copying human sizes is not a safe
+  method.
+- **Against real opponents the order changed.** [GS13] §10, Table 7: Tartanian5
+  with only the mapping varied, against every other 2012 ACPC no-limit entry:
+  "Det-Arith performed best using the metric of average overall performance,
+  despite the fact that it was by far the most exploitable in simplified games.
+  Det-psHar, Rand-Arith, and Rand-psHar followed closely behind. The three
+  geometric mappings performed significantly worse." The paper's reason: no
+  opponent was trying to exploit bet sizing. Rand-psHar stays in the leading
+  group and the geometric mappings stay out, so the recommendation holds.
 
 ## 3. What the strong bots did
 
@@ -64,7 +74,7 @@ those papers were not retrieved.
 - **Pluribus** (six-player) "only considers a few different bet sizes at any
   given decision point. The exact number of bets it considers varies between one
   and 14 depending on the situation." Off-tree bets get real-time search; only
-  preflop bets slightly off the tree are "rounded to a nearby on-tree size (using
+  preflop bets slightly off the tree are rounded "to a nearby on-tree size (using
   the pseudoharmonic mapping)" ([Pluribus] pp. 2–4). Blueprint: 12,400 CPU
   core-hours, 8 days, 64 cores. It "plays a fixed strategy that does not adapt to
   the observed tendencies of the opponents" (p. 2).
@@ -82,7 +92,9 @@ those papers were not retrieved.
    rung named "pot" is a different chip amount at each seat count and after each
    extra caller. Hence pot fractions, always: `research/action_translation.py`
    pins the trap — pseudo-harmonic on raw chips at ten times scale returns 0.44
-   where the pot-fraction answer for the same spot is 0.578947.
+   where the pot-fraction answer for the same spot is 0.578947. [GS13] §8 says
+   all mappings satisfy scale invariance; that holds only under its §5
+   convention that the pot is 1, which is why our code takes pot fractions.
 2. **Price against strength.** Calling `s` pot in an `n`-way pot where the other
    `n−1` call needs pot share `s/(1+ns)`: at `s = 0.37`, 21.26% with one caller,
    17.54% with two. The price improves as the pot crowds while the hand needed
