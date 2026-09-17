@@ -18,6 +18,11 @@ ORDER = ["cfr", "cfr_plus", "es_mccfr", "os_mccfr"]
 
 def main(path="research/blueprint_cfr_results.jsonl"):
     rows = [json.loads(line) for line in open(path) if line.strip()]
+    # Skip the interim "solve_only" records and the --skip-nashconv runs; this table
+    # is the full-budget sweep. The six-handed solve-only figures get their own table.
+    rows = [r for r in rows
+            if r.get("phase") != "solve_only"
+            and r.get("nash_conv_error") != "skipped (--skip-nashconv)"]
     by = {(r["algo"], r["players"]): r for r in rows}
 
     print("| Method | Seats | Iterations in 180 s | Iterations / second "
@@ -31,9 +36,9 @@ def main(path="research/blueprint_cfr_results.jsonl"):
                 continue
             if r.get("crashed_exit_code") is not None:
                 code = r["crashed_exit_code"]
-                why = ("**killed by the operating system** (signal 9)"
+                why = ("solved, then **killed during the NashConv measurement** (signal 9)"
                        if code == -9 else "**crashed** (exit %s)" % code)
-                print("| %s | %d | %s | - | - | - | exhausted | - -> %s | %s |" % (
+                print("| %s | %d | %s | see solve-only table | not measurable here | - | - | - -> %s | %s |" % (
                     NAMES[algo], players, why, r.get("load_1min_end"),
                     "yes" if (r.get("load_1min_end") or 0) > 4.0 else "no"))
                 continue

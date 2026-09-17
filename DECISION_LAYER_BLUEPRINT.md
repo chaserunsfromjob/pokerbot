@@ -191,7 +191,95 @@ across **7,670,880 game states**, took 37.2 seconds merely to *list*, and used
 six-handed no-limit hold'em, 52 cards, 200-chip stacks, every bet size, is
 larger than this by a factor with well over a hundred zeros in it.
 
-<!-- MEASUREMENT_TABLE -->
+| Method | Seats | Iterations in 180 s | Iterations / second | NashConv reached | Time to measure NashConv | Peak memory | Load (start -> end) | Over 4.0? |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| Vanilla CFR | 2 | 67,864 | 377 | 7.92587e-05 | 0.02 s | 28 MB | 3.81 -> 4.38 | **yes** |
+| Vanilla CFR | 3 | 1,134 | 6 | 0.0105112 | 0.99 s | 29 MB | 4.38 -> 5.69 | **yes** |
+| Vanilla CFR | 6 | solved, then **killed during the NashConv measurement** (signal 9) | see solve-only table | not measurable here | - | - | - -> 5.07 | yes |
+| CFR+ | 2 | 77,832 | 432 | 4.4234e-06 | 0.01 s | 28 MB | 5.07 -> 3.11 | **yes** |
+| CFR+ | 3 | 1,317 | 7 | 0.000229915 | 0.88 s | 29 MB | 3.11 -> 3.16 | no |
+| CFR+ | 6 | solved, then **killed during the NashConv measurement** (signal 9) | see solve-only table | not measurable here | - | - | - -> 3.19 | no |
+| External-sampling MCCFR | 2 | 18,222,370 | 101,235 | 0.000525606 | 0.01 s | 28 MB | 3.19 -> 3.72 | no |
+| External-sampling MCCFR | 3 | 6,580,433 | 36,558 | 0.00764683 | 0.85 s | 29 MB | 3.72 -> 3.7 | no |
+| External-sampling MCCFR | 6 | solved, then **killed during the NashConv measurement** (signal 9) | see solve-only table | not measurable here | - | - | - -> 4.64 | yes |
+| Outcome-sampling MCCFR | 2 | 29,829,600 | 165,720 | 0.022658 | 0.01 s | 28 MB | 4.64 -> 2.85 | **yes** |
+| Outcome-sampling MCCFR | 3 | 12,198,280 | 67,768 | 0.0258964 | 0.87 s | 28 MB | 2.85 -> 4.65 | **yes** |
+| Outcome-sampling MCCFR | 6 | solved, then **killed during the NashConv measurement** (signal 9) | see solve-only table | not measurable here | - | - | - -> 3.13 | no |
+
+The six-handed rows needed a correction that is worth recording, because an
+earlier draft of this document nearly stated the opposite of the truth. Every
+six-handed cell was killed by the operating system with signal 9, which reads
+as "no method reaches six players on this laptop". That is not what happened.
+**NashConv walks the entire 7.67-million-state tree, and it is the NashConv step
+that exhausts the memory, not the solving.** Outcome-sampling MCCFR proved it:
+the measuring program was changed to write the solve figures out *before*
+attempting NashConv, and that cell then recorded 3,780,746 completed iterations
+in 33 MB before being killed in the measurement.
+
+So the six-handed cells were re-run with the measurement switched off
+(`--skip-nashconv`), which times the solve alone:
+
+| Method | Seats | Iterations in 180 s | Iterations / second | Peak memory | Load (start -> end) |
+| --- | --- | --- | --- | --- | --- |
+| Vanilla CFR | 6 | **4** | 0.018 | 45 MB | 3.54 -> 3.55 |
+| CFR+ | 6 | **3** | 0.017 | 45 MB | 3.55 -> 3.39 |
+| External-sampling MCCFR | 6 | 1,825,371 | 10,141 | 35 MB | 3.39 -> 2.68 |
+| Outcome-sampling MCCFR | 6 | 3,780,746 | 21,004 | 33 MB | 4.65 -> 2.21 |
+
+Every six-handed run above was taken with the load under 4.0 except the
+outcome-sampling one, which started at 4.65.
+
+**The practical consequence, which is not about algorithms at all: at six
+players this project cannot measure how good its own blueprint is.** Solving is
+cheap; grading is not. Any six-handed work has to be judged by playing the
+strategy against something, not by reading its exploitability off a number.
+
+## What the measurement says
+
+**One. Memory was never the problem. Time is.** Every solve in this document ran
+in under 50 MB on a 16 GiB laptop. The only thing that ran out of memory was
+checking how good the answer was. That is partly an artefact of the tiny
+abstractions used here - at realistic abstraction sizes the strategy table is
+what grows - but within this project's budget the binding constraint measured is
+the clock, not the memory.
+
+**Two. Walking the whole tree stops working between three and six seats.** Read
+vanilla CFR across its row: 67,864 complete passes in three minutes at two
+seats, 1,134 at three seats, **four** at six seats. Three more players cost a
+factor of about seventeen thousand. CFR+ is the same shape - 77,832, then 1,317,
+then three. Three passes over a game tree is not a strategy, it is barely a
+start. Neither exhaustive method is usable at a six-handed table, and the reason
+is arithmetic that no faster laptop fixes.
+
+**Three. Sampling survives the same jump almost unharmed.** External-sampling
+MCCFR does 101,235 iterations per second at two seats and still 10,141 at six -
+a factor of ten, against the exhaustive methods' factor of seventeen thousand.
+That one comparison is the whole case for the sampling family. At six seats
+external-sampling MCCFR completes about **560,000 times** as many iterations as
+vanilla CFR in the same three minutes.
+
+**Four. Where the whole tree does fit, walking it wins, and it is not close.**
+At three seats CFR+ reaches a NashConv of 0.00023, while external-sampling
+MCCFR - having done five thousand times as many iterations - reaches 0.0076,
+thirty-three times worse, and outcome sampling reaches 0.026. More iterations is
+not better play. The iteration count is the most misleading number in this
+document.
+
+**Five. Outcome sampling is dominated.** At two seats it does 165,720 iterations
+per second for a NashConv of 0.023, against external sampling's 101,235 for
+0.00053 - forty-three times worse, from more work. At three seats, 0.026 against
+0.0076. Its one remaining advantage is the highest raw iteration rate at six
+seats, and nothing measured here suggests that converts into a better blueprint.
+
+**What these numbers are not.** Single runs, 180 seconds, on a shared laptop,
+with several cells taken above the 4.0 load line and marked as such. They are
+measured on decks of seven and eight cards, in games with 256 to 47,474 decision
+points, and every NashConv is measured *inside* the toy game. Real six-handed
+no-limit hold'em is larger by more than a hundred orders of magnitude. **What
+survives that gap is the ratios, not the values.** A factor of seventeen
+thousand set against a factor of ten is a structural difference between two
+families of algorithm, and it will still be there at any size. A NashConv of
+0.00023 is a fact about an eight-card game and predicts nothing about a bot.
 
 ## The options
 
@@ -217,8 +305,9 @@ is the size of the whole tree. Card abstraction: unavoidable and ours to write.
 Action abstraction: `fcpa` or `fchpa`.
 
 **Reachable in hours here?** At the 2-handed toy it is not merely reachable, it
-is *finished* - see the table. At 6-handed it is the worst fit of all six
-options, because one iteration costs a full pass over those 7.67 million states.
+is *finished*: 67,864 complete passes in three minutes, NashConv 0.000079. At
+6-handed it manages **four** passes in three minutes, because one iteration
+costs a full walk over those 7.67 million states. Four is not a strategy.
 
 **Opponent modelling.** The Python implementation is short enough to modify, and
 the modification wanted is well defined: hold some players' strategies fixed at
@@ -248,9 +337,11 @@ build. A drop-in replacement for Option 1 - the same call, `evaluate_and_update_
 **Abstraction it needs.** Identical to Option 1. CFR+ changes how fast you
 converge, not how big a tree you can hold.
 
-**Reachable in hours here?** Same tree-size ceiling as Option 1, but it gets
-far further down the exploitability curve inside a fixed budget - that is the
-whole point of it, and the measurement above shows it.
+**Reachable in hours here?** Same tree-size ceiling as Option 1, but far
+further down the exploitability curve inside the same budget: at three seats it
+reached 0.00023 where vanilla CFR reached 0.0105, forty-six times better from
+the same three minutes. At six seats it managed **three** passes. The ceiling is
+the same; only the climb below it is faster.
 
 **Opponent modelling.** Same as Option 1.
 
@@ -284,7 +375,11 @@ own action set. A larger card abstraction costs *memory for the strategy table*
 rather than *time per iteration*.
 
 **Reachable in hours here?** This is the family that keeps working as seats are
-added, and the measurement bears that out.
+added, and it is the measured claim the recommendation rests on: 101,235
+iterations per second at two seats and still 10,141 at six, a factor of ten
+where the exhaustive methods lose a factor of seventeen thousand. At six seats
+it completes about 560,000 times as many iterations as vanilla CFR in the same
+three minutes, in 35 MB.
 
 **Opponent modelling.** Better suited than the exhaustive methods, for a
 practical reason: the opponents' moves are *sampled*, so an opponent model is
@@ -310,9 +405,10 @@ NashConv trap.
 **Abstraction it needs.** As Option 3.
 
 **Reachable in hours here?** It does the most iterations per second of anything
-measured, by a wide margin. Whether that converts into a better strategy is the
-question the measurement answers, and the answer is not the one the iteration
-count suggests.
+measured - 165,720 at two seats, 21,004 at six. Whether that converts into a
+better strategy is the question the measurement answers, and the answer is no:
+at two seats it reached a NashConv of 0.023 against external sampling's 0.00053,
+forty-three times worse from more work.
 
 **Opponent modelling.** As Option 3.
 
@@ -479,6 +575,112 @@ than assumed.** OpenSpiel is licensed Apache-2.0, read from the project's own
 work; the combination is then GPL-3.0. That is the direction this project needs
 and it is the permitted direction. Nothing in this document introduces a
 licence that would conflict with `LICENSE` at this repository's root.
+
+## Ranked shortlist
+
+Best first. The ranking is "if this project builds a blueprint, build it this
+way" - not "this project should build a blueprint", which is a different
+question and the last section of this document.
+
+**1. External-sampling MCCFR.** The only method measured that both keeps working
+at six seats and turns its iterations into a decent strategy. Ten thousand
+iterations a second at six players against vanilla CFR's 0.018. Ships in
+OpenSpiel as `pyspiel.ExternalSamplingMCCFRSolver`, already compiled, imports
+today, nothing to build. Its sampling structure is also the cleanest place to
+substitute an opponent model, because the opponents' moves are drawn from a
+distribution that can simply be swapped.
+
+**2. CFR+.** Dominant wherever the whole tree fits inside the budget - thirty-three
+times better than external sampling at three seats, and it reached a NashConv of
+0.0000044 at two. It does not scale to six seats and never will. Keep it as the
+**yardstick**: it is the right tool for checking that a card abstraction is
+built correctly on a small version of the game before spending hours on a large
+one, and for any genuinely two- or three-handed sub-problem.
+
+**3. Outcome-sampling MCCFR.** Dominated by external sampling on strategy quality
+at every table size measured, while winning every iteration-count contest. Worth
+keeping only as the comparison that demonstrates iteration counts are not
+progress.
+
+**4. Vanilla CFR.** Strictly worse than CFR+ at identical cost; there is no size
+of game at which it is the right choice over CFR+. Its real value here is that
+`open_spiel.python.algorithms.cfr` is about two hundred readable lines, which
+makes it the thing to *modify* when building the opponent-model substitution,
+before porting the idea to the fast C++ sampler.
+
+**5. A Pluribus-style abstracted blueprint.** The only design on this list that
+has demonstrably beaten strong humans six-handed, which is exactly what this
+project wants, and it is still fifth - because its blueprint half was never
+claimed to be sufficient on its own, its compute is server-scale, and the code
+was never released. It is a recipe to reimplement, and the half that made it
+famous is the search half this document does not cover.
+
+**6. Deep CFR.** Last, and the gap is wide. It will not import on this machine
+without installing a neural-network stack, it needs training hardware this
+project does not have, and `CLAUDE.md`'s compute budget rejects it in terms.
+Revisit only if the compute budget changes.
+
+## Recommendation
+
+**If this project builds a blueprint, build it with external-sampling MCCFR,
+using `pyspiel.ExternalSamplingMCCFRSolver`, and keep CFR+ beside it as the
+yardstick on small games.**
+
+The reason is one measurement and it is not a close call. Going from two players
+to six costs the exhaustive methods a factor of about seventeen thousand in
+iterations completed, and costs external sampling a factor of ten. This project
+targets "a table of 3 or more". The methods that walk the whole tree manage
+three or four passes in three minutes at six seats, which is nothing, and the
+abstractions used here were the smallest that can physically be dealt - a real
+abstraction is far larger, so the three-handed column is optimistic too. Nothing
+about a faster laptop changes that shape.
+
+CFR+ earns its place alongside rather than instead, because it is better than
+external sampling wherever the tree fits, and "wherever the tree fits" is
+exactly where an abstraction should be checked for correctness before hours are
+spent on the full one.
+
+**Three things the operator should know before this recommendation is acted
+on.**
+
+*The method is the easy part.* Choosing external-sampling MCCFR is a
+one-line decision, already implemented, already installed. The work that
+actually stands between this project and a blueprint is the **card
+abstraction**, which OpenSpiel does not ship in any form, which has to be
+written here, and which `CLAUDE.md`'s forefront rule constrains: grouping hands
+by strength is engine work, and our code may do the bookkeeping around it only.
+That is the piece to size next, and no measurement in this document tells you
+how long it takes.
+
+*A blueprint cannot bet like a human.* Nothing on this list scores yes on real
+no-limit sizing. Every blueprint is built on a short menu of bet sizes - fold,
+call, pot, all-in - because a strategy computed in advance must be finite.
+Playing at a real table with real bet amounts needs a translation layer in both
+directions that `ENGINE_ALTERNATIVES.md` records nobody here has built. That
+cost is the same whichever method above is chosen, and it is owed by the
+blueprint road as a whole.
+
+*A blueprint is the opposite of the project's stated goal, and can only be bent
+back toward it at a price.* The goal is to beat particular people. A blueprint
+approximates the play nobody can beat, which is also the play that beats nobody
+in particular. The rule-legal way to bend it - hold the opponents' strategies at
+what the opponent model observed and re-solve for our seat, the restricted Nash
+response - costs another solve per opponent line-up. And Pluribus, the one
+system that has actually done this at a six-handed table, did **no** opponent
+modelling at all. That is the strongest argument in this document against the
+project's own stage 2, and it deserves a straight answer rather than being
+worked around.
+
+**What this recommendation deliberately does not decide.** Whether to build a
+blueprint at all. The alternative - compute the decision during the hand, with
+no advance training and no card abstraction - is `DECISION_LAYER_SEARCH.md`, and
+`ENGINE_ALTERNATIVES.md` already reports a working decision-time chooser playing
+better than random inside the time budget, which is more than any blueprint on
+this list can currently claim. Read the two documents together. **The honest
+summary of this one is that the blueprint road is passable at six players only
+by external-sampling MCCFR, that its unbuilt card abstraction is of unmeasured
+size, and that the road ends at a bot that plays an equilibrium rather than at
+one that exploits the table.**
 
 ## Sources, and how each one was checked
 
