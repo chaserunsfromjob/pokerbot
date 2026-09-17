@@ -1,0 +1,63 @@
+HandHQ no-limit hold'em cash hands -- population baseline per table size
+corpus directory      : /private/tmp/claude-501/-Users-chasethompson-heater/a85189ec-5bbd-47a9-96ed-3d188a1439ef/scratchpad/corpus/phh/files
+files parsed          : 962
+hands parsed          : 949,193
+player-hand rows      : 4,994,956
+distinct player codes : 88,898
+hands declaring seat_count: 322,136 (33.9%); table size is len(players) throughout
+parse wall-clock      : 2.3 s on 8 workers
+1-minute load average : 2.54 before, 3.13 after (other agents share this laptop)
+players with 100+ hands (any table size)  : 9,743
+players with 1,000+ hands (any table size): 612
+
+Distributions are over players with >= 100 hands AT THAT table size.
+Q1/median/Q3 are quartiles across those players. 'pooled' is the sum-of-numerators over sum-of-denominators across every player at that
+table size -- the shape of BASELINE in design section 4.3.
+
+size  hands      players  qual  VPIP Q1/med/Q3        PFR Q1/med/Q3         AF Q1/med/Q3         FtCB Q1/med/Q3       WTSD Q1/med/Q3
+------------------------------------------------------------------------------------------------------------------------------------
+   2    144,730    7,733   763      46.0/52.4/59.8      30.9/38.3/44.3      1.87/2.59/3.79      33.3/44.4/55.6      25.0/30.3/35.2
+   3     35,338   12,768   134      26.3/29.7/34.7      20.0/23.6/27.7      1.96/2.65/3.78      33.3/50.0/66.7      24.5/30.4/36.9
+   4     95,361   26,662   632      22.2/26.1/31.5      16.4/20.0/23.9      2.00/2.75/4.02      33.3/50.0/66.7      23.3/29.6/35.9
+   5    234,011   43,079  2261      19.9/23.5/28.8      13.4/16.8/20.2      1.89/2.67/4.00      37.5/50.0/66.7      22.7/28.6/35.0
+   6    258,859   51,514  3032      17.6/21.2/26.4      11.0/14.2/17.4      1.76/2.67/4.00      40.0/50.0/66.7      21.4/27.1/33.3
+   7     34,362   27,792   268       9.4/13.3/17.2       4.7/ 7.7/11.4      1.80/2.60/4.50     40.0/60.0/100.0      18.2/26.1/33.3
+   8     70,170   36,446  1006      10.7/14.1/18.2       5.3/ 7.8/10.6      1.65/2.54/4.00      39.2/55.6/83.0      20.0/26.4/33.3
+   9     70,685   34,101  1237      10.2/13.9/18.2       4.9/ 7.2/ 9.9      1.51/2.35/3.84      40.0/60.0/85.2      19.4/25.6/33.3
+  10      5,677    2,196   137       9.8/12.3/15.5       6.5/ 8.2/10.6      1.68/2.67/4.19     41.4/60.0/100.0      18.5/27.6/40.0
+
+Pooled rates (sum numerators / sum denominators over ALL players at the size, no hand floor) and opportunity rates per hand dealt:
+size   pooled VPIP  pooled PFR  pooled AF  pooled FtCB  pooled WTSD  FtCB opps/hand  flops seen/hand  showdowns with cards shown
+   2         0.520       0.357       2.49        0.450        0.306           0.084            0.373                      0.977
+   3         0.357       0.219       2.37        0.472        0.313           0.052            0.268                      0.952
+   4         0.310       0.186       2.33        0.491        0.307           0.045            0.230                      0.945
+   5         0.284       0.161       2.27        0.497        0.301           0.045            0.219                      0.946
+   6         0.265       0.140       2.23        0.513        0.289           0.043            0.212                      0.936
+   7         0.230       0.094       2.11        0.536        0.286           0.031            0.212                      0.974
+   8         0.216       0.087       2.08        0.543        0.288           0.030            0.198                      0.977
+   9         0.206       0.081       2.06        0.548        0.281           0.030            0.187                      0.975
+  10         0.167       0.085       2.26        0.535        0.292           0.023            0.127                      0.661
+
+Qualifying-player counts behind each distribution column (a player enters a column only with a non-zero denominator):
+size  players>=floor  AF denom>0  FtCB denom>0  WTSD denom>0
+   2             763         763           756           763
+   3             134         132           132           134
+   4             632         612           596           632
+   5           2,261       2,197         2,131         2,261
+   6           3,032       2,949         2,855         3,032
+   7             268         235           193           268
+   8           1,006         906           802         1,006
+   9           1,237       1,108         1,003         1,237
+  10             137         107            95           137
+
+Players by hand count at a single table size (the observe-first question: how much of one opponent does a corpus actually give you):
+size  >=30 hands  >=100 hands  >=200 hands  >=1,000 hands
+   2       1,900          763          327             13
+   3         661          134           36              0
+   4       2,475          632          254             11
+   5       6,857        2,261        1,043             95
+   6       9,031        3,032        1,425            118
+   7       1,631          268           51              0
+   8       3,888        1,006          355              3
+   9       4,531        1,237          451              7
+  10         453          137           36              0
