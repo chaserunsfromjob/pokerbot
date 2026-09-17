@@ -902,15 +902,17 @@ Mac-native capture project turned out to contain no code.
    stars, its profiles are teaching examples rather than winners, and its
    position handling is written for 2 and 6 seats (3.14's (a)), so it does not
    arrive ready for 7 to 9 either.
-   **Unresolved, and it decides whether this entry is usable at all:** a PPL
+   **Still open, and it decides whether this entry is usable at all:** a PPL
    profile *is* a hand-written rule for what to do with each holding, so
-   running one puts hand-rolled decision logic where `CLAUDE.md`'s forefront
-   rule says the vendored engine must be — the same objection this survey
-   applies to PokerGPT (3.16) and PokerBotAgent (3.17). The uses that clearly
-   survive the rule are the ones where nothing of ours chooses the action:
-   a scripted *opponent* to test against, or a baseline to measure against.
-   Using it to pick our own action needs a recorded carve-out in `CLAUDE.md`
-   first. That call belongs to the section 5 reconciliation, not here.
+   running one puts a whole decision layer beside the vendored engine rather
+   than inside it. `CLAUDE.md`'s forefront rule, under "What may be coded",
+   lets code of ours pick the action, so choosing our action from a profile
+   needs no carve-out; under "What may not be coded" the profile must still
+   take hand ranking from the engine instead of hand-rolling it, must make no
+   model call while a hand is live, and must not carry a decision's content in
+   stored model output — which is where PokerGPT (3.16) and PokerBotAgent
+   (3.17) fail. Whether a profile written by someone else is worth running at
+   all belongs to the section 5 reconciliation, not here.
 4. **dickreuter/Poker** (3.2): a real Python bot that has played for money on
    three sites — the only entry here with that record, and its decision layer
    (equity by Monte Carlo, pot odds, a tunable strategy) is portable Python.
@@ -1044,39 +1046,36 @@ What this survey *does* settle, and hands to that reconciliation:
   written out by hand and gathers nothing. Whatever engine road wins, the
   memory of "who this player is" is ours to write, because nobody ships it in
   a form we can run.
-- **Per-opponent adjustment must enter through the engine, never through code
-  of ours that picks actions.** The boundary is already drawn, in the table in
-  `CLAUDE.md`'s forefront rule, and this survey neither widens nor narrows it.
-  The engine's side of that table is evaluating hand strength, choosing an
-  action, assigning a range to an opponent, reading board texture, producing
-  the strategy itself, solving, and **combining live-field rates into a
-  quantity that drives a poker decision** — the table's own example of that
-  last one is multiplying the fold rates of the opponents in the current hand
-  to gate a bluff — so "shift the
-  call, bluff and value thresholds for this named player" is out, as is any
-  layer of ours that turns an equity number into a bet. Our side of it is the
-  observation work: counting
-  observed actions, computing a single rate from those counts, shrinking a rate
-  toward a baseline, sorting an opponent into a bucket, reporting several rates
-  side by side, combining rates across the observed population into a baseline,
-  a classification split or an archetype, selecting *which* engine strategy to
-  load, and substituting an opponent model into the engine's own solver. The
-  combining entry in our column and the combining row on the engine's are a
-  matched pair: combining rates across the **observed population** — the whole
-  database, seated players' stored rows included, with being seated never the
-  criterion for inclusion — into a baseline, a classification split or an
-  archetype is ours, while combining the rates of the players **in the hand
-  being played** into a number that then drives a decision is the engine's.
+- **Per-opponent adjustment is ours to code, and no model may be in the loop
+  when the bot acts.** `CLAUDE.md`'s forefront rule, under "What may be coded",
+  lets code of ours pick an action, assign a range to an opponent, read the
+  board and combine opponent rates, so "shift the call, bluff and value
+  thresholds for this named player", and a layer of ours that turns an equity
+  number into a bet, are both in bounds as long as they are ordinary tested
+  code a reviewer can follow. What stays out, under "What may not be coded", is
+  a model call on the live decision path, a decision whose content comes from
+  stored model output, hand ranking hand-rolled in place of the engine, and the
+  failure modes named in `LLM_POKER_FAILURE_MODES.md`. This survey neither
+  widens nor narrows that rule. The observation work is ours as it always was:
+  counting observed actions, computing a single rate from those counts,
+  shrinking a rate toward a baseline, sorting an opponent into a bucket,
+  reporting several rates side by side, combining rates across the observed
+  population into a baseline, a classification split or an archetype, selecting
+  *which* engine strategy to load, and substituting an opponent model into the
+  engine's own solver. The rule itself defines that population, and the
+  definition is the one this project works to: the whole database, seated
+  players' stored rows included, with being seated never the criterion for
+  inclusion.
 
-  Of the categories allowed to us, "substituting an opponent model into the
+  Of the categories named above, "substituting an opponent model into the
   engine's own solver" has exactly **one** shipped example in this survey, and
   it is worth naming: **a biased strategy the engine itself produces** —
   NoRegrets' `--rnr-model` / `--rnr-opponent` with the `--rnr-p` dial, fed an
   opponent that its own `clone` command builds from logged hands (3.4). All of
   that happens before a hand is dealt: our code supplies the observations and
   picks which opponent to train against; the engine produces the strategy and
-  chooses the action. It is an example of one of the table's categories, not a
-  shorter list than the table.
+  chooses the action. It is an example of one of those categories, not a
+  shorter list than the rule.
 
   A second hook is often named beside it, and it is **not** a shipped example
   of anything here. `ENGINE_ALTERNATIVES.md` calls it "Hook A - the rollout

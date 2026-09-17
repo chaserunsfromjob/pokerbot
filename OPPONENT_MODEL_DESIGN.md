@@ -117,34 +117,37 @@ already what `CLAUDE.md` says.
 
 ### The forefront rule and this design
 
-`CLAUDE.md` forbids AI-written code from deciding a poker action, evaluating a
-hand, or reading a board. **The exact boundary for opponent modelling lives in
-`CLAUDE.md`, under "The forefront rule", as a two-column table.** That table is
-the authority; this document only has to obey it. Both of its columns are
-reproduced here **verbatim**, item for item, so that this summary can be checked
-against the authority by inspection rather than trusted:
+`CLAUDE.md`, under "The forefront rule", is the authority for what this design
+may write, and this document only has to obey it. Three of its bullets govern
+everything below, and they are quoted here **verbatim**, so that this summary
+can be checked against the authority by inspection rather than trusted:
 
-- **Allowed to AI-written opponent-model code:** Counting observed actions;
-  Computing a single rate from its own counts; Shrinking a rate toward a
-  baseline; Sorting an opponent into a bucket; Selecting *which* engine strategy
-  to load; Substituting an opponent model into the engine's own solver;
-  Reporting several rates side by side.
-- **Reserved to the engine:** Evaluating hand strength; Choosing an action;
-  Assigning a range to an opponent; Reading board texture; Producing the strategy
-  itself; Solving; Combining live-field rates into a quantity that drives a poker
-  decision — multiplying the fold rates of the opponents in the current hand to
-  gate a bluff, for one.
+> Let an AI assistant write the poker code: the code that picks an action, assigns a range to an opponent, reads the board, and combines opponent rates.
 
-**Live field versus observed population.** That last reserved item turns on a
-distinction `CLAUDE.md` draws between that row and the observed-population bullet
-directly beneath its table, and this design leans on it everywhere, so it is
-worth restating in full. Combining rates across the **live field** — the
-opponents in the current hand — into anything that adjusts the bot's own action
-is reserved to the engine. Combining
+> Keep every model call out of the live decision path; when the bot acts it runs ordinary code only, with no language-model inference, no network call to a model, and no prompt.
+
+> Treat the **observed population** as the whole database, seated players' stored rows included, with being seated never the criterion for inclusion, and combine rates across it into a baseline, a classification split, or an archetype.
+
+So an AI assistant may write the opponent-model code in this document, including
+the code that picks an action, assigns a range, reads the board, and combines
+opponent rates. What that code may never do is call a model while a hand is
+live, or take the content of a poker decision from stored model output — a
+table, a set of weights, or text a model produced. It is ordinary code: the same
+inputs and seed give the same answer, tests cover it, and a reviewer reads it
+line by line. The game rules and hand evaluation still come from the engine
+road, OpenSpiel `universal_poker`, rather than being hand-rolled, which is why
+the non-goals above rule out a hand-strength estimator.
+
+**Live field versus observed population.** This design leans everywhere on a
+split between two ways of pooling rates, so it is worth restating in full.
+Combining rates across the **live field** — the opponents in the current hand —
+into anything that adjusts the bot's own action is left to the engine
+throughout, and every section below that calls such a combination *reserved to
+the engine* means this design's own architecture, not a prohibition. Combining
 rates across the **observed population** — the whole database, seated players'
 stored rows included, with being seated never the criterion for inclusion — into
 a baseline, a classification split, or an archetype handed to the engine is
-allowed AI-written work, because the engine still chooses the action.
+work this document's own code does, exactly as the quoted bullet describes.
 
 "The whole database" is meant literally, and the ambiguity is worth killing
 outright, because it is the one that would otherwise be read the wrong way.
@@ -174,7 +177,8 @@ to a poker decision the bot acts on. The only place *on the live decision path*
 where the *live field* is looked at collectively is choosing which precomputed
 strategy to load ([§4.5](#45-tiers-what-to-build-in-what-order)), which counts
 already-assigned buckets rather than combining rates, and whose whole output is a
-strategy handle — the "Selecting *which* engine strategy to load" row above.
+strategy handle — a choice of which engine strategy to load, not a rate
+combination.
 
 **Away from the decision path this design also combines rates offline, over
 logged hands, and those combinations are not enumerated above because none of
@@ -1049,8 +1053,9 @@ which the rates underlying a flag reach play. Even there no flag-specific
 consumer is specified: Tier 2 consumes per-public-history action frequencies,
 not flags. Feeding a flag into play any earlier is a mechanism this document
 does not contain, and the reconciliation that added it would have to name that
-mechanism and place it on the engine's side of the `CLAUDE.md` table, under
-"Choosing an action".
+mechanism and show it meets "The forefront rule" in `CLAUDE.md`: reviewable
+decision code, no model call on the live decision path, and no decision content
+taken from stored model output.
 
 | Flag | Condition | Confidence gate |
 | --- | --- | --- |
