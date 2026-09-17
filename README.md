@@ -42,6 +42,28 @@ engine in `vendor/poker_ai` importable from that area, without letting it pull
 in its own five-year-old package list. `REFERENCE_NOTES.md` explains why those
 last two flags are there.
 
+## The gate
+
+One command that runs every check this project has and says, in one word,
+whether the change is good to go:
+
+    bin/gate.sh
+
+Run it from anywhere in the repository. It does the setting-up itself: if the
+private area of outside code (`.venv`, described above) is missing it builds
+one, and it installs the three outside packages the tests need -- `pytest`,
+`treys` and `open_spiel` -- only when one of them is actually missing, so a
+second run takes a couple of seconds.
+
+Then it runs the tests, and the three arithmetic checkers described further
+down. It finishes with either `gate: passed`, or `gate: FAILED` followed by the
+names of the steps that went wrong.
+
+One thing it deliberately refuses to do is call a run of no tests at all a
+success. Before running the suite it counts what the suite found, and treats a
+count of zero as a failure, because an empty run looks exactly like a clean one
+if nobody counts.
+
 ## Running the tests
 
 Two sets of tests, both from the top of the repository:
