@@ -617,6 +617,77 @@ def test_edge_case_short_stack_hand_is_excluded_from_every_counter():
     assert book.hands("p3") == 1.0
 
 
+def test_wsd_counts_a_split_pot_that_hands_back_exactly_what_went_in():
+    """Section 4.2: `wsd` is "opponent won chips at showdown", not "profited".
+
+    Both blinds check it down and split a 200-chip pot they each put 100 into.
+    Each of them was handed 100 chips at the showdown, so each of them won
+    chips at it; their profit on the hand is nil, which is a different
+    question and not the one this row asks.
+    """
+    record = make_record(
+        6,
+        0,
+        [
+            (0, 3, "fold", 0),
+            (0, 4, "fold", 0),
+            (0, 5, "fold", 0),
+            (0, 0, "fold", 0),
+            (0, 1, "call", 50),
+            (0, 2, "call", 0),
+            (1, 1, "call", 0),
+            (1, 2, "call", 0),
+            (2, 1, "call", 0),
+            (2, 2, "call", 0),
+            (3, 1, "call", 0),
+            (3, 2, "call", 0),
+        ],
+        streets_dealt=(1, 2, 3),
+        net=[0, 0, 0, 0, 0, 0],
+    )
+    view = blind_view(record)
+    assert view.payouts[1] == 100.0 and view.net[1] == 0.0
+    book = Notebook()
+    assert book.observe(record, SIX)
+    for seat in (1, 2):
+        assert counted(book, f"p{seat}", "wtsd") == (1.0, 1.0)
+        assert counted(book, f"p{seat}", "wsd") == (1.0, 1.0)
+
+
+def test_wsd_counts_a_side_pot_won_by_a_player_who_lost_on_the_hand():
+    """The same row, the other way round: chips won, money lost.
+
+    Seat 3 is all in for 2,000 and wins the main pot. Seat 4 is all in for
+    3,000 and beats seat 5 for the 2,000 side pot -- 1,000 less than seat 4
+    put in, so seat 4 finishes the hand down 1,000 having won chips at the
+    showdown. Seat 5 is shown down and handed nothing.
+    """
+    record = make_record(
+        6,
+        0,
+        [
+            (0, 3, "all_in", 2000),
+            (0, 4, "all_in", 3000),
+            (0, 5, "call", 3000),
+            (0, 0, "fold", 0),
+            (0, 1, "fold", 0),
+            (0, 2, "fold", 0),
+        ],
+        stacks=[10_000.0, 10_000.0, 10_000.0, 2000.0, 3000.0, 10_000.0],
+        streets_dealt=(1, 2, 3),
+        net=[0, -50, -100, 4150, -1000, -3000],
+    )
+    view = blind_view(record)
+    assert view.payouts[4] == 2000.0 and view.net[4] == -1000.0
+    book = Notebook()
+    assert book.observe(record, SIX)
+    assert counted(book, "p4", "wsd") == (1.0, 1.0)
+    assert counted(book, "p3", "wsd") == (1.0, 1.0)
+    # Seat 5 reached the showdown and was handed nothing at it.
+    assert counted(book, "p5", "wtsd") == (1.0, 1.0)
+    assert counted(book, "p5", "wsd") == (0.0, 1.0)
+
+
 # ---------------------------------------------------------------------------
 # 3. no stat reads a hole card or a board card
 # ---------------------------------------------------------------------------

@@ -659,7 +659,12 @@ def hand_counts(
             reached = showdown and not view.folded[seat]
             add(seat, "wtsd", 1.0 if reached else 0.0, 1.0)
             if reached:
-                add(seat, "wsd", 1.0 if view.net[seat] > 0 else 0.0, 1.0)
+                # Section 4.2: "opponent won chips at showdown". That is what
+                # they were handed out of the pot, not what they made on the
+                # hand -- a split that returns the contribution and a side pot
+                # smaller than it are both wins by this row and losses by
+                # `net`, so `payouts` is the field it asks for.
+                add(seat, "wsd", 1.0 if view.payouts[seat] > 0 else 0.0, 1.0)
     return out
 
 
