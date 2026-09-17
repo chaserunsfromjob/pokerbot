@@ -64,7 +64,7 @@ beside this document, and the scripts' raw output is committed too.
 | --- | --- | --- |
 | Name | HandHQ no-limit cash logs inside the Poker Hand Histories dataset | IRC Poker Database, `holdem` channel |
 | Game | **No-limit** hold'em, real money | **Fixed-limit** hold'em, play money |
-| Era | 1-23 July 2009 | 1995-2001 (months parsed: Jan-Dec 1999) |
+| Era | 1-23 July 2009 | 1995-2001 (months parsed: eleven of 1999) |
 | Where from | `github.com/uoftcprg/phh-dataset` (MIT); full archive `zenodo.org/records/17136841` (CC BY 4.0) | `poker.cs.ualberta.ca/IRC/IRCdata.tgz` |
 | Downloaded | 962 of the repository's 21,782 `.phhs` files, 706 MB | 548 MB of the 1,017,569,472-byte archive |
 | Hands parsed | **949,193** | **447,669** distinct hands, 3,148,025 player-hand rows |
@@ -135,7 +135,10 @@ below the median, a quarter above Q3.
 | 9 | 70,685 | 34,101 | 1,237 | 10.2 / **13.9** / 18.2 | 4.9 / **7.2** / 9.9 | 1.51 / **2.35** / 3.84 | 40.0 / **60.0** / 85.2 | 19.4 / **25.6** / 33.3 |
 | 10 | 5,677 | 2,196 | 137 | 9.8 / **12.3** / 15.5 | 6.5 / **8.2** / 10.6 | 1.68 / **2.67** / 4.19 | 41.4 / **60.0** / 100.0 | 18.5 / **27.6** / 40.0 |
 
-All figures are percentages except AF, which is a ratio. Ten-seat tables exist in
+All figures are percentages except AF, which is a ratio, capped at 20.0 and
+computed only for players with at least one postflop call, so players who never
+called are absent from the AF row. Every figure in this section comes from the
+sample section 1 describes, which lacks PartyPoker and leans high-stakes. Ten-seat tables exist in
 this corpus; the brief asked for 2-9 and the tenth row is included because it is
 there.
 
@@ -162,7 +165,8 @@ admitted placeholders in its Table C:
   chance arrives 0.030 times per hand at nine-handed and 0.084 at heads-up; the
   design's placeholder for that row is 0.15, so it is **five times optimistic**
   at a full table, and the hands needed for a usable FtCB number are five times
-  what Table C says.
+  what Table C says. Measured on the section 1 sample (no PartyPoker, leaning
+  high-stakes); carry that note with the number.
 - The parser's structural test for "this hand reached a showdown" agrees with the
   logs' own record of cards being shown on **93.6% to 97.7%** of hands at every
   table size from 2 to 9. That is the parser checking itself against the corpus.
@@ -196,7 +200,8 @@ above. The two get conflated easily and they answer differently.
 
 The IRC `holdem` channel is **fixed-limit**, and that is what the numbers below
 describe. Twelve monthly files for 1999 were extracted from the part of the
-archive that had downloaded, one of which was truncated and discarded.
+archive that had downloaded, one of which was truncated and discarded, leaving
+eleven.
 
 | Seats | Hands | Players | Qualifying | VPIP Q1/med/Q3 | PFR Q1/med/Q3 | AF Q1/med/Q3 | WTSD Q1/med/Q3 |
 | --- | --- | --- | --- | --- | --- | --- | --- |
@@ -319,7 +324,10 @@ writing. **A stake-matched 2009 no-limit baseline is worth about 22 to 31 hands*
 so it would enter the design at `PRIOR_STRENGTH` of roughly **25, not 50** - and
 that is the *optimistic* figure, because it charges the prior only for being at
 the wrong stake and network and nothing at all for being seventeen years old. Any
-honest era term drives it lower.
+honest era term drives it lower. This arithmetic prices an archive-seeded prior
+only; the design's `s = 50` belongs to the observed-population `BASELINE`, whose
+bias is not the archive gap, and design §4.3 ties `s` to the `confidence`
+crossover, so the recommended observe-first path keeps `s = 50` unchanged.
 
 ---
 
@@ -337,8 +345,9 @@ mismatch.
 an opponent**, that opponent's own counts beat anything the 2009 no-limit archive
 can say about them; against an IRC-seeded prior the crossover is **4 hands**. At
 the population level the crossover is smaller still, because the pooled baseline
-pools every player at the table: about **30 player-hands**, which is four orbits
-at a nine-handed table, or roughly **four minutes of folding**.
+pools every player at the table: about **30 player-hands**, which at a
+nine-handed table (eight opponent rows per hand dealt) arrives after about four
+hands dealt, or roughly **four minutes of folding**.
 
 What to do with the archives instead, in priority order:
 
@@ -347,7 +356,8 @@ What to do with the archives instead, in priority order:
    reproduce sane distributions before any of it sees a live table.
 2. **Replace the design's invented opportunity rates with the measured ones** in
    section 2 above, which cost nothing to adopt and fix a five-fold error in
-   Table C's fold-to-continuation-bet row.
+   Table C's fold-to-continuation-bet row; record beside each that it was
+   measured on the section 1 sample (no PartyPoker, leaning high-stakes).
 3. **Keep the 2009 no-limit corpus as the sanity check** on the bot's own pooled
    baseline once Tier 0 has logged its first few thousand hands: if the bot's own
    population and the 2009 one disagree by more than the 8-point stake spread
