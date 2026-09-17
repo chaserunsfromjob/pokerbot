@@ -79,12 +79,12 @@ def pytest_terminal_summary(terminalreporter):
             cells.append(f"{status:^9s}")
         write(f"  {seats:^5d}  " + "  ".join(cells))
     reasons = sorted(
-        (inv, seats, reason)
+        (inv, seats, status, reason)
         for (inv, seats), (status, reason) in _TALLY.items()
         if status != "PASS"
     )
-    for inv, seats, reason in reasons:
-        write(f"  {inv} at {seats} seats: NOT RUN / FAIL -- {reason}")
+    for inv, seats, status, reason in reasons:
+        write(f"  {inv} at {seats} seats: {status} -- {reason}")
     missing = [
         (inv, seats)
         for inv in invariants
