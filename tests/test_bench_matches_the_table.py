@@ -21,7 +21,13 @@ import pyspiel
 import pytest
 
 from pokerbot.equity_rule import with_odds
-from pokerbot.table import BETTING_ABSTRACTION, TableConfig, _game_string, game_string
+from pokerbot.table import (
+    BETTING_ABSTRACTION,
+    BETTING_ABSTRACTIONS,
+    TableConfig,
+    _game_string,
+    game_string,
+)
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
 BENCH_PATH = ROOT / "research" / "decision_layer" / "bench_decision_layer.py"
@@ -33,9 +39,12 @@ SEAT_COUNTS = [2, 6]
 #: The three parameters that say who posts what and who acts when.
 SHARED_FIELDS = ("numPlayers", "blind", "firstPlayer")
 
-#: The engine's own bet menus, written out here rather than read from the
-#: adapter so that this file, not the code under test, says which names are
-#: allowed.
+#: The bet menus this adapter allows, written out here rather than read from
+#: the adapter so that this file, not the code under test, says which names are
+#: allowed. They are a subset of the engine's own four: `universal_poker` also
+#: accepts `fc` (fold and call only), which the adapter never names.
+#: `test_this_file_s_bet_menu_list_is_the_adapter_s_own` holds the two lists
+#: together, so neither can gain or lose a name in silence.
 ENGINE_BET_MENUS = ("fchpa", "fcpa", "fullgame")
 
 #: A bet menu with a second `blind` and a second `firstPlayer` hidden behind
@@ -109,6 +118,23 @@ def test_the_bet_menu_is_the_only_knob_game_string_offers():
 def test_the_table_s_own_bet_menu_is_an_accepted_one():
     """Whatever the adapter plays on must be a value `game_string` accepts."""
     assert BETTING_ABSTRACTION in ENGINE_BET_MENUS
+
+
+def test_this_file_s_bet_menu_list_is_the_adapter_s_own():
+    """The hand-written list and the adapter's cannot drift apart in silence.
+
+    `ENGINE_BET_MENUS` is written out by hand so that this file, not the code
+    under test, says which names are allowed. That only holds the adapter to
+    account while the two agree: a name added to or dropped from
+    `BETTING_ABSTRACTIONS` alone would simply go unchecked here, and every
+    test that parametrises over `ENGINE_BET_MENUS` would keep passing while
+    covering less. So the disagreement itself has to fail.
+    """
+    assert set(BETTING_ABSTRACTIONS) == set(ENGINE_BET_MENUS), (
+        f"the adapter allows the bet menus {sorted(BETTING_ABSTRACTIONS)!r}, "
+        f"but this file checks {sorted(ENGINE_BET_MENUS)!r}; the two must name "
+        "the same menus or the checks below cover less than they claim"
+    )
 
 
 def test_game_string_refuses_a_bet_menu_that_smuggles_in_parameters():
