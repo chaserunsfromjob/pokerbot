@@ -13,6 +13,7 @@ paper, and it is what says the chips are being counted correctly.
 from __future__ import annotations
 
 import io
+import re
 
 import pytest
 
@@ -368,6 +369,64 @@ def test_a_small_run_prints_the_whole_report():
     assert "because" in report
 
 
+def _config_with_registered_hands(tmp_path, hands: int):
+    """A copy of the real config with its pre-registered hand count changed, so a
+    deviation from it can be tested in a run short enough to be a unit test."""
+    text = CONFIG.path.read_text()
+    swapped = re.sub(r"(?m)^hands = \d+", f"hands = {hands}", text, count=1)
+    assert swapped != text, "the config no longer has a `hands =` line to change"
+    path = tmp_path / "league_config.toml"
+    path.write_text(swapped)
+    return path
+
+
+def test_a_run_at_the_registered_hand_count_says_nothing_about_a_deviation(tmp_path):
+    """The deviation notice is a notice, not furniture: it stays off when the run
+    played exactly the hand count that was pre-registered."""
+    out = io.StringIO()
+    scoreboard.main(
+        [
+            "--bot", "always_call",
+            "--compare", "always_fold",
+            "--seed", "2",
+            "--seats", "6",
+            "--personas", "always_fold",
+            "--config", str(_config_with_registered_hands(tmp_path, 6)),
+        ],
+        out=out,
+    )
+    report = out.getvalue()
+    assert "hands: 6 per cell per arm" in report, "the run did not take the config's count"
+    assert "deviation from pre-registration" not in report
+
+
+def test_a_run_shorter_than_the_registered_hand_count_says_so_under_the_header(tmp_path):
+    """`--hands` below the pre-registered count widens every interval, which makes
+    the per-persona blocker less likely to fire. The page says so where the hand
+    count is read, not somewhere a reader has to go looking."""
+    out = io.StringIO()
+    scoreboard.main(
+        [
+            "--bot", "always_call",
+            "--compare", "always_fold",
+            "--hands", "3",
+            "--seed", "2",
+            "--seats", "6",
+            "--personas", "always_fold",
+            "--config", str(_config_with_registered_hands(tmp_path, 6)),
+        ],
+        out=out,
+    )
+    lines = out.getvalue().splitlines()
+    header = next(i for i, line in enumerate(lines) if line.startswith("mode:"))
+    assert lines[header + 1] == (
+        "deviation from pre-registration: 3 hands per cell per arm, not the "
+        "registered 6 (league_config.toml hands). Every interval below is wider "
+        "than the registered design, which makes the per-persona BLOCK test less "
+        "likely to fire, not more."
+    )
+
+
 def test_the_command_can_say_what_bots_it_accepts():
     out = io.StringIO()
     assert scoreboard.main(["--bot", "always_call", "--list-bots"], out=out) == 0
@@ -572,9 +631,11 @@ def test_the_search_bot_is_in_the_league_under_its_own_name():
     assert isinstance(resolve_bot("search", 5, CONFIG), league.SearchBot)
 
 
-def test_the_search_bot_plays_the_arena_s_budget_and_finish_count():
-    """The shim changes no part of how the bot plays; if it did, the scoreboard
-    would be measuring a different bot from the one the arena measured."""
+def test_the_search_bot_plays_the_search_module_s_budget_and_finish_count():
+    """The shim changes no part of how the bot plays: it takes `search.py`'s own
+    module defaults, which are the ones `arena.py` reaches for too. If it set its
+    own, the scoreboard would be measuring a different bot from the one the arena
+    measured. What is checked here is the shim against those module defaults."""
     bot = resolve_bot("search", 5, CONFIG)
     assert bot.budget_s == search.BUDGET_S
     assert bot.playouts_per_candidate == search.PLAYOUTS_PER_CANDIDATE

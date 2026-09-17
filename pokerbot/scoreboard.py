@@ -72,6 +72,17 @@ def print_header(
         f"mode: {mode}   hands: {hands} per cell per arm   "
         f"cells: {len(personas) * len(seats)}   seats: {' '.join(str(n) for n in seats)}"
     )
+    # A run that plays fewer hands than the config registered is still a run,
+    # but it is not the registered design, and the page must say so where the
+    # hand count is read rather than leave it to be noticed.
+    registered_hands = int(config.run["hands"])
+    if hands != registered_hands:
+        write(
+            f"deviation from pre-registration: {hands} hands per cell per arm, not "
+            f"the registered {registered_hands} (league_config.toml hands). Every "
+            f"interval below is wider than the registered design, which makes the "
+            f"per-persona BLOCK test less likely to fire, not more."
+        )
     write(f"config: {config.path} (pre-registered; reprinted here, not chosen after the run)")
     write(
         "  weights: "

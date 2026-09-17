@@ -571,10 +571,7 @@ pokerbot/       # one package, three groups; nothing the bot's entry point
                 # search and never played
   arena.py      # runs the bot against three of the personas above -- always
                 # fold, always call, draw from the menu at random -- and counts
-                # what it won; despite the name it is not the arena above. It
-                # had three trivial opponents of its own in a `baselines.py`
-                # beside it and they were the same three twice, so it reaches
-                # for the personas instead and that file is gone
+                # what it won; despite the name it is not the arena above
   # shared, holding no strategy either way
   table.py      # table construction for n in 2..9; blinds, button rotation
   record.py     # the HandRecord rows a run emits

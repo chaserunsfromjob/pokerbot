@@ -1,5 +1,6 @@
 scoreboard  bot B=search  bot A=always_call  engine=open_spiel.universal_poker  commit=2a3ad420872bd9171fc152bb18aae05eb4eb76c9
 mode: acceptance   hands: 500 per cell per arm   cells: 52   seats: 2 6 8 9
+deviation from pre-registration: 500 hands per cell per arm, not the registered 1000 (league_config.toml hands). Every interval below is wider than the registered design, which makes the per-persona BLOCK test less likely to fire, not more.
 config: /Users/chasethompson/.heater/worktrees/pokerbot/41aac718851b/pokerbot/league_config.toml (pre-registered; reprinted here, not chosen after the run)
   weights: n2=0.200  n6=0.500  n8=0.150  n9=0.150
     bands: [6] at 0.50, [8, 9] together at 0.30, everything else that ran at 0.20 split equally

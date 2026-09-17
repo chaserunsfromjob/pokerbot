@@ -206,13 +206,17 @@ the fifty-two squares of that grid for each of the two versions compared. It
 took twenty-three minutes, which is why it is five hundred hands a square and
 not the thousand the settings ask for. The verdict is ACCEPT: the bot finished
 about 2,370 big blinds per hundred hands ahead of the version it was measured
-against, with the whole range around that figure above zero. It beats seven of
-the thirteen -- the one that gives up every hand, the one that calls
-everything, the one that raises everything, the coin-flipper, the player who
-calls too much, the one who bets wildly, and the one who plays badly after
-losing a big pot. Each of those seven wins is bigger than the shuffle could
-account for at at least one table size, and at the two-handed table six of the
-seven are. It loses to two: the player who waits all night for a premium hand,
+against, with the whole range around that figure above zero. That 2,370 is how
+much better the bot did than the call-everything version on the very same
+deals, while "beats" and "loses to" below mean something else: simply whether
+the bot finished with more money than it started with. It beats seven of the
+thirteen -- the one that gives up every hand, the one that calls everything,
+the one that raises everything, the coin-flipper, the player who calls too
+much, the one who bets wildly, and the one who plays badly after losing a big
+pot. Each of those seven wins is bigger than the shuffle could account for at
+at least one table size, and at the two-handed table six of the seven are,
+before allowing for the fact that fifty-two squares were looked at and the best
+one picked. It loses to two: the player who waits all night for a premium hand,
 and one of the two competent players, the tight and aggressive one. Against the
 remaining four -- the one who only ever bets a real hand, the one who gives up
 when the flop misses, the other competent player, and the one whose bet size

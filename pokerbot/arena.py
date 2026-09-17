@@ -4,14 +4,14 @@
         --bot search --opponents random
 
 What it does, in plain words. It deals complete hands on the T1 table, with the
-bot in one seat and one of `personas.py`'s three trivial agents -- always
-fold, always call, draw from the menu at random -- in each of the others, moving the dealer button one seat every hand so nobody sits in the
-blinds more often than anybody else. After every hand it checks the table's
-seven invariants -- the statements that have to be true or no score measured
-here means anything -- and if one of them fails it stops the run there and then
-rather than finishing and reporting a number. At the end it prints how many
-hands were played, how long the bot's slowest decision took, and how much it
-won, with a range around it.
+bot in one seat and one of `personas.py`'s three trivial agents -- always fold,
+always call, draw from the menu at random -- in each of the others, moving the
+dealer button one seat every hand so nobody sits in the blinds more often than
+anybody else. After every hand it checks the table's seven invariants -- the
+statements that have to be true or no score measured here means anything -- and
+if one of them fails it stops the run there and then rather than finishing and
+reporting a number. At the end it prints how many hands were played, how long
+the bot's slowest decision took, and how much it won, with a range around it.
 
 The range is the important part. Poker is noisy enough that a bare win rate
 means nothing, so the score is printed as a 95% interval worked out by
