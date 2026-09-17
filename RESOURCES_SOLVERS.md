@@ -134,20 +134,26 @@ for two reasons stated plainly here and again in the recommendation:
 - The obvious way to cover multiway postflop with the tools listed here is
   **an equity-driven rule set biased by the opponent model**. No engine in
   this survey contains such rules; they would be code we write, and code that
-  picks the action. `CLAUDE.md:15-17` forbids exactly that without a recorded
-  carve-out in the project rules. So it is a rule decision, not a tooling
-  decision, and this file does not take it.
+  picks the action. `CLAUDE.md`'s forefront rule, under "What may be coded",
+  lets code of ours pick the action, so writing such a rule set is allowed;
+  under "What may not be coded" it must take the game rules and hand
+  evaluation from the engine rather than hand-rolling them, make no model call
+  while a hand is live, and carry no decision's content in stored model
+  output. So it is an architecture decision, not a tooling decision, and this
+  file does not take it.
 - `ENGINE_ALTERNATIVES.md` (under review, not accepted) proposes a different
   answer to the same multiway hole: keep no solver at all for those spots and
   **compute the decision during the hand** by playing the rest of the hand out
   at random inside OpenSpiel's `universal_poker`, measured there at a
-  6-player 52-card no-limit decision inside a 250 ms budget. That option needs
-  the same carve-out, and it competes with everything recommended below.
+  6-player 52-card no-limit decision inside a 250 ms budget. That option sits
+  inside the same boundary — ordinary code deciding during the hand, with the
+  rules and hand evaluation taken from the engine — and it competes with
+  everything recommended below.
 
 Both belong to the reconciliation of the four research sweeps
 (`ENGINE_ALTERNATIVES.md`, `RESOURCES_BOTS.md`, `RESOURCES_EXPLOITATION.md`
-and this file) against `CLAUDE.md`, which is where the architecture and the
-carve-out get decided together. Details and the ranked list are below.
+and this file) against `CLAUDE.md`, which is where the architecture gets
+decided. Details and the ranked list are below.
 
 ## Rating key
 
@@ -992,7 +998,8 @@ was run here; everything below it was read about.
    working five seconds after the install finishes. Whether anything ranks
    hands at decision time, and if so what, is not this file's to say; see the
    recommendation. `treys` is not the comparison for that question in any
-   case, because `CLAUDE.md:19` already keeps it to tests only.
+   case, because `CLAUDE.md`'s forefront rule, under "What may not be coded",
+   already keeps it to tests only.
 3. **OMPEval** — 160 to 312 M hands/s of multiway Monte-Carlo equity, which is
    free speed compared with anything in Python, but **hard-capped at six
    players** (`omp/Constants.h:6`) and it needs a C++ patch and a wrapper you
@@ -1064,8 +1071,9 @@ and the open parts left open.
   hands **5 to 15 times faster than `treys`** from the same Python, and
   installs with one command. OMPEval is faster again once a Monte-Carlo loop
   is hot, and carries a **hard cap of 6 players** (`omp/Constants.h:6`): at 7,
-  8 or 9 seats it cannot be handed every live range at once. `CLAUDE.md:19`
-  already keeps `treys` off the bot's decision path — it is the ground-truth
+  8 or 9 seats it cannot be handed every live range at once. `CLAUDE.md`'s
+  forefront rule, under "What may not be coded", already keeps `treys` off the
+  bot's decision path — it is the ground-truth
   oracle for tests and nothing else — so nothing at runtime is being displaced
   by any of that. These are speeds, not a nomination; which evaluator the bot
   calls when it has to act is in the open list below.
@@ -1090,23 +1098,24 @@ and the open parts left open.
     the live spot: board, pot, stacks, one or two bet sizes, **and a range for
     the opponent**. The first four are bookkeeping. The range is not. Nothing
     in this survey produces it: TexasSolver takes a range as input and never
-    infers one, and the opponent model can supply counted rates and a bucket
-    but `CLAUDE.md:26` reserves **"Assigning a range to an opponent"** to the
-    engine, exactly as it reserves choosing an action. So whatever turns "this
-    player folds to 62% of continuation bets" into a weighted list of holdings
-    would be code we write doing a job the rules give the engine. The earlier
-    draft's sentence "Nothing here is our own poker judgment: the strategy
-    comes out of a borrowed solver" was true of the strategy and false of its
-    input; **it is withdrawn.** Who produces the opponent range, and whether
-    writing that code needs a carve-out, goes to the same reconciliation as
-    the rule set below.
+    infers one; the opponent model can supply counted rates and a bucket, and
+    `CLAUDE.md`'s forefront rule, under "What may be coded", lets our own code
+    assign a range to an opponent, exactly as it lets our code choose an
+    action. So whatever turns "this player folds to 62% of continuation bets"
+    into a weighted list of holdings would be ordinary code of ours, written
+    as testable code with the same inputs and seed giving the same answer.
+    The earlier draft's sentence "Nothing here is our own poker judgment: the
+    strategy comes out of a borrowed solver" was true of the strategy and
+    false of its input; **it is withdrawn.** Who produces the opponent range
+    goes to the same reconciliation as the rule set below.
 - **Where the bot's preflop play comes from.** The market fact is in Part 4 and
   is not in doubt: preflop ranges for 2 to 9 seats are available free or for
   $69 to $319, so no preflop solving is needed to obtain them. What that does
   not settle is what the bot plays preflop from when it has to act. That is a
   decision-path choice of the same class as the heads-up engine above —
-  `CLAUDE.md:28` reserves **"Producing the strategy itself"** to the engine —
-  and nothing measured here bears on it. An earlier draft of this file put
+  `CLAUDE.md`'s forefront rule, under "What may be coded", lets our own code
+  produce the strategy, so it is an architecture choice rather than a rule one
+  — and nothing measured here bears on it. An earlier draft of this file put
   "buy or transcribe ranges for 2 to 9 seats rather than solving preflop at
   all" in the settled list above. **No measurement stood behind it, and it is
   moved here.**
@@ -1124,10 +1133,12 @@ and the open parts left open.
 - **What plays multiway postflop.** The obvious fit with the tools above is an
   equity-driven rule set biased by the opponent model. Say plainly what that
   is: **code we would write that picks the action**, with the opponent model
-  as its input. `CLAUDE.md:15-17` forbids hand-rolled decision logic in place
-  of engine code, so it cannot be adopted on a survey's say-so; it needs a
-  recorded carve-out in the project rules, and the reconciliation is where
-  that is written or refused.
+  as its input. `CLAUDE.md`'s forefront rule, under "What may be coded", lets
+  our own code pick the action, and under "What may not be coded" it still
+  requires the game rules and hand evaluation to come from the engine rather
+  than be hand-rolled. So the rules do not stand in its way, but it cannot be
+  adopted on a survey's say-so either; the reconciliation is where it is
+  chosen or refused.
 - **Whether a multiway decision-time option already exists.** An earlier draft
   of this file asserted that none does. That was true only of the solver
   market surveyed here, and it is the wrong place to look.
@@ -1138,10 +1149,10 @@ and the open parts left open.
   Its own document is candid that the quality of that decision depends on the
   betting abstraction — cutting the choices down to a four-move menu buys it
   far more play-outs per decision than letting it bet any amount does, and it
-  calls the any-amount search mostly noise — and that it needs the same
-  rule carve-out as the rule set
-  above, because the code that compares the play-outs is also code that picks
-  the action. No play-out counts are quoted here on purpose: that document is
+  calls the any-amount search mostly noise — and that it sits inside the same
+  rule boundary as the rule set above, because the code that compares the
+  play-outs is also code that picks the action, which "What may be coded"
+  allows. No play-out counts are quoted here on purpose: that document is
   still a draft under review, its own counts have already moved once while
   this file cited them, and its point above does not depend on them. Read the
   figures there, not here. So the honest statement is: **a multiway

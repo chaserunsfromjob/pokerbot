@@ -44,20 +44,23 @@ have to fold, and the odds of that collapse fast — the arithmetic is in
 [Table B](#table-b-the-multiway-problem). This is why the plan leans on getting
 paid with good hands rather than on bluffing.
 
-One rule constrains everything below. `CLAUDE.md` in this repository forbids any
-AI-written code from deciding a poker action, evaluating a hand, or reading a
-board. Nothing in this design breaks that. Everything the opponent model hands to
-the bot in play is one of three things: **numbers describing what an opponent
-does**, **summaries of those numbers across the whole observed
-population** — a baseline to shrink toward, a
+One rule constrains everything below. `CLAUDE.md` in this repository lets an AI
+assistant write the poker code — the code that picks an action, assigns a range
+to an opponent, reads the board and combines opponent rates — while keeping
+every model call out of the live decision path, refusing to let a decision's
+content come from stored model output, and taking the game rules and hand
+evaluation from the vendored engine. Nothing in this design breaks that.
+Everything the opponent model hands to the bot in play is counted from observed
+actions: **numbers describing what an opponent does**, **summaries of those
+numbers across the whole observed population** — a baseline to shrink toward, a
 threshold to classify against, an archetype for the engine to solve against — and
-**a choice of which engine-produced strategy to load**. It never combines the
-numbers of the opponents in the current hand into anything that moves the bot's
-own action; that is the engine's job. The engine keeps every piece of poker
-judgment. `CLAUDE.md` states exactly where the line falls, in its own two-column
-table under "The forefront rule";
+**a choice of which engine-produced strategy to load**. No model is called while
+a hand is live, nothing a model produced is stored and replayed as a decision,
+and ranking a hand stays with the engine. `CLAUDE.md` states exactly where the
+line falls, in its "What may be coded" and "What may not be coded" lists under
+"The forefront rule";
 [The forefront rule and this design](#the-forefront-rule-and-this-design) below
-points at that table and this design obeys it.
+points at those lists and this design obeys them.
 
 ---
 
@@ -142,8 +145,8 @@ the non-goals above rule out a hand-strength estimator.
 split between two ways of pooling rates, so it is worth restating in full.
 Combining rates across the **live field** — the opponents in the current hand —
 into anything that adjusts the bot's own action is left to the engine
-throughout, and every section below that calls such a combination *reserved to
-the engine* means this design's own architecture, not a prohibition. Combining
+throughout, and where a section below declines such a combination that is this
+design's own architecture, not a prohibition the rule imposes. Combining
 rates across the **observed population** — the whole database, seated players'
 stored rows included, with being seated never the criterion for inclusion — into
 a baseline, a classification split, or an archetype handed to the engine is
@@ -156,8 +159,8 @@ currently seated players held out. Their stored rows are in the pool like anyone
 else's. What makes the pool population-level is that nobody is selected *for*
 being at the table: the pool is every opponent meeting the stored-hands
 threshold, and seating neither adds an opponent to it nor removes one. Filtering
-the pool down to the players in the current hand is the reserved live-field
-combination; leaving them in it is not.
+the pool down to the players in the current hand is the live-field combination
+this design leaves to the engine; leaving them in it is not.
 
 **Every rate combination this design puts on the live decision path — anything
 computed while a hand is in progress, or loaded into play from something that
@@ -405,11 +408,12 @@ three opponents that requires each of them to fold 79% of the time
    opponent.** The bucket of the *one* player you want to fold is irrelevant if
    three others are still in. State this carefully, because the forefront rule
    is next to it: the fold-rate product is **a property the engine-produced
-   strategy must exhibit, not a calculation for AI-written code to do at the
-   table**. No module outside the engine may multiply the live field's fold
-   rates together and adjust a bluff frequency by the result; that is deciding a
-   poker action, and `CLAUDE.md` forbids it — it is the exact case named in the
-   reserved column, and the live-field side of the line summarised in
+   strategy must exhibit**, and no module in this design multiplies the live
+   field's fold rates together at the table and adjusts a bluff frequency by
+   the result. `CLAUDE.md`'s forefront rule, under "What may be coded", would
+   permit code of ours that did — combining opponent rates is ours to write —
+   so this is a design choice about where the multiway discount comes from,
+   not a rule forbidding it; see the line summarised in
    [§1](#the-forefront-rule-and-this-design). The multiway discount arrives
    instead through the engine: Tier 1 solves each counter-strategy offline
    against a full table of population-derived archetype opponents
@@ -642,7 +646,7 @@ rates any of them pools across opponents are the population-level ones in
 [§4.4](#44-bucketing-an-opponent), read from stored history. `select.py` is the
 only module that looks at the live field as a whole, and it does that by counting
 bucket labels ([§4.5](#45-tiers-what-to-build-in-what-order)), never by combining
-live opponents' rates — the line drawn in
+live opponents' rates — a design choice, held to in
 [§1](#the-forefront-rule-and-this-design).
 
 ### 4.2 The stat table
@@ -828,13 +832,13 @@ probability. `MIN_POOL_HANDS = 200` and `MIN_POOL_OPPONENTS = 20` are both
 **unmeasured starting values chosen for this design**, belong in a config file,
 and are to be raised if the pooled rates prove unstable.
 
-**That Σ is population-level, not live-field, and that is what makes it
-allowed.** It sums over every qualifying opponent in the database — people not at
-the current table, and past sessions — and its output is a prior mean that a
-single opponent's rate is shrunk toward. It is never a combination of the rates
-of the opponents in the current hand, and it adjusts no action by itself; the
-engine still chooses every action. This is the allowed side of the live-field
-versus observed-population line in `CLAUDE.md`, summarised in
+**That Σ is population-level, and that is exactly the baseline the rule
+names.** It sums over every qualifying opponent in the database — people not at
+the current table, past sessions, and the stored rows of seated players too,
+since being seated is never the criterion for inclusion — and its output is a
+prior mean that a single opponent's rate is shrunk toward. It adjusts no action
+by itself. This is the observed-population baseline named in the forefront
+rule's "What may be coded", summarised in
 [§1](#the-forefront-rule-and-this-design). A coding task must compute it from
 stored history only, and must never restrict the pool to the players currently
 seated.
@@ -958,14 +962,15 @@ same status. Both belong in a config file and are to be tuned by
   rationale as `BASELINE`: a fixed constant would be a guess about a population
   nobody here has measured.
 
-**That median is population-level, not live-field, and that is what makes it
-allowed.** It is taken over every qualifying opponent in the database, including
-people not at the current table, and it produces a classification threshold — the
-"Sorting an opponent into a bucket" row of the `CLAUDE.md` table — not an
-adjustment to any action. It must never be recomputed over just the opponents in
-the current hand: that would be combining live-field rates, which
-[§1](#the-forefront-rule-and-this-design) reserves to the engine. Each opponent
-is then compared to the threshold **individually**; no opponent's rate is ever
+**That median is population-level, and that is exactly the split the rule
+names.** It is taken over every qualifying opponent in the database, including
+people not at the current table and the stored rows of seated players, and it
+produces a classification split — named in the forefront rule's "What may be
+coded" — not an adjustment to any action. It must never be recomputed over just
+the opponents in the current hand: that would make being seated the criterion
+for inclusion, which the same bullet refuses
+([§1](#the-forefront-rule-and-this-design)). Each opponent is then compared to
+the threshold **individually**; no opponent's rate is ever
 mixed with another live opponent's.
 
 **Hysteresis.** An opponent near a boundary must not flip bucket every hand.
@@ -1402,29 +1407,30 @@ live field collectively as well, and neither touches a live decision:
 live opponents, and the "Multiway gate" column in
 [§4.6](#46-what-each-bucket-means-in-plain-strategic-terms).) It counts bucket
 labels that were each assigned to one opponent on that opponent's own rates; no
-rate is combined with another live
-opponent's rate, and the output is a strategy handle — the "Selecting *which*
-engine strategy to load" row of the `CLAUDE.md` table, not the reserved
-live-field combination described in
-[§1](#the-forefront-rule-and-this-design). A coding task must not "improve" this
-by averaging or multiplying the live opponents' rates to decide what to load;
-that crosses the line.
+rate is combined with another live opponent's rate, and the output is a
+strategy handle. A coding task must not
+"improve" this by pooling the live opponents' rates into a baseline or a split
+to decide what to load: a pool whose criterion is who is seated is not the
+observed population the forefront rule's "What may be coded" names, which is
+the whole database with being seated never the criterion for inclusion
+([§1](#the-forefront-rule-and-this-design)).
 
-**Where the forefront rule comes under strain, and how it is handled.** Defining
-the archetype perturbation ("calls up-weighted") is a judgment about poker made
-outside the engine. It is kept inside the rule by these constraints, which a
-coding task must not relax:
+**Where the forefront rule binds hardest, and how it is met.** Defining the
+archetype perturbation ("calls up-weighted") is a judgment about poker, and the
+rule requires an archetype to be derived rather than hand-written. It is kept
+inside the rule by these constraints, which a coding task must not relax:
 
 - The perturbation is **derived from measured statistics**, not chosen by hand:
   the archetype's action frequencies are set to the pooled shrunk rates of real
   opponents in that bucket, from the bot's own database. **That pooling is
-  population-level, not live-field, and that is what makes it allowed.** It runs
-  offline, over every stored opponent in the bucket — not over the players at any
-  table the bot is sitting at — and what it produces is an archetype handed to
-  the engine's solver, which `CLAUDE.md` permits explicitly. Pooling the rates of
-  the opponents in the current hand to shape a strategy mid-session would be the
-  reserved live-field combination instead; see
-  [§1](#the-forefront-rule-and-this-design).
+  population-level, and that is exactly what the rule names.** It runs offline,
+  over every stored opponent in the bucket — the whole database, not a pool cut
+  down to the players at any table the bot is sitting at — and what it produces
+  is an archetype derived from measured action frequencies alone and handed to
+  the engine's solver, which the forefront rule's "What may be coded" permits
+  explicitly. Cutting the pool down to the opponents in the current hand would
+  make being seated the criterion for inclusion, which that same bullet
+  refuses; see [§1](#the-forefront-rule-and-this-design).
 - The perturbation touches **only action probabilities**. It never references
   hole cards, board cards, or hand strength.
 - The bot's *own* strategy is then computed **entirely by the engine's solver**
@@ -1708,9 +1714,9 @@ now settled rather than conditional:**
 - The per-*table* pooled-profile fallback that this question previously offered
   is **dropped**. It was only ever the answer to "identifiers are unstable",
   and they are not. It is also not to be reintroduced for any other reason:
-  pooling the rates of the players at the current table is a live-field
-  combination, which [§1](#the-forefront-rule-and-this-design) reserves to the
-  engine.
+  pooling the rates of the players at the current table would make being seated
+  the criterion for inclusion, which the forefront rule's observed-population
+  bullet refuses ([§1](#the-forefront-rule-and-this-design)).
 - The rest of this document needs no change: per-opponent tracking was the
   assumption throughout, and every stat, bucket and exploit flag is already
   keyed on `opponent_id`.
