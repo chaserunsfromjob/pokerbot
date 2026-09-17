@@ -70,7 +70,7 @@ generator we own; never ask a model to pick "sometimes".
 into a fixed over-tight or over-loose style and do not correct it, even when told to
 play optimally.
 *Evidence:* Gupta (2023, https://arxiv.org/abs/2308.12466) found ChatGPT plays "like
-a nit", folding roughly 90% of hands from first position, while GPT-4 plays "like a
+a nit", engaging only premium hands and folding a majority, while GPT-4 plays "like a
 maniac", raising **90% of hands from the Button when asked to be GTO**. PokerBench
 saw the same split live: GPT-4 open-raised 15.3% of hands where the fine-tuned model
 open-raised 27.3%.
@@ -127,11 +127,11 @@ AlphaHoldem's **0.017 seconds**, about 300 times slower, rising linearly with pl
 count. Suspicion-Agent reports "the cost per game reaches nearly one dollar" and
 "several minutes to complete a single game of Leduc Hold'em."
 *For our code:* the decision path must run tens of thousands of hands offline on
-this laptop, which rules out a paid network call per action.
+this laptop, which rules out any model call per action, local or networked.
 
 ## What stays out of the decision code
 
-- Never call a language model to choose an action; call the engine's search, which beat every published LLM agent in the one solver head-to-head on record.
+- Never call a language model to choose an action; take the action from our own decision code and the engine's solver (CFR+ beat both GPT-4 and GPT-3.5 agents at Leduc Hold'em, the one head-to-head on record).
 - Never compute pot odds, equity, or a stack-to-pot ratio in generated prose; take every such number from engine or combinatorics code covered by a test.
 - Never ask a model to act "sometimes" or "at random"; draw every mixed-strategy frequency from the engine's strategy using a seeded generator we own.
 - Never let a prompt, a persona, or a temperature setting govern aggression or fold frequency; those belong to the loaded engine strategy alone.
@@ -139,7 +139,7 @@ this laptop, which rules out a paid network call per action.
 - Never rebuild an opponent's range from a transcript or a conversation; range assignment stays with the engine for the whole hand.
 - Never keep opponent history in a prompt; store observed actions and rates in our own database, which is the only store of record.
 - Never let wording or field order change a decision; decisions take a structured game state, and a test must assert identical states return identical actions.
-- Never put a paid or networked model call in the per-action path; the decision path must run tens of thousands of hands offline on one laptop.
+- Never put any model call in the per-action path, local or networked: a local 1.3B model took 5.4 s per decision, and the decision path must run tens of thousands of hands offline on one laptop.
 
 ## Sources visited
 
