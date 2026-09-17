@@ -982,7 +982,7 @@ what the remaining recommendation rests on. What §4.5 and E5 already carry:
 
 **Two more of these have been overtaken since the pinned revision, and are named
 here so the delta is not read as larger than it is.** `OPPONENT_MODEL_DESIGN.md`
-has moved on from `5aa40b8` — it is at commit `5f7a1a8` as this is written — and
+has moved on from `5aa40b8` — it is at commit `5653c6b` as this is written — and
 commit `72eff27` put into its §4.5 two things this document would otherwise be
 recommending: **the operator's solve order** ("Solve 6-handed first; then 8- and
 9-handed as one band; then every remaining seat count", §4.5 at :1287-1288 of
