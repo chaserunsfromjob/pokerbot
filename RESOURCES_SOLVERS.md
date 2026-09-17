@@ -37,11 +37,10 @@ appear:
 - A sharing licence that lets anyone use and change the code but requires
   those changes to be published if the program is offered to others over a
   network. This project's own source is already public and licensed GPL-3.0
-  (the repository is already public; the GPL-3.0 licence is change
-  114e5b3f5b1b, not yet landed: as of 2026-09-17 LICENSE is not on main and
-  GitHub reports no licence), so publishing the changes is not the cost; the
-  extra network clause is, and it is a clause GPL-3.0 does not carry. The
-  name is **AGPL**, the Affero General Public Licence.
+  (its full text is `LICENSE` at the repository root, and the repository is
+  public at `github.com/chaserunsfromjob/pokerbot`), so publishing the changes
+  is not the cost; the extra network clause is, and it is a clause GPL-3.0 does
+  not carry. The name is **AGPL**, the Affero General Public Licence.
 
 Four findings drive the recommendation:
 
@@ -171,9 +170,8 @@ reference implementation, not a product).
   macOS or callable from a Mac.
 - **(e) fits a public GPL-3.0 project** — licence or price acceptable for a
   bot that is itself licensed GPL-3.0 and publishes its source at
-  `github.com/chaserunsfromjob/pokerbot` (the repository is already public;
-  the GPL-3.0 licence is change 114e5b3f5b1b, not yet landed: as of
-  2026-09-17 LICENSE is not on main and GitHub reports no licence).
+  `github.com/chaserunsfromjob/pokerbot` (its full text is `LICENSE` at the
+  repository root, and the repository is public).
   GPL-compatible code is fine, because every derived work here is published
   under GPL-3.0 anyway. Paid tools are fine, because the operator buys them
   for their own use and buying a tool is not publishing it. The ones to watch
