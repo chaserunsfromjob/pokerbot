@@ -14,12 +14,14 @@ equity simulator count, which the table never asks for.
 from __future__ import annotations
 
 import importlib.util
+import inspect
 import pathlib
 
 import pyspiel
 import pytest
 
-from pokerbot.table import TableConfig, _game_string
+from pokerbot.equity_rule import with_odds
+from pokerbot.table import TableConfig, _game_string, game_string
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
 BENCH_PATH = ROOT / "research" / "decision_layer" / "bench_decision_layer.py"
@@ -68,3 +70,44 @@ def test_bench_keeps_its_own_stacks_abstraction_and_odds_sims(bench, seats):
     expected = table_parameters(seats, bench.BENCH_STACK)
     for field in SHARED_FIELDS:
         assert measured[field] == expected[field]
+
+
+def test_game_string_has_no_knob_that_can_overwrite_the_table():
+    """The bet menu is the only thing a caller may change.
+
+    `universal_poker` reads the last of any duplicated key, so a knob that
+    appended free-form parameters could set `blind` or `firstPlayer` a second
+    time and load a game the bot never sits at -- the reversal this change
+    removes, through the front door. An engine parameter is added instead by
+    `equity_rule.with_odds`, which refuses a game definition that already sets
+    `calcOddsNumSims`.
+    """
+    keyword_only = [
+        name
+        for name, parameter in inspect.signature(game_string).parameters.items()
+        if parameter.kind is inspect.Parameter.KEYWORD_ONLY
+    ]
+    assert keyword_only == ["betting_abstraction"], (
+        f"game_string takes the keyword-only knobs {keyword_only!r}; only "
+        "betting_abstraction may be one, because any other route into the "
+        "game definition can overwrite the table's blinds or acting order"
+    )
+
+
+@pytest.mark.parametrize("seats", SEAT_COUNTS, ids=[str(n) for n in SEAT_COUNTS])
+def test_bench_adds_its_odds_sims_through_with_odds(bench, seats):
+    """`calcOddsNumSims` reaches the benchmark's game the guarded way.
+
+    The benchmark's game must be the table's own game definition at its own
+    stacks and bet menu, with the equity simulator switched on by `with_odds`
+    and nothing else touched -- blinds and acting order included.
+    """
+    config = TableConfig(seats=seats, stacks=(bench.BENCH_STACK,) * seats)
+    expected = pyspiel.load_game(
+        with_odds(game_string(config, betting_abstraction="fullgame"), 200)
+    ).get_parameters()
+    measured = bench.build_game(seats, "fullgame", 200).get_parameters()
+    assert measured["calcOddsNumSims"] == 200
+    for field in SHARED_FIELDS:
+        assert measured[field] == expected[field]
+    assert measured == expected
