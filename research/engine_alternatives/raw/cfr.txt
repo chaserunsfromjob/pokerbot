@@ -1,0 +1,22 @@
+# 1-minute load average at start: 3.52
+# uptime: 21:33  up 43 days,  3:49, 2 users, load averages: 3.52 3.80 4.44
+# command: ../../.venv-engines/bin/python bench_cfr.py 45
+external-sampling MCCFR, no card abstraction, bettingAbstraction=fcpa, numpy seed=20260915, 45s per configuration
+6 players, 52 cards, 200bb               rounds=  16944 situations=  1456253 still-new per round (last quarter)=  71.7 [45s]
+6 players, 52 cards, 20bb                rounds=  18008 situations=  1153621 still-new per round (last quarter)=  50.6 [45s]
+6 players, 52 cards, 10bb                rounds=  20462 situations=   964878 still-new per round (last quarter)=  33.9 [45s]
+6 players, 24 cards, 10bb                rounds=  25872 situations=   633310 still-new per round (last quarter)=  15.8 [45s]
+6 players, 20 cards, 10bb                rounds=  26311 situations=   555196 still-new per round (last quarter)=  14.2 [45s]
+3 players, 52 cards, 10bb                rounds=  56564 situations=   882287 still-new per round (last quarter)=  14.5 [45s]
+6 players, 52 cards, 10bb, preflop only  rounds=  31122 situations=   898369 still-new per round (last quarter)=  17.7 [45s]
+
+the same table read at a matched round count of 16,900 rounds - the most every configuration above
+reached - so that a configuration is not credited with more situations merely for running more rounds:
+6 players, 52 cards, 200bb               rounds=  16900 situations=  1453100 still-new per round (last quarter)=  71.7
+6 players, 52 cards, 20bb                rounds=  16900 situations=  1097603 still-new per round (last quarter)=  51.2
+6 players, 52 cards, 10bb                rounds=  16900 situations=   845212 still-new per round (last quarter)=  36.1
+6 players, 24 cards, 10bb                rounds=  16900 situations=   488828 still-new per round (last quarter)=  19.6
+6 players, 20 cards, 10bb                rounds=  16900 situations=   418308 still-new per round (last quarter)=  16.4
+3 players, 52 cards, 10bb                rounds=  16900 situations=   311032 still-new per round (last quarter)=  14.8
+6 players, 52 cards, 10bb, preflop only  rounds=  16900 situations=   627745 still-new per round (last quarter)=  24.0
+# 1-minute load average at end: 4.81
