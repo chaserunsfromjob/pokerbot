@@ -1,5 +1,8 @@
 # Overnight instructions, 2026-09-17
 
+Also posted as GitHub issue #13:
+https://github.com/chaserunsfromjob/pokerbot/issues/13
+
 For the assistant working on `codex/tonight` in
 `github.com/chaserunsfromjob/pokerbot`, and for Rohit reading this in the
 morning. Follow it literally and in order. Two jobs tonight, then stop.
