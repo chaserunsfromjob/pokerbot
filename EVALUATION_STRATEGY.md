@@ -556,39 +556,66 @@ requires judgement to read.
 ### 3.1 Architecture and module boundaries
 
 ```
-tests/arena/    # test-only tree; nothing in the bot's import graph imports it
-  deal.py       # seeded deal generation; replay; seat permutation
-  seats.py      # table construction for n in 2..9; blinds, button rotation
-  personas/     # rule-based opponents, one module each; NO import from bot/
-    __init__.py # registry: name -> constructor(params, rng)
-    base.py     # Persona protocol: act(observation) -> Action
-    params.py   # every persona's parameter vector, in one file, as config
-    preflop.py  # static 169-class starting-hand ranking; test-only; see §3.3
-    draws.py    # draw detection heuristic; test-only; see §3.3
-  runner.py     # plays N hands of a configured table; emits HandRecord rows
-  estimators.py # raw mean, duplicate, baseline control variate
-  stats.py      # bootstrap CIs, paired tests, BH correction, power/sample size
+pokerbot/       # one package, three groups; nothing the bot's entry point
+                # reaches imports an arena module
+  # the arena
+  personas.py   # rule-based opponents: the Persona base, the registry, the
+                # drawn parameter table, and the 169-class preflop ranking
+  league.py     # plays N hands of a configured table; paired deals; bootstrap
+                # CIs, paired tests, BH correction; the decision rule
+  league_config.toml  # every number that decides an accept, pre-registered
+  scoreboard.py # the single result document, printed by one command
+  # the bot (task T2 of BUILD_PLAN.md)
+  search.py     # the bot itself: depth-limited search over the engine's tree
+  equity_rule.py  # the cheap equity-versus-pot-odds check logged beside the
+                # search and never played
+  baselines.py  # always-fold, always-call and uniform-random opponents
+  arena.py      # runs the bot against those baselines; despite the name it is
+                # not the arena above, and the two do not import each other
+  # shared, holding no strategy either way
+  table.py      # table construction for n in 2..9; blinds, button rotation
+  record.py     # the HandRecord rows a run emits
   invariants.py # chip conservation, side pots, legal-action checks
-  report.py     # the single result document
+  replay.py     # walks one hand to its end from a seed, for invariant I6
+  provenance.py # the engine commit every record is stamped with
 ```
+
+**Where the arena lives, and why it moved.** This section used to put the whole
+arena in a test-only tree under `tests/arena/`, with the boundary enforced by the
+*path* a module sat on. It is now a set of ordinary modules inside `pokerbot/`.
+The reason is that the harness is a command the operator runs — `python -m
+pokerbot.scoreboard` — and a command that only exists inside the test tree is not
+a command. **The boundary itself did not move; only the way it is checked did.**
+It is no longer "is this file under `tests/`" but "does a fresh process that
+imports the bot's entry point and plays a hand have `pokerbot.personas` or
+`pokerbot.league` in `sys.modules`", which `tests/test_adapter_scope.py` asks
+directly.
 
 **Hard boundaries, each with a reason:**
 
-- `personas/` **must not import the bot's own code** — nothing from the package
-  that holds the bot's strategy and its decisions — and a test asserts this by
-  inspecting the import graph. A persona that shares *the bot's* code cannot
-  detect a bug in that shared code. **The vendored engine is not the bot, and
-  personas do call it**: made-hand strength goes to the engine's own evaluator,
-  the same call the bot makes, deliberately and with no second implementation
+- **The direction that is enforced.** The arena may import the bot and the
+  engine, and **nothing reachable from the bot's entry point may import
+  `pokerbot.personas`, `pokerbot.league` or `pokerbot.scoreboard`**, nor anything
+  under `tests/`; `tests/test_adapter_scope.py::test_playing_a_hand_never_loads_the_arena`
+  asserts exactly that, by playing a whole hand in a fresh process and failing if
+  any of those three modules ended up in `sys.modules`.
+- **The direction that is a rule and not yet a test.** `personas.py` **must not
+  import the bot's own strategy code** — which now means `pokerbot.search` and
+  `pokerbot.equity_rule`, the modules task T2 added; when this was written no bot
+  strategy module existed to name, and nothing checks this side of the boundary
+  today. A persona that shares *the bot's* code cannot detect a bug in that
+  shared code. **The vendored engine is not the bot, and personas do call it**:
+  made-hand strength goes to the engine's own evaluator, the same call the bot
+  makes, deliberately and with no second implementation
   ([§3.3](#33-the-forefront-rule-and-the-personas), which settles this and is
-  the section to read if the two ever look as though they disagree). The
-  boundary also runs the other way: nothing reachable from the bot's entry point
-  may import anything under `tests/`.
-- `runner.py` owns the game rules by delegating to the vendored engine. It does
-  not implement betting rules itself. See
+  the section to read if the two ever look as though they disagree).
+- `league.py` owns the game rules by delegating to the vendored engine through
+  `table.py`. It does not implement betting rules itself. See
   [Engine requirements](#engine-requirements).
-- `estimators.py` and `stats.py` never see cards, only per-hand utilities. This
-  keeps the statistics testable with synthetic numbers, with no poker involved.
+- The estimator and statistics half of `league.py` — the bootstrap, the paired
+  test, the Benjamini-Hochberg step — never sees cards, only per-hand utilities.
+  This keeps the statistics testable with synthetic numbers, with no poker
+  involved.
 - Every run writes its full configuration — engine commit, bot version, persona
   parameters, seed, table sizes, stack depths — into the result file. A result
   whose configuration is not recorded is not a result.
@@ -681,14 +708,18 @@ only in the test role, never in the bot's decision path. Personas both rank
 hands and choose actions. This needs saying out loud rather than being
 left ambiguous:
 
-- **Personas are test-only code, in the same category as
-  `tests/ground_truth/`.** The whole `arena` tree lives under `tests/`. **The
-  import-graph boundary is the rule, and it runs in one direction only:** `tests/`
-  may import the bot and the engine; nothing reachable from the bot's entry point
-  may import anything under `tests/`. A test walks the bot's import graph and
-  fails if any module under `tests/` appears in it. A persona that shares code
-  with the bot cannot detect a bug in that shared code, and a bot that can reach
-  persona code has smuggled hand-rolled poker judgement into itself.
+- **Personas are never-in-the-bot code, in the same category as
+  `tests/ground_truth/`.** They ship as `pokerbot/personas.py`, a sibling of the
+  bot's own modules rather than a tree under `tests/` ([§3.1](#31-architecture-and-module-boundaries)
+  says why), and the category is unchanged by that. **The import boundary is the
+  rule, and it runs in one direction only:** the arena may import the bot and the
+  engine; nothing reachable from the bot's entry point may import
+  `pokerbot.personas`, `pokerbot.league` or `pokerbot.scoreboard`, or anything
+  under `tests/`. A test plays a hand through the bot's entry point in a fresh
+  process and fails if any of those modules turns up in `sys.modules`. A persona
+  that shares code with the bot cannot detect a bug in that shared code, and a
+  bot that can reach persona code has smuggled hand-rolled poker judgement into
+  itself.
 - **The forefront rule governs the bot under test, not its sparring partners.**
   What `CLAUDE.md` reserves to the engine, it reserves inside the bot — the
   thing that plays — and it already licenses an outside evaluator (`treys`) in
@@ -703,43 +734,55 @@ left ambiguous:
      engine and `treys` then surfaces in `tests/ground_truth/` rather than being
      silently absorbed by the harness.
   2. **Is this hole-card pair in the top `TIGHT_FRACTION` before the flop?**
-     (`nit`, `tag`) → **not hand evaluation at all.** It is a ranking of the 169
-     strategically distinct starting hands, and *neither the engine's evaluator
-     nor `treys` provides one*: both score a complete five-card hand, and two hole
-     cards are not one. Personas use a **static 169-class ranking table
-     transcribed from a named published source**, and the source is **the Chen
-     formula** ([Chen & Ankenman 2006](#s-chen)), because it assigns every one of
-     the 169 classes a score and so gives the total order that "top X%" requires.
-     The alternative considered and rejected, [Sklansky &
-     Malmuth 1999](#s-sklansky), is the better-known ranking but groups only the
-     playable top and leaves the rest unordered, which a "top X%" rule cannot use.
-     The table is a constant, checked into `tests/arena/personas/preflop.py`, with
-     its source named in the file. **Neither book was retrieved in this survey**
-     (see [Sources](#sources)); the transcription must be checked against the
-     named edition before the table is used, and a test must assert the table has
-     exactly 169 entries and is a strict ranking.
+     (`nit`, `tag`) → **the engine's own showdowns, and no transcribed table.**
+     It is a ranking of the 169 strategically distinct starting hands, and
+     *neither the engine's evaluator nor `treys` scores two cards*: both score a
+     complete five-card hand. But the engine can be asked to *finish* the hand.
+     `personas.preflop_equities` deals one representative combination of each of
+     the 169 classes out against random opponents on the engine's own
+     `universal_poker` game, `preflop_rollouts` times each, and counts how often
+     the engine's own showdown said it won. Sorting the 169 by that number and
+     accumulating their combination counts gives the "top X%" figure. **The
+     ordering is the engine's; the enumeration and the combination counts are
+     ours**, which is exactly the line `CLAUDE.md` draws.
 
-     **Read against the current forefront rule, this table sits on the engine's
-     side of the line, and is admissible only because it is not in the bot.**
-     `CLAUDE.md` hands us the *enumeration* of the 169 classes and reserves
-     *ranking or valuing* a hand to the engine, and a Chen score is a ranking.
-     Three things make it a fixture rather than a breach: it is transcribed from
-     a published table rather than being poker judgement invented here; it lives
-     under `tests/` and a test fails if the bot's import graph ever reaches it;
-     and the engine has nothing to offer in its place, because neither it nor
-     `treys` scores two cards. That is exactly the position the rule already
-     grants `treys` — named, external, test-only, never in the decision path. If
-     a chosen engine does turn out to rank starting hands, this table is deleted
-     and that call is used instead.
-  3. **Am I drawing?** (`calling_station`'s "any made hand or draw") → **also not
-     something either evaluator does.** Detecting four to a flush or an
-     open-ended straight is a property of an incomplete hand. This is a small,
-     explicit, **test-only heuristic** — count suits, count rank gaps across hole
-     cards and board — living in `tests/arena/personas/draws.py`, labelled
-     test-only in the file, and unit-tested against enumerated examples. It is
-     allowed to be crude and it is allowed to be wrong at the margins: a persona
-     is a caricature, and a caricature that misreads a gutshot is still a valid
-     fixture. It must never be imported by anything but personas.
+     **The sample is a sample, and the two consequences are pinned by tests.**
+     `preflop_rollouts` showdowns separate two classes only to within one
+     showdown, so some classes tie: ties are broken by class name,
+     alphabetically, an arbitrary rule written down so that the order does not
+     depend on the order the map was built in. And the count has to be big enough
+     that the order is the engine's rather than the sampler's:
+     `tests/test_personas.py` asserts, **at the count the config actually runs**,
+     how many of the 169 the engine separates and that its anchors hold — aces
+     first, seven-deuce offsuit in the bottom tenth, every pair QQ+ above every
+     suited connector. A count too small to hold them fails the suite.
+
+     **What this replaces.** This document previously specified a **static
+     169-class table transcribed from the Chen formula** ([Chen &
+     Ankenman 2006](#s-chen)), checked into `tests/arena/personas/preflop.py`,
+     with [Sklansky & Malmuth 1999](#s-sklansky) considered and rejected for
+     leaving the tail unordered. That route is **not taken**. Neither book was
+     retrieved in this survey (see [Sources](#sources)), so the transcription
+     could never have been checked against its named edition; and a transcribed
+     score is poker judgement arriving from outside the engine, which asking the
+     engine avoids entirely. The Chen table remains the fallback if the engine
+     ever stops being able to run a hand out.
+  3. **Am I drawing?** (`calling_station`'s "any made hand or draw") → **asked of
+     the engine too, as a number rather than a category.** Detecting four to a
+     flush or an open-ended straight is a property of an incomplete hand, which
+     no evaluator scores. This document previously specified a small hand-rolled
+     heuristic — count suits, count rank gaps — in
+     `tests/arena/personas/draws.py`. **That heuristic is not written.** What a
+     persona actually uses is `personas.showdown_equity`: the engine deals the
+     rest of the hand out `equity_rollouts` times and says how often these cards
+     beat one random hand from here, and a hand that is drawing is a hand whose
+     equity is above a threshold even though it has nothing yet. A persona's rule
+     is then a comparison against a drawn threshold rather than a category.
+     Cheaper to state, cheaper to test, and it moves the last piece of
+     hand-reading judgement off our side of the line and onto the engine's. It is
+     allowed to be crude: a persona is a caricature, and a caricature whose idea
+     of a draw is "this is worth more than a third of the pot" is still a valid
+     fixture. It must never be imported by anything reachable from the bot.
 - **A persona is deliberately bad poker.** That is its function. It is not a
   claim about correct play and must never be promoted into one.
 
@@ -785,6 +828,12 @@ because a later coding task should implement it literally.
    | Primary | 6 | 0.50 |
    | Secondary | 8 and 9, treated as one band | 0.30 (0.15 each) |
    | Everything else | whichever other seat counts ran that night | 0.20, split equally |
+
+   **A band with no seat count in it drops out and the remaining weights are
+   rescaled to sum to one, and the report says when that happened**: leaving them
+   summing to less than one would silently shrink the headline by the missing
+   band's share, and rescaling does move the remaining band weights, so it is
+   printed rather than done quietly.
 
    The last row is a **rule, not a fixed list**, because not every seat count
    runs every night ([§3.6](#36-the-run-budget-turning-hands-into-hours)). On a
@@ -1773,7 +1822,7 @@ later session can see what was decided and does not reopen it.
 
 | Was | Question | Decided | Written into |
 | --- | --- | --- | --- |
-| Q1 | Which hand evaluator may the fake opponents use? | Method call, delegated. Made-hand strength goes to **the engine's own evaluator**; preflop ranking uses a **static 169-class table from a named published source**; draw detection is a **small, explicitly test-only heuristic**. All three live under `tests/`, outside the bot's import graph, labelled test-only. | [§3.3](#33-the-forefront-rule-and-the-personas) |
+| Q1 | Which hand evaluator may the fake opponents use? | Method call, delegated. **All three answers are now the engine.** Made-hand strength goes to **the engine's own evaluator**; the preflop ranking is **derived from the engine's own showdowns**, `preflop_rollouts` per class, not from a transcribed table — the static Chen table this row used to name is the fallback, not the route taken; draw detection is **an equity threshold on the engine's rollout**, not the hand-rolled `draws.py` heuristic, which is not written. All three ship as `pokerbot/personas.py`, a sibling of the bot's modules rather than a tree under `tests/`, and the boundary is unchanged: nothing reachable from the bot's entry point may import them, and a fresh-process test asserts it. | [§3.3](#33-the-forefront-rule-and-the-personas), [§3.1](#31-architecture-and-module-boundaries) |
 | Q2 | What mix of table sizes should the headline number weight? | **The operator's own answer**, 2026-09-15, and it is an *ordering*, nothing more: mostly 6-handed, then 8/9 treated as one band. **Everything else in this cell is a design choice made in this document and carries no operator authority** — the numbers 0.50 / 0.30 / 0.20, the four-run length of the window, the nightly cadence, the fixed 3 → 4 → 5 → 7 rotation cycle, and the decision not to require a matching bot SHA inside the window. Each of those is revisable without asking the operator; the ordering is not. Headline weights 0.50 / 0.30 / 0.20, the last split equally over whichever other seat counts ran. Nightly runs always play 2, 6, 8 and 9 and rotate one of 3/4/5/7, and every seat count still gates a release, under the rule §3.5 point 2 states in these words: **A release requires every seat count from 2 to 9 to have passed within the last four nightly acceptance runs. The window counts runs, not bot versions: an earlier run's pass still counts when the bot SHA has changed since, and the report prints the date and bot SHA of every last pass beside it. A seat count whose last pass falls outside that window prints as NOT GATED and blocks the release exactly as a failure would.** **The cadence that sets is nightly, not four-nightly**: an unbroken sequence of nightly acceptance runs keeps all eight seat counts inside the window permanently, and a change that passes tonight is released tonight. | [§3.5](#35-the-decision-rule-is-this-change-an-improvement), point 2 |
 | Q3 | How much may a change lose against one persona while winning overall? | Method call, delegated. The document's own operating rule stands: **any per-persona regression blocks the change** unless a written override names the persona and the reason. **No numeric tolerance**; loosening waits for data. | [§3.5](#35-the-decision-rule-is-this-change-an-improvement), "Non-inferiority, per persona" |
 | Q4 | How long may an evaluation run take? | **The operator's position**, recorded 2026-09-15, is *"no multi-day computing; hours on one laptop"* — that, and no numbers. The **10-hour** acceptance ceiling and the **1-hour** routine bound are **design choices made here** to turn that position into arithmetic, on the same footing as the 0.50/0.30/0.20 weights. | [§3.6](#36-the-run-budget-turning-hands-into-hours) |
