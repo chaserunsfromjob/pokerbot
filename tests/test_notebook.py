@@ -289,17 +289,20 @@ def test_edge_case_posting_the_blind_is_not_vpip():
 def test_edge_case_walk_counts_the_hand_and_gives_nobody_a_vpip_opportunity():
     """Row 2. Everyone folds to the big blind, who never gets to act.
 
-    `hands_dealt` still increments for everybody. `vpip`'s denominator does
-    not: row 2 says a walk "increments `hands_dealt` only. No `vpip`
-    opportunity for anyone", and that named row is what this code follows,
-    over section 4.2's and Table C's general "opponent was dealt in" wording.
-    The stoker settled that reading on escalation 241e2f235c94. It is the
-    folders' opportunity that goes as well as the big blind's -- "for anyone"
-    is the whole of the row's point, since none of the five folders was
-    offered a pot worth entering either.
+    `hands_dealt` still increments for everybody. No preflop denominator
+    does: row 2 says a walk "increments `hands_dealt` only", with no
+    opportunity for `vpip`, `pfr` or any other preflop stat, for anyone, and
+    that named row is what this code follows, over section 4.2's and Table
+    C's general "opponent was dealt in" wording. The stoker settled that
+    reading on escalation 241e2f235c94. It is the folders' opportunity that
+    goes as well as the big blind's -- "for anyone" is the whole of the row's
+    point, since none of the five folders was offered a pot worth entering
+    either.
 
-    Only `vpip` is affected. The row names `vpip` and no other stat, so `pfr`
-    and everything else keep the denominator section 4.2 gives them.
+    `pfr` goes with `vpip`, which is what keeps the two on one denominator,
+    so `gap = vpip - pfr` stays a difference between two rates measured over
+    the same hands. `limp` and every other preflop opportunity go the same
+    way.
 
     What the walk gives nobody is a postflop spot, and it gives the big blind
     no chance to act at all: no limp opportunity, no `three_bet` spot, no
@@ -322,11 +325,15 @@ def test_edge_case_walk_counts_the_hand_and_gives_nobody_a_vpip_opportunity():
     for seat in range(6):
         assert book.hands(f"p{seat}") == 1.0
         assert counted(book, f"p{seat}", "vpip") == (0.0, 0.0)
-        assert counted(book, f"p{seat}", "pfr") == (0.0, 1.0)
+        assert counted(book, f"p{seat}", "pfr") == (0.0, 0.0)
+        # The folders' preflop opportunities go too, not just the blinds':
+        # `limp` and `open_raise` are spots the four folders in front of the
+        # blinds did reach, and row 2 takes them away with the rest.
+        assert counted(book, f"p{seat}", "limp") == (0.0, 0.0)
+        assert counted(book, f"p{seat}", "open_raise") == (0.0, 0.0)
+        assert counted(book, f"p{seat}", "three_bet") == (0.0, 0.0)
         assert counted(book, f"p{seat}", "wtsd") == (0.0, 0.0)
     # The big blind never acted, so nothing that needs a decision is recorded.
-    assert counted(book, "p2", "limp") == (0.0, 0.0)
-    assert counted(book, "p2", "three_bet") == (0.0, 0.0)
     assert counted(book, "p2", "afq") == (0.0, 0.0)
 
 
@@ -486,12 +493,16 @@ def test_edge_case_alias_reuse_is_undetectable_and_decay_is_the_mitigation():
          (0, 0, "fold", 0), (0, 1, "fold", 0), (0, 2, "fold", 0)],
         net=[0, -50, -100, 150, 0, 0],
     )
+    # Seat 4 enters the second hand so that it is not a walk, which row 2
+    # would strip of its `pfr` opportunity; seat 3, the watched alias, still
+    # folds it.
     folder = make_record(
         6,
         0,
-        [(0, 3, "fold", 0), (0, 4, "fold", 0), (0, 5, "fold", 0),
-         (0, 0, "fold", 0), (0, 1, "fold", 0)],
-        net=[0, -50, 50, 0, 0, 0],
+        [(0, 3, "fold", 0), (0, 4, "call", 100), (0, 5, "fold", 0),
+         (0, 0, "fold", 0), (0, 1, "fold", 0), (0, 2, "call", 0)],
+        streets_dealt=(1, 2, 3),
+        net=[0, -50, 100, 0, -100, 0],
     )
     book = Notebook(NotebookConfig(half_life=1.0))
     book.observe(raiser, {3: "reused"})

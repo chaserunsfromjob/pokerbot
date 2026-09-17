@@ -468,84 +468,90 @@ def hand_counts(
     raised = {m.seat for m in preflop if m.kind == RAISE}
     # A walk is a hand nobody entered: every seat that could act folded, so
     # the big blind won the blinds without acting. Section 4.7 row 2 gives it
-    # one handling -- "increments `hands_dealt` only. No `vpip` opportunity
-    # for anyone" -- and that named row is what is implemented here, in
-    # preference to section 4.2's and Table C's general wording for `vpip`'s
-    # denominator, "opponent was dealt in" / "one per hand by definition".
-    # The two readings disagree only on this hand, and only about `vpip`; the
+    # one handling -- it "increments `hands_dealt` only", with no opportunity
+    # for `vpip`, `pfr` or any other preflop stat, for anyone -- and that
+    # named row is what is implemented here, in preference to section 4.2's
+    # and Table C's general wording for the `vpip` and `pfr` denominator,
+    # "opponent was dealt in" / "one opportunity per hand by definition". The
     # stoker settled it on escalation 241e2f235c94 in favour of the named row.
-    # "For anyone" is read as written: the folders lose the opportunity too.
+    # "For anyone" is read as written: the folders lose their opportunities
+    # too, and every preflop stat below loses them with `vpip`. That is what
+    # keeps `vpip` and `pfr` on one denominator, so that `gap`, which is
+    # `vpip` - `pfr`, stays a difference between two rates measured over the
+    # same hands.
     walk = not voluntary
-    for seat in seats:
-        if not walk:
+    if not walk:
+        for seat in seats:
             add(seat, "vpip", 1.0 if seat in voluntary else 0.0, 1.0)
-        add(seat, "pfr", 1.0 if seat in raised else 0.0, 1.0)
+            add(seat, "pfr", 1.0 if seat in raised else 0.0, 1.0)
 
-    first_preflop: dict[int, Move] = {}
-    money_before_seat: dict[int, bool] = {}
-    money_in = False
-    for move in preflop:
-        if move.seat not in first_preflop:
-            first_preflop[move.seat] = move
-            money_before_seat[move.seat] = money_in
-        if move.kind in (CALL, BET, RAISE):
-            money_in = True
+        first_preflop: dict[int, Move] = {}
+        money_before_seat: dict[int, bool] = {}
+        money_in = False
+        for move in preflop:
+            if move.seat not in first_preflop:
+                first_preflop[move.seat] = move
+                money_before_seat[move.seat] = money_in
+            if move.kind in (CALL, BET, RAISE):
+                money_in = True
 
-    for seat, move in first_preflop.items():
-        # limp: the option exists when no raise stands in front of them and
-        # they are not the big blind, who cannot call the big blind.
-        if move.aggressions_before == 0 and seat != bb_seat:
-            add(seat, "limp", 1.0 if move.kind == CALL else 0.0, 1.0)
-        # open_raise: first in, nobody having put money in before them.
-        if move.aggressions_before == 0 and not money_before_seat[seat]:
-            add(
-                seat,
-                "open_raise",
-                1.0 if move.kind == RAISE else 0.0,
-                1.0,
-                behind=_behind_label(move.behind),
-                blind=blind_label(seat),
-            )
-
-    open_move = next((m for m in preflop if m.kind == RAISE and m.aggressions_before == 0), None)
-    committed_so_far: dict[int, float] = {}
-    seen_three_bet_spot: set[int] = set()
-    for move in preflop:
-        spent = committed_so_far.get(move.seat, 0.0)
-        behind_chips = view.stacks[move.seat] - spent - move.to_call
-        if move.aggressions_before == 1 and move.seat not in seen_three_bet_spot:
-            seen_three_bet_spot.add(move.seat)
-            if behind_chips > 0:
-                add(move.seat, "three_bet", 1.0 if move.kind == RAISE else 0.0, 1.0)
-            # fold_to_steal, R4: in a blind, facing an open made by a player
-            # with one or no players behind them, with no other caller.
-            if (
-                open_move is not None
-                and move.seat in (sb_seat, bb_seat)
-                and move.seat != open_move.seat
-                and open_move.behind <= 1
-                and not any(
-                    m.kind in (CALL, BET, RAISE)
-                    for m in preflop
-                    if open_move.order < m.order < move.order
-                )
-            ):
+        for seat, move in first_preflop.items():
+            # limp: the option exists when no raise stands in front of them and
+            # they are not the big blind, who cannot call the big blind.
+            if move.aggressions_before == 0 and seat != bb_seat:
+                add(seat, "limp", 1.0 if move.kind == CALL else 0.0, 1.0)
+            # open_raise: first in, nobody having put money in before them.
+            if move.aggressions_before == 0 and not money_before_seat[seat]:
                 add(
-                    move.seat,
-                    "fold_to_steal",
-                    1.0 if move.kind == FOLD else 0.0,
+                    seat,
+                    "open_raise",
+                    1.0 if move.kind == RAISE else 0.0,
                     1.0,
-                    behind=_behind_label(open_move.behind),
+                    behind=_behind_label(move.behind),
+                    blind=blind_label(seat),
                 )
-        committed_so_far[move.seat] = spent + move.amount
 
-    if open_move is not None:
-        reply = next(
-            (m for m in preflop if m.seat == open_move.seat and m.aggressions_before >= 2),
-            None,
+        open_move = next(
+            (m for m in preflop if m.kind == RAISE and m.aggressions_before == 0), None
         )
-        if reply is not None:
-            add(open_move.seat, "fold_to_three_bet", 1.0 if reply.kind == FOLD else 0.0, 1.0)
+        committed_so_far: dict[int, float] = {}
+        seen_three_bet_spot: set[int] = set()
+        for move in preflop:
+            spent = committed_so_far.get(move.seat, 0.0)
+            behind_chips = view.stacks[move.seat] - spent - move.to_call
+            if move.aggressions_before == 1 and move.seat not in seen_three_bet_spot:
+                seen_three_bet_spot.add(move.seat)
+                if behind_chips > 0:
+                    add(move.seat, "three_bet", 1.0 if move.kind == RAISE else 0.0, 1.0)
+                # fold_to_steal, R4: in a blind, facing an open made by a player
+                # with one or no players behind them, with no other caller.
+                if (
+                    open_move is not None
+                    and move.seat in (sb_seat, bb_seat)
+                    and move.seat != open_move.seat
+                    and open_move.behind <= 1
+                    and not any(
+                        m.kind in (CALL, BET, RAISE)
+                        for m in preflop
+                        if open_move.order < m.order < move.order
+                    )
+                ):
+                    add(
+                        move.seat,
+                        "fold_to_steal",
+                        1.0 if move.kind == FOLD else 0.0,
+                        1.0,
+                        behind=_behind_label(open_move.behind),
+                    )
+            committed_so_far[move.seat] = spent + move.amount
+
+        if open_move is not None:
+            reply = next(
+                (m for m in preflop if m.seat == open_move.seat and m.aggressions_before >= 2),
+                None,
+            )
+            if reply is not None:
+                add(open_move.seat, "fold_to_three_bet", 1.0 if reply.kind == FOLD else 0.0, 1.0)
 
     # -- per street: cbet, fold_to_cbet, afq, af, check_raise, sizing --------
     last_aggressor: dict[int, int | None] = {}

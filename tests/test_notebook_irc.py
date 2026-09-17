@@ -12,7 +12,10 @@ copyright with no grant, so it is read and measured and never copied in"
 run of hands written in the corpus's own `pdb` line format, from the table in
 `ADA` below, so that `research/parse_irc_baseline.py` -- the reader that
 document's numbers came out of -- can be pointed at it unchanged. The test
-then feeds the same hands to the notebook and checks the two agree.
+then feeds the same hands to the notebook and checks the two agree, and pins
+the one hand they are built to disagree about: a walk, which
+`OPPONENT_MODEL_DESIGN.md` section 4.7 row 2 keeps out of every preflop
+denominator and the survey's reader counts like any other dealt hand.
 
 The line format, from that script's own docstring:
 
@@ -45,21 +48,26 @@ SMALL_BLIND, BIG_BLIND = 1, 2
 BET_SIZE = (2.0, 2.0, 4.0, 4.0)
 STREET_KEYS = ("pre", "flop", "turn", "river")
 
-#: The one player the two readers are compared on. Four kinds of hand, each
+#: The one player the two readers are compared on. Five kinds of hand, each
 #: repeated, chosen so the figures come out round and the arithmetic in
 #: `test_the_counter_agrees_with_the_surveys_own_reader` can be followed.
 #:
 #:   ten hands  raise and bet every street, and show
 #:   ten hands  call and call every street, and show
 #:   five hands call, then fold to the flop bet
-#:   25 hands   fold before the flop
+#:   24 hands   fold before the flop
+#:   one hand   a walk: everybody folds to the big blind, who never acts
+#:
+#: The walk is the one hand the two readers count differently, which is why
+#: exactly one of them is here.
 ADA = "ada"
 ADA_POSITION = 3  # never in a blind, so the blinds never confuse the picture
 HAND_KINDS = (
     ("bettor", 10),
     ("caller", 10),
     ("flop_folder", 5),
-    ("preflop_folder", 25),
+    ("preflop_folder", 24),
+    ("walk", 1),
 )
 
 #: Everyone else. Ten names over five seats and fifty hands is 25 hands each,
@@ -91,7 +99,13 @@ def _rows_for(kind: str) -> dict[int, dict[str, str]]:
     elif kind == "preflop_folder":
         rows[3]["pre"] = "f"
         rows[4]["pre"] = "r"
-    else:  # pragma: no cover - the four kinds above are the whole table
+    elif kind == "walk":
+        # Nobody enters. Position 2 posts the big blind and never acts, which
+        # the corpus writes as a bare `B`; every other seat folds.
+        rows[2]["pre"] = "B"
+        rows[3]["pre"] = "f"
+        rows[4]["pre"] = "f"
+    else:  # pragma: no cover - the five kinds above are the whole table
         raise ValueError(kind)
     return rows
 
@@ -258,18 +272,32 @@ def quartile_row(report: str, size: int) -> list[str]:
 
 
 def test_the_counter_agrees_with_the_surveys_own_reader(tmp_path):
-    """One player, two readers, the same numbers.
+    """One player, two readers, the same numbers -- and the one hand they part on.
 
     `ada` plays fifty hands: ten she raises before the flop and bets every
     street, ten she calls before the flop and then checks and calls every
-    street, five she calls and then folds to the flop bet, and 25 she folds
-    before the flop.
+    street, five she calls and then folds to the flop bet, 24 she folds
+    before the flop, and one is a walk, where everybody folds to the big
+    blind and nobody enters the pot.
+
+    The walk is in the fixture because the two readers disagree about it, and
+    only about it. The survey's reader gives every row it reads a `vpip` and a
+    `pfr` opportunity, so a walk is an opportunity like any other dealt hand
+    and its denominator is all fifty. The notebook follows
+    `OPPONENT_MODEL_DESIGN.md` section 4.7 row 2, which gives a walk no
+    preflop opportunity for anyone, so its denominator is 49. Both numerators,
+    `hands_dealt`, `wtsd` and AF are untouched by the disagreement, and the
+    rate the script prints -- numerator over hands dealt -- is untouched too.
+    Asserted below both ways round, so the divergence cannot drift silently.
+
     So, by the definitions in `OPPONENT_MODEL_DESIGN.md` section 4.2 and in
-    the script's docstring, which are the same definitions:
+    the script's docstring, which agree everywhere except on that one hand:
 
       hands dealt      50
-      vpip             10 + 10 + 5 = 25 of 50        = 0.500
-      pfr              10 of 50                      = 0.200
+      vpip             10 + 10 + 5 = 25; of 50 (script)  = 0.500
+                                       of 49 (notebook) = 0.510
+      pfr              10; of 50 (script)                = 0.200
+                           of 49 (notebook)              = 0.204
       saw a flop       10 + 10 + 5 = 25
       showed at the end   10 + 10 = 20 of 25         = 0.800
       postflop bets and raises  10 hands x 3 streets = 30
@@ -295,19 +323,34 @@ def test_the_counter_agrees_with_the_surveys_own_reader(tmp_path):
         assert book.observe(record, names)
 
     assert book.hands(ADA) == 50
-    assert book.tally(ADA, "vpip") == (25.0, 50.0)
-    assert book.tally(ADA, "pfr") == (10.0, 50.0)
+    # The one place the two readers part. The walk is a hand `ada` was dealt,
+    # so both count it in `hands_dealt`; but section 4.7 row 2 gives a walk no
+    # preflop opportunity for anyone, so the notebook leaves it out of `vpip`'s
+    # and `pfr`'s denominators, where the survey's reader counts every row it
+    # reads. 49, not 50.
+    assert book.tally(ADA, "vpip") == (25.0, 49.0)
+    assert book.tally(ADA, "pfr") == (10.0, 49.0)
     assert book.tally(ADA, "wtsd") == (20.0, 25.0)
     postflop_br = sum(book.tally(ADA, f"af_bets_raises[{s}]")[0] for s in ("flop", "turn", "river"))
     postflop_calls = sum(book.tally(ADA, f"af_calls[{s}]")[0] for s in ("flop", "turn", "river"))
     assert (postflop_br, postflop_calls) == (30.0, 30.0)
 
-    # The same four figures, formatted the way the script formats them.
+    # The same four figures, formatted the way the script formats them: the
+    # script divides `vpip` and `pfr` by hands dealt, and over hands dealt the
+    # two agree to the last digit.
     assert f"{book.tally(ADA, 'vpip')[0] / book.hands(ADA) * 100:.1f}" == "50.0"
     assert f"{book.tally(ADA, 'pfr')[0] / book.hands(ADA) * 100:.1f}" == "20.0"
     assert f"{postflop_br / postflop_calls:.2f}" == "1.00"
     k, n = book.tally(ADA, "wtsd")
     assert f"{k / n * 100:.1f}" == "80.0"
+
+    # Over the notebook's own denominator the walk shows, and that is the whole
+    # of the divergence: one hand out of the denominator lifts each rate.
+    vpip_k, vpip_n = book.tally(ADA, "vpip")
+    pfr_k, pfr_n = book.tally(ADA, "pfr")
+    assert f"{vpip_k / vpip_n * 100:.1f}" == "51.0"  # the reader prints 50.0
+    assert f"{pfr_k / pfr_n * 100:.1f}" == "20.4"  # the reader prints 20.0
+    assert (vpip, pfr) == ("50.0/50.0/50.0", "20.0/20.0/20.0")
 
 
 def test_the_fixture_is_the_corpus_shape_and_not_the_corpus(tmp_path):

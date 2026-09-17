@@ -135,8 +135,12 @@ FOLD_RATES = [0.50, 0.60, 0.70, 0.80, 0.90]
 OPPONENT_COUNTS = [1, 2, 3, 4, 5]
 
 # Table C -- illustrative anchors, opportunity rates, and target widths.
-# `rate` 1.00 is not a placeholder: it is forced by a "was dealt in" denominator
-# in section 4.2. Two rates are measured (below); the rest are placeholders.
+# `rate` 1.00 is not a placeholder: it is the bound forced by section 4.2's
+# "was dealt in and the hand was not a walk" denominator, which section 4.7
+# row 2 fixes on the authority of escalation 241e2f235c94. The rate a real
+# population would show is 1.00 less its walk rate, so the table prints 1.00 as
+# an upper bound and its last column says so.
+# Two rates are measured (below); the rest are placeholders.
 PLACEHOLDER_RATES = {0.08, 0.15}
 DEALT_IN_STATS = {"vpip", "pfr"}
 # Measured per-hand opportunity rates: the nine-handed pooled figures in
@@ -151,7 +155,7 @@ MEASURED_RATES = {"fold_to_cbet": 0.030, "wtsd": 0.187}
 # prints it once backticks and bold markers are stripped by `clean_cell`.
 RATE_SOURCE_MEASURED = "measured, OPPONENT_BASELINE.md §2, nine-handed"
 RATE_SOURCE_PLACEHOLDER = "illustrative placeholder"
-RATE_SOURCE_DEALT_IN = "one per hand by definition"
+RATE_SOURCE_DEALT_IN = "one per hand dealt, less the walk rate: an upper bound (§4.7 row 2)"
 # The postflop rows, which section 4.2's `three_bet` sentence claims to be
 # nearer than `three_bet` itself.
 POSTFLOP_STATS = {"fold_to_cbet", "wtsd"}
