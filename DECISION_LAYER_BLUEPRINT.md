@@ -520,10 +520,11 @@ was never released, so this is a recipe to reimplement, not code to take.
 
 Requirement (c) - beating *these* people, not an imaginary perfect opponent - is
 the project's stated reason for existing (`CLAUDE.md`: "consistently beat real
-human players at a table of 3 or more, not chase a theoretical optimum that does
-not exist at that table size"). A blueprint is, by construction, the opposite of
-that: it is an approximation to the play that nobody can exploit, which is also
-the play that exploits nobody. So the question is how to bend one.
+human players at every table size from 2 to 9 players, and be judged mostly at
+6, 8 and 9 seats ... not chase a theoretical optimum that does not exist once
+three or more players are in the pot"). A blueprint is, by construction, the
+opposite of that: it is an approximation to the play that nobody can exploit,
+which is also the play that exploits nobody. So the question is how to bend one.
 
 There are three shapes, in increasing cost.
 
@@ -650,11 +651,12 @@ yardstick on small games.**
 The reason is one measurement and it is not a close call. Going from two players
 to six costs the exhaustive methods a factor of about seventeen thousand in
 iterations completed, and costs external sampling a factor of ten. This project
-targets "a table of 3 or more". The methods that walk the whole tree manage
-three or four passes in three minutes at six seats, which is nothing, and the
-abstractions used here were the smallest that can physically be dealt - a real
-abstraction is far larger, so the three-handed column is optimistic too. Nothing
-about a faster laptop changes that shape.
+targets "every table size from 2 to 9 players", judged mostly at 6, 8 and 9
+seats. The methods that walk the whole tree manage three or four passes in three
+minutes at six seats, which is nothing, and the abstractions used here were the
+smallest that can physically be dealt - a real abstraction is far larger, so the
+three-handed column is optimistic too. Nothing about a faster laptop changes
+that shape.
 
 CFR+ earns its place alongside rather than instead, because it is better than
 external sampling wherever the tree fits, and "wherever the tree fits" is

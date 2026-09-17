@@ -1285,28 +1285,24 @@ Tier 1**, which should not be commissioned before the cap question has an answer
 since the answer may change which engine the project is built on.
 
 **Q5 — Does "2 to 9 players" change the project's stated goal?**
-`OPPONENT_MODEL_DESIGN.md` §1 has already been brought to the new requirement: it
-now states the goal as beating the humans at the table "at **every table size
-from 2 to 9 players**", and notes that two players is the one size where the
-equilibrium guarantee exists. `CLAUDE.md` in this repository has not: it still
-states the goal as beating humans "at a table of 3 or more". **The two disagree
-because `CLAUDE.md` is stale, not because it is right:** its "3 or more" was
-written before the operator stated the firm 2-to-9 requirement, and that
-requirement governs. `CLAUDE.md` is to be brought to 2 to 9, and a queued task
-does exactly that. The design document's
-case against pursuing game-theory-optimal play still rests on the multiplayer
-result in [Brown 2020](#s-brown2020) §6.6, which is explicitly about tables of
+`OPPONENT_MODEL_DESIGN.md` §1 states the goal as beating the humans at the table
+"at **every table size from 2 to 9 players**", and notes that two players is the
+one size where the equilibrium guarantee exists. `CLAUDE.md` in this repository
+states the same scope: beating real human players "at **every table size from 2
+to 9 players**, and be judged mostly at **6, 8 and 9 seats**", which is the
+weighting `EVALUATION_STRATEGY.md` §3.5 applies. **The two agree, and the 2-to-9
+requirement governs.** The design document's case against pursuing
+game-theory-optimal play still rests on the multiplayer result in
+[Brown 2020](#s-brown2020) §6.6, which is explicitly about tables of
 three or more and does not reach two-handed play, where the opposite conclusion
 holds
 ([§1.7](#17-heads-up-is-a-different-game-and-it-inverts-the-designs-founding-argument)).
-*Recommendation:* bring `CLAUDE.md`'s scope wording up to 2 to 9, rather than
-narrowing the design document back to three or more, and keep the substance —
-support two-handed play as a deliberately conservative mode, tight deviation cap
-(R13), blueprint-first — rather than rewriting the project's premise around it.
-**This document does not edit `CLAUDE.md`**; the change is the operator's and the
-stoker's, and is already queued. **Urgency: low, but settle it before Tier 1
-solves are commissioned**, because it decides how `n = 2` is treated in the solve
-budget in Q4.
+*Recommendation:* keep the substance — support two-handed play as a deliberately
+conservative mode, tight deviation cap (R13), blueprint-first — rather than
+rewriting the project's premise around `n = 2`, which the goal covers but the
+evaluation weights least. **This document does not edit `CLAUDE.md`.**
+**Urgency: low, but settle it before Tier 1 solves are commissioned**, because it
+decides how `n = 2` is treated in the solve budget in Q4.
 
 ---
 
