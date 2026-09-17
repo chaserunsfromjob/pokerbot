@@ -178,8 +178,9 @@ def print_verdict(out: TextIO, verdict: Verdict, seats: Sequence[int]) -> None:
     absent = [n for n in seats if n not in verdict.weights]
     if absent:
         write(
-            f"    seat count(s) {', '.join(str(n) for n in absent)} were asked for "
-            f"and produced no cell, so they carry no weight in this number"
+            "    the following seat counts were asked for and produced no cell, "
+            "so they carry no weight in this number: "
+            + ", ".join(str(n) for n in absent)
         )
     write(
         f"  cross-check, ordinary t-interval: "

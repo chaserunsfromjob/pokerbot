@@ -448,7 +448,7 @@ def _bootstrap_p_value(means: Sequence[float], resamples: int) -> float:
 
     The +1 in each term is the standard correction (Davison and Hinkley): a
     bootstrap p-value of exactly zero claims more than `resamples` draws can
-    support, so the observed statistic is counted in on both sides.
+    support, so the +1 counts the observed statistic in once across both tails.
 
     Used only by the Benjamini-Hochberg step on the per-table-size tests.
     """
@@ -693,11 +693,14 @@ def _pool(paired, keep) -> tuple[list[float], bool]:
     consecutive and, across a cell boundary, not dependent on each other at all.
     Those straddling blocks are a fraction of roughly (block length - 1) divided
     by (cell length) of all blocks drawn, so at the configured 20-hand block and
-    1000-hand cells they are under 2% of them, and each one understates rather
-    than overstates the dependence, which widens nothing it should narrow. The
-    honest fix is to draw blocks within a cell and never across a join; it is
-    not done here because the effect is smaller than the bootstrap's own
-    resampling error at these sizes.
+    1000-hand cells they are under 2% of them. The error they cause runs the
+    wrong way: a straddling block joins hands that do not depend on each other,
+    which understates the dependence in the data and so can report an interval
+    narrower than the truth. That is the anti-conservative direction -- it makes
+    a result look more certain than it is -- and what keeps it harmless is the
+    bound above, under 2% of the blocks drawn. The honest fix is to draw blocks
+    within a cell and never across a join; it is not done here because the
+    effect is smaller than the bootstrap's own resampling error at these sizes.
     """
     values: list[float] = []
     memory = False

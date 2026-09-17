@@ -41,7 +41,8 @@ equity_rollouts = 24          # engine showdowns per persona hand-strength looku
 # the engine's and not the sampler's: at 120 the engine separates only 85 of the
 # 169 classes and the rest are settled by the tie-break, and a class moves by
 # more than five points of "top X%" between one count and another. At 600 it
-# separates 146 of them, the largest tie is three classes wide, and the anchors
+# separates 146 of them at the time of writing, and the suite fails below 140;
+# no tie is wider than three classes at this count, and the anchors
 # `tests/test_personas.py` asserts hold. It is computed once per process and
 # cached, and costs about 1.1 seconds there -- a whole run is minutes.
 preflop_rollouts = 600

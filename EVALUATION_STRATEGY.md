@@ -556,17 +556,28 @@ requires judgement to read.
 ### 3.1 Architecture and module boundaries
 
 ```
-pokerbot/       # the package; the arena modules below are siblings of the bot's,
-                # and nothing the bot's entry point reaches imports one of them
+pokerbot/       # one package, three groups; nothing the bot's entry point
+                # reaches imports an arena module
+  # the arena
   personas.py   # rule-based opponents: the Persona base, the registry, the
                 # drawn parameter table, and the 169-class preflop ranking
   league.py     # plays N hands of a configured table; paired deals; bootstrap
                 # CIs, paired tests, BH correction; the decision rule
   league_config.toml  # every number that decides an accept, pre-registered
   scoreboard.py # the single result document, printed by one command
+  # the bot (task T2 of BUILD_PLAN.md)
+  search.py     # the bot itself: depth-limited search over the engine's tree
+  equity_rule.py  # the cheap equity-versus-pot-odds check logged beside the
+                # search and never played
+  baselines.py  # always-fold, always-call and uniform-random opponents
+  arena.py      # runs the bot against those baselines; despite the name it is
+                # not the arena above, and the two do not import each other
+  # shared, holding no strategy either way
   table.py      # table construction for n in 2..9; blinds, button rotation
   record.py     # the HandRecord rows a run emits
   invariants.py # chip conservation, side pots, legal-action checks
+  replay.py     # walks one hand to its end from a seed, for invariant I6
+  provenance.py # the engine commit every record is stamped with
 ```
 
 **Where the arena lives, and why it moved.** This section used to put the whole
@@ -582,19 +593,22 @@ directly.
 
 **Hard boundaries, each with a reason:**
 
-- `personas.py` **must not import the bot's own strategy code** — nothing from
-  the modules that hold the bot's decisions — and a test asserts this by running
-  the bot's entry point in a fresh process and failing if the arena modules were
-  loaded. A persona that shares *the bot's* code cannot detect a bug in that
+- **The direction that is enforced.** The arena may import the bot and the
+  engine, and **nothing reachable from the bot's entry point may import
+  `pokerbot.personas`, `pokerbot.league` or `pokerbot.scoreboard`**, nor anything
+  under `tests/`; `tests/test_adapter_scope.py::test_playing_a_hand_never_loads_the_arena`
+  asserts exactly that, by playing a whole hand in a fresh process and failing if
+  any of those three modules ended up in `sys.modules`.
+- **The direction that is a rule and not yet a test.** `personas.py` **must not
+  import the bot's own strategy code** — which now means `pokerbot.search` and
+  `pokerbot.equity_rule`, the modules task T2 added; when this was written no bot
+  strategy module existed to name, and nothing checks this side of the boundary
+  today. A persona that shares *the bot's* code cannot detect a bug in that
   shared code. **The vendored engine is not the bot, and personas do call it**:
   made-hand strength goes to the engine's own evaluator, the same call the bot
   makes, deliberately and with no second implementation
   ([§3.3](#33-the-forefront-rule-and-the-personas), which settles this and is
-  the section to read if the two ever look as though they disagree). The
-  boundary runs in one direction only: the arena may import the bot and the
-  engine, and **nothing reachable from the bot's entry point may import
-  `pokerbot.personas`, `pokerbot.league` or `pokerbot.scoreboard`**, nor anything
-  under `tests/`.
+  the section to read if the two ever look as though they disagree).
 - `league.py` owns the game rules by delegating to the vendored engine through
   `table.py`. It does not implement betting rules itself. See
   [Engine requirements](#engine-requirements).
