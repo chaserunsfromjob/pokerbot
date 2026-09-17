@@ -20,16 +20,17 @@ import pytest
 
 from pokerbot import Action, InvariantViolation, Table, TableConfig
 from pokerbot.arena import (
+    OPPONENTS,
     bootstrap_interval,
     check_invariants,
     format_report,
     main,
+    opponent_by_name,
     percentile,
     run,
     seat_opponents,
 )
 from pokerbot import arena as arena_module
-from pokerbot.baselines import OPPONENTS, always_call, always_fold, uniform_random
 from pokerbot.search import Decision
 
 REPO_ROOT = pathlib.Path(__file__).resolve().parent.parent
@@ -96,14 +97,15 @@ def test_every_trivial_opponent_can_be_played_against(opponent):
 
 
 def test_the_three_opponents_only_ever_play_a_move_on_the_menu():
-    import random
-
+    """They are `personas.py`'s agents now, reached by this file's own names,
+    and they still cannot play a move the engine did not offer."""
     hand = Table(TableConfig(seats=6)).new_hand(seed=63)
-    rng = random.Random(0)
+    players = [opponent_by_name(name) for name in OPPONENTS]
     while not hand.is_finished:
         menu = hand.legal_actions()
-        for player in (always_fold, always_call, uniform_random):
-            assert player(menu, rng) in menu
+        seat = hand.current_seat()
+        for player in players:
+            assert player(hand, seat) in menu
         hand.apply_action(Action.CALL if Action.CALL in menu else menu[0])
 
 

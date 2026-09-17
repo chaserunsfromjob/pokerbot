@@ -569,9 +569,12 @@ pokerbot/       # one package, three groups; nothing the bot's entry point
   search.py     # the bot itself: depth-limited search over the engine's tree
   equity_rule.py  # the cheap equity-versus-pot-odds check logged beside the
                 # search and never played
-  baselines.py  # always-fold, always-call and uniform-random opponents
-  arena.py      # runs the bot against those baselines; despite the name it is
-                # not the arena above, and the two do not import each other
+  arena.py      # runs the bot against three of the personas above -- always
+                # fold, always call, draw from the menu at random -- and counts
+                # what it won; despite the name it is not the arena above. It
+                # had three trivial opponents of its own in a `baselines.py`
+                # beside it and they were the same three twice, so it reaches
+                # for the personas instead and that file is gone
   # shared, holding no strategy either way
   table.py      # table construction for n in 2..9; blinds, button rotation
   record.py     # the HandRecord rows a run emits

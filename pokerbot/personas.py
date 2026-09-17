@@ -481,8 +481,8 @@ class UniformRandom(Persona):
     """Draws uniformly from whatever the engine allows.
 
     Not one of section 3.2's set. It is here as the neutral comparison arm the
-    decision rule needs when nothing better is named, and it is the one agent in
-    this file that T2's `baselines.py` is also likely to contain.
+    decision rule needs when nothing better is named, and it is also T2's
+    arena's `random` opponent: this is the one copy of it in the package.
     """
 
     mistake = "no strategy at all"
