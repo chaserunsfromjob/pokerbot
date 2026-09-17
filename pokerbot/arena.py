@@ -448,10 +448,12 @@ def run(
                         f"different bytes, and the clock had already cut "
                         f"{truncated_so_far} of the bot's searches short. A "
                         f"search the clock ends does not depend on its seed "
-                        f"alone, so this says the {budget_s * 1000:.0f} ms "
-                        f"budget is too small on this machine, not that the "
-                        f"table replays differently. Give it a longer budget "
-                        f"or fewer finishes a move and run it again."
+                        f"alone, so the likeliest cause is that the "
+                        f"{budget_s * 1000:.0f} ms budget is too small on this "
+                        f"machine rather than that the table replays "
+                        f"differently. Rule the clock out first: give it a "
+                        f"longer budget or fewer finishes a move and run it "
+                        f"again; only then look at the adapter."
                     )
                 else:
                     reason = (
