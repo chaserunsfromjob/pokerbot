@@ -4,12 +4,18 @@
   "bot": "search",
   "bot_seat": 0,
   "budget_s": 0.25,
-  "commit": "2c96266d9929b9f4f6b1005211a1ed042abb7627",
+  "commit": "9a8d3cce1ebf37de7057314957cc4514d3b64c28",
   "confidence": 0.95,
-  "decision_time_max_s": 0.06128299981355667,
-  "decision_time_median_s": 0.034081958001479506,
-  "decision_time_p99_s": 0.058279292192310095,
-  "decisions": 1229,
+  "decision_time_max_s": 0.08167450013570487,
+  "decision_time_median_s": 0.03374520898796618,
+  "decision_time_p99_s": 0.0576702079270035,
+  "decisions": 1242,
+  "decisions_by_street": {
+    "flop": 25,
+    "preflop": 1216,
+    "river": 0,
+    "turn": 1
+  },
   "decisions_starved": 0,
   "decisions_truncated": 0,
   "hands_played": 1000,
@@ -29,14 +35,14 @@
     "I7": "the pot arithmetic only; the showdown half is the test suite's"
   },
   "load_at_end": [
-    3.61279296875,
-    3.6689453125,
-    3.8623046875
+    3.75390625,
+    3.9443359375,
+    4.0478515625
   ],
   "load_at_start": [
-    4.09033203125,
-    3.7490234375,
-    3.8994140625
+    3.59423828125,
+    3.9404296875,
+    4.05224609375
   ],
   "opponents": {
     "1": "random",
@@ -46,18 +52,18 @@
     "5": "random"
   },
   "playouts_per_candidate": 200,
-  "records_sha256": "b01e0d95cabd5f414e6cfa3bfa601872cda7325f2103686208f265ad144c5d75",
-  "rule_agreed": 634,
-  "rule_agreement": 0.51586655817738,
-  "rule_decisions": 1229,
-  "rule_time_max_s": 0.003187082940712571,
+  "records_sha256": "f15d7bf5f56883723053e70b0cd419a66ed4cccc053847768398a1366605155a",
+  "rule_agreed": 589,
+  "rule_agreement": 0.4742351046698873,
+  "rule_decisions": 1242,
+  "rule_time_max_s": 0.0032244580797851086,
   "schema": "pokerbot.arena_report/1",
   "seats": 6,
   "seed": 20260917,
   "small_blind": 50,
-  "started": "2026-09-17T00:56:42-0400",
-  "wall_clock_s": 43.10275916592218,
-  "win_rate_bb_per_100": 2265.531166666667,
-  "win_rate_ci_high": 3750.4778333333334,
-  "win_rate_ci_low": 849.1611666666665
+  "started": "2026-09-17T01:21:35-0400",
+  "wall_clock_s": 43.058109667152166,
+  "win_rate_bb_per_100": 2286.204833333333,
+  "win_rate_ci_high": 3823.836666666667,
+  "win_rate_ci_low": 801.0726666666667
 }
