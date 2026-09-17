@@ -1,8 +1,8 @@
 # bench_decision_layer, open_spiel 2.0.2, python 3.13.15, betting=fullgame, odds-sims=200
 # Measured with the blinds posted in reverse seat order (the big blind on engine
-# seat 0) and the heads-up acting order reversed, so these runs were not the bot's
-# exact table; that changes nothing about the timing and memory figures below, but
-# they were not taken on the table `pokerbot/table.py` deals.
+# seat 0) and the heads-up acting order reversed, so these runs were not taken on
+# the table `pokerbot/table.py` deals. What that reversal was measured to cost is
+# in the provenance table at the end of DECISION_LAYER_SEARCH.md.
 # started 2026-09-16T22:47:17-0400, load1 at start 5.58
 
 option | seats | budget_s | rep | load1 | latency_s min/med/max | playouts/decision min/med/max | worlds/decision med | dec/s | peak_rss_MiB
