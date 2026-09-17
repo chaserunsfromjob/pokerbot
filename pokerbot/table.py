@@ -529,6 +529,12 @@ def deal_check(seats: int) -> tuple[bool, str]:
     Answers the question `EVALUATION_STRATEGY.md` section 4.5 insists on: a
     seat count the engine cannot deal is recorded NOT RUN with the reason,
     never counted as passed. Returns (True, "") or (False, reason).
+
+    Only the engine's own refusal is caught -- a `pyspiel.SpielError` or a
+    `ValueError`. Any other exception is a bug in this adapter, and it is let
+    out rather than printed as a seat count the engine will not deal. An
+    engine that refuses a seat count outright may abort the process rather
+    than raise, so this covers only a refusal that reaches Python.
     """
     try:
         config = TableConfig(seats=seats)
@@ -536,7 +542,7 @@ def deal_check(seats: int) -> tuple[bool, str]:
         return False, str(exc)
     try:
         hand = Hand(config, seed=0, button=0)
-    except Exception as exc:  # noqa: BLE001 - the reason is the point
+    except (pyspiel.SpielError, ValueError) as exc:
         return False, f"{type(exc).__name__}: {exc}"
     if hand.current_seat() is None:
         return False, "the engine deals the hand already finished"

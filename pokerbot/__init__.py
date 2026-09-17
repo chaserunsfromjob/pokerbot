@@ -6,6 +6,11 @@ seats, offers each seat the five-move menu `{fold, call, half pot, pot,
 all-in}`, writes down everything that happened, and reads the payouts back out
 of the engine. It contains no strategy, no search and no opponent model; those
 are tasks T2 and T3.
+
+The one thing in it that chooses an action is `replay.play_scripted_hand`,
+which draws uniformly from the engine's own menu so that a hand can be walked
+to its end for invariant I6's cross-process check. It reads no cards and is not
+a baseline to measure a bot against.
 """
 
 from .invariants import InvariantViolation, require

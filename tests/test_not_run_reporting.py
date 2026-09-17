@@ -5,11 +5,9 @@ engine cannot deal is recorded **NOT RUN**, never as passed. Two halves have to
 work for that to hold, and this file tests each of them rather than trusting
 that the reporting looks right on the day.
 
-The first half is noticing: `deal_check` has to come back with a reason, not
-just a no. The second half is the reporting in `conftest.py`, which has to put
-that invariant down as NOT RUN and not as a pass. Only the second half is
-proved by the live run today, where I3 at two seats is the single NOT RUN row,
-so the first half gets its own test here.
+The live run proves that a skip prints NOT RUN, because I3 at two seats is
+one. It does not prove that `deal_check` gives a reason, and it does not prove
+the tally refuses to call a skip a pass, so both get their own test here.
 
 Not one of the seven invariants, so no marker and no row in the seat table.
 """
@@ -22,7 +20,10 @@ import shutil
 import subprocess
 import sys
 
+import pytest
+
 from pokerbot import MAX_SEATS, MIN_SEATS, deal_check, dealable_seat_counts
+from pokerbot import table as table_module
 
 REPO_ROOT = pathlib.Path(__file__).resolve().parent.parent
 
@@ -80,3 +81,74 @@ def test_a_skipped_invariant_is_tallied_not_run_and_never_passed(tmp_path):
     assert "PASS" not in two, f"the skipped seat count was counted as passed: {two!r}"
     assert "PASS" in three, f"the seat count that ran was not printed PASS: {three!r}"
     assert "made up for this test" in out, "the NOT RUN reason was not printed"
+
+
+def test_an_adapter_bug_is_not_reported_as_an_undealable_seat_count(monkeypatch):
+    """A `KeyError` in the adapter is our mistake, not the engine's refusal.
+
+    `deal_check`'s whole job is to say why a seat count will not deal, and it
+    is believed when it says so. If it swallowed every exception, a broken
+    `Hand.__init__` would be printed as "6 seats would not deal" and
+    the bug would be hidden behind a NOT RUN row. So only the engine's own
+    refusal is caught; anything else comes straight back out.
+    """
+
+    def exploding_init(self, *args, **kwargs):
+        raise KeyError("button")
+
+    monkeypatch.setattr(table_module.Hand, "__init__", exploding_init)
+    with pytest.raises(KeyError):
+        deal_check(6)
+
+
+def test_a_violated_invariant_stops_the_run_and_nothing_later_is_measured(tmp_path):
+    """The abort in `conftest.py` is the other half of section 4.5's rule.
+
+    A violated invariant is not a failing test among others: the run stops
+    there, so that no number measured after it can be quoted. That is only
+    provable by running pytest and reading what did and did not happen, so
+    this runs the real `conftest.py` over a fake invariant that violates at
+    the first of two seat counts, with a second test file that must never be
+    reached.
+    """
+    shutil.copy(REPO_ROOT / "tests" / "conftest.py", tmp_path / "conftest.py")
+    (tmp_path / "test_a_violating_invariant.py").write_text(
+        "import pytest\n"
+        "\n"
+        "from pokerbot.invariants import InvariantViolation\n"
+        "\n"
+        "@pytest.mark.invariant('IX')\n"
+        "@pytest.mark.parametrize('seats', [2, 3])\n"
+        "def test_fake(seats):\n"
+        "    if seats == 2:\n"
+        "        raise InvariantViolation('IX', 'made up for this test')\n"
+        "    assert True\n",
+        encoding="utf-8",
+    )
+    (tmp_path / "test_z_later.py").write_text(
+        "def test_must_not_run():\n"
+        "    assert True\n",
+        encoding="utf-8",
+    )
+    env = dict(os.environ, PYTHONPATH=str(REPO_ROOT))
+    done = subprocess.run(
+        [sys.executable, "-m", "pytest", "-p", "no:cacheprovider", "-v", str(tmp_path)],
+        cwd=tmp_path,
+        capture_output=True,
+        text=True,
+        env=env,
+        check=False,
+    )
+    out = done.stdout + done.stderr
+    assert done.returncode != 0, out
+    assert "Interrupted" in out, f"the session was not interrupted: {out}"
+    assert "run aborted" in out, f"the abort was not explained: {out}"
+
+    three = [line for line in out.splitlines() if line.strip().startswith("3 ")]
+    assert all("PASS" not in line for line in three), (
+        f"a seat count after the violation was counted as passed: {three!r}"
+    )
+    later = [line for line in out.splitlines() if "test_must_not_run" in line]
+    assert all("PASSED" not in line for line in later), (
+        f"a test after the violation ran and was counted: {later!r}"
+    )

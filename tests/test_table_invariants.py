@@ -60,7 +60,7 @@ def require_dealable(seats: int) -> None:
     """Skip with the engine's reason when a seat count will not deal."""
     ok, reason = deal_check(seats)
     if not ok:
-        pytest.skip(f"NOT RUN: the engine will not deal {seats} seats -- {reason}")
+        pytest.skip(f"NOT RUN: {seats} seats would not deal -- {reason}")
 
 
 def uneven_stacks(seats: int) -> tuple[int, ...]:
@@ -465,9 +465,12 @@ def test_i7_pot_adds_up_and_showdown_matches_ground_truth(seats):
         f"only {len(contested)} of {len(records)} hands at {seats} seats reached "
         "a showdown, which is too few to test the showdown against the evaluator",
     )
+
+    compared = 0
     for record in contested:
         if len(record.board) != 5:
             continue
+        compared += 1
         expected = expected_payouts(record.contributions, record.folded, ranks_for(record))
         for seat in range(seats):
             require(
@@ -477,3 +480,9 @@ def test_i7_pot_adds_up_and_showdown_matches_ground_truth(seats):
                 f"treys ranks the live hands so that it should be paid {expected[seat]}",
                 record.to_json(),
             )
+    require(
+        compared >= 5,
+        "I7",
+        f"only {compared} of the {len(contested)} showdowns at {seats} seats had a "
+        "five-card board, which is too few to test the showdown against the evaluator",
+    )
