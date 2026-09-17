@@ -59,10 +59,24 @@ import time
 
 import pyspiel
 
+# The top of the repository, so that `import pokerbot` works whatever the
+# working directory is -- this script is run by its path, and the IS-MCTS
+# child process runs from `research/decision_layer/`.
+REPO_ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+if REPO_ROOT not in sys.path:
+    sys.path.insert(0, REPO_ROOT)
+
+from pokerbot.table import TableConfig, game_string  # noqa: E402  (after the path fix)
+
 CARD_SUITS = "cdhs"
 CARD_RANKS = "23456789TJQKA"
 # fcpa: fold / call / pot-sized bet / all-in, the four-move menu.
 FOLD, CALL = 0, 1
+
+#: The benchmark's own stack depth, one per seat: 200 big blinds of the table's
+#: 100-chip big blind. The blinds and the acting order are *not* the
+#: benchmark's own; they come from the table, below.
+BENCH_STACK = 20000
 
 
 def load_avg() -> float:
@@ -76,24 +90,26 @@ def peak_rss_mib() -> float:
 
 
 def build_game(seats: int, abstraction: str = "fcpa", odds_sims: int = 0):
-    """52-card no-limit hold'em, 200 big blinds deep, `seats` players."""
-    blinds = " ".join(["100", "50"] + ["0"] * (seats - 2))
-    stacks = " ".join(["20000"] * seats)
+    """The bot's own table, 200 big blinds deep, `seats` players.
+
+    The game definition is asked of `pokerbot.table.game_string`, which is the
+    single place the table the bot plays on is written down. That is the
+    point: blinds posted in the wrong seat order, or a heads-up acting order
+    the other way round, would still deal and still time, and the stopwatch
+    would be held over a game the bot never sits in.
+
+    Three things here are the benchmark's own and are passed in: the stack
+    depth, the betting abstraction (this benchmark compares `fcpa` with
+    `fullgame`, where the table always plays `fchpa`), and the engine's equity
+    simulator count, which the table never asks for.
+    """
+    config = TableConfig(seats=seats, stacks=(BENCH_STACK,) * seats)
     return pyspiel.load_game(
-        "universal_poker",
-        {
-            "numPlayers": seats,
-            "numRounds": 4,
-            "blind": blinds,
-            "firstPlayer": "3 1 1 1" if seats > 2 else "2 1 1 1",
-            "numSuits": 4,
-            "numRanks": 13,
-            "numHoleCards": 2,
-            "numBoardCards": "0 3 1 1",
-            "stack": stacks,
-            "bettingAbstraction": abstraction,
-            "calcOddsNumSims": odds_sims,
-        },
+        game_string(
+            config,
+            betting_abstraction=abstraction,
+            extra_params={"calcOddsNumSims": odds_sims},
+        )
     )
 
 

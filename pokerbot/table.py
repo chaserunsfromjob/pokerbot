@@ -36,7 +36,7 @@ import enum
 import functools
 import random
 import re
-from typing import Iterable, Sequence
+from typing import Iterable, Mapping, Sequence
 
 import pyspiel
 
@@ -128,12 +128,27 @@ class TableConfig:
         object.__setattr__(self, "stacks", stacks)
 
 
-def _game_string(config: TableConfig, engine_stacks: Sequence[int]) -> str:
+def game_string(
+    config: TableConfig,
+    engine_stacks: Sequence[int] | None = None,
+    *,
+    betting_abstraction: str = BETTING_ABSTRACTION,
+    extra_params: Mapping[str, object] | None = None,
+) -> str:
     """The ACPC game definition, written the way `universal_poker` reads it.
 
     Engine seat 0 posts the small blind at every seat count. At two seats the
     acting order is reversed before the flop, which is the heads-up rule and
     the whole of invariant I5's special case.
+
+    This is the one place the table the bot plays on is spelled out, and it is
+    public so that anything measuring that table -- the decision-layer
+    benchmark in `research/decision_layer/` above all -- asks for the game
+    here rather than writing the blinds out again and drifting from them. The
+    two knobs are for exactly that use: `betting_abstraction` for a study
+    comparing bet menus, and `extra_params` for engine parameters the table
+    itself never sets, such as `calcOddsNumSims`. Leave `engine_stacks` out
+    and the config's own stacks are used, in engine seat order.
     """
     n = config.seats
     if n == 2:
@@ -144,13 +159,21 @@ def _game_string(config: TableConfig, engine_stacks: Sequence[int]) -> str:
             [str(config.small_blind), str(config.big_blind)] + ["0"] * (n - 2)
         )
         first_player = "3 1 1 1"  # under the gun first, then the small blind
+    if engine_stacks is None:
+        engine_stacks = config.stacks
     stacks = " ".join(str(int(s)) for s in engine_stacks)
+    extra = "".join(f",{name}={value}" for name, value in (extra_params or {}).items())
     return (
         f"universal_poker(betting=nolimit,numPlayers={n},numRounds=4,"
         f"blind={blind},firstPlayer={first_player},numSuits=4,numRanks=13,"
         f"numHoleCards=2,numBoardCards=0 3 1 1,stack={stacks},"
-        f"bettingAbstraction={BETTING_ABSTRACTION})"
+        f"bettingAbstraction={betting_abstraction}{extra})"
     )
+
+
+def _game_string(config: TableConfig, engine_stacks: Sequence[int]) -> str:
+    """The table's own game definition: `game_string` with nothing changed."""
+    return game_string(config, engine_stacks)
 
 
 @functools.lru_cache(maxsize=256)

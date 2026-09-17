@@ -750,7 +750,7 @@ URL given.
 
 | Number | Where it comes from |
 | --- | --- |
-| Every play-out, latency, memory and load figure | `research/decision_layer/bench_decision_layer.py`, raw output in `research/decision_layer/raw/bench_fcpa.txt`, `bench_table_budget_10s.txt`, `bench_fullgame.txt` |
+| Every play-out, latency, memory and load figure | `research/decision_layer/bench_decision_layer.py`, raw output in `research/decision_layer/raw/bench_fcpa.txt`, `bench_table_budget_10s.txt`, `bench_fullgame.txt`. These runs were taken with the blinds posted in reverse seat order and the heads-up acting order reversed, which changes nothing about their timing and memory claims but means they were not the bot's exact table; the benchmark now builds its game from `pokerbot.table.game_string` and the figures here have not been re-measured on it. |
 | Which OpenSpiel pieces import, and the AA-versus-72o equity | `research/decision_layer/check_openspiel_modules.py`, raw output in `research/decision_layer/raw/openspiel_modules.txt`; the 0.871/0.004 is the engine's own answer and is compared with no published table |
 | The IS-MCTS crash | both programs above; exit status -11 (SIGSEGV), 8 of 8 runs at 3 and 6 seats |
 | Line numbers in `universal_poker.cc` and `is_mcts.cc` | the OpenSpiel source at tag `v2.0.2`, fetched 2026-09-16; source quotations, not measurements |
