@@ -55,7 +55,8 @@ outside library that does nothing but rank poker hands. Every case should say
 PASSED. The second set is the borrowed engine's own tests, which come with it.
 
 `treys` is used only to check the tests. It never takes part in the bot's own
-play -- `CLAUDE.md` states that rule.
+play -- `CLAUDE.md` states that rule, in the section called "The forefront
+rule", under the heading "What may not be coded".
 
 ## Checking the design document's arithmetic
 

@@ -49,10 +49,12 @@ arrives on every single bet, which makes it some of the cheapest signal
 available. It also means the bot's own bet amounts are information about the
 bot. A bot that always bets the same fraction of the pot in the same spot is
 readable by any human who pays attention, and once read, is beatable. The fix is
-not for the bot's supporting code to invent random amounts — the repository's
-forefront rule forbids that code from deciding anything about a poker action.
-The fix is to take the varied amounts from the engine, which is allowed to decide
-them, and stop throwing that variation away. [§2.3](#23-sizing-as-a-signal-about-us)
+not for the bot's supporting code to invent random amounts. The bar is not the
+repository's forefront rule, which under "What may be coded" lets our own code
+pick an action and its amount; it is that randomisation *is* the strategy, so
+amounts invented outside it are variation the strategy never balanced. The fix
+is to take the varied amounts from the engine, which already produces them, and
+stop throwing that variation away. [§2.3](#23-sizing-as-a-signal-about-us)
 is that argument in full, and it turns out to be the most important practical
 point in this document.
 
@@ -145,9 +147,11 @@ configurable poker one is the piece this project would use — OpenSpiel's
 stays a reference only; it is written `fedden/poker_ai` wherever its author has
 to be named, which is how a code-sharing site writes a project, author first and
 project second. Written the same way, `dickreuter/Poker` is a third program, and
-it is the reference for reading the table, never for play. What stays open is
-who chooses the action on top of the engine — the carve-out from the forefront
-rule, which the operator has not granted. The engine decision is written into
+it is the reference for reading the table, never for play. Who chooses the
+action on top of the engine is no longer open: `CLAUDE.md`'s forefront rule,
+under "What may be coded", lets code of ours pick it, as ordinary tested code
+that makes no model call while a hand is live and takes hand ranking from the
+engine rather than hand-rolling it. The engine decision is written into
 `CLAUDE.md` on this project's trunk branch: branch `worker/114e5b3f5b1b` landed
 there as commit `e67825b` on 2026-09-16, and is pushed. The dated record of the
 decision itself is a saved change in the separate `heater` repository where the
@@ -661,9 +665,11 @@ defect with a reproducing test, not as a style preference.
 **Failure 2: an abstraction with one bet size per spot.** If the engine's action
 abstraction offers a single size at a decision, no amount of correct sampling
 recovers variety, because there is none to recover. The bot is then a point mass
-at that size by construction. Nothing outside the engine can fix this without
-breaking the forefront rule, because choosing a different amount *is* choosing a
-poker action. **This is an engine requirement, and if the engine cannot satisfy
+at that size by construction. Nothing outside the engine can fix this: the
+forefront rule's "What may be coded" would let our code choose a different
+amount, but an amount our code invents is not one the engine's strategy
+balanced, and §2.3's argument applies to it exactly as it does to the argmax.
+**This is an engine requirement, and if the engine cannot satisfy
 it, the correct response is to report that and stop, exactly as §4.5 already
 instructs for Tier 1 and requirement E2** — not to add a randomiser outside the
 engine. That instinct will occur to somebody; it must be refused explicitly.
@@ -682,9 +688,10 @@ not in the engine's abstraction, something must map it onto one that is. A
 deterministic map — "anything up to 0.7 of pot is treated as a half-pot bet" —
 creates a threshold that an attentive opponent can locate by probing and then sit
 just inside, getting a large bet treated as a small one for free.
-[Ganzfried & Sandholm 2013](#s-ganzfried2013) (**not retrieved during this
-survey**) is the standard treatment: it states axioms an action-translation
-mapping should satisfy, shows that the natural deterministic and naive randomised
+[Ganzfried & Sandholm 2013](#s-ganzfried2013) (**retrieved by the
+action-translation survey, not by this one**) is the standard treatment: it
+states axioms an action-translation mapping should satisfy, shows that the
+natural deterministic and naive randomised
 mappings violate them in ways an opponent can exploit, and proposes the
 **pseudo-harmonic mapping**, which maps an observed bet `x` between abstraction
 sizes `A < x < B` to `A` with probability
@@ -693,8 +700,9 @@ sizes `A < x < B` to `A` with probability
 f_{A,B}(x) = ((B − x)(1 + A)) / ((B − A)(1 + x))
 ```
 
-and to `B` otherwise. **The formula is quoted from memory and was not verified
-against the primary text; confirm it before implementing.** The behaviour it
+and to `B` otherwise. **The formula was checked against the primary text by the
+action-translation survey (`ACTION_TRANSLATION.md` on `worker/5a58d580c339`).**
+The behaviour it
 produces is not: it is a randomised map, biased toward the nearer endpoint but
 never certain, which is what removes the exploitable threshold.
 
@@ -781,12 +789,13 @@ this survey**) report abstraction pathologies in extensive-form games, where
 refining an abstraction can produce a *worse*-performing strategy. The
 corroborating data point usually reached for here — that Pluribus used a small
 discrete set of bet sizes and beat elite professionals at six-player no-limit —
-is **cited from memory and was not retrieved**
+is **retrieved and confirmed by the action-translation survey**
 ([Pluribus's bet-size abstraction](#s-pluribus-sizing)): no web retrieval was
 available to this task, and `OPPONENT_MODEL_DESIGN.md`, which did retrieve
-[Brown 2020](#s-brown2020), does not state it. **Nothing here rests on it.** The
-recommendation — "more than one size per spot, and measure", not "as many sizes
-as possible" — stands on
+[Brown 2020](#s-brown2020), does not state it, so the confirmation comes from
+`ACTION_TRANSLATION.md` on `worker/5a58d580c339`. **Nothing here rests on it.**
+The recommendation — "more than one size per spot, and measure", not "as many
+sizes as possible" — stands on
 [Table 6](#table-6-pot-fraction-needed-to-reach-all-in-in-k-equal-bets)'s derived
 arithmetic for the lower end and on Waugh for the caution at the upper end, and
 E7 in [R10](#r10--add-three-engine-requirements-extension-opponent_model_designmd-engine-requirements)
@@ -1118,16 +1127,18 @@ describe a repair to the vendored engine.
   for E2 — not a size randomiser outside the engine, which would be AI-written
   code deciding a poker action.
 - **If E8's answer is "no translation" or "a deterministic one": the same shape
-  of response, and for the same reason.** Deciding which abstraction size an
-  off-abstraction bet *counts as* is reading a poker action, so a translation
-  layer written here would be AI-written code making a poker judgment, and
-  `CLAUDE.md`'s forefront rule forbids it in the same breath as it forbids the
-  randomiser above. The rule's own instruction is what applies: **adapt the
-  engine instead.** In order — (1) prefer an engine that already translates
-  randomly, which is a point for E9's survey and for `ENGINE_ALTERNATIVES.md` to
-  weigh; (2) failing that, implement the pseudo-harmonic mapping
-  ([Ganzfried & Sandholm 2013](#s-ganzfried2013), **formula not verified — confirm
-  against the primary text first**) *inside the chosen engine's own translation
+  of response, and for the same reason.** `CLAUDE.md`'s forefront rule, under
+  "What may be coded", would let our own code decide which abstraction size an
+  off-abstraction bet counts as; what rules it out here is the same argument as
+  the randomiser above, that a mapping bolted on outside the engine answers
+  against a strategy that never balanced for it. The rule's own instruction for
+  the engine's jobs is what applies: **adapt the engine instead.** In order —
+  (1) prefer an engine that already translates randomly, which is a point for
+  E9's survey and for `ENGINE_ALTERNATIVES.md` to weigh; (2) failing that,
+  implement the pseudo-harmonic mapping
+  ([Ganzfried & Sandholm 2013](#s-ganzfried2013), **formula checked against the
+  primary text by the action-translation survey**) *inside the chosen engine's
+  own translation
   code*, as a change to that engine's source covered by its tests, never as a
   wrapper in the integration layer that rewrites the opponent's bet before the
   engine sees it; (3) if neither is possible, **report that and stop**, as for
@@ -1315,8 +1326,8 @@ Used here for two claims, and only two, both of which
 multiplayer/two-player boundary in the equilibrium argument (§6.6), and
 Libratus's position on exploitation (§6.4). **Anything this document says about
 Pluribus's *bet sizing* is not among them** — see
-[Pluribus's bet-size abstraction](#s-pluribus-sizing) in the memory-cited list
-below.
+[Pluribus's bet-size abstraction](#s-pluribus-sizing) below, retrieved by the
+action-translation survey rather than by this one.
 
 <a id="s-ganzfried2011"></a>**[Ganzfried & Sandholm 2011]** Sam Ganzfried and
 Tuomas Sandholm, "Game Theory-Based Opponent Modeling in Large
@@ -1344,14 +1355,35 @@ and Reis report from Billings; the two are separate and
 [§1.5](#15-the-published-thresholds-are-themselves-table-size-mixtures) turns on
 keeping them apart.
 
+**Retrieved and read by the action-translation survey**, whose write-up is
+`ACTION_TRANSLATION.md` on branch `worker/5a58d580c339`; that document is where
+each was read and checked, and this one relies on it for the wording.
+
+<a id="s-ganzfried2013"></a>**[Ganzfried & Sandholm 2013]** Sam Ganzfried and
+Tuomas Sandholm, "Action Translation in Extensive-Form Games with Large Action
+Spaces: Axioms, Paradoxes, and the Pseudo-Harmonic Mapping", *IJCAI 2013*.
+The standard treatment of mapping an off-abstraction bet size onto an
+abstraction, and the source of the pseudo-harmonic mapping quoted in
+[§2.3](#23-sizing-as-a-signal-about-us). **The formula was checked against the
+primary text** by that survey, which records the check.
+
+<a id="s-pluribus-sizing"></a>**[Pluribus's bet-size abstraction]** That
+Pluribus used a small discrete set of bet sizes while beating elite
+professionals at six-player no-limit. Retrieved and confirmed by that same
+survey; `OPPONENT_MODEL_DESIGN.md` does not state the claim, which is why it is
+recorded here rather than beside the retrieved uses of
+[Brown 2020](#s-brown2020). No count of sizes is asserted, and nothing in
+[§3](#3-recommended-reconciliation-with-opponent_model_designmd) depends on the
+claim at all — see
+[§2.4](#24-what-the-strategy-literature-says-about-choosing-sizes).
+
 ---
 
 **Cited from memory and NOT retrieved during this survey.** No web retrieval was
-available to this task. Each of the following is a work — or, in one case, a
-claim about a published system — that this survey is confident exists, but no
-page, section, or wording was verified, and **a later task must
-confirm any of them before an implementation depends on it.** Nothing in
-[§3](#3-recommended-reconciliation-with-opponent_model_designmd) depends on one
+available to this task. Each of the following is a work that this survey is
+confident exists, but no page, section, or wording was verified, and **a later
+task must confirm any of them before an implementation depends on it.** Nothing
+in [§3](#3-recommended-reconciliation-with-opponent_model_designmd) depends on one
 of these alone — each recommendation is also supported by derived arithmetic or
 by a retrieved source.
 
@@ -1371,23 +1403,6 @@ other work [Teofilo & Reis 2011](#s-teofilo2011) §3 attributes the tight/loose,
 passive/aggressive thresholds to, as `OPPONENT_MODEL_DESIGN.md`'s Sources also
 record. **Cited at third hand** by the same route as
 [Billings 2006](#s-billings2006), and retrieved by neither survey.
-
-<a id="s-pluribus-sizing"></a>**[Pluribus's bet-size abstraction]** The claim that
-Pluribus used a small discrete set of bet sizes while beating elite professionals
-at six-player no-limit. Presumably in [Brown 2020](#s-brown2020) §6.6 or the
-underlying *Science* paper, but **no page was read for it by this task and
-`OPPONENT_MODEL_DESIGN.md` does not state it**, so it is recorded here rather
-than beside the retrieved uses of that thesis. No count of sizes is asserted, and
-nothing in [§3](#3-recommended-reconciliation-with-opponent_model_designmd)
-depends on the claim at all — see
-[§2.4](#24-what-the-strategy-literature-says-about-choosing-sizes).
-
-<a id="s-ganzfried2013"></a>**[Ganzfried & Sandholm 2013]** Sam Ganzfried and
-Tuomas Sandholm, "Action Translation in Extensive-Form Games with Large Action
-Spaces: Axioms, Paradoxes, and the Pseudo-Harmonic Mapping", *IJCAI 2013*.
-The standard treatment of mapping an off-abstraction bet size onto an
-abstraction, and the source of the pseudo-harmonic mapping quoted in
-[§2.3](#23-sizing-as-a-signal-about-us). **The formula is quoted from memory.**
 
 <a id="s-waugh2009"></a>**[Waugh et al. 2009]** Kevin Waugh, Dave Schnizlein,
 Michael Bowling and Duane Szafron, "Abstraction Pathologies in Extensive Games",
@@ -1484,10 +1499,10 @@ lands, rather than attempting it from one branch against the other;
 | [Table 5](#table-5-what-mis-reading-a-bet-size-costs-exactly) — required pot equity `B/(P+2B)` and the error columns | Computed and checked by `tools/check_table_size_numbers.py` 2026-09-15. Elementary pot-odds arithmetic, `P = 1` |
 | [Table 6](#table-6-pot-fraction-needed-to-reach-all-in-in-k-equal-bets) — `f` from `(1+2f)^k = 1+2·SPR` | Derived; computed and checked by `tools/check_table_size_numbers.py` 2026-09-15. Each bet-and-call multiplies the pot by `(1+2f)`; elementary |
 | The 19.9% / 25.0% / 30.0% / 33.3% bluff shares, and the **25.2pp** break-even-fold spread cited in [§2.5](#25-what-sizing-buckets-cost) | Read from `OPPONENT_MODEL_DESIGN.md` Table A, which computes them as `s/(1+2s)` and `s/(1+s)`. Re-derived here and matched. The spread is that table's `1.00` row (50.0%) minus its `0.33` row (24.8%) |
-| The pseudo-harmonic formula `((B−x)(1+A))/((B−A)(1+x))` | [Ganzfried & Sandholm 2013](#s-ganzfried2013). **Quoted from memory; NOT retrieved or verified. Confirm against the primary text before implementing** |
+| The pseudo-harmonic formula `((B−x)(1+A))/((B−A)(1+x))` | [Ganzfried & Sandholm 2013](#s-ganzfried2013). **Checked against the primary text by the action-translation survey**, whose write-up is `ACTION_TRANSLATION.md` on branch `worker/5a58d580c339` |
 | 4.52% showdown ratio | [Teofilo & Reis 2011](#s-teofilo2011), Table 1, as read and reported by `OPPONENT_MODEL_DESIGN.md` |
 | Band boundaries `HU`=2, `SHORT`=3–4, `MID`=5–6, `FULL`=7–9 (R1) | **Two constraints and one unmeasured bookkeeping choice.** `n=2` stands alone because [§1.7](#17-heads-up-is-a-different-game-and-it-inverts-the-designs-founding-argument) requires it; `n=8` and `n=9` share a band because the operator's table-size priority, recorded 2026-09-15, treats them as the same. The `4\|5` and `6\|7` cuts are **not** derived from Table 2 and cannot be: adjacent-seat-count distance is `1/(n+1)`, strictly decreasing, so no interior boundary is a local maximum. Belongs in config |
 | Size-bucket boundaries 0.40 / 0.70 / 1.10 of pot, and the two-bucket split at 0.70 (R8) | **Unmeasured design choices**, placed to straddle the rows of `OPPONENT_MODEL_DESIGN.md` Table A. Belong in config |
 | Flag margins `0.15` and confidence gates `0.6` in R9 | **Unmeasured starting values**, copied from the existing flag table in `OPPONENT_MODEL_DESIGN.md` §4.4 for consistency, and carrying the same status there and here |
-| Pluribus's use of a small discrete bet-size abstraction, and the number of sizes in it | **Cited from memory and NOT retrieved; the count is not asserted at all.** `OPPONENT_MODEL_DESIGN.md` does not state the claim and this task had no web access, so it is listed under [Pluribus's bet-size abstraction](#s-pluribus-sizing) in the memory-cited sources. No recommendation here depends on it |
+| Pluribus's use of a small discrete bet-size abstraction, and the number of sizes in it | **Retrieved and confirmed by the action-translation survey; the count is not asserted at all.** `OPPONENT_MODEL_DESIGN.md` does not state the claim and this task had no web access, so it is listed under [Pluribus's bet-size abstraction](#s-pluribus-sizing) among the sources that survey retrieved. No recommendation here depends on it |
 | Any table-size-specific VPIP, PFR or aggression norm | **Not asserted anywhere in this document.** See [Sources](#sources), "Deliberately not cited" |

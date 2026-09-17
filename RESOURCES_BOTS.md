@@ -902,15 +902,17 @@ Mac-native capture project turned out to contain no code.
    stars, its profiles are teaching examples rather than winners, and its
    position handling is written for 2 and 6 seats (3.14's (a)), so it does not
    arrive ready for 7 to 9 either.
-   **Unresolved, and it decides whether this entry is usable at all:** a PPL
+   **Still open, and it decides whether this entry is usable at all:** a PPL
    profile *is* a hand-written rule for what to do with each holding, so
-   running one puts hand-rolled decision logic where `CLAUDE.md`'s forefront
-   rule says the vendored engine must be — the same objection this survey
-   applies to PokerGPT (3.16) and PokerBotAgent (3.17). The uses that clearly
-   survive the rule are the ones where nothing of ours chooses the action:
-   a scripted *opponent* to test against, or a baseline to measure against.
-   Using it to pick our own action needs a recorded carve-out in `CLAUDE.md`
-   first. That call belongs to the section 5 reconciliation, not here.
+   running one puts a whole decision layer beside the vendored engine rather
+   than inside it. `CLAUDE.md`'s forefront rule, under "What may be coded",
+   lets code of ours pick the action, so choosing our action from a profile
+   needs no carve-out; under "What may not be coded" the profile must still
+   take hand ranking from the engine instead of hand-rolling it, must make no
+   model call while a hand is live, and must not carry a decision's content in
+   stored model output — which is where PokerGPT (3.16) and PokerBotAgent
+   (3.17) fail. Whether a profile written by someone else is worth running at
+   all belongs to the section 5 reconciliation, not here.
 4. **dickreuter/Poker** (3.2): a real Python bot that has played for money on
    three sites — the only entry here with that record, and its decision layer
    (equity by Monte Carlo, pot odds, a tunable strategy) is portable Python.
@@ -937,11 +939,12 @@ Mac-native capture project turned out to contain no code.
     the cheapest route to a *real* profile for the interpreter at 3, if the
     licence permits extracting them. Windows, closed. **Do not spend the $129
     yet.** It buys hand-written decision rules, which is the same tension as
-    at 3: until the section 5 reconciliation says whether a rule profile may
-    choose our actions, and `CLAUDE.md` records a carve-out if it may, the
-    only purchase that is certainly in bounds is a sparring opponent — and a
-    sparring opponent is not worth $129 while the two free profiles at 3.14
-    are untested.
+    at 3: `CLAUDE.md`'s forefront rule, under "What may be coded", lets code
+    of ours pick the action, so the open question is whether the section 5
+    reconciliation wants a bought rule profile choosing them — and until it
+    does, the only purchase that is certainly in bounds is a sparring
+    opponent, which is not worth $129 while the two free profiles at 3.14 are
+    untested.
 11. **rosbo/texas-holdem-poker-ai** (3.21): wrong game (fixed-limit, four
     simulated seats), but the clearest worked example of building an opponent
     model from showdowns rather than from opinion.
@@ -1016,11 +1019,11 @@ no longer stands on its own.
 Choosing between a strategy trained in advance and one computed while the hand
 is being played is a decision for the **reconciliation of `ENGINE_ALTERNATIVES.md`,
 `RESOURCES_BOTS.md`, `RESOURCES_SOLVERS.md` and `RESOURCES_EXPLOITATION.md`**,
-and whatever it decides needs a recorded carve-out or rule change in
-`CLAUDE.md`. None of those four is on the main line of the project yet: this
-file and its three companions are surveys still being written and reviewed on
-separate branches, so the reconciliation has nothing settled to read until they
-land. Not a line in a survey of other people's bots.
+and whatever it decides has to sit inside `CLAUDE.md`'s forefront rule, "What
+may be coded" and "What may not be coded" both. None of those four is on the
+main line of the project yet: this file and its three companions are surveys
+still being written and reviewed on separate branches, so the reconciliation
+has nothing settled to read until they land. Not a line in a survey of other people's bots.
 
 What this survey *does* settle, and hands to that reconciliation:
 
@@ -1044,39 +1047,36 @@ What this survey *does* settle, and hands to that reconciliation:
   written out by hand and gathers nothing. Whatever engine road wins, the
   memory of "who this player is" is ours to write, because nobody ships it in
   a form we can run.
-- **Per-opponent adjustment must enter through the engine, never through code
-  of ours that picks actions.** The boundary is already drawn, in the table in
-  `CLAUDE.md`'s forefront rule, and this survey neither widens nor narrows it.
-  The engine's side of that table is evaluating hand strength, choosing an
-  action, assigning a range to an opponent, reading board texture, producing
-  the strategy itself, solving, and **combining live-field rates into a
-  quantity that drives a poker decision** — the table's own example of that
-  last one is multiplying the fold rates of the opponents in the current hand
-  to gate a bluff — so "shift the
-  call, bluff and value thresholds for this named player" is out, as is any
-  layer of ours that turns an equity number into a bet. Our side of it is the
-  observation work: counting
-  observed actions, computing a single rate from those counts, shrinking a rate
-  toward a baseline, sorting an opponent into a bucket, reporting several rates
-  side by side, combining rates across the observed population into a baseline,
-  a classification split or an archetype, selecting *which* engine strategy to
-  load, and substituting an opponent model into the engine's own solver. The
-  combining entry in our column and the combining row on the engine's are a
-  matched pair: combining rates across the **observed population** — the whole
-  database, seated players' stored rows included, with being seated never the
-  criterion for inclusion — into a baseline, a classification split or an
-  archetype is ours, while combining the rates of the players **in the hand
-  being played** into a number that then drives a decision is the engine's.
+- **Per-opponent adjustment is ours to code, and no model may be in the loop
+  when the bot acts.** `CLAUDE.md`'s forefront rule, under "What may be coded",
+  lets code of ours pick an action, assign a range to an opponent, read the
+  board and combine opponent rates, so "shift the call, bluff and value
+  thresholds for this named player", and a layer of ours that turns an equity
+  number into a bet, are both in bounds as long as they are ordinary tested
+  code a reviewer can follow. What stays out, under "What may not be coded", is
+  a model call on the live decision path, a decision whose content comes from
+  stored model output, hand ranking hand-rolled in place of the engine, and the
+  failure modes named in `LLM_POKER_FAILURE_MODES.md`. This survey neither
+  widens nor narrows that rule. The observation work is ours as it always was:
+  counting observed actions, computing a single rate from those counts,
+  shrinking a rate toward a baseline, sorting an opponent into a bucket,
+  reporting several rates side by side, combining rates across the observed
+  population into a baseline, a classification split or an archetype, selecting
+  *which* engine strategy to load, and substituting an opponent model into the
+  engine's own solver. The rule itself defines that population, and the
+  definition is the one this project works to: the whole database, seated
+  players' stored rows included, with being seated never the criterion for
+  inclusion.
 
-  Of the categories allowed to us, "substituting an opponent model into the
+  Of the categories named above, "substituting an opponent model into the
   engine's own solver" has exactly **one** shipped example in this survey, and
   it is worth naming: **a biased strategy the engine itself produces** —
   NoRegrets' `--rnr-model` / `--rnr-opponent` with the `--rnr-p` dial, fed an
   opponent that its own `clone` command builds from logged hands (3.4). All of
   that happens before a hand is dealt: our code supplies the observations and
   picks which opponent to train against; the engine produces the strategy and
-  chooses the action. It is an example of one of the table's categories, not a
-  shorter list than the table.
+  chooses the action. It is an example of one of those categories, not a
+  shorter list than the rule.
 
   A second hook is often named beside it, and it is **not** a shipped example
   of anything here. `ENGINE_ALTERNATIVES.md` calls it "Hook A - the rollout
@@ -1089,27 +1089,33 @@ What this survey *does* settle, and hands to that reconciliation:
   document the hook sits inside `research/engine_alternatives/chooser.py`, a
   decision-time chooser of our own, under the column heading "Written by us
   (the chooser)", and that section states "The engine never picks". And it is
-  **unruled** — the same document says adopting the architecture it belongs to
-  "requires a recorded carve-out to the forefront rule", and expressly declines
-  to grant one. So it is an unbuilt design borrowed from the companion survey
-  and waiting on a ruling; this survey does not give that ruling and does not
-  treat the hook as already permitted. Anything that would put one of the
-  engine's own jobs into our code needs a recorded carve-out in `CLAUDE.md`
-  before it is written, not after.
+  **unchosen** — that document was written against the repealed wording of the
+  forefront rule and asks for an exemption the rule no longer needs; as
+  `CLAUDE.md` now stands, "What may be coded" lets code of ours pick the
+  action, so what is open is the architecture and not permission. So it is an
+  unbuilt design borrowed from the companion survey and waiting on the
+  reconciliation; this survey does not make that choice and does not treat the
+  hook as already adopted. Whatever is written under it still has to take the
+  game rules and hand evaluation from the engine, make no model call while a
+  hand is live, and carry no decision's content in stored model output.
 - **A rule profile is hand-written decision logic, and the survey does not
-  settle whether we may run one.** PPL and OpenPPL profiles — the shipped
+  settle whether we should run one.** PPL and OpenPPL profiles — the shipped
   strategies behind 3.1, 3.12 and 3.14, and the reason two of them rank in the
   top ten — are lists of "with this hand in this spot, do this", written by a
-  person. `CLAUDE.md`'s forefront rule rejects "hand-rolled ... decision logic
-  in place of the vendored engine", and this survey applies exactly that test to
-  PokerGPT (3.16) and PokerBotAgent (3.17), so it must apply it to its own
-  picks. Two uses are plainly safe because our code does not choose the
-  action: a profile driving a *scripted opponent* to develop and test against,
-  and a profile as a *baseline to beat*. A profile choosing the bot's own
-  action is the contested case, and it needs a recorded carve-out in
-  `CLAUDE.md` before anyone writes or buys one. **Route it to the same
-  reconciliation as the train-in-advance question above; this survey must not
-  settle it either way.**
+  person. `CLAUDE.md`'s forefront rule, under "What may not be coded", keeps
+  every model call out of the live decision path and refuses a decision's
+  content taken from stored model output, and this survey applies exactly
+  those tests to PokerGPT (3.16) and PokerBotAgent (3.17). A hand-written
+  profile fails neither: no model is called while the hand is live and nothing
+  a model produced is stored. Two uses are safe whatever the reconciliation
+  decides: a profile driving a *scripted opponent* to develop and test
+  against, and a profile as a *baseline to beat*. A profile choosing the bot's
+  own action is allowed by "What may be coded", which lets code of ours pick
+  the action, provided it takes hand ranking from the engine rather than
+  hand-rolling it; whether we *should* run someone else's rules is the open
+  question, not whether we may. **Route it to the same reconciliation as the
+  train-in-advance question above; this survey must not settle it either
+  way.**
 - **Table capture has to be written here.** Every finished reader is Windows
   bound, and the Mac-native one is an empty repository. PokerScreenBot and
   dickreuter's capture layer are the references; neither is an installable

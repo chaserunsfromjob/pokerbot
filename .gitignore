@@ -2,6 +2,7 @@
 __pycache__/
 *.py[cod]
 .pytest_cache/
+.venv-engines/
 *.egg-info/
 # Clustering / training artefacts - regenerate them, never commit them.
 *.joblib
