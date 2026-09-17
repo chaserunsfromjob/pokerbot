@@ -260,6 +260,26 @@ def _round_of(state) -> int:
     return int(json.loads(state.to_json())["acpc_state"].count("/"))
 
 
+MAX_CANDIDATES = 8
+
+
+def candidates(state, rng):
+    """The moves the search weighs.
+
+    Under `fcpa` that is all four. Under `fullgame` - real no-limit sizing,
+    tens of thousands of legal raise amounts at the first decision - it is a
+    sample of `MAX_CANDIDATES` of them, the same shortcut
+    `ENGINE_ALTERNATIVES.md` took, because weighing all of them is hopeless.
+    """
+    legal = state.legal_actions()
+    if len(legal) <= MAX_CANDIDATES:
+        return legal
+    keep = {legal[0], legal[1], legal[-1]}
+    while len(keep) < MAX_CANDIDATES:
+        keep.add(rng.choice(legal))
+    return sorted(keep)
+
+
 def decide_dls(game, state, player, deadline, rng, models):
     """Depth-limited search: leaves resolved by biased continuation strategies.
 
@@ -268,7 +288,7 @@ def decide_dls(game, state, player, deadline, rng, models):
     is what a blueprint would supply. Every card, every legal action and every
     payoff comes from the engine.
     """
-    legal = state.legal_actions()
+    legal = candidates(state, rng)
     totals = {a: 0.0 for a in legal}
     counts = {a: 0 for a in legal}
     playouts = 0
